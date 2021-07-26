@@ -44,3 +44,10 @@ a {
   bottom: 0;
   background-color: #1b1248;
 }
+
+#container {
+  width: 1000px;
+  height: 800px;
+  background-color: #f1f1f1;
+  overflow: hidden;
+}
