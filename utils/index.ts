@@ -96,8 +96,6 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
 }
 
 /**
- * 
+ * 范围随机数
  */
-export const randomRange = (min: number, max: number) => {
-  return Math.floor(Math.random()*(max-min+1)+min);
-}
+export const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);

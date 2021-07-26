@@ -2655,6 +2655,11 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+penner@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/penner/-/penner-0.1.3.tgz#0b8b482d4e9b39af2f3d7c37592229b8acc29705"
+  integrity sha1-C4tILU6bOa8vPXw3WSIpuKzClwU=
+
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
@@ -2664,6 +2669,20 @@ pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
   integrity sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=
+
+pixi-scrollbox@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/pixi-scrollbox/-/pixi-scrollbox-2.3.1.tgz#b554e5f7cca7e8f4795c17312714bbb1371fffcb"
+  integrity sha512-xBkOb3LZOFosQ6+k2TxEXKOzI7K1RmjSJXfKVqaErQOnk/e2e0kwCs9rXus/XfrPg1loDtf0c8r0vSbQb6yCiw==
+  dependencies:
+    penner "^0.1.3"
+
+pixi-viewport@^4.32.0:
+  version "4.32.0"
+  resolved "https://registry.yarnpkg.com/pixi-viewport/-/pixi-viewport-4.32.0.tgz#f3b000105ec3a969b6821a282b6b1db65e00f045"
+  integrity sha512-KZYZokCjCNexWBFWMahBnUWQNnVRyKMff0OqPaT9ykOd0WJBGPp2ovU0Q758/NIOKyNiO2bK3Ok3EJfO+DcH1g==
+  dependencies:
+    penner "^0.1.3"
 
 pixi.js@^6.0.4:
   version "6.0.4"
@@ -3175,6 +3194,11 @@ stacktrace-parser@0.1.10:
   integrity sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==
   dependencies:
     type-fest "^0.7.1"
+
+stats.js@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/stats.js/-/stats.js-0.17.0.tgz#b1c3dc46d94498b578b7fd3985b81ace7131cc7d"
+  integrity sha1-scPcRtlEmLV4t/05hbgaznExzH0=
 
 "statuses@>= 1.5.0 < 2":
   version "1.5.0"

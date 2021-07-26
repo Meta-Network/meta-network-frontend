@@ -6,8 +6,10 @@ import { nodeDraw } from '../utils/canvas'
 import tippy from 'tippy.js';
 
 let PIXI: any = null
+let Scrollbox: any = null
 if (process.browser) {
   PIXI = require('pixi.js')
+  Scrollbox = require('pixi-scrollbox').Scrollbox
 
   console.log('PIXI', PIXI)
     ; (window as any).PIXI = PIXI
@@ -36,9 +38,25 @@ export default function Home() {
     // 节点容器
     const containerMainNode = new PIXI.Container();
 
+    // create the scrollbox
+    const scrollbox = new Scrollbox({
+      boxWidth: Math.floor(width * 0.9),
+      boxHeight: Math.floor(height * 0.9),
+      // scrollWidth: 1000,
+      // scrollHeight: 1000,
+      scrollbarBackgroundAlpha: '0',
+      scrollbarForegroundAlpha: '0',
+      // scrollbarOffsetHorizontal: 200,
+      // scrollbarOffsetVertical: 200,
+    })
+    scrollbox.x = (width - Math.floor(width * 0.9)) / 2;
+    scrollbox.y = (height - Math.floor(height * 0.9)) / 2;
+    // scrollbox.pivot.x = Math.floor(width * 0.9) / 2
+    // scrollbox.pivot.y = Math.floor(height * 0.9) / 2
+
     let points = generatePoints({
-      x: 18,
-      y: 10,
+      x: 9,
+      y: 6,
       width: (80 * Math.sqrt(3) / 2) * 2,
       height: 80 * 2,
       padding: 44,
@@ -52,74 +70,40 @@ export default function Home() {
       containerNode.y = ele[1]
 
       const handleEventClick = () => {
-        let _x, _y;
-        _x = app.screen.width / 2 + containerMainNode.width / 2 - node.width / 2 - ele[0]
-        _y = app.screen.height / 2 + containerMainNode.height / 2 - node.height / 2 - ele[1]
-        containerMainNode.x = _x
-        containerMainNode.y = _y
+        // let _x, _y;
+        // _x = app.screen.width / 2 + containerMainNode.width / 2 - node.width / 2 - ele[0]
+        // _y = app.screen.height / 2 + containerMainNode.height / 2 - node.height / 2 - ele[1]
+        // containerMainNode.x = _x
+        // containerMainNode.y = _y
+
+        scrollbox.content.x = -100
+        scrollbox.content.y = -100
       }
 
-      node.on('click', handleEventClick)
+      // node.on('click', handleEventClick)
     }
 
-    containerMainNode.interactive = true
-    containerMainNode.buttonMode = true
+    // containerMainNode.interactive = true
+    // containerMainNode.buttonMode = true
 
-    containerMainNode.x = app.screen.width / 2;
-    containerMainNode.y = app.screen.height / 2;
-    containerMainNode.pivot.x = containerMainNode.width / 2
-    containerMainNode.pivot.y = containerMainNode.height / 2
+    // containerMainNode.x = app.screen.width / 2;
+    // containerMainNode.y = app.screen.height / 2;
+    // containerMainNode.pivot.x = containerMainNode.width / 2
+    // containerMainNode.pivot.y = containerMainNode.height / 2
 
-    app.stage.addChild(containerMainNode);
+    // app.stage.addChild(containerMainNode);
 
-    function onDragStart(event: any) {
-      console.log('event', event)
-      // store a reference to the data
-      // the reason for this is because of multitouch
-      // we want to track the movement of this particular touch
-      containerMainNode.data = event.data;
-      containerMainNode.alpha = 0.5;
-      containerMainNode.dragging = true;
-    }
+    // add a sprite to the scrollbox's content
+    scrollbox.content.addChild(containerMainNode)
 
-    function onDragEnd() {
-      containerMainNode.alpha = 1;
+    console.log('scrollbox.content', scrollbox.content)
 
-      containerMainNode.dragging = false;
+    // force an update of the scrollbox's calculations after updating the children
+    scrollbox.update()
 
-      // set the interaction data to null
-      containerMainNode.data = null;
-    }
 
-    function onDragMove() {
-      if (containerMainNode.dragging) {
-        var newPosition = containerMainNode.data.getLocalPosition(containerMainNode.parent);
-        console.log('newPosition', newPosition)
-        // console.log('containerMainNode', containerMainNode)
-        containerMainNode.x = newPosition.x;
-        containerMainNode.y = newPosition.y;
-      }
-    }
-
-    // events for drag start
-    containerMainNode
-      .on('mousedown', onDragStart)
-      // .on('touchstart', onDragStart)
-      // events for drag end
-      .on('mouseup', onDragEnd)
-      .on('mouseupoutside', onDragEnd)
-      // .on('touchend', onDragEnd)
-      .on('touchendoutside', onDragEnd)
-      // events for drag move
-      .on('mousemove', onDragMove)
-      // .on('touchmove', onDragMove);
-
-      // .on('pointerdown', onDragStart)
-      // .on('pointerup', onDragEnd)
-      // .on('pointerupoutside', onDragEnd)
-      // .on('pointermove', onDragMove)
-
-    console.log('containerMainNode', containerMainNode.width, containerMainNode.height)
+    // add the viewport to the stage
+    app.stage.addChild(scrollbox)
 
 
     ;(document as any).querySelector('#main').appendChild(app.view);
@@ -137,6 +121,7 @@ export default function Home() {
     <>
       <div id="main"></div>
       <button id="popover"></button>
+      <div id="stats"></div>
     </>
   )
 }

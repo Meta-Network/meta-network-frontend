@@ -387,11 +387,11 @@ export const nodeDraw = ({ pixi, container, edge, textures, index }: { pixi: any
   }
 
   if (mode !== 'default' && mode !== 'choose') {
-    renderNodeText({
-      node: node,
-      container: containerNode,
-      title: `小田 XIAO ${index}`
-    })
+    // renderNodeText({
+    //   node: node,
+    //   container: containerNode,
+    //   title: `小田 XIAO ${index}`
+    // })
   }
 
   node.x = w / 2;
