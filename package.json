@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@inlet/react-pixi": "^6.6.3",
+    "@svgdotjs/svg.js": "^3.1.1",
     "d3": "^7.0.0",
+    "d3-hexbin": "^0.2.2",
+    "honeycomb-grid": "^3.1.8",
     "next": "11.0.1",
     "pixi-scrollbox": "^2.3.1",
     "pixi-viewport": "^4.32.0",
@@ -19,6 +22,9 @@
     "react": "17.0.2",
     "react-d3-library": "^1.1.8",
     "react-dom": "17.0.2",
+    "react-hexgrid": "^1.0.3",
+    "rot-js": "^2.2.0",
+    "sass": "^1.36.0",
     "stats.js": "^0.17.0",
     "tippy.js": "^6.3.1"
   },

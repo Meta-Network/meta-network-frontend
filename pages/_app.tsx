@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import '../styles/globals.css'
+import '../styles/globals.scss'
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import type { AppProps } from 'next/app'
 
