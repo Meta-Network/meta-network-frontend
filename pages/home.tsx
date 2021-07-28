@@ -10,18 +10,20 @@ import tippy from 'tippy.js';
 import { randomRange } from '../utils/index'
 
 let d3: any = null
+let zoom: any = null
 if (process.browser) {
   d3 = require('d3')
+  zoom = d3.zoom();
 }
 
 const configs = {
   "hexagon": {
     "width": 1000,
     "height": 800,
-    "layout": { "width": 8, "height": 8, "flat": false, "spacing": 1.1 },
-    "origin": { "x": 0, "y": 0 },
+    "layout": { "width": 80, "height": 80, "flat": false, "spacing": 1.1 },
+    "origin": { "x": 100, "y": 100 },
     "map": "hexagon",
-    "mapProps": [ 3 ]
+    "mapProps": [ 10 ]
   }
 }
 const config = configs['hexagon']
@@ -31,15 +33,22 @@ const size = { x: layout.width, y: layout.height };
 export default function Home() {
   const myRef = useRef(null)
   const [hex, setHex] = useState([]);
-  
+
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
+  const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
+
 
   const resizeFn = useCallback(
     () => {
       if (process.browser) {
         setWidth(window.innerWidth * 0.9)
         setHeight(window.innerHeight * 0.9)
+
+        setOrigin({
+          x: (window.innerWidth * 0.9) / 2,
+          y: (window.innerHeight * 0.9) / 2,
+        })
       }
     },
     [],
@@ -51,20 +60,18 @@ export default function Home() {
   }, [ resizeFn ]);
 
   useEffect(() => {
-      const container = d3.select('#container')
       const svg = d3.select('#container svg')
-      let widthSvg = svg.attr('width')
-      let heightSvg = svg.attr('height')
 
-      container.call(d3.zoom()
-          .extent([[0, 0], [width, height]])
-          .scaleExtent([1, 4])
-          .on("zoom", zoomed)
-        )
+      svg.call(
+        zoom
+        .extent([[0, 0], [width, height]])
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed)
+      )
 
       function zoomed({transform}: any) {
         // 边界判定
-        console.log('transform', transform)
+        // console.log('transform', transform)
         let tran = transform
 
         // const numberFloor = (n: number, k: number) => {
@@ -83,10 +90,10 @@ export default function Home() {
         // if (transform.y <= numberFloor(-400, transform.k)) {
         //   tran = Object.assign(transform, { y: numberFloor(-400, transform.k) })
         // }
-        const svg = d3.select('#container svg')
+        const svg = d3.select('#container svg > g')
         svg.attr("transform", tran);
       }
-      // svg.node();
+      svg.node();
 
       const initCenter = () => {
         const svg = d3.select('#container svg')
@@ -108,23 +115,39 @@ export default function Home() {
   setHex(hexagons)
   }, []);
 
-  const handleHexagonEventClick = (e: any, className: string) => {
-    console.log('e', e)
-    let target: any = document.querySelector(`.${className}`)
-    console.log('target', target, className)
-    tippy(target, {
-      content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
-      allowHTML: true,
-      trigger: 'click',
-      placement: 'top',
-      animation: 'scale',
-    });
+  const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }) => {
+    // console.log('e', e)
+    // let target: any = document.querySelector(`.${className}`)
+    // console.log('target', target, className)
+    // tippy(target, {
+    //   content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
+    //   allowHTML: true,
+    //   trigger: 'click',
+    //   placement: 'top',
+    //   animation: 'scale',
+    // });
+
+    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
+    const svg = d3.select('#container svg')
+    let _x = layout.width * ( Math.sqrt(3) * -point.x + Math.sqrt(3)/2 * -point.y )
+    let _y = layout.height * ( 3/2 * -point.y )
+    _x = _x * layout.spacing
+    _y = _y * layout.spacing
+
+    console.log('point', point, _x, _y)
+
+    svg.transition()
+      .duration(1000)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(_x, _y).scale(1)
+      )
   }
 
   return (
     <div id="container">
-      <HexGrid width={width} height={height}>
-          <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={config.origin}>
+      <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
+          <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
             {
               // note: key must be unique between re-renders.
               // using config.mapProps+i makes a new key when the goal template chnages.
@@ -146,9 +169,10 @@ export default function Home() {
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
-                    onClick={ (e: any) => handleHexagonEventClick(e, `hexagon-x${hex.q}_y${hex.s}_z${hex.r}`) }
+                    onClick={ (e: any) => handleHexagonEventClick(e, `hexagon-x${hex.q}_y${hex.s}_z${hex.r}`, { x: hex.q, y: hex.r })}
                     className={ `hexagon-${mode} hexagon-x${hex.q}_y${hex.s}_z${hex.r}` }>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
+                    {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text>
                   </Hexagon>
                 )
@@ -156,6 +180,7 @@ export default function Home() {
             }
           </Layout>
         </HexGrid>
+        <div className="point"></div>
     </div>
   )
 }
