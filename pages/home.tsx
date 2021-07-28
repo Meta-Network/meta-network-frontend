@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
 import { defineGrid, extendHex } from 'honeycomb-grid'
@@ -31,10 +31,26 @@ const size = { x: layout.width, y: layout.height };
 export default function Home() {
   const myRef = useRef(null)
   const [hex, setHex] = useState([]);
+  
+  const [width, setWidth] = useState<number>(config.width);
+  const [height, setHeight] = useState<number>(config.height);
+
+  const resizeFn = useCallback(
+    () => {
+      if (process.browser) {
+        setWidth(window.innerWidth * 0.9)
+        setHeight(window.innerHeight * 0.9)
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
-    const width = window.innerWidth * 0.9
-    const height = window.innerHeight * 0.9
+    resizeFn()
+    window.addEventListener('resize', resizeFn)
+  }, [ resizeFn ]);
+
+  useEffect(() => {
       const container = d3.select('#container')
       const svg = d3.select('#container svg')
       let widthSvg = svg.attr('width')
@@ -43,7 +59,8 @@ export default function Home() {
       container.call(d3.zoom()
           .extent([[0, 0], [width, height]])
           .scaleExtent([1, 4])
-          .on("zoom", zoomed))
+          .on("zoom", zoomed)
+        )
 
       function zoomed({transform}: any) {
         // 边界判定
@@ -106,7 +123,7 @@ export default function Home() {
 
   return (
     <div id="container">
-      <HexGrid width={config.width} height={config.height}>
+      <HexGrid width={width} height={height}>
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={config.origin}>
             {
               // note: key must be unique between re-renders.
