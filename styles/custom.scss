@@ -13,3 +13,53 @@
     }
   }
 }
+
+.custom-modal {
+  top: 200px;
+  .ant-modal-content {
+    background-color: #131313;
+  }
+  .ant-modal-body {
+    padding: 20px 20px 45px 20px;
+  }
+}
+
+.custom-primary {
+  padding: 12px 20px;
+  height: auto;
+  width: 176px;
+  background: #CAF12E;
+  border-radius: 5px;
+  border: 1px solid #CAF12E;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #131313;
+  text-align: left;
+  &:hover, &:active, &:focus {
+    color: #131313;
+    background: #CAF12E;
+    border: 1px solid #CAF12E;
+  }
+}
+
+.custom-default {
+  padding: 12px 20px;
+  height: auto;
+  width: 176px;
+  background: transparent;
+  border-radius: 5px;
+  border: 1px solid #CAF12E;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #CAF12E;
+  text-align: left;
+  &:hover, &:active {
+    color: #CAF12E;
+    background: transparent;
+    border: 1px solid #CAF12E;
+  }
+}

@@ -9,6 +9,8 @@ import type { AppProps } from 'next/app'
 
 import Stats from 'stats.js'
 import ToggleSlider from '../components/Slider/ToggleSlider'
+import CustomModal from '../components/CustomModal/Index'
+import DeploySite from "../components/DeploySite/Index";
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -32,7 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       requestAnimationFrame( animate );
 
-    }
+    } 
 
     requestAnimationFrame( animate );
   }, [])
@@ -41,6 +43,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <ToggleSlider></ToggleSlider>
       <Component {...pageProps} />
+      <CustomModal>
+        <DeploySite></DeploySite>
+      </CustomModal>
     </>
   )
 }
