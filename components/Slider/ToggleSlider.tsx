@@ -95,6 +95,9 @@ const ToggleSlider: React.FC<{}> = () => {
             <ArrowLeftOutlined className="right" />
           </a>
         </li>
+        <li>
+          <a href="" className="red">登出账户</a>
+        </li>
       </StyledSliderCAccount>
     )
   }
@@ -242,6 +245,9 @@ const StyledSliderCAccount = styled.ul`
         color: #CAF12E;
         background-color: #2C2B2A;
         border-radius: 4px 0 0 4px;
+      }
+      &.red {
+        color: #FF644F;
       }
       span {
         &.right {
