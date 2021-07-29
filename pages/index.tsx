@@ -68,7 +68,7 @@ export default function Home() {
     svg.call(
       zoom
         .extent([[0, 0], [width, height]])
-        .scaleExtent([1, 8])
+        .scaleExtent([0.6, 4])
         .on("zoom", zoomed)
     )
 
