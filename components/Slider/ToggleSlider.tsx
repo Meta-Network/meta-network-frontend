@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
   LeftOutlined
