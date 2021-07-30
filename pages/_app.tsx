@@ -11,6 +11,7 @@ import Stats from 'stats.js'
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import CustomModal from '../components/CustomModal/Index'
 import DeploySite from "../components/DeploySite/Index";
+import InviteCode from "../components/InviteCode/Index";
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -45,6 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <CustomModal>
         <DeploySite></DeploySite>
+      </CustomModal>
+      <CustomModal>
+        <InviteCode></InviteCode>
       </CustomModal>
     </>
   )

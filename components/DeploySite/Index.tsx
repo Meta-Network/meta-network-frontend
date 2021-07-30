@@ -4,6 +4,7 @@ import {
   LeftOutlined, CopyOutlined
 } from '@ant-design/icons'
 import { Button, Form, Input, Spin } from 'antd'
+import Copy from '../Copy/Index'
 
 const DeploySite: React.FC<{}> = () => {
 
@@ -79,8 +80,7 @@ const DeploySite: React.FC<{}> = () => {
           恭喜！这是你的站点 [站点名] 的站点入口链接。你的子域名是 user967
         </p>
         <StyledContentCopyUrl>
-          <p>https://www.matataki.io/user967</p>
-          <CopyOutlined className="g-green" />
+          <Copy text="https://www.matataki.io/user967"></Copy>
         </StyledContentCopyUrl>
         <StyledContentFooter>
           <Button className="custom-primary">完成并回到主页</Button>
@@ -152,23 +152,7 @@ const StyledContentHeadBack = styled(LeftOutlined)`
 `
 
 const StyledContentCopyUrl = styled.section`
-  background: #2C2B2A;
-  border-radius: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
   margin-top: 50px;
-  p {
-    padding: 0;
-    margin: 0;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 18px;
-    text-align: center;
-    color: #F5F5F5;
-  }
 `
 
 const StyledContentFooter = styled.section`
