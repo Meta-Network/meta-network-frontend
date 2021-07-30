@@ -11,5 +11,5 @@ export const API = factoryClient({
  * ucenter API
  */
 export const uCenterAPI = factoryClient({
-  baseURL: process.env.REACT_APP_BACKEND_UCENTER_API!
+  baseURL: 'https://ucenter-test-api.mttk.net'
 })

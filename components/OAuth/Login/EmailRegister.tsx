@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { EmailModeProps } from '../../../typings/oauth'
-import { verifyEmail } from '../../../services/login'
+import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../services/accounts'
+import EmailCode from './EmailCode'
+import { trim } from 'lodash'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -11,9 +13,28 @@ interface Props {
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formResister] = Form.useForm();
 
-  const onFinishEmail = (values: any): void => {
+  // 注册
+  const onFinishEmail = async (values: any): Promise<void> => {
     console.log('Success:', values);
-    alert('注册')
+    let { email, code } = values
+    try {
+      // 测试邀请码
+      const res = await invitation()
+
+      const resEmailSignup = await accountsEmailSignup(res.data, {
+        email: trim(email),
+        verifyCode: code,
+        hcaptchaToken: 'hcaptcha_token_here'
+      })
+      if (resEmailSignup.statusCode === 201) {
+        message.success('注册成功')
+      } else {
+        message.warning(`注册失败：${resEmailSignup.message}`)
+      }
+    } catch (e) {
+      console.error(e)
+      message.error('注册失败')
+    }
   };
 
   const onFinishFailedEmail = (errorInfo: any): void => {
@@ -21,16 +42,22 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   };
 
   // 校验邮箱是否存在
-  const verifyEmailRule = async () => {
+  const verifyEmailRule = async (): Promise<void> => {
     try {
       const values = await formResister.getFieldsValue()
-      // console.log('Success:', values);
 
-      // await verifyEmail({ email: values.email })
+      const res = await accountsEmailVerify({ email: trim(values.email) })
+      if (res.statusCode === 200) {
+        if (res.data.isExists) {
+          return Promise.reject(new Error('邮箱已注册'))
+        }
+      } else {
+        return Promise.reject(new Error('验证失败'))
+      }
       return Promise.resolve()
     } catch (errorInfo) {
       console.log('Failed:', errorInfo);
-      return Promise.reject(new Error('邮箱已注册'))
+      return Promise.reject(new Error('验证失败'))
     }
   };
 
@@ -55,17 +82,6 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         <Input className="form-input" placeholder="请输入邮箱" autoComplete="new-text" />
       </StyledFormItem>
 
-      <StyledFormItem
-        label=""
-        name="password"
-        rules={[
-          { required: true, message: '请输入密码' },
-          { required: true, max: 32, min: 4, message: '密码长度4-32' },
-        ]}
-      >
-        <Input.Password className="form-input-password" placeholder="请输入密码" autoComplete="new-password" />
-      </StyledFormItem>
-
       <StyledFormCode>
         <StyledFormItem
           label=""
@@ -74,7 +90,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         >
           <Input className="form-input" placeholder="请输入验证码" autoComplete="off" />
         </StyledFormItem>
-        <StyledFormBtnText className="code" type="button" onClick={() => alert('发送验证码')}>获取验证码</StyledFormBtnText>
+        <EmailCode form={formResister}></EmailCode>
       </StyledFormCode>
 
       <StyledFormItem>
@@ -159,11 +175,6 @@ const StyledFormBtnText = styled.button`
   cursor: pointer;
   background-color: transparent;
   color: #9b9b9f;
-  &.code {
-    position: absolute;
-    right: 0;
-    bottom: 0px;
-  }
 `
 // ----------------- Email form -----------------
 
