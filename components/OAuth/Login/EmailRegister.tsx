@@ -12,6 +12,7 @@ interface Props {
 
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formResister] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   // 注册
   const onFinishEmail = async (values: any): Promise<void> => {
@@ -44,6 +45,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   // 校验邮箱是否存在
   const verifyEmailRule = async (): Promise<void> => {
     try {
+      setLoading(true)
+
       const values = await formResister.getFieldsValue()
 
       const res = await accountsEmailVerify({ email: trim(values.email) })
@@ -58,6 +61,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     } catch (errorInfo) {
       console.log('Failed:', errorInfo);
       return Promise.reject(new Error('验证失败'))
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -95,7 +100,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 
       <StyledFormItem>
         <StyledFormFlexSpaceBetween>
-          <StyledFormBtn htmlType="submit">
+          <StyledFormBtn htmlType="submit" loading={loading}>
             注册
           </StyledFormBtn>
           <StyledFormBtnText type="button" onClick={() => setEmailModeFn('login')}>登录</StyledFormBtnText>

@@ -13,6 +13,7 @@ interface Props {
 
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formLogin] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   /**
    * 用户登录
@@ -22,6 +23,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     console.log('Success:', values);
     let { email, code } = values
     try {
+      setLoading(true)
       const res = await accountsEmailLogin({
         email: trim(email),
         verifyCode: code,
@@ -35,6 +37,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     } catch (e) {
       console.error(e)
       message.error('登录失败')
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -74,7 +78,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 
         <StyledFormItem>
           <StyledFormFlexSpaceBetween>
-            <StyledFormBtn htmlType="submit">
+            <StyledFormBtn htmlType="submit" loading={loading}>
               登录
             </StyledFormBtn>
             <StyledFormBtnText type="button" onClick={() => setEmailModeFn('register')}>注册</StyledFormBtnText>
