@@ -5,6 +5,8 @@ import { EmailModeProps } from '../../../typings/oauth'
 import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import { trim } from 'lodash'
+import { useRouter } from 'next/router'
+
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -13,6 +15,7 @@ interface Props {
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formResister] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   // 注册
   const onFinishEmail = async (values: any): Promise<void> => {
@@ -29,6 +32,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (resEmailSignup.statusCode === 201) {
         message.success('注册成功')
+        router.push('/')
       } else {
         message.warning(`注册失败：${resEmailSignup.message}`)
       }

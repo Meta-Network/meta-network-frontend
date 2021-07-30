@@ -5,6 +5,7 @@ import { EmailModeProps } from '../../../typings/oauth'
 import EmailCode from './EmailCode'
 import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
+import { useRouter } from 'next/router'
 
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formLogin] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   /**
    * 用户登录
@@ -31,6 +33,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (res.statusCode === 201) {
         message.success('登录成功')
+        router.push('/')
       } else {
         message.warning(`登录失败：${res.message}`)
       }

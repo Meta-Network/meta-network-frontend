@@ -4,7 +4,7 @@ import {
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
   LeftOutlined
 } from '@ant-design/icons'
-import { Drawer, Avatar, message } from 'antd';
+import { Drawer, Avatar, message, Popconfirm } from 'antd';
 import styled from 'styled-components'
 import { useUser } from '../../hooks/useUser'
 import { isEmpty } from 'lodash'
@@ -129,9 +129,11 @@ const ToggleSlider: React.FC<{}> = () => {
                 </Link>
               </li>
             </> :
-            <li>
-              <a href="javascript:;" onClick={signOut} className="red">登出账户</a>
-            </li>
+            <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
+              <li>
+                <a href="javascript:;" className="red">登出账户</a>
+              </li>
+            </Popconfirm>
         }
       </StyledSliderCAccount>
     )

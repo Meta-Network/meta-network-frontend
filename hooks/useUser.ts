@@ -20,7 +20,6 @@ export const useUser = () => {
     try {
       const res = await usersMe()
       if (res.statusCode === 200) {
-        console.log('res', res)
         setUser(res.data)
       }
     } catch (e) {
@@ -29,7 +28,6 @@ export const useUser = () => {
   }, [setUser])
 
   useInterval(() => {
-    console.log(1111)
     userMeFn();
   }, 3000);
 
