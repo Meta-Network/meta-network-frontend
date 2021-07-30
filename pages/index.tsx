@@ -14,6 +14,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { message } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
+import ToggleSlider from '../components/Slider/ToggleSlider'
 
 let d3: any = null
 let zoom: any = null
@@ -195,6 +196,7 @@ export default function Home() {
 
   return (
     <>
+      <ToggleSlider></ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
