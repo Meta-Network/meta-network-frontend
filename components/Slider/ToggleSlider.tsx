@@ -203,6 +203,7 @@ const StyledSliderContent = styled.section`
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 `
 
 const StyledSliderCUser = styled.section`

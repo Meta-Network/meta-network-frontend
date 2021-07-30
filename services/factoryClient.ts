@@ -45,14 +45,14 @@ const factoryClient = ({ baseURL }: Props) => {
       console.log(error.message);
 
       if (error.message.includes("status code 401")) {
-        alert("登录状态异常,请重新登录");
+        console.log("登录状态异常,请重新登录");
       }
       // 超时处理
       if (error.message.includes("timeout")) {
         console.log("请求超时");
       }
       if (error.message.includes("Network Error")) {
-        alert("Network Error");
+        console.log("Network Error");
       }
       return Promise.reject(error);
     }
