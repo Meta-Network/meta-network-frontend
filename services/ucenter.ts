@@ -60,6 +60,12 @@ export const invitation = (): Promise<axiosResult<string>> =>
 export const accountsEmailLogin = (data: AccountsEmailAuth): Promise<axiosResult<{ key: string }>> =>
   uCenterAPI.post('/accounts/email/login', data)
 
+/**
+ * 退出登录
+ * @returns
+ */
+export const accountsTokenDelete = (): Promise<axiosResult<void>> => uCenterAPI.patch('/accounts/token/delete')
+
 
 // ---------------- Users ----------------
 
@@ -67,4 +73,6 @@ export const accountsEmailLogin = (data: AccountsEmailAuth): Promise<axiosResult
  * 当前用户信息
  * @returns
  */
-export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me')
+export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me', {
+  cache: true
+})

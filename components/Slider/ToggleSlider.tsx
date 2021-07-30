@@ -4,13 +4,20 @@ import {
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
   LeftOutlined
 } from '@ant-design/icons'
-import { Drawer, Avatar } from 'antd';
+import { Drawer, Avatar, message } from 'antd';
 import styled from 'styled-components'
-import { usersMe } from '../../services/ucenter'
+import { useUser } from '../../hooks/useUser'
+import { isEmpty } from 'lodash'
+import { accountsTokenDelete } from '../../services/ucenter'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const ToggleSlider: React.FC<{}> = () => {
 
   const [visible, setVisible] = useState(false);
+  const { user } = useUser()
+  const router = useRouter()
+
   const showDrawer = () => {
     setVisible(true);
   };
@@ -18,21 +25,31 @@ const ToggleSlider: React.FC<{}> = () => {
     setVisible(false);
   };
 
-  const usersMeFn = async () => {
-    const res = await usersMe()
-    console.log(res)
+  const signOut = async () => {
+    try {
+      const res = await accountsTokenDelete()
+      if (res.statusCode === 200) {
+        message.success('登出成功')
+        router.reload()
+      } else {
+        message.warning(`登出失败: ${res.message}`)
+      }
+    } catch (e) {
+      console.log(e)
+      message.error('登出失败')
+    }
   }
-
-  useEffect(() => {
-    usersMeFn()
-  }, []);
 
   // 侧边栏 用户内容
   const SliderContentUser: React.FC = () => {
     return (
       <StyledSliderCUser>
-        <Avatar size={40} icon={<UserOutlined />} />
-        <StyledSliderCUserInfo>[未登录]</StyledSliderCUserInfo>
+        <Avatar size={40} icon={<UserOutlined />} src={user?.avatar} />
+        <StyledSliderCUserInfo>
+          {
+            isEmpty(user) ? '[未登录]' : user.nickname || user.username || '暂无昵称'
+          }
+        </StyledSliderCUserInfo>
         <LeftOutlined className="arrow" />
       </StyledSliderCUser>
     )
@@ -96,18 +113,26 @@ const ToggleSlider: React.FC<{}> = () => {
   const SliderContenAccoount: React.FC = () => {
     return (
       <StyledSliderCAccount>
-        <li>
-          <a href="">登陆账户</a>
-        </li>
-        <li>
-          <a href="">
-            前往注册账户
-            <ArrowLeftOutlined className="right" />
-          </a>
-        </li>
-        <li>
-          <a href="" className="red">登出账户</a>
-        </li>
+        {
+          isEmpty(user) ?
+            <>
+              <li>
+                <Link href="/oauth/login">
+                  <a>登陆账户</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/oauth/login">
+                  <a>
+                    前往注册账户
+                    <ArrowLeftOutlined className="right" /></a>
+                </Link>
+              </li>
+            </> :
+            <li>
+              <a href="javascript:;" onClick={signOut} className="red">登出账户</a>
+            </li>
+        }
       </StyledSliderCAccount>
     )
   }
@@ -115,7 +140,9 @@ const ToggleSlider: React.FC<{}> = () => {
   return (
     <>
       <StyledButton onClick={showDrawer}>
-        未登录
+        {
+          isEmpty(user) ? '未登录' : '已登录'
+        }
         <MenuUnfoldOutlined />
       </StyledButton>
       <StyledSlider
