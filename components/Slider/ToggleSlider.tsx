@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import { Drawer, Avatar } from 'antd';
 import styled from 'styled-components'
+import { usersMe } from '../../services/ucenter'
 
 const ToggleSlider: React.FC<{}> = () => {
 
@@ -16,6 +17,15 @@ const ToggleSlider: React.FC<{}> = () => {
   const onClose = () => {
     setVisible(false);
   };
+
+  const usersMeFn = async () => {
+    const res = await usersMe()
+    console.log(res)
+  }
+
+  useEffect(() => {
+    usersMeFn()
+  }, []);
 
   // 侧边栏 用户内容
   const SliderContentUser: React.FC = () => {

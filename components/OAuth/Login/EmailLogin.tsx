@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { EmailModeProps } from '../../../typings/oauth'
+import EmailCode from './EmailCode'
+import { accountsEmailLogin } from '../../../services/ucenter'
+import { trim } from 'lodash'
+
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -10,9 +14,28 @@ interface Props {
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formLogin] = Form.useForm();
 
-  const onFinishEmail = (values: any): void => {
+  /**
+   * 用户登录
+   * @param values
+   */
+  const onFinishEmail = async (values: any): Promise<void> => {
     console.log('Success:', values);
-    alert('登录')
+    let { email, code } = values
+    try {
+      const res = await accountsEmailLogin({
+        email: trim(email),
+        verifyCode: code,
+        hcaptchaToken: 'hcaptcha_token_here'
+      })
+      if (res.statusCode === 201) {
+        message.success('登录成功')
+      } else {
+        message.warning(`登录失败：${res.message}`)
+      }
+    } catch (e) {
+      console.error(e)
+      message.error('登录失败')
+    }
   };
 
   const onFinishFailedEmail = (errorInfo: any): void => {
@@ -38,16 +61,16 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           <Input className="form-input" placeholder="请输入邮箱" autoComplete="on" />
         </StyledFormItem>
 
-        <StyledFormItem
-          label=""
-          name="password"
-          rules={[
-            { required: true, message: '请输入密码' },
-            { required: true, max: 32, min: 4, message: '密码长度4-32' },
-          ]}
-        >
-          <Input.Password className="form-input-password" placeholder="请输入密码" autoComplete="on" />
-        </StyledFormItem>
+        <StyledFormCode>
+          <StyledFormItem
+            label=""
+            name="code"
+            rules={[{ required: true, message: '请输入验证码' }]}
+          >
+            <Input className="form-input" placeholder="请输入验证码" autoComplete="off" />
+          </StyledFormItem>
+          <EmailCode form={formLogin}></EmailCode>
+        </StyledFormCode>
 
         <StyledFormItem>
           <StyledFormFlexSpaceBetween>
@@ -141,6 +164,10 @@ const StyledFormBtnText = styled.button`
     bottom: 0px;
   }
 `
+const StyledFormCode = styled.div`
+  position: relative;
+`
 // ----------------- Email form -----------------
+
 
 export default Email

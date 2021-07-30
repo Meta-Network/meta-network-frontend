@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import { useCountDown } from 'ahooks';
-import { verifyEmail, accountsEmailVerificationCode } from '../../../services/accounts'
+import { verifyEmail, accountsEmailVerificationCode } from '../../../services/ucenter'
 import { message } from 'antd';
 import { trim } from 'lodash'
 

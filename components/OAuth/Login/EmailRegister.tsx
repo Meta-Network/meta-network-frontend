@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd';
 import { EmailModeProps } from '../../../typings/oauth'
-import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../services/accounts'
+import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import { trim } from 'lodash'
 

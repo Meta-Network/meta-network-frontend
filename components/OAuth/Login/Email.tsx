@@ -9,7 +9,7 @@ interface Props {
 
 const Email: React.FC<Props> = () => {
   // email 登录模式
-  const [emailMode, setEmailMode] = useState<EmailModeProps>('register')
+  const [emailMode, setEmailMode] = useState<EmailModeProps>('login')
 
   // 设置 email 登录模式
   const setEmailModeFn = (val: EmailModeProps): void => {

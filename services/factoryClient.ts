@@ -25,6 +25,7 @@ const factoryClient = ({ baseURL }: Props) => {
     adapter: throttleAdapterEnhancer(
       cacheAdapterEnhancer(axios.defaults.adapter as AxiosAdapter, options)
     ),
+    withCredentials: true,
   });
 
   client.interceptors.request.use(

@@ -1,7 +1,10 @@
 import { uCenterAPI } from "./client";
 import { axiosResult } from '../typings/request'
-import { AccountsEmailSignupResult } from '../typings/accounts.d'
+import {
+  AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps
+} from '../typings/ucenter'
 
+// ---------------- Accounts ----------------
 /**
  * 验证邮箱是否存在
  * @param data
@@ -33,11 +36,7 @@ export const accountsEmailVerificationCode = (data: { key: string }): Promise<ax
  */
 export const accountsEmailSignup = (
   signature: string,
-  data: {
-    "email": string,
-    "verifyCode": string,
-    "hcaptchaToken": string
-  }): Promise<axiosResult<AccountsEmailSignupResult>> =>
+  data: AccountsEmailAuth): Promise<axiosResult<AccountsEmailSignupResult>> =>
   uCenterAPI.post(`/accounts/email/signup/${signature}`, data)
 
   /**
@@ -52,3 +51,20 @@ export const invitation = (): Promise<axiosResult<string>> =>
     "matataki_user_id": 0,
     "expired_at": "2021-07-30T11:22:51.991Z"
   })
+
+/**
+ * 邮箱登录
+ * @param data
+ * @returns
+ */
+export const accountsEmailLogin = (data: AccountsEmailAuth): Promise<axiosResult<{ key: string }>> =>
+  uCenterAPI.post('/accounts/email/login', data)
+
+
+// ---------------- Users ----------------
+
+/**
+ * 当前用户信息
+ * @returns
+ */
+export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me')
