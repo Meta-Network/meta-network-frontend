@@ -5,8 +5,14 @@ import {
 } from '@ant-design/icons'
 import { Button, Form, Input, Spin } from 'antd'
 import Copy from '../Copy/Index'
+import CustomModal from '../CustomModal/Index'
 
-const DeploySite: React.FC<{}> = () => {
+interface Props {
+  isModalVisible: boolean,
+  setIsModalVisible: (value: boolean) => void
+}
+
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
 
   const [steps, setSteps] = useState<number>(0);
 
@@ -91,36 +97,38 @@ const DeploySite: React.FC<{}> = () => {
   }
 
   return (
-    <StyledContent>
-      <StyledContentHead>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+      <StyledContent>
+        <StyledContentHead>
+          {
+            steps === 1 ? <StyledContentHeadBack /> : null
+          }
+          <StyledContentHeadTitle>部署个人站点</StyledContentHeadTitle>
+        </StyledContentHead>
         {
-          steps === 1 ? <StyledContentHeadBack /> : null
+          steps === 0 ?
+            <StepInfo></StepInfo> :
+            steps === 1 ?
+              <StepSite></StepSite> :
+              steps === 2 ?
+                <StepLoading></StepLoading> :
+                steps === 3 ?
+                  <StepDone></StepDone> :
+                  null
         }
-        <StyledContentHeadTitle>部署个人站点</StyledContentHeadTitle>
-      </StyledContentHead>
-      {
-        steps === 0 ?
-          <StepInfo></StepInfo> :
-          steps === 1 ?
-            <StepSite></StepSite> :
-            steps === 2 ?
-              <StepLoading></StepLoading> :
-              steps === 3 ?
-                <StepDone></StepDone> :
-                null
-      }
-      <div>
-        测试按钮：
-        <Button onClick={() => {
-          let num = steps
-          setSteps(--num)
-        }}>prev</Button>
-        <Button onClick={() => {
-          let num = steps
-          setSteps(++num)
-        }}>next</Button>
-      </div>
-    </StyledContent>
+        <div>
+          测试按钮：
+          <Button onClick={() => {
+            let num = steps
+            setSteps(--num)
+          }}>prev</Button>
+          <Button onClick={() => {
+            let num = steps
+            setSteps(++num)
+          }}>next</Button>
+        </div>
+      </StyledContent>
+    </CustomModal>
   )
 }
 

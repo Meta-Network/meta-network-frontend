@@ -44,12 +44,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
-      <CustomModal>
-        <DeploySite></DeploySite>
-      </CustomModal>
-      <CustomModal>
-        <InviteCode></InviteCode>
-      </CustomModal>
     </>
   )
 }

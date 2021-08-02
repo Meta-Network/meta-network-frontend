@@ -15,6 +15,8 @@ import { message } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import ToggleSlider from '../components/Slider/ToggleSlider'
+import DeploySite from '../components/DeploySite/Index'
+
 
 let d3: any = null
 let zoom: any = null
@@ -44,7 +46,8 @@ export default function Home() {
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
-
+  const [allNode, setAllNode] = useState<any[]>([]); // 所有节点
+  const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
 
   const resizeFn = useCallback(
     () => {
@@ -65,7 +68,7 @@ export default function Home() {
     resizeFn()
     window.addEventListener('resize', resizeFn)
 
-    messageFn()
+    // messageFn()
   }, [resizeFn]);
 
   useEffect(() => {
@@ -124,7 +127,7 @@ export default function Home() {
     setHex(hexagons)
   }, []);
 
-  const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }) => {
+  const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }, mode: string) => {
     // console.log('e', e)
     // let target: any = document.querySelector(`.${className}`)
     // console.log('target', target, className)
@@ -151,7 +154,11 @@ export default function Home() {
       .call(
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1)
-      )
+      );
+
+    if (mode === 'choose') {
+      setIsModalVisibleDeploySite(true)
+    }
   }
 
   const messageFn = () => {
@@ -194,9 +201,57 @@ export default function Home() {
     });
   };
 
+  // 计算节点模式
+  const calcNodeMode = ({
+    x, y, z
+  }: {
+    x: number,
+    y: number,
+    z: number
+  }) => {
+    if (allNode.length === 0) {
+      // 没有节点
+      if (x === 0 && y === 0 && z === 0) {
+        return 'choose'
+      } else {
+        return 'default'
+      }
+    }
+    return 'default'
+  }
+
+  // 节点内容
+  const nodeContent = ({
+    x, y, z
+  }: {
+    x: number,
+    y: number,
+    z: number
+  }) => {
+
+    if (allNode.length === 0) {
+      // 没有节点
+      if (x === 0 && y === 0 && z === 0) {
+        return (
+          <Text className={styles['hexagon-add']}>+</Text>
+        )
+      } else {
+        return null
+      }
+    }
+
+    return (
+      <Text>
+        <tspan x="0" y="-10">小田 XIAO TIAN</tspan>
+        <tspan x="0" y="10">这是一条简介</tspan>
+      </Text>
+    )
+  }
+
   return (
     <>
       <ToggleSlider></ToggleSlider>
+      <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
@@ -204,6 +259,9 @@ export default function Home() {
               // note: key must be unique between re-renders.
               // using config.mapProps+i makes a new key when the goal template chnages.
               hex.map((hex: any, i) => {
+                let x = hex.q
+                let y = hex.r
+                let z = hex.s
 
                 let num = randomRange(1, 5)
                 let test: any = {
@@ -215,6 +273,7 @@ export default function Home() {
                 }
                 // const mode = test[num]
                 const mode = test[1]
+                const nodeMode = calcNodeMode({x,y,z})
 
                 return (
                   <Hexagon
@@ -222,20 +281,17 @@ export default function Home() {
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
-                    onClick={(e: any) => handleHexagonEventClick(e, `hexagon-x${hex.q}_y${hex.s}_z${hex.r}`, { x: hex.q, y: hex.r })}
+                    onClick={(e: any) => handleHexagonEventClick(e, `hexagon-x${hex.q}_y${hex.s}_z${hex.r}`, { x: hex.q, y: hex.r }, nodeMode)}
                     className={`${styles[`hexagon-${mode}`]} hexagon-x${hex.q}_y${hex.s}_z${hex.r}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     {
-                      mode === 'default' ?
-                        null :
-                        mode === 'choose' ?
-                          <Text className={styles['hexagon-add']}>+</Text> :
-                          <Text>
-                            <tspan x="0" y="-10">小田 XIAO TIAN</tspan>
-                            <tspan x="0" y="10">这是一条简介</tspan>
-                          </Text>
+                      nodeContent({
+                        x: hex.q,
+                        y: hex.r,
+                        z: hex.s
+                      })
                     }
                   </Hexagon>
                 )

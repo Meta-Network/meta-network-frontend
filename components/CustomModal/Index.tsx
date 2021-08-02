@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
 
-const CustomModal: React.FC<{}> = ({ children }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+interface Props {
+  isModalVisible: boolean,
+  setIsModalVisible: (value: boolean) => void
+}
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
+const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisible }) => {
 
   const handleOk = () => {
     setIsModalVisible(false);
