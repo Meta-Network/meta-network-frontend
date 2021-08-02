@@ -17,6 +17,16 @@ import styled from 'styled-components'
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import DeploySite from '../components/DeploySite/Index'
 
+interface node {
+  x: number,
+  y: number,
+  z: number,
+  user: {
+    username: string,
+    nickname: string,
+    introduction: string
+  }
+}
 
 let d3: any = null
 let zoom: any = null
@@ -46,7 +56,28 @@ export default function Home() {
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
-  const [allNode, setAllNode] = useState<any[]>([]); // 所有节点
+  const [allNode, setAllNode] = useState<node[]>([
+    {
+      x: 0,
+      y: 0,
+      z: 0,
+      user: {
+        username: 'xiaotian',
+        nickname: '小田',
+        introduction: '这是一条简介'
+      }
+    },
+    {
+      x: -1,
+      y: 1,
+      z: 0,
+      user: {
+        username: 'xiaotian',
+        nickname: '小田',
+        introduction: '这是一条简介'
+      }
+    }
+  ]); // 所有节点
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
 
   const resizeFn = useCallback(
@@ -240,12 +271,17 @@ export default function Home() {
       }
     }
 
-    return (
-      <Text>
-        <tspan x="0" y="-10">小田 XIAO TIAN</tspan>
-        <tspan x="0" y="10">这是一条简介</tspan>
-      </Text>
-    )
+    const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
+    if (node.length) {
+      return (
+        <Text>
+          <tspan x="0" y="-10">{ node[0]?.user.nickname || node[0]?.user.username || '暂无昵称' }</tspan>
+          <tspan x="0" y="10">{ node[0]?.user.introduction || '暂无简介' }</tspan>
+        </Text>
+      )
+    } else {
+      return null
+    }
   }
 
   return (
@@ -289,8 +325,8 @@ export default function Home() {
                     {
                       nodeContent({
                         x: hex.q,
-                        y: hex.r,
-                        z: hex.s
+                        y: hex.s,
+                        z: hex.r
                       })
                     }
                   </Hexagon>
