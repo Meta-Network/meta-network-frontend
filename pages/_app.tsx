@@ -12,7 +12,12 @@ import CustomModal from '../components/CustomModal/Index'
 import DeploySite from "../components/DeploySite/Index";
 import InviteCode from "../components/InviteCode/Index";
 
+import { useToken } from '../hooks/useToken'
+
 function MyApp({ Component, pageProps }: AppProps) {
+
+  // refresh token
+  useToken()
 
   useEffect(() => {
     var stats = new Stats();

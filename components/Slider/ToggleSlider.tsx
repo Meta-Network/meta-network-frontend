@@ -30,7 +30,7 @@ const ToggleSlider: React.FC<{}> = () => {
       const res = await accountsTokenDelete()
       if (res.statusCode === 200) {
         message.success('登出成功')
-        router.reload()
+        // router.reload()
       } else {
         message.warning(`登出失败: ${res.message}`)
       }

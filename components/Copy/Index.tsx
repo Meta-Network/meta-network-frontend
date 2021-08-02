@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import {
   CopyOutlined
 } from '@ant-design/icons'
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { message } from 'antd';
 interface Props {
   text: string
 }
@@ -11,8 +12,11 @@ interface Props {
 const Copy: React.FC<Props> = ({ text }) => {
   return (
     <CopyText>
-      <p>{ text }</p>
-      <CopyOutlined className="g-green" />
+      <p>{text}</p>
+      <CopyToClipboard text={text}
+        onCopy={() => message.success('复制成功')}>
+        <CopyOutlined className="g-green" />
+      </CopyToClipboard>
     </CopyText>
   )
 }

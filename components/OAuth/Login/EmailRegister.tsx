@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd';
 import { EmailModeProps } from '../../../typings/oauth'
@@ -6,6 +6,7 @@ import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../s
 import EmailCode from './EmailCode'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
+import { useMount } from 'ahooks'
 
 
 interface Props {
@@ -17,15 +18,24 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter()
 
+  // test code
+  useMount(() => {
+    const fetch = async () => {
+      const res = await invitation()
+      if (res.statusCode === 201) {
+        formResister.setFieldsValue({ inviteCode: res.data });
+      }
+    }
+
+    fetch()
+  });
+
   // 注册
   const onFinishEmail = async (values: any): Promise<void> => {
     console.log('Success:', values);
-    let { email, code } = values
+    let { email, code, inviteCode } = values
     try {
-      // 测试邀请码
-      const res = await invitation()
-
-      const resEmailSignup = await accountsEmailSignup(res.data, {
+      const resEmailSignup = await accountsEmailSignup(inviteCode, {
         email: trim(email),
         verifyCode: code,
         hcaptchaToken: 'hcaptcha_token_here'
@@ -89,6 +99,16 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         ]}
       >
         <Input className="form-input" placeholder="请输入邮箱" autoComplete="new-text" />
+      </StyledFormItem>
+
+      <StyledFormItem
+        label=""
+        name="inviteCode"
+        rules={[
+          { required: true, message: '请输入邀请码' },
+        ]}
+      >
+        <Input className="form-input" placeholder="请输入邀请码" autoComplete="new-text" />
       </StyledFormItem>
 
       <StyledFormCode>

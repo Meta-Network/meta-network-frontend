@@ -27,9 +27,13 @@ export const useUser = () => {
     }
   }, [setUser])
 
-  useInterval(() => {
-    userMeFn();
-  }, 3000);
+  // useInterval(() => {
+  //   userMeFn();
+  // }, 3000);
+
+  useEffect(() => {
+    userMeFn()
+  }, [])
 
   return {
     user, setUser

@@ -61,11 +61,16 @@ export const accountsEmailLogin = (data: AccountsEmailAuth): Promise<axiosResult
   uCenterAPI.post('/accounts/email/login', data)
 
 /**
+ * Refresh token
+ * @returns
+ */
+export const accountsTokenPatch = (): Promise<axiosResult<void>> => uCenterAPI.patch('/accounts/tokens')
+
+/**
  * 退出登录
  * @returns
  */
-export const accountsTokenDelete = (): Promise<axiosResult<void>> => uCenterAPI.patch('/accounts/token/delete')
-
+export const accountsTokenDelete = (): Promise<axiosResult<void>> => uCenterAPI.delete('/accounts/tokens')
 
 // ---------------- Users ----------------
 
