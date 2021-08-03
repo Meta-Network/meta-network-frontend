@@ -99,3 +99,28 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
  * 范围随机数
  */
 export const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
+
+/**
+ * 立方体坐标转轴坐标
+ * https://www.redblobgames.com/grids/hexagons/#conversions
+ * @param x
+ * @param y
+ * @returns
+ */
+export const cubeToAxial = (x: number, y: number, z: number) => ({
+  x: x,
+  y: z
+})
+
+/**
+ * 轴转立方体坐标坐标
+ * https://www.redblobgames.com/grids/hexagons/#conversions
+ * @param x
+ * @param y
+ * @returns
+ */
+export const axialToCube = (x: number, y: number) => ({
+  x: x,
+  y: -x-y,
+  z: y,
+})
