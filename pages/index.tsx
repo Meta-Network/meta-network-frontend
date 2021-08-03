@@ -219,17 +219,6 @@ export default function Home() {
       return
     }
 
-    // console.log('e', e)
-    // let target: any = document.querySelector(`.${className}`)
-    // console.log('target', target, className)
-    // tippy(target, {
-    //   content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
-    //   allowHTML: true,
-    //   trigger: 'click',
-    //   placement: 'top',
-    //   animation: 'scale',
-    // });
-
     // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
     // 方向不同 算法有细微差别
     const svg = d3.select('#container svg')
@@ -240,12 +229,29 @@ export default function Home() {
 
     console.log('point', point, _x, _y)
 
+    // var draw = SVG().addTo(`.${className}`).size(300, 130)
+    // var rect = draw.rect(100, 100).fill('#f06').move(20, 20)
+
+    const showPopoverUser = () => {
+      // console.log('e', e)
+      let target: any = document.querySelector(`.${className}`)
+      console.log('target', target, className)
+      tippy(target, {
+        content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
+        allowHTML: true,
+        trigger: 'click',
+        placement: 'top',
+        animation: 'scale',
+      });
+    }
+
     svg.transition()
       .duration(1000)
       .call(
         zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1)
-      );
+        d3.zoomIdentity.translate(_x, _y).scale(1),
+      )
+      .on('end', showPopoverUser)
   }
 
   const messageFn = () => {
@@ -341,11 +347,14 @@ export default function Home() {
 
     const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
     if (node.length) {
+
       return (
-        <Text>
-          <tspan x="0" y="-10">{ node[0]?.user.nickname || node[0]?.user.username || '暂无昵称' }</tspan>
-          <tspan x="0" y="10">{ node[0]?.user.introduction || '暂无简介' }</tspan>
-        </Text>
+        <>
+          <Text>
+            <tspan x="0" y="-10">{ node[0]?.user.nickname || node[0]?.user.username || '暂无昵称' }</tspan>
+            <tspan x="0" y="10">{ node[0]?.user.introduction || '暂无简介' }</tspan>
+          </Text>
+        </>
       )
     }
 

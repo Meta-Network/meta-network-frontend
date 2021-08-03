@@ -118,13 +118,8 @@ const ToggleSlider: React.FC<{}> = () => {
             <>
               <li>
                 <Link href="/oauth/login">
-                  <a>登陆账户</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/oauth/login">
                   <a>
-                    前往注册账户
+                    前往注册/登陆
                     <ArrowLeftOutlined className="right" /></a>
                 </Link>
               </li>
