@@ -16,6 +16,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import DeploySite from '../components/DeploySite/Index'
+import { Hex } from '../utils/lib'
 
 interface node {
   x: number,
@@ -24,7 +25,8 @@ interface node {
   user: {
     username: string,
     nickname: string,
-    introduction: string
+    introduction: string,
+    role: 'exist' | 'active' | 'v'
   }
 }
 
@@ -64,7 +66,8 @@ export default function Home() {
       user: {
         username: 'xiaotian',
         nickname: '小田',
-        introduction: '这是一条简介'
+        introduction: '这是一条简介',
+        role: 'exist',
       }
     },
     {
@@ -74,10 +77,24 @@ export default function Home() {
       user: {
         username: 'xiaotian',
         nickname: '小田',
-        introduction: '这是一条简介'
+        introduction: '这是一条简介',
+        role: 'active',
+      }
+    },
+    {
+      x: 1,
+      y: 0,
+      z: -1,
+      user: {
+        username: 'xiaotian',
+        nickname: '小田',
+        introduction: '这是一条简介',
+        role: 'v',
       }
     }
   ]); // 所有节点
+  // 所有可以选择的节点
+  const [allNodeChoose, setAllNodeChoose] = useState<any[]>([]);
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
 
   const resizeFn = useCallback(
@@ -94,6 +111,30 @@ export default function Home() {
     },
     [],
   )
+
+  // 机选所有可选择坐标范围
+  useEffect(() => {
+    if (allNode.length) {
+      let points = []
+      let distance = 1
+
+      for (let i = 0; i < allNode.length; i++) {
+        const eleAllNode: any = allNode[i];
+        let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
+
+        for (let i = 0; i < hex.length; i++) {
+          const ele: any = hex[i];
+          let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s}).len() <= distance
+          if (distanceResult) {
+            points.push(ele)
+          }
+        }
+
+      }
+      console.log('points', points)
+      setAllNodeChoose(points)
+    }
+  }, [allNode, hex])
 
   useEffect(() => {
     resizeFn()
@@ -156,9 +197,28 @@ export default function Home() {
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
+    ;(window as any)._hexagons = hexagons
   }, []);
 
   const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }, mode: string) => {
+    if (mode === 'choose') {
+      setIsModalVisibleDeploySite(true)
+      return
+    } else if (mode === 'default') {
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+            请选择紧挨已注册用户的地块
+          </span>
+        </span>,
+        className: 'custom-message',
+        duration: 1,
+        icon: ''
+      });
+      return
+    }
+
     // console.log('e', e)
     // let target: any = document.querySelector(`.${className}`)
     // console.log('target', target, className)
@@ -186,10 +246,6 @@ export default function Home() {
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1)
       );
-
-    if (mode === 'choose') {
-      setIsModalVisibleDeploySite(true)
-    }
   }
 
   const messageFn = () => {
@@ -248,7 +304,19 @@ export default function Home() {
         return 'default'
       }
     }
+
+    const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
+    if (node.length) {
+      return node[0]!.user.role || 'exist'
+    }
+
+    const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
+    if (nodeChoose.length) {
+      return 'choose'
+    }
     return 'default'
+
+
   }
 
   // 节点内容
@@ -279,9 +347,14 @@ export default function Home() {
           <tspan x="0" y="10">{ node[0]?.user.introduction || '暂无简介' }</tspan>
         </Text>
       )
-    } else {
-      return null
     }
+
+    const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
+    if (nodeChoose.length) {
+      return <Text className={styles['hexagon-add']}>+</Text>
+    }
+    return null
+
   }
 
   return (
@@ -296,19 +369,9 @@ export default function Home() {
               // using config.mapProps+i makes a new key when the goal template chnages.
               hex.map((hex: any, i) => {
                 let x = hex.q
-                let y = hex.r
-                let z = hex.s
+                let y = hex.s
+                let z = hex.r
 
-                let num = randomRange(1, 5)
-                let test: any = {
-                  1: 'default',
-                  2: 'choose',
-                  3: 'exist',
-                  4: 'active',
-                  5: 'v',
-                }
-                // const mode = test[num]
-                const mode = test[1]
                 const nodeMode = calcNodeMode({x,y,z})
 
                 return (
@@ -317,16 +380,16 @@ export default function Home() {
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
-                    onClick={(e: any) => handleHexagonEventClick(e, `hexagon-x${hex.q}_y${hex.s}_z${hex.r}`, { x: hex.q, y: hex.r }, nodeMode)}
-                    className={`${styles[`hexagon-${mode}`]} hexagon-x${hex.q}_y${hex.s}_z${hex.r}`}>
+                    onClick={(e: any) => handleHexagonEventClick(e, `hexagon-x${x}_y${y}_z${z}`, { x: hex.q, y: hex.r }, nodeMode)}
+                    className={`${styles[`hexagon-${nodeMode}`]} hexagon-x${x}_y${y}_z${z}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     {
                       nodeContent({
-                        x: hex.q,
-                        y: hex.s,
-                        z: hex.r
+                        x: x,
+                        y: y,
+                        z: z
                       })
                     }
                   </Hexagon>
