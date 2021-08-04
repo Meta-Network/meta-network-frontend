@@ -129,7 +129,6 @@ export default function Home() {
             points.push(ele)
           }
         }
-
       }
       console.log('points', points)
       setAllNodeChoose(points)
@@ -155,7 +154,7 @@ export default function Home() {
 
     function zoomed({ transform }: any) {
       // 边界判定
-      // console.log('transform', transform)
+      console.log('transform', transform)
       let tran = transform
 
       // const numberFloor = (n: number, k: number) => {

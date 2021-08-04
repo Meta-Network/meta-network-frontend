@@ -16,6 +16,10 @@ export const useToken = () => {
 
   useEffect(() => {
     accountsTokenPatchFn()
+
+    // 5m refersh
+    let timer = setInterval(accountsTokenPatchFn, 300000) // 5 * 6 * 1000
+    return () => clearInterval(timer)
   }, [])
 
   return {}
