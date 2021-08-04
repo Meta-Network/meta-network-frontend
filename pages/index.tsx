@@ -154,40 +154,37 @@ export default function Home() {
 
     function zoomed({ transform }: any) {
       // 边界判定
-      console.log('transform', transform)
+
+      const svg = d3.select('#container svg > g')
+      let svgBox = svg.node().getBBox()
+      // console.log('transform', transform)
+      let svgContentWidth = svgBox.width
+      let svgContentHeight = svgBox.height
       let tran = transform
 
-      // const numberFloor = (n: number, k: number) => {
-      //   return Math.floor(n * k)
-      // }
+      // console.log('svgContentWidth', svgContentWidth)
+      // console.log('svgContentHeight', svgContentHeight)
 
-      // if (transform.x >= numberFloor(220, transform.k)) {
-      //   tran = Object.assign(transform, { x: numberFloor(220, transform.k) })
-      // }
-      // if (transform.y >= numberFloor(220, transform.k)) {
-      //   tran = Object.assign(transform, { y: numberFloor(220, transform.k) })
-      // }
-      // if (transform.x <= numberFloor(-400, transform.k)) {
-      //   tran = Object.assign(transform, { x: numberFloor(-400, transform.k) })
-      // }
-      // if (transform.y <= numberFloor(-400, transform.k)) {
-      //   tran = Object.assign(transform, { y: numberFloor(-400, transform.k) })
-      // }
-      const svg = d3.select('#container svg > g')
+      const numberFloor = (n: number, k: number) => {
+        return Math.floor(n * k)
+      }
+
+      if (transform.x >= numberFloor(svgContentWidth / 2, transform.k)) {
+        tran = Object.assign(transform, { x: numberFloor(svgContentWidth / 2, transform.k) })
+      }
+      if (transform.y >= numberFloor(svgContentHeight / 2, transform.k)) {
+        tran = Object.assign(transform, { y: numberFloor(svgContentHeight / 2, transform.k) })
+      }
+
+      if (transform.x <= numberFloor(-(svgContentWidth/ 2), transform.k)) {
+        tran = Object.assign(transform, { x: numberFloor(-(svgContentWidth/ 2), transform.k) })
+      }
+      if (transform.y <= numberFloor(-(svgContentHeight/ 2), transform.k)) {
+        tran = Object.assign(transform, { y: numberFloor(-(svgContentHeight/ 2), transform.k) })
+      }
       svg.attr("transform", tran);
     }
     svg.node();
-
-    const initCenter = () => {
-      const svg = d3.select('#container svg')
-      let widthSvg = svg.attr('width')
-      let heightSvg = svg.attr('height')
-
-      // console.log('log transform', JSON.stringify(svg.attr('width')))
-      // svg.attr("transform", `translate(${(width - widthSvg) / 2}, ${(height - heightSvg) / 2})`);
-    }
-    initCenter()
-
   }, []);
 
   useEffect(() => {
