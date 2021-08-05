@@ -278,7 +278,7 @@ export default function Home() {
         placement: 'top',
         animation: 'scale',
         offset: [0, 36],
-        appendTo: () => document.querySelector('#user-avatar'),
+        appendTo: (): any => document.querySelector('#user-avatar'),
       });
 
       tippy(target, {
@@ -288,7 +288,7 @@ export default function Home() {
         trigger: 'click',
         animation: 'scale',
         offset: [0, 16],
-        appendTo: () => document.querySelector('#user-more'),
+        appendTo: (): any => document.querySelector('#user-more'),
       });
     }
 
