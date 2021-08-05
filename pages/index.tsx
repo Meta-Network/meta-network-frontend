@@ -7,6 +7,7 @@ import { Display } from 'rot-js'
 import { hexbin } from 'd3-hexbin';
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
 import tippy from 'tippy.js';
+import Tippy from '@tippyjs/react';
 import { randomRange } from '../utils/index'
 import styles from './index/index.module.scss'
 import { AddSvg } from '../components/Svg/Index'
@@ -54,6 +55,7 @@ const size = { x: layout.width, y: layout.height };
 export default function Home() {
   const myRef = useRef(null)
   const [hex, setHex] = useState([]);
+  const ref = useRef();
 
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
@@ -238,6 +240,18 @@ export default function Home() {
         trigger: 'click',
         placement: 'top',
         animation: 'scale',
+        offset: [0, 36],
+        appendTo: () => document.querySelector('#user-avatar'),
+      });
+
+      tippy(target, {
+        content: `<div> <button class="user-more-button">进入主页</button> <button class="user-more-button">...</button> </div>`,
+        allowHTML: true,
+        placement: 'right',
+        trigger: 'click',
+        animation: 'scale',
+        offset: [0, 16],
+        appendTo: () => document.querySelector('#user-more'),
       });
     }
 

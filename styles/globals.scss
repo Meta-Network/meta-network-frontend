@@ -105,3 +105,50 @@ a {
   bottom: 0;
   z-index: -1;
 }
+
+#user-avatar {
+  .tippy-box {
+    background-color: #fff;
+    border-radius: 100%;
+  }
+  .tippy-box[data-placement^=top]>.tippy-arrow:before {
+    bottom: -28px;
+    border-width: 28px 8px 0 8px;
+    border-color: #fff transparent transparent;
+  }
+  .tippy-content {
+    padding: 10px;
+  }
+}
+#user-more {
+  .tippy-arrow {
+    display: none;
+  }
+  .tippy-box {
+    background-color: transparent;
+  }
+  .tippy-content {
+    padding: 0;
+  }
+  .user-more-button {
+    background: #F5F5F5;
+    // box-shadow: 0px 0px 1px rgba(9, 30, 66, 0.31), 0px 1px 1px rgba(9, 30, 66, 0.25), inset 0px -2px 1px rgba(9, 30, 66, 0.25);
+    border: none;
+    border-radius: 40px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #2C2B2A;
+    padding: 12px 20px;
+    margin: 0;
+    display: block;
+    outline: none;
+    cursor: pointer;
+    margin-top: 16px;
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
+  }
+}

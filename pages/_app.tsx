@@ -44,6 +44,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
+      <div id="user-more"></div>
+      <div id="user-avatar"></div>
     </>
   )
 }
