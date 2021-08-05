@@ -10,7 +10,7 @@
 .hexagon-choose {
   fill: #241250;
   stroke: rgba(245, 245, 245, 0.8);
-  stroke-width: 1;
+  stroke-width: 1.6;
   stroke-opacity: 0;
   transition: fill, stroke-opacity .2s;
   &:hover {
@@ -24,7 +24,7 @@
 .hexagon-exist {
   fill: #35145c;
   stroke: #392187;
-  stroke-width: 1;
+  stroke-width: 1.6;
   transition: fill, stroke-opacity .2s;
   &:hover {
     fill: #46156a;
@@ -34,7 +34,7 @@
 .hexagon-active {
   fill: #55357c;
   stroke: #34248a;
-  stroke-width: 1;
+  stroke-width: 1.6;
   transition: fill, stroke-opacity .2s;
   &:hover {
     fill: #7d4da1;
@@ -44,10 +44,18 @@
 .hexagon-v {
   fill: #8368a7;
   stroke: #4532a2;
-  stroke-width: 1;
+  stroke-width: 1.6;
   transition: fill, stroke-opacity .2s;
   &:hover {
     fill: #caa2e7;
     stroke: rgba(245, 245, 245, 0.8);;
   }
+}
+
+.hexagon-disabled {
+  fill: #241250;
+  stroke: #492c77;;
+  stroke-width: 1.6;
+  transition: stroke .2s;
+  cursor:not-allowed;
 }

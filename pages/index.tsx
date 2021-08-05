@@ -42,15 +42,16 @@ const configs = {
   "hexagon": {
     "width": 1000,
     "height": 800,
-    "layout": { "width": 80, "height": 80, "flat": false, "spacing": 1.1 },
+    "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
     "origin": { "x": 100, "y": 100 },
     "map": "hexagon",
-    "mapProps": [10]
+    "mapProps": [20]
   }
 }
 const config = configs['hexagon']
 const layout = config.layout;
 const size = { x: layout.width, y: layout.height };
+const mapProps = config.mapProps[0];
 
 export default function Home() {
   const myRef = useRef(null)
@@ -63,8 +64,8 @@ export default function Home() {
   const [allNode, setAllNode] = useState<node[]>([
     {
       x: 0,
-      y: 0,
-      z: 0,
+      y: 11,
+      z: -11,
       user: {
         username: 'xiaotian',
         nickname: '小田',
@@ -73,9 +74,9 @@ export default function Home() {
       }
     },
     {
-      x: -1,
-      y: 1,
-      z: 0,
+      x: 0,
+      y: 12,
+      z: -12,
       user: {
         username: 'xiaotian',
         nickname: '小田',
@@ -85,8 +86,8 @@ export default function Home() {
     },
     {
       x: 1,
-      y: 0,
-      z: -1,
+      y: 11,
+      z: -12,
       user: {
         username: 'xiaotian',
         nickname: '小田',
@@ -97,6 +98,8 @@ export default function Home() {
   ]); // 所有节点
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<any[]>([]);
+  // 所有禁止选择的节点
+  const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
 
   const resizeFn = useCallback(
@@ -114,7 +117,7 @@ export default function Home() {
     [],
   )
 
-  // 机选所有可选择坐标范围
+  // 计算所有可选择坐标范围
   useEffect(() => {
     if (allNode.length) {
       let points = []
@@ -126,7 +129,7 @@ export default function Home() {
 
         for (let i = 0; i < hex.length; i++) {
           const ele: any = hex[i];
-          let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s}).len() <= distance
+          let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
           if (distanceResult) {
             points.push(ele)
           }
@@ -136,6 +139,25 @@ export default function Home() {
       setAllNodeChoose(points)
     }
   }, [allNode, hex])
+
+  // 计算半径为10不可选区域
+  useEffect(() => {
+    let points = []
+    let distance = 10
+    let center = new Hex(0, 0, 0)
+
+    for (let i = 0; i < hex.length; i++) {
+      const ele: any = hex[i];
+      let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
+      if (distanceResult) {
+        points.push(ele)
+      }
+    }
+
+    console.log('points', points)
+    setAllNodeDisabled(points)
+
+  }, [hex])
 
   useEffect(() => {
     resizeFn()
@@ -150,42 +172,51 @@ export default function Home() {
     svg.call(
       zoom
         .extent([[0, 0], [width, height]])
-        .scaleExtent([0.6, 4])
+        .scaleExtent([0.4, 4])
         .on("zoom", zoomed)
     )
 
     function zoomed({ transform }: any) {
       // 边界判定
+      let tran = transform
 
       const svg = d3.select('#container svg > g')
       let svgBox = svg.node().getBBox()
-      // console.log('transform', transform)
+      console.log('transform', transform)
       let svgContentWidth = svgBox.width
       let svgContentHeight = svgBox.height
-      let tran = transform
 
-      // console.log('svgContentWidth', svgContentWidth)
-      // console.log('svgContentHeight', svgContentHeight)
+      console.log('svgContentWidth', svgContentWidth)
+      console.log('svgContentHeight', svgContentHeight)
 
       const numberFloor = (n: number, k: number) => {
-        return Math.floor(n * k)
+        return Math.floor((n / 2) * k)
       }
 
-      if (transform.x >= numberFloor(svgContentWidth / 2, transform.k)) {
-        tran = Object.assign(transform, { x: numberFloor(svgContentWidth / 2, transform.k) })
+      if (transform.x >= numberFloor(svgContentWidth, transform.k)) {
+        tran = Object.assign(transform, { x: numberFloor(svgContentWidth, transform.k) })
       }
-      if (transform.y >= numberFloor(svgContentHeight / 2, transform.k)) {
-        tran = Object.assign(transform, { y: numberFloor(svgContentHeight / 2, transform.k) })
+      if (transform.y >= numberFloor(svgContentHeight, transform.k)) {
+        tran = Object.assign(transform, { y: numberFloor(svgContentHeight, transform.k) })
       }
 
-      if (transform.x <= numberFloor(-(svgContentWidth/ 2), transform.k)) {
-        tran = Object.assign(transform, { x: numberFloor(-(svgContentWidth/ 2), transform.k) })
+      if (transform.x <= numberFloor(-(svgContentWidth), transform.k)) {
+        tran = Object.assign(transform, { x: numberFloor(-(svgContentWidth), transform.k) })
       }
-      if (transform.y <= numberFloor(-(svgContentHeight/ 2), transform.k)) {
-        tran = Object.assign(transform, { y: numberFloor(-(svgContentHeight/ 2), transform.k) })
+      if (transform.y <= numberFloor(-(svgContentHeight), transform.k)) {
+        tran = Object.assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
       }
       svg.attr("transform", tran);
     }
+
+    let {x, y} = calcTranslate({ x: 0, y: -11 })
+    svg.transition()
+    .duration(1300)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity.translate(x, y).scale(1),
+    )
+
     svg.node();
   }, []);
 
@@ -195,8 +226,24 @@ export default function Home() {
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
-    ;(window as any)._hexagons = hexagons
+      ; (window as any)._hexagons = hexagons
   }, []);
+
+  /**
+   * 计算偏移位置
+   */
+  const calcTranslate = ({ x, y }: { x: number, y: number }) => {
+    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
+    // 方向不同 算法有细微差别
+
+    let _x =layout.width * (Math.sqrt(3) * -x + Math.sqrt(3) / 2 * -y)
+    let _y = layout.height * (3 / 2 * -y)
+    _x = _x * layout.spacing
+    _y = _y * layout.spacing
+    return {
+      x: _x, y: _y
+    }
+  }
 
   const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }, mode: string) => {
     if (mode === 'choose') {
@@ -217,18 +264,8 @@ export default function Home() {
       return
     }
 
-    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
-    // 方向不同 算法有细微差别
     const svg = d3.select('#container svg')
-    let _x = layout.width * (Math.sqrt(3) * -point.x + Math.sqrt(3) / 2 * -point.y)
-    let _y = layout.height * (3 / 2 * -point.y)
-    _x = _x * layout.spacing
-    _y = _y * layout.spacing
-
-    console.log('point', point, _x, _y)
-
-    // var draw = SVG().addTo(`.${className}`).size(300, 130)
-    // var rect = draw.rect(100, 100).fill('#f06').move(20, 20)
+    let {x, y} = calcTranslate({ x: point.x, y: point.y })
 
     const showPopoverUser = () => {
       // console.log('e', e)
@@ -259,7 +296,7 @@ export default function Home() {
       .duration(1000)
       .call(
         zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1),
+        d3.zoomIdentity.translate(x, y).scale(1),
       )
       .on('end', showPopoverUser)
   }
@@ -312,9 +349,15 @@ export default function Home() {
     y: number,
     z: number
   }) => {
+    // 禁止选择节点
+    const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
+    if (nodeDisabled.length) {
+      return 'disabled'
+    }
+
     if (allNode.length === 0) {
       // 没有节点
-      if (x === 0 && y === 0 && z === 0) {
+      if (x === 0 && y === 10 + 1 && z === -10 - 1) {
         return 'choose'
       } else {
         return 'default'
@@ -336,17 +379,22 @@ export default function Home() {
   }
 
   // 节点内容
-  const nodeContent = ({
+  const nodeContent = useCallback(({
     x, y, z
   }: {
     x: number,
     y: number,
     z: number
   }) => {
+    // 禁止选择节点
+    const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
+    if (nodeDisabled.length) {
+      return null
+    }
 
     if (allNode.length === 0) {
       // 没有节点
-      if (x === 0 && y === 0 && z === 0) {
+      if (x === 0 && y === 10 + 1 && z === -10 - 1) {
         return (
           <Text className={styles['hexagon-add']}>+</Text>
         )
@@ -361,8 +409,8 @@ export default function Home() {
       return (
         <>
           <Text>
-            <tspan x="0" y="-10">{ node[0]?.user.nickname || node[0]?.user.username || '暂无昵称' }</tspan>
-            <tspan x="0" y="10">{ node[0]?.user.introduction || '暂无简介' }</tspan>
+            <tspan x="0" y="-10">{node[0]?.user.nickname || node[0]?.user.username || '暂无昵称'}</tspan>
+            <tspan x="0" y="10">{node[0]?.user.introduction || '暂无简介'}</tspan>
           </Text>
         </>
       )
@@ -373,8 +421,7 @@ export default function Home() {
       return <Text className={styles['hexagon-add']}>+</Text>
     }
     return null
-
-  }
+  }, [allNode, allNodeDisabled, allNodeChoose])
 
   return (
     <>
@@ -391,7 +438,7 @@ export default function Home() {
                 let y = hex.s
                 let z = hex.r
 
-                const nodeMode = calcNodeMode({x,y,z})
+                const nodeMode = calcNodeMode({ x, y, z })
 
                 return (
                   <Hexagon
