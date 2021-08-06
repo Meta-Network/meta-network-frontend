@@ -106,12 +106,11 @@ a {
   z-index: -1;
 }
 
-#user-avatar {
-  .tippy-box {
-    background-color: #fff;
-    border-radius: 100%;
-  }
-  .tippy-box[data-placement^=top]>.tippy-arrow:before {
+.tippy-box {
+  pointer-events: initial;
+  background-color: #fff;
+  border-radius: 100%;
+  .tippy-arrow:before {
     bottom: -28px;
     border-width: 28px 8px 0 8px;
     border-color: #fff transparent transparent;
@@ -120,13 +119,9 @@ a {
     padding: 10px;
   }
 }
-#user-more {
-  .tippy-arrow {
-    display: none;
-  }
-  .tippy-box {
-    background-color: transparent;
-  }
+.tippy-box[role="tippy-user-more"] {
+  pointer-events: initial;
+  background-color: transparent;
   .tippy-content {
     padding: 0;
   }
@@ -146,9 +141,38 @@ a {
     display: block;
     outline: none;
     cursor: pointer;
-    margin-top: 16px;
-    &:nth-of-type(1) {
-      margin-top: 0;
+  }
+
+  .user-more-container {
+    position: relative;
+    &:hover {
+      .user-more-item {
+        display: block;
+      }
+    }
+    .user-more-button {
+      margin-top: 16px;
+    }
+    .user-more-item {
+      display: none;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background-color: #fff;
+      color: #333;
+      li {
+        padding: 10px 8px;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        color: #131313;
+        cursor: pointer;
+        transition: all .3s;
+        &:hover {
+          background-color: #dedede;
+        }
+      }
     }
   }
 }

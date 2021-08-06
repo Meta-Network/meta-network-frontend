@@ -19,33 +19,31 @@ function MyApp({ Component, pageProps }: AppProps) {
   // refresh token
   useToken()
 
-  useEffect(() => {
-    var stats = new Stats();
-    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    stats.dom.style.top = 'auto'
-    stats.dom.style.bottom = '0'
-    document.body.appendChild( stats.dom );
+  // useEffect(() => {
+  //   var stats = new Stats();
+  //   stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  //   stats.dom.style.top = 'auto'
+  //   stats.dom.style.bottom = '0'
+  //   document.body.appendChild( stats.dom );
 
-    function animate() {
+  //   function animate() {
 
-      stats.begin();
+  //     stats.begin();
 
-      // monitored code goes here
+  //     // monitored code goes here
 
-      stats.end();
+  //     stats.end();
 
-      requestAnimationFrame( animate );
+  //     requestAnimationFrame( animate );
 
-    }
+  //   }
 
-    requestAnimationFrame( animate );
-  }, [])
+  //   requestAnimationFrame( animate );
+  // }, [])
 
   return (
     <>
       <Component {...pageProps} />
-      <div id="user-more"></div>
-      <div id="user-avatar"></div>
     </>
   )
 }

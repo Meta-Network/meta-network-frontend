@@ -18,6 +18,9 @@ import styled from 'styled-components'
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import DeploySite from '../components/DeploySite/Index'
 import { Hex } from '../utils/lib'
+import { Popover, Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+
 
 interface node {
   x: number,
@@ -209,13 +212,13 @@ export default function Home() {
       svg.attr("transform", tran);
     }
 
-    let {x, y} = calcTranslate({ x: 0, y: -11 })
+    let { x, y } = calcTranslate({ x: 0, y: -11 })
     svg.transition()
-    .duration(1300)
-    .call(
-      zoom.transform,
-      d3.zoomIdentity.translate(x, y).scale(1),
-    )
+      .duration(1300)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(x, y).scale(1),
+      )
 
     svg.node();
   }, []);
@@ -236,7 +239,7 @@ export default function Home() {
     // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
     // 方向不同 算法有细微差别
 
-    let _x =layout.width * (Math.sqrt(3) * -x + Math.sqrt(3) / 2 * -y)
+    let _x = layout.width * (Math.sqrt(3) * -x + Math.sqrt(3) / 2 * -y)
     let _y = layout.height * (3 / 2 * -y)
     _x = _x * layout.spacing
     _y = _y * layout.spacing
@@ -265,9 +268,10 @@ export default function Home() {
     }
 
     const svg = d3.select('#container svg')
-    let {x, y} = calcTranslate({ x: point.x, y: point.y })
+    let { x, y } = calcTranslate({ x: point.x, y: point.y })
 
     const showPopoverUser = () => {
+
       // console.log('e', e)
       let target: any = document.querySelector(`.${className}`)
       console.log('target', target, className)
@@ -278,17 +282,34 @@ export default function Home() {
         placement: 'top',
         animation: 'scale',
         offset: [0, 36],
-        appendTo: (): any => document.querySelector('#user-avatar'),
+        inertia: true,
+        role: 'tippy-user-avatar',
       });
 
+      let temp = `
+        <div>
+          <button class="user-more-button" onclick="window.open('https://github.com', '_blank')">进入主页</button>
+          <div class="user-more-container">
+            <button class="user-more-button">...</button>
+            <ul class="user-more-item">
+              <li onclick="alert('收藏')">收藏</li>
+              <li onclick="alert('拍一拍')">拍一拍</li>
+              <li onclick="alert('复制地址')">复制地址</li>
+            </ul>
+          </div>
+        </div>
+      `
+
       tippy(target, {
-        content: `<div> <button class="user-more-button">进入主页</button> <button class="user-more-button">...</button> </div>`,
+        content: temp,
         allowHTML: true,
         placement: 'right',
         trigger: 'click',
         animation: 'scale',
         offset: [0, 16],
-        appendTo: (): any => document.querySelector('#user-more'),
+        arrow: false,
+        inertia: true,
+        role: 'tippy-user-more',
       });
     }
 
@@ -378,6 +399,15 @@ export default function Home() {
 
   }
 
+  const text = <span>Title</span>;
+  const content = (
+    <div>
+      <p>Content</p>
+      <p>Content</p>
+    </div>
+  );
+
+
   // 节点内容
   const nodeContent = useCallback(({
     x, y, z
@@ -423,6 +453,27 @@ export default function Home() {
     return null
   }, [allNode, allNodeDisabled, allNodeChoose])
 
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          1st menu item
+        </a>
+      </Menu.Item>
+      <Menu.Item icon={<DownOutlined />} disabled>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+          2nd menu item (disabled)
+        </a>
+      </Menu.Item>
+      <Menu.Item disabled>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+          3rd menu item (disabled)
+        </a>
+      </Menu.Item>
+      <Menu.Item danger>a danger item</Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
       <ToggleSlider></ToggleSlider>
@@ -441,8 +492,9 @@ export default function Home() {
                 const nodeMode = calcNodeMode({ x, y, z })
 
                 return (
+              
                   <Hexagon
-                    key={i}
+                  key={i}
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
