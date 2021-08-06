@@ -1,8 +1,14 @@
 import React from 'react';
 import styled from 'styled-components'
 import Copy from '../Copy/Index'
+import CustomModal from '../CustomModal/Index'
 
-const DeploySite: React.FC<{}> = () => {
+interface Props {
+  isModalVisible: boolean,
+  setIsModalVisible: (value: boolean) => void
+}
+
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
   // 内容
   const Content: React.FC = () => {
     return (
@@ -20,12 +26,14 @@ const DeploySite: React.FC<{}> = () => {
   }
 
   return (
-    <StyledContent>
-      <StyledContentHead>
-        <StyledContentHeadTitle>你的专属邀请码</StyledContentHeadTitle>
-      </StyledContentHead>
-      <Content></Content>
-    </StyledContent>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+      <StyledContent>
+        <StyledContentHead>
+          <StyledContentHeadTitle>你的专属邀请码</StyledContentHeadTitle>
+        </StyledContentHead>
+        <Content></Content>
+      </StyledContent>
+    </CustomModal>
   )
 }
 

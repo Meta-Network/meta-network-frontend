@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
-  LeftOutlined
+  LeftOutlined, BookOutlined
 } from '@ant-design/icons'
 import { Drawer, Avatar, message, Popconfirm } from 'antd';
 import styled from 'styled-components'
@@ -11,12 +11,14 @@ import { isEmpty } from 'lodash'
 import { accountsTokenDelete } from '../../services/ucenter'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Bookmark from '../Bookmark/Index'
 
 const ToggleSlider: React.FC<{}> = () => {
 
   const [visible, setVisible] = useState(false);
   const { user } = useUser()
   const router = useRouter()
+  const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
 
   const showDrawer = () => {
     setVisible(true);
@@ -72,6 +74,12 @@ const ToggleSlider: React.FC<{}> = () => {
           <a href="">
             <SwapOutlined />
             切换 ID层
+          </a>
+        </li>
+        <li>
+          <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
+            <BookOutlined />
+            我的收藏
           </a>
         </li>
       </StyledSliderCItem>
@@ -156,6 +164,7 @@ const ToggleSlider: React.FC<{}> = () => {
           <SliderContenAccoount></SliderContenAccoount>
         </StyledSliderContent>
       </StyledSlider>
+      <Bookmark isModalVisible={isModalVisibleBookmark} setIsModalVisible={setIsModalVisibleBookmark}></Bookmark>
     </>
   )
 }
