@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
 import { defineGrid, extendHex } from 'honeycomb-grid'
@@ -8,7 +8,7 @@ import { hexbin } from 'd3-hexbin';
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
 import tippy from 'tippy.js';
 import Tippy from '@tippyjs/react';
-import { randomRange } from '../utils/index'
+import { randomRange, cubeToAxial } from '../utils/index'
 import styles from './index/index.module.scss'
 import { AddSvg } from '../components/Svg/Index'
 import { PlusOutlined } from '@ant-design/icons'
@@ -20,19 +20,10 @@ import DeploySite from '../components/DeploySite/Index'
 import { Hex } from '../utils/lib'
 import { Popover, Menu, Dropdown } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { NodeState } from '../typings/node.d'
 
 
-interface node {
-  x: number,
-  y: number,
-  z: number,
-  user: {
-    username: string,
-    nickname: string,
-    introduction: string,
-    role: 'exist' | 'active' | 'v'
-  }
-}
+
 
 let d3: any = null
 let zoom: any = null
@@ -64,39 +55,45 @@ export default function Home() {
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
-  const [allNode, setAllNode] = useState<node[]>([
+  const [allNode, setAllNode] = useState<NodeState[]>([
     {
       x: 0,
       y: 11,
       z: -11,
       user: {
+        avatar: 'http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1',
         username: 'xiaotian',
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'exist',
-      }
+      },
+      bookmark: false
     },
     {
       x: 0,
       y: 12,
       z: -12,
       user: {
+        avatar: 'http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1',
         username: 'xiaotian',
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'active',
-      }
+      },
+      bookmark: true
     },
     {
       x: 1,
       y: 11,
       z: -12,
       user: {
+        avatar: 'https://ci.xiaohongshu.com/cea4dbeb-e12c-3669-b6b7-e005dbc731c6?imageView2/2/w/1080/format/jpg/q/75',
         username: 'xiaotian',
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'v',
-      }
+      },
+      bookmark: true
     }
   ]); // 所有节点
   // 所有可以选择的节点
@@ -104,6 +101,11 @@ export default function Home() {
   // 所有禁止选择的节点
   const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
+
+  // 收藏坐标点
+  const bookmarkNode = useMemo(() => {
+    return allNode.filter(i => i.bookmark)
+  }, [allNode])
 
   const resizeFn = useCallback(
     () => {
@@ -248,33 +250,15 @@ export default function Home() {
     }
   }
 
-  const handleHexagonEventClick = (e: any, className: string, point: { x: number, y: number }, mode: string) => {
-    if (mode === 'choose') {
-      setIsModalVisibleDeploySite(true)
-      return
-    } else if (mode === 'default') {
-      message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
-          <span>
-            请选择紧挨已注册用户的地块
-          </span>
-        </span>,
-        className: 'custom-message',
-        duration: 1,
-        icon: ''
-      });
-      return
-    }
-
+  /**
+   * 偏移地图坐标
+   */
+  const translateMap = ({ x, y, z }: { x: number, y: number, z: number }) => {
     const svg = d3.select('#container svg')
-    let { x, y } = calcTranslate({ x: point.x, y: point.y })
 
     const showPopoverUser = () => {
-
-      // console.log('e', e)
-      let target: any = document.querySelector(`.${className}`)
-      console.log('target', target, className)
+      let classNamePoint = `hexagon-x${x}_y${y}_z${z}`
+      let target: any = document.querySelector(`.${classNamePoint}`)
       tippy(target, {
         content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
         allowHTML: true,
@@ -313,13 +297,42 @@ export default function Home() {
       });
     }
 
+    // 坐标转换，这么写方便后续能阅读懂
+    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+    let { x: _x, y: _y } = calcTranslate({ x: hexX, y: HexY })
     svg.transition()
-      .duration(1000)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(x, y).scale(1),
-      )
-      .on('end', showPopoverUser)
+    .duration(1000)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity.translate(_x, _y).scale(1),
+    )
+    .on('end', showPopoverUser)
+  }
+
+  const handleHexagonEventClick = (e: any, point: { x: number, y: number, z: number }, mode: string) => {
+    if (mode === 'choose') {
+      setIsModalVisibleDeploySite(true)
+      return
+    } else if (mode === 'default') {
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+            请选择紧挨已注册用户的地块
+          </span>
+        </span>,
+        className: 'custom-message',
+        duration: 1,
+        icon: ''
+      });
+      return
+    }
+
+    translateMap({
+      x: point.x,
+      y: point.y,
+      z: point.z
+    })
   }
 
   const messageFn = () => {
@@ -399,15 +412,6 @@ export default function Home() {
 
   }
 
-  const text = <span>Title</span>;
-  const content = (
-    <div>
-      <p>Content</p>
-      <p>Content</p>
-    </div>
-  );
-
-
   // 节点内容
   const nodeContent = useCallback(({
     x, y, z
@@ -453,30 +457,9 @@ export default function Home() {
     return null
   }, [allNode, allNodeDisabled, allNodeChoose])
 
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          1st menu item
-        </a>
-      </Menu.Item>
-      <Menu.Item icon={<DownOutlined />} disabled>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-          2nd menu item (disabled)
-        </a>
-      </Menu.Item>
-      <Menu.Item disabled>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-          3rd menu item (disabled)
-        </a>
-      </Menu.Item>
-      <Menu.Item danger>a danger item</Menu.Item>
-    </Menu>
-  );
-
   return (
     <>
-      <ToggleSlider></ToggleSlider>
+      <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode}></ToggleSlider>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
@@ -492,13 +475,12 @@ export default function Home() {
                 const nodeMode = calcNodeMode({ x, y, z })
 
                 return (
-              
                   <Hexagon
-                  key={i}
+                    key={i}
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
-                    onClick={(e: any) => handleHexagonEventClick(e, `hexagon-x${x}_y${y}_z${z}`, { x: hex.q, y: hex.r }, nodeMode)}
+                    onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
                     className={`${styles[`hexagon-${nodeMode}`]} hexagon-x${x}_y${y}_z${z}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}

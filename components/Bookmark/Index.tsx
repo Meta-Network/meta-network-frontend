@@ -4,25 +4,45 @@ import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-
+import { NodeState } from '../../typings/node.d'
 interface Props {
   isModalVisible: boolean,
   setIsModalVisible: (value: boolean) => void
+  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  bookmarkNode: NodeState[]
 }
 
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode }) => {
+
+  /**
+   * 切换收藏坐标点
+   * @param param0
+   */
+  const ToggleFn = ({ x, y, z }: { x: number, y: number, z: number }) => {
+    translateMap({
+      x: x,
+      y: y,
+      z: z,
+    })
+    setIsModalVisible(false)
+  }
+
   // 内容
   const Content: React.FC = () => {
     return (
       <>
         <StyledItem >
           {
-            [1, 2, 3, 4, 5, 6].map((_, i) => (
-              <StyledItemLi key={i}>
-                <Avatar size={40} icon={<UserOutlined />} />
+            bookmarkNode.map((i: NodeState, idx: number) => (
+              <StyledItemLi key={idx} onClick={ () => ToggleFn({
+                x: i.x,
+                y: i.y,
+                z: i.z,
+              }) }>
+                <Avatar size={40} src={i.user.avatar} icon={<UserOutlined />} />
                 <StyledItemLiUser>
-                  <h3>加菲兔</h3>
-                  <p>站点名站点名站点名站点名站点名站点名站点名站点名站点名</p>
+                  <h3>{ i.user.nickname || i.user.username || '暂无昵称' }</h3>
+                  <p>{ i.user.introduction || '暂无简介'}</p>
                 </StyledItemLiUser>
                 <StyledItemLiButton>查看</StyledItemLiButton>
               </StyledItemLi>

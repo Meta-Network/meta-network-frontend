@@ -12,8 +12,14 @@ import { accountsTokenDelete } from '../../services/ucenter'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Bookmark from '../Bookmark/Index'
+import { NodeState } from '../../typings/node.d'
 
-const ToggleSlider: React.FC<{}> = () => {
+interface Props {
+  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  bookmarkNode: NodeState[]
+}
+
+const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
 
   const [visible, setVisible] = useState(false);
   const { user } = useUser()
@@ -164,7 +170,12 @@ const ToggleSlider: React.FC<{}> = () => {
           <SliderContenAccoount></SliderContenAccoount>
         </StyledSliderContent>
       </StyledSlider>
-      <Bookmark isModalVisible={isModalVisibleBookmark} setIsModalVisible={setIsModalVisibleBookmark}></Bookmark>
+      <Bookmark
+        isModalVisible={isModalVisibleBookmark}
+        setIsModalVisible={setIsModalVisibleBookmark}
+        translateMap={translateMap}
+        bookmarkNode={bookmarkNode}
+      ></Bookmark>
     </>
   )
 }
