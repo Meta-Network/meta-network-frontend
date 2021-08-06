@@ -10,21 +10,24 @@ interface Props {
   setIsModalVisible: (value: boolean) => void
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   bookmarkNode: NodeState[]
+  setVisibleSlider: (value: boolean) => void
 }
 
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode }) => {
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode, setVisibleSlider }) => {
 
   /**
    * 切换收藏坐标点
    * @param param0
    */
   const ToggleFn = ({ x, y, z }: { x: number, y: number, z: number }) => {
+    setIsModalVisible(false)
+    setVisibleSlider(false)
+
     translateMap({
       x: x,
       y: y,
       z: z,
     })
-    setIsModalVisible(false)
   }
 
   // 内容

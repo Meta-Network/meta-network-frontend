@@ -21,16 +21,16 @@ interface Props {
 
 const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
 
-  const [visible, setVisible] = useState(false);
+  const [visibleSlider, setVisibleSlider] = useState(false);
   const { user } = useUser()
   const router = useRouter()
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
 
   const showDrawer = () => {
-    setVisible(true);
+    setVisibleSlider(true);
   };
   const onClose = () => {
-    setVisible(false);
+    setVisibleSlider(false);
   };
 
   const signOut = async () => {
@@ -160,7 +160,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
         title=""
         closable={false}
         onClose={onClose}
-        visible={visible}
+        visible={visibleSlider}
         placement="left"
       >
         <StyledSliderContent>
@@ -175,6 +175,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
         setIsModalVisible={setIsModalVisibleBookmark}
         translateMap={translateMap}
         bookmarkNode={bookmarkNode}
+        setVisibleSlider={setVisibleSlider}
       ></Bookmark>
     </>
   )
