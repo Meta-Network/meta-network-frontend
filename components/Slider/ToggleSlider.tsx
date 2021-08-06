@@ -100,23 +100,13 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
         </li>
         <li>
           <a href="">
-            前往我的站点
+            管理后台
             <ArrowLeftOutlined className="right" />
           </a>
         </li>
         <li>
           <a href="">
             邀请码
-          </a>
-        </li>
-        <li>
-          <a href="">
-            其他
-          </a>
-        </li>
-        <li>
-          <a href="">
-            其他
           </a>
         </li>
       </StyledSliderCItem>

@@ -106,7 +106,7 @@ a {
   z-index: -1;
 }
 
-.tippy-box {
+.tippy-box[role="tippy-user-avatar"] {
   pointer-events: initial;
   background-color: #fff;
   border-radius: 100%;
