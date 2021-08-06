@@ -196,7 +196,6 @@ export default function Home() {
 
   return (
     <>
-      <ToggleSlider></ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
