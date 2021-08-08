@@ -21,8 +21,9 @@ import { Hex } from '../utils/lib'
 import { Popover, Menu, Dropdown } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { NodeState } from '../typings/node.d'
-
-
+import { useSpring, animated } from 'react-spring'
+import UserAvatar from '../components/IndexPage/UserAvatar'
+import UserMore from '../components/IndexPage/UserMore'
 
 
 let d3: any = null
@@ -102,6 +103,8 @@ export default function Home() {
   const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
 
+  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0 }))
+
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
     return allNode.filter(i => i.bookmark)
@@ -167,6 +170,10 @@ export default function Home() {
   useEffect(() => {
     resizeFn()
     window.addEventListener('resize', resizeFn)
+
+    document.addEventListener('click', () => {
+      apiUserInfo.start({ opacity: 0 })
+    }, false)
 
     // messageFn()
   }, [resizeFn]);
@@ -256,47 +263,9 @@ export default function Home() {
   const translateMap = ({ x, y, z }: { x: number, y: number, z: number }) => {
     const svg = d3.select('#container svg')
 
-    const showPopoverUser = () => {
-      let classNamePoint = `hexagon-x${x}_y${y}_z${z}`
-      let target: any = document.querySelector(`.${classNamePoint}`)
-      tippy(target, {
-        content: '<div class="popover-avatar-wrapper"><img src="https://img.zfn9.com/05/af/2f2325f9807107637c62effc1340224d.jpg" /></div>',
-        allowHTML: true,
-        trigger: 'click',
-        placement: 'top',
-        animation: 'scale',
-        offset: [0, 36],
-        inertia: true,
-        role: 'tippy-user-avatar',
-      });
-
-      let temp = `
-        <div>
-          <button class="user-more-button" onclick="window.open('https://github.com', '_blank')">进入主页</button>
-          <div class="user-more-container">
-            <button class="user-more-button">...</button>
-            <ul class="user-more-item">
-              <li onclick="alert('收藏')">收藏</li>
-              <li onclick="alert('拍一拍')">拍一拍</li>
-              <li onclick="alert('复制地址')">复制地址</li>
-            </ul>
-          </div>
-        </div>
-      `
-
-      tippy(target, {
-        content: temp,
-        allowHTML: true,
-        placement: 'right',
-        trigger: 'click',
-        animation: 'scale',
-        offset: [0, 16],
-        arrow: false,
-        inertia: true,
-        role: 'tippy-user-more',
-      });
+    const showUserMore = () => {
+      apiUserInfo.start({ opacity: 1 })
     }
-
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate({ x: hexX, y: HexY })
@@ -306,7 +275,7 @@ export default function Home() {
       zoom.transform,
       d3.zoomIdentity.translate(_x, _y).scale(1),
     )
-    .on('end', showPopoverUser)
+    .on('end', showUserMore)
   }
 
   const handleHexagonEventClick = (e: any, point: { x: number, y: number, z: number }, mode: string) => {
@@ -500,6 +469,15 @@ export default function Home() {
         </HexGrid>
         <div className="point"></div>
       </div>
+
+      <animated.div style={stylesUserInfo}>
+        <UserAvatar url="http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1"></UserAvatar>
+      </animated.div>
+
+      <animated.div style={stylesUserInfo}>
+        <UserMore></UserMore>
+      </animated.div>
+
       <svg width="100%" height="100%" id="mask-container">
         <defs>
           <mask id="mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
@@ -546,4 +524,13 @@ const StyledMessageButton = styled.button`
   line-height: 24px;
   text-align: center;
   box-sizing: border-box;
+`
+const StyledUserInfo = styled.div`
+  position: fixed;
+  left: 700px;
+  top: 400px;
+  z-index: 10;
+  background-color: #fff;
+  width: 100px;
+  height: 100px;
 `

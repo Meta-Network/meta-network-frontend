@@ -38,6 +38,7 @@
     "tippy.js": "^6.3.1"
   },
   "devDependencies": {
+    "@react-spring/types": "^9.2.4",
     "@types/d3": "^7.0.0",
     "@types/lodash": "^4.14.171",
     "@types/react": "17.0.14",
