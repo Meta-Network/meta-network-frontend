@@ -185,7 +185,8 @@ const StyledButton = styled.button`
   background: #452d63;
   outline: none;
   padding: 14px;
-  font-size: 16px;
+  /* font-size: 16px; */
+  font-size: ${ props => props.theme.fontSize4 };
   color: #C4C4C4;
   line-height: 24px;
   box-sizing: border-box;
@@ -201,7 +202,7 @@ const StyledSlider = styled(Drawer)`
   .ant-drawer-content {
     background-color: #131313;
     color: #fff;
-    border-right: 2px solid #CAF12E;
+    border-right: 2px solid ${props => props.theme.colorGreen};
   }
 `
 const StyledSliderContent = styled.section`
@@ -215,13 +216,13 @@ const StyledSliderContent = styled.section`
 const StyledSliderCUser = styled.section`
   display: flex;
   align-items: center;
-  border-right: 4px solid #CAF12E;
+  border-right: 4px solid ${props => props.theme.colorGreen};
   padding: 8px 0;
   box-sizing: border-box;
   .arrow {
     margin-left: auto;
     margin-right: 20px;
-    color: #CAF12E;
+    color: ${props => props.theme.colorGreen};
   }
 `
 const StyledSliderCUserInfo = styled.span`
@@ -288,12 +289,12 @@ const StyledSliderCAccount = styled.ul`
       display: block;
       text-align: left;
       &:hover {
-        color: #CAF12E;
+        color: ${props => props.theme.colorGreen};
         background-color: #2C2B2A;
         border-radius: 4px 0 0 4px;
       }
       &.red {
-        color: #FF644F;
+        color: ${props => props.theme.colorRed};
       }
       span {
         &.right {
