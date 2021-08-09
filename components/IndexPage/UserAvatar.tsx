@@ -21,7 +21,7 @@ const StyledUserAvatar = styled.div`
   position: fixed;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -150%);
+  transform: translate(-50%, -160%);
   z-index: 10;
 `
 const StyledUserAvatarImage = styled.div`
@@ -30,7 +30,7 @@ const StyledUserAvatarImage = styled.div`
   height: 200px;
   overflow: hidden;
   border-radius: 100%;
-  border: 6px solid #fff;
+  border: 8px solid #fff;
   img {
     width: 100%;
     height: 100%;
@@ -44,7 +44,7 @@ const StyledUserAvatarArrow = styled.div`
   height: 0;
   left: 50%;
   bottom: 0;
-  transform: translate(-50%, 98%);
+  transform: translate(-50%, 99%);
   border-style: solid;
   border-color: #fff transparent transparent;
   border-width: 28px 8px 0 8px;

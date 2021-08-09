@@ -5,11 +5,13 @@ import CustomModal from '../CustomModal/Index'
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { NodeState } from '../../typings/node.d'
+import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
+
 interface Props {
   isModalVisible: boolean,
   setIsModalVisible: (value: boolean) => void
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
-  bookmarkNode: NodeState[]
+  bookmarkNode: hexGridsByFilterState[]
   setVisibleSlider: (value: boolean) => void
 }
 
@@ -36,16 +38,16 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
       <>
         <StyledItem >
           {
-            bookmarkNode.map((i: NodeState, idx: number) => (
+            bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
               <StyledItemLi key={idx} onClick={ () => ToggleFn({
                 x: i.x,
                 y: i.y,
                 z: i.z,
               }) }>
-                <Avatar size={40} src={i.user.avatar} icon={<UserOutlined />} />
+                <Avatar size={40} src={''} icon={<UserOutlined />} />
                 <StyledItemLiUser>
-                  <h3>{ i.user.nickname || i.user.username || '暂无昵称' }</h3>
-                  <p>{ i.user.introduction || '暂无简介'}</p>
+                  <h3>{ i.username || '暂无昵称' }</h3>
+                  <p>{'暂无简介'}</p>
                 </StyledItemLiUser>
                 <StyledItemLiButton>查看</StyledItemLiButton>
               </StyledItemLi>

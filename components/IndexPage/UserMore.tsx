@@ -3,13 +3,13 @@ import React from 'react';
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 
-import { NodeState } from '../../typings/node.d'
+import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 
 interface Props {
-  readonly currentNode: NodeState
-  HandleBookmark: (value: NodeState) => void
+  readonly currentNode: hexGridsByFilterState
+  HandleBookmark: (value: hexGridsByFilterState) => void
 }
 
 const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
@@ -18,7 +18,7 @@ const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
     message.info('进入主页')
-    window.open(currentNode?.user?.url, '_blank')
+    window.open('https://meta-network.vercel.app/', '_blank')
   }
 
   // 菜单点击
@@ -46,18 +46,18 @@ const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="bookmark">
+      <Menu.Item key="bookmark" icon={<TagsOutlined />}>
         {
-          currentNode.bookmark ? '取消收藏': '收藏'
+          false ? '取消收藏': '收藏'
         }
       </Menu.Item>
-      <Menu.Item disabled key="beat">
+      <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
         拍一拍
       </Menu.Item>
 
-      <CopyToClipboard text={currentNode?.user?.url || ''}
+      <CopyToClipboard text={'https://meta-network.vercel.app/'}
         onCopy={() => handleCopy()}>
-        <Menu.Item key="copy">
+        <Menu.Item key="copy" icon={<CopyOutlined />}>
           复制地址
         </Menu.Item>
       </CopyToClipboard>
@@ -69,7 +69,9 @@ const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
       <StyledUserMoreButton
         onClick={(e: any) => handleJumpHome(e)}
         style={{ marginBottom: 16 }}
-      >进入主页</StyledUserMoreButton>
+      >
+        <ArrowLeftOutlined />{' '}进入主页
+      </StyledUserMoreButton>
       <Dropdown overlay={menu}>
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>

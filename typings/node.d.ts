@@ -12,3 +12,9 @@ export interface NodeState {
   },
   bookmark: boolean
 }
+
+export interface PointState {
+  x: number,
+  y: number,
+  z: number,
+}

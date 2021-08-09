@@ -13,10 +13,11 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Bookmark from '../Bookmark/Index'
 import { NodeState } from '../../typings/node.d'
+import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 
 interface Props {
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
-  bookmarkNode: NodeState[]
+  bookmarkNode: hexGridsByFilterState[]
 }
 
 const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {

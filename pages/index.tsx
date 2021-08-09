@@ -8,23 +8,26 @@ import { hexbin } from 'd3-hexbin';
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
 import tippy from 'tippy.js';
 import Tippy from '@tippyjs/react';
-import { randomRange, cubeToAxial } from '../utils/index'
-import styles from './index/index.module.scss'
-import { AddSvg } from '../components/Svg/Index'
-import { PlusOutlined } from '@ant-design/icons'
-import { message } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Popover, Menu, Dropdown, message } from 'antd';
+import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
+import { useSpring, animated } from 'react-spring'
+import { cloneDeep } from 'lodash'
+
+import styles from './index/index.module.scss'
+import { Hex } from '../utils/lib'
+import { randomRange, cubeToAxial } from '../utils/index'
+import { NodeState, PointState } from '../typings/node.d'
+import { hexGridsByFilterState } from '../typings/metaNetwork.d'
+
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import DeploySite from '../components/DeploySite/Index'
-import { Hex } from '../utils/lib'
-import { Popover, Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { NodeState } from '../typings/node.d'
-import { useSpring, animated } from 'react-spring'
+import Occupied from '../components/Occupied/Index'
 import UserAvatar from '../components/IndexPage/UserAvatar'
 import UserMore from '../components/IndexPage/UserMore'
-import { cloneDeep } from 'lodash'
+import { AddSvg } from '../components/Svg/Index'
+
+import { hexGridsByFilter, hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 
 
 let d3: any = null
@@ -34,104 +37,67 @@ if (process.browser) {
   zoom = d3.zoom();
 }
 
-const configs = {
-  "hexagon": {
+// const configs = {
+//   "hexagon": {
+//     "width": 1000,
+//     "height": 800,
+//     "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
+//     "origin": { "x": 100, "y": 100 },
+//     "map": "hexagon",
+//     "mapProps": [22]
+//   }
+// }
+
+export default function Home() {
+  // hex all 坐标点
+  const [hex, setHex] = useState([]);
+  const [config, setConfig] = useState({
     "width": 1000,
     "height": 800,
     "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
     "origin": { "x": 100, "y": 100 },
     "map": "hexagon",
-    "mapProps": [20]
-  }
-}
-const config = configs['hexagon']
-const layout = config.layout;
-const size = { x: layout.width, y: layout.height };
-const mapProps = config.mapProps[0];
-
-export default function Home() {
-  const myRef = useRef(null)
-  const [hex, setHex] = useState([]);
-  const ref = useRef();
-
+    "mapProps": [22]
+  })
+  const [layout, setLayout] = useState( { "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
+  const [size, setSize] = useState({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
   // 所有节点
-  const [allNode, setAllNode] = useState<NodeState[]>([
-    {
-      x: 0,
-      y: 11,
-      z: -11,
-      user: {
-        avatar: 'http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1',
-        username: 'xiaotian',
-        nickname: '小田',
-        introduction: '这是一条简介',
-        role: 'exist',
-        url: 'https://github.com/Meta-Network/Meta-Network-FE1'
-      },
-      bookmark: false
-    },
-    {
-      x: 0,
-      y: 12,
-      z: -12,
-      user: {
-        avatar: 'http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1',
-        username: 'xiaotian',
-        nickname: '小田',
-        introduction: '这是一条简介',
-        role: 'active',
-        url: 'https://github.com/Meta-Network/Meta-Network-FE2'
-      },
-      bookmark: true
-    },
-    {
-      x: 1,
-      y: 11,
-      z: -12,
-      user: {
-        avatar: 'https://ci.xiaohongshu.com/cea4dbeb-e12c-3669-b6b7-e005dbc731c6?imageView2/2/w/1080/format/jpg/q/75',
-        username: 'xiaotian',
-        nickname: '小田',
-        introduction: '这是一条简介',
-        role: 'v',
-        url: 'https://github.com/Meta-Network/Meta-Network-FE3'
-      },
-      bookmark: true
-    }
-  ]);
+  const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<any[]>([]);
   // 所有禁止选择的节点
   const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
   // 当前选择节点
-  const [currentNode, setCurrentNode] = useState<NodeState>({} as NodeState);
+  const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
+  // 当前占领节点
+  const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState);
   // 部署网站 Modal
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
+  // 占领 Modal
+  const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
   // User Info
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
 
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
-    return allNode.filter(i => i.bookmark)
+    return allNode.filter(i => !!i)
   }, [allNode])
 
-  const resizeFn = useCallback(
-    () => {
-      if (process.browser) {
-        setWidth(window.innerWidth * 1)
-        setHeight(window.innerHeight * 1)
+  // resize event
+  const resizeFn = () => {
+    if (process.browser) {
+      setWidth(window.innerWidth * 1)
+      setHeight(window.innerHeight * 1)
 
-        setOrigin({
-          x: (window.innerWidth * 1) / 2,
-          y: (window.innerHeight * 1) / 2,
-        })
-      }
-    },
-    [],
-  )
+      setOrigin({
+        x: (window.innerWidth * 1) / 2,
+        y: (window.innerHeight * 1) / 2,
+      })
+    }
+  }
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -141,14 +107,20 @@ export default function Home() {
 
       for (let i = 0; i < allNode.length; i++) {
         const eleAllNode: any = allNode[i];
-        let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
+        // 捕获 new hex 错误
+        try {
+          let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
 
-        for (let i = 0; i < hex.length; i++) {
-          const ele: any = hex[i];
-          let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-          if (distanceResult) {
-            points.push(ele)
+          for (let i = 0; i < hex.length; i++) {
+            const ele: any = hex[i];
+            let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
+            if (distanceResult) {
+              points.push(ele)
+            }
           }
+        } catch (e) {
+          console.log('e', e)
+          continue
         }
       }
       console.log('points', points)
@@ -170,12 +142,13 @@ export default function Home() {
       }
     }
 
-    console.log('points', points)
     setAllNodeDisabled(points)
-
   }, [hex])
 
+  // init
   useEffect(() => {
+    fetchHexGriids()
+
     resizeFn()
     window.addEventListener('resize', resizeFn)
 
@@ -184,9 +157,10 @@ export default function Home() {
     }, false)
 
     // messageFn()
-  }, [resizeFn]);
+  }, []);
 
-  useEffect(() => {
+  // 设置内容拖动 缩放
+  const setContainerDrag = useCallback(() => {
     const svg = d3.select('#container svg')
 
     svg.call(
@@ -238,16 +212,40 @@ export default function Home() {
       )
 
     svg.node();
-  }, []);
+  }, [ width, height ]);
 
+  // 渲染坐标地图
   useEffect(() => {
     const generator = GridGenerator.getGenerator(config.map);
     const hexagons = generator.apply(null, config.mapProps);
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
-      ; (window as any)._hexagons = hexagons
+
+    setContainerDrag()
   }, []);
+
+  // 获取范围坐标点
+  const fetchHexGriids = useCallback(
+    async () => {
+      try {
+        const res = await hexGridsByFilter({
+          "xMin": -40,
+          "xMax": 40,
+          "yMin": -40,
+          "yMax": 40,
+          "zMin": -40,
+          "zMax": 40
+        })
+        if (res.statusCode === 200) {
+          setAllNode(res.data)
+        } else {
+          console.log('获取失败')
+        }
+      } catch (e) {
+        console.log('e', e)
+      }
+  }, [])
 
   // 计算偏移位置
   const calcTranslate = ({ x, y }: { x: number, y: number }) => {
@@ -264,7 +262,7 @@ export default function Home() {
   }
 
   // 偏移地图坐标
-  const translateMap = ({ x, y, z }: { x: number, y: number, z: number }) => {
+  const translateMap = ({ x, y, z }: PointState) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
@@ -288,10 +286,11 @@ export default function Home() {
     .on('end', showUserMore)
   }
 
-  // 处理点击地图
-  const handleHexagonEventClick = (e: any, point: { x: number, y: number, z: number }, mode: string) => {
+  // 处理点击地图事件
+  const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
     if (mode === 'choose') {
-      setIsModalVisibleDeploySite(true)
+      setCurrentNodeChoose(point)
+      setIsModalVisibleOccupied(true)
       return
     } else if (mode === 'default' || mode === 'disabled') {
       message.info({
@@ -380,7 +379,8 @@ export default function Home() {
 
     const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
     if (node.length) {
-      return node[0]!.user.role || 'exist'
+      // return node[0]!.user.role || 'exist'
+      return 'exist'
     }
 
     const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
@@ -419,12 +419,11 @@ export default function Home() {
 
     const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
     if (node.length) {
-
       return (
         <>
           <Text>
-            <tspan x="0" y="-10">{node[0]?.user.nickname || node[0]?.user.username || '暂无昵称'}</tspan>
-            <tspan x="0" y="10">{node[0]?.user.introduction || '暂无简介'}</tspan>
+            <tspan x="0" y="-10">{node[0]?.username || '暂无昵称'}</tspan>
+            <tspan x="0" y="10">{'暂无简介'}</tspan>
           </Text>
         </>
       )
@@ -437,28 +436,39 @@ export default function Home() {
     return null
   }, [allNode, allNodeDisabled, allNodeChoose])
 
-  const HandleBookmark = (currentNode: NodeState) => {
+  // 处理收藏
+  const HandleBookmark = (currentNode: hexGridsByFilterState) => {
+    // const allNodeList = cloneDeep(allNode)
+    // const findIdx = allNodeList.findIndex(i => i.x === currentNode.x && i.y === currentNode.y && i.z === currentNode.z)
+    // if (~findIdx) {
+    //   allNodeList[findIdx].bookmark = !allNodeList[findIdx].bookmark
+    // } else {
+    //   message.warning('收藏失败')
+    //   return
+    // }
 
-    const allNodeList = cloneDeep(allNode)
+    // setAllNode(allNodeList)
+    // setCurrentNode(allNodeList[findIdx])
 
-    const findIdx = allNodeList.findIndex(i => i.x === currentNode.x && i.y === currentNode.y && i.z === currentNode.z)
-    if (~findIdx) {
-      allNodeList[findIdx].bookmark = !allNodeList[findIdx].bookmark
-    } else {
-      message.warning('收藏失败')
-      return
-    }
-
-    setAllNode(allNodeList)
-    setCurrentNode(allNodeList[findIdx])
+    // message.info({
+    //   content: <span>
+    //     <ExclamationCircleOutlined />
+    //     <span>
+    //       {
+    //         currentNode.bookmark ? '取消收藏成功' : '收藏成功'
+    //       }
+    //     </span>
+    //   </span>,
+    //   className: 'custom-message',
+    //   duration: 2,
+    //   icon: ''
+    // });
 
     message.info({
       content: <span>
         <ExclamationCircleOutlined />
         <span>
-          {
-            currentNode.bookmark ? '取消收藏成功' : '收藏成功'
-          }
+          收藏操作
         </span>
       </span>,
       className: 'custom-message',
@@ -467,10 +477,42 @@ export default function Home() {
     });
   }
 
+  // 处理占领
+  const handleOccupied = async () => {
+    console.log('currentNodeChoose', currentNodeChoose)
+    try {
+      const resPointValidation = await hexGridsCoordinateValidation(currentNodeChoose)
+      if (resPointValidation.statusCode === 200 && resPointValidation.data) {
+        // message.info('允许占领')
+      } else {
+        message.warning(resPointValidation.message)
+        return
+      }
+    } catch (e) {
+      console.log(e)
+      message.warning(e.message)
+      return
+    }
+
+    try {
+      const res = await hexGrids(currentNodeChoose)
+      if (res.statusCode === 201) {
+        message.info('占领成功')
+        fetchHexGriids()
+      } else {
+        message.warning(res.message)
+      }
+    } catch (e) {
+      console.log(e)
+      message.warning(e.message)
+    }
+  }
+
   return (
     <>
       <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode}></ToggleSlider>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
+      <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
@@ -512,7 +554,7 @@ export default function Home() {
       </div>
 
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url={ currentNode?.user?.avatar || '' }></UserAvatar>
+        <UserAvatar url={ '' }></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
@@ -558,7 +600,7 @@ const StyledMessageButton = styled.button`
   outline: none;
   cursor: pointer;
   background-color: transparent;
-  color: #CAF12E;
+  color: ${props => props.theme.colorGreen};
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
