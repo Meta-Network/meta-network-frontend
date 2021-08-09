@@ -9,7 +9,10 @@ interface Props {
 const UserAvatar: React.FC<Props> = ({ url }) => {
   return (
     <StyledUserAvatar>
-      <img src={ url } alt="avatar" />
+      <StyledUserAvatarImage>
+        <img src={ url } alt="avatar" />
+      </StyledUserAvatarImage>
+      <StyledUserAvatarArrow></StyledUserAvatarArrow>
     </StyledUserAvatar>
   )
 }
@@ -20,6 +23,8 @@ const StyledUserAvatar = styled.div`
   top: 50%;
   transform: translate(-50%, -150%);
   z-index: 10;
+`
+const StyledUserAvatarImage = styled.div`
   background-color: #fff;
   width: 200px;
   height: 200px;
@@ -31,6 +36,19 @@ const StyledUserAvatar = styled.div`
     height: 100%;
     object-fit: cover;
   }
+`
+
+const StyledUserAvatarArrow = styled.div`
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 98%);
+  border-style: solid;
+  border-color: #fff transparent transparent;
+  border-width: 28px 8px 0 8px;
+  background-color: transparent;
 `
 
 export default UserAvatar
