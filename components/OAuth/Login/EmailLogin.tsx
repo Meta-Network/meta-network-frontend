@@ -27,11 +27,11 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     try {
       setLoading(true)
       const res = await accountsEmailLogin({
-        email: trim(email),
+        account: trim(email),
         verifyCode: code,
         hcaptchaToken: 'hcaptcha_token_here'
       })
-      if (res.statusCode === 201) {
+      if (res.statusCode === 200) {
         message.success('登录成功')
         router.push('/')
       } else {

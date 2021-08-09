@@ -39,10 +39,10 @@ export const accountsEmailSignup = (
   data: AccountsEmailAuth): Promise<axiosResult<AccountsEmailSignupResult>> =>
   uCenterAPI.post(`/accounts/email/signup/${signature}`, data)
 
-  /**
-   * 邀请码
-   * @returns
-   */
+/**
+ * 邀请码
+ * @returns
+ */
 export const invitation = (): Promise<axiosResult<string>> =>
   uCenterAPI.post('/invitation', {
     "sub": "someone@example.com",

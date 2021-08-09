@@ -22,7 +22,7 @@ export interface AccountsEmailSignupResult {
 
 
 export interface AccountsEmailAuth {
-  email: string,
+  account: string,
   verifyCode: string,
   hcaptchaToken: string
 }

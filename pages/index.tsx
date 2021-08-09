@@ -497,8 +497,20 @@ export default function Home() {
     try {
       const res = await hexGrids(currentNodeChoose)
       if (res.statusCode === 201) {
-        message.info('占领成功')
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              占领成功
+            </span>
+          </span>,
+          className: 'custom-message',
+          duration: 0,
+          icon: ''
+        });
+
         fetchHexGriids()
+        setIsModalVisibleOccupied(false)
       } else {
         message.warning(res.message)
       }
@@ -554,7 +566,7 @@ export default function Home() {
       </div>
 
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url={ '' }></UserAvatar>
+        <UserAvatar url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75' }></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>

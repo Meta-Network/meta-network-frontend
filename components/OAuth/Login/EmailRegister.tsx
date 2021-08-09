@@ -36,7 +36,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     let { email, code, inviteCode } = values
     try {
       const resEmailSignup = await accountsEmailSignup(inviteCode, {
-        email: trim(email),
+        account: trim(email),
         verifyCode: code,
         hcaptchaToken: 'hcaptcha_token_here'
       })
