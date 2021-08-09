@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components'
 
 interface Props {
-  url: string
+  readonly url: string
 }
 
 const UserAvatar: React.FC<Props> = ({ url }) => {

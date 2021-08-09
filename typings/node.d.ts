@@ -7,7 +7,8 @@ export interface NodeState {
     username: string,
     nickname: string,
     introduction: string,
-    role: 'exist' | 'active' | 'v'
+    role: 'exist' | 'active' | 'v',
+    url: string
   },
   bookmark: boolean
 }

@@ -24,6 +24,7 @@ import { NodeState } from '../typings/node.d'
 import { useSpring, animated } from 'react-spring'
 import UserAvatar from '../components/IndexPage/UserAvatar'
 import UserMore from '../components/IndexPage/UserMore'
+import { cloneDeep } from 'lodash'
 
 
 let d3: any = null
@@ -56,6 +57,7 @@ export default function Home() {
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
+  // 所有节点
   const [allNode, setAllNode] = useState<NodeState[]>([
     {
       x: 0,
@@ -67,6 +69,7 @@ export default function Home() {
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'exist',
+        url: 'https://github.com/Meta-Network/Meta-Network-FE1'
       },
       bookmark: false
     },
@@ -80,6 +83,7 @@ export default function Home() {
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'active',
+        url: 'https://github.com/Meta-Network/Meta-Network-FE2'
       },
       bookmark: true
     },
@@ -93,17 +97,21 @@ export default function Home() {
         nickname: '小田',
         introduction: '这是一条简介',
         role: 'v',
+        url: 'https://github.com/Meta-Network/Meta-Network-FE3'
       },
       bookmark: true
     }
-  ]); // 所有节点
+  ]);
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<any[]>([]);
   // 所有禁止选择的节点
   const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
+  // 当前选择节点
+  const [currentNode, setCurrentNode] = useState<NodeState>({} as NodeState);
+  // 部署网站 Modal
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
-
-  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0 }))
+  // User Info
+  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
 
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
@@ -172,7 +180,7 @@ export default function Home() {
     window.addEventListener('resize', resizeFn)
 
     document.addEventListener('click', () => {
-      apiUserInfo.start({ opacity: 0 })
+      apiUserInfo.start({ opacity: 0, display: 'none' })
     }, false)
 
     // messageFn()
@@ -194,12 +202,12 @@ export default function Home() {
 
       const svg = d3.select('#container svg > g')
       let svgBox = svg.node().getBBox()
-      console.log('transform', transform)
+      // console.log('transform', transform)
       let svgContentWidth = svgBox.width
       let svgContentHeight = svgBox.height
 
-      console.log('svgContentWidth', svgContentWidth)
-      console.log('svgContentHeight', svgContentHeight)
+      // console.log('svgContentWidth', svgContentWidth)
+      // console.log('svgContentHeight', svgContentHeight)
 
       const numberFloor = (n: number, k: number) => {
         return Math.floor((n / 2) * k)
@@ -241,9 +249,7 @@ export default function Home() {
       ; (window as any)._hexagons = hexagons
   }, []);
 
-  /**
-   * 计算偏移位置
-   */
+  // 计算偏移位置
   const calcTranslate = ({ x, y }: { x: number, y: number }) => {
     // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
     // 方向不同 算法有细微差别
@@ -257,14 +263,18 @@ export default function Home() {
     }
   }
 
-  /**
-   * 偏移地图坐标
-   */
+  // 偏移地图坐标
   const translateMap = ({ x, y, z }: { x: number, y: number, z: number }) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
-      apiUserInfo.start({ opacity: 1 })
+      const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
+      if (!node.length) {
+        message.warning('没有坐标数据')
+        return
+      }
+      setCurrentNode(node[0])
+      apiUserInfo.start({ opacity: 1, display: 'block' })
     }
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
@@ -278,11 +288,12 @@ export default function Home() {
     .on('end', showUserMore)
   }
 
+  // 处理点击地图
   const handleHexagonEventClick = (e: any, point: { x: number, y: number, z: number }, mode: string) => {
     if (mode === 'choose') {
       setIsModalVisibleDeploySite(true)
       return
-    } else if (mode === 'default') {
+    } else if (mode === 'default' || mode === 'disabled') {
       message.info({
         content: <span>
           <ExclamationCircleOutlined />
@@ -426,6 +437,36 @@ export default function Home() {
     return null
   }, [allNode, allNodeDisabled, allNodeChoose])
 
+  const HandleBookmark = (currentNode: NodeState) => {
+
+    const allNodeList = cloneDeep(allNode)
+
+    const findIdx = allNodeList.findIndex(i => i.x === currentNode.x && i.y === currentNode.y && i.z === currentNode.z)
+    if (~findIdx) {
+      allNodeList[findIdx].bookmark = !allNodeList[findIdx].bookmark
+    } else {
+      message.warning('收藏失败')
+      return
+    }
+
+    setAllNode(allNodeList)
+    setCurrentNode(allNodeList[findIdx])
+
+    message.info({
+      content: <span>
+        <ExclamationCircleOutlined />
+        <span>
+          {
+            currentNode.bookmark ? '取消收藏成功' : '收藏成功'
+          }
+        </span>
+      </span>,
+      className: 'custom-message',
+      duration: 2,
+      icon: ''
+    });
+  }
+
   return (
     <>
       <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode}></ToggleSlider>
@@ -471,11 +512,11 @@ export default function Home() {
       </div>
 
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url="http://qqpublic.qpic.cn/qq_public/0/0-2521630228-A4BA53584831A503217D8AA9C2E5CC6F/900?fmt=jpg&size=59&h=696&w=700&ppv=1"></UserAvatar>
+        <UserAvatar url={ currentNode?.user?.avatar || '' }></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
-        <UserMore></UserMore>
+        <UserMore currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
       </animated.div>
 
       <svg width="100%" height="100%" id="mask-container">

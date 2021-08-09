@@ -1,32 +1,77 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import styled from 'styled-components'
-import { Menu, Dropdown } from 'antd';
+import { Menu, Dropdown, message } from 'antd';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+import { NodeState } from '../../typings/node.d'
 
 interface Props {
+  readonly currentNode: NodeState
+  HandleBookmark: (value: NodeState) => void
 }
 
-const UserMore: React.FC<Props> = () => {
+const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
+
+  // 按钮点击
+  const handleJumpHome = (e: Event): void => {
+    e.stopPropagation()
+    message.info('进入主页')
+    window.open(currentNode?.user?.url, '_blank')
+  }
+
+  // 菜单点击
+  const handleMenuClick = ({ key, domEvent }: { key: string, domEvent: any }) => {
+    domEvent.stopPropagation()
+    if (key === 'bookmark') {
+      HandleBookmark(currentNode)
+    }
+  };
+
+  // Copy
+  const handleCopy = () => {
+    message.info({
+      content: <span>
+        <ExclamationCircleOutlined />
+        <span>
+          复制成功
+        </span>
+      </span>,
+      className: 'custom-message',
+      duration: 2,
+      icon: ''
+    });
+  }
 
   const menu = (
-    <Menu>
-      <Menu.Item>
-        收藏
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="bookmark">
+        {
+          currentNode.bookmark ? '取消收藏': '收藏'
+        }
       </Menu.Item>
-      <Menu.Item disabled>
+      <Menu.Item disabled key="beat">
         拍一拍
       </Menu.Item>
-      <Menu.Item>
-        复制地址
-      </Menu.Item>
+
+      <CopyToClipboard text={currentNode?.user?.url || ''}
+        onCopy={() => handleCopy()}>
+        <Menu.Item key="copy">
+          复制地址
+        </Menu.Item>
+      </CopyToClipboard>
     </Menu>
   );
 
   return (
     <StyledUserMore>
-      <StyledUserMoreButton style={{ marginBottom: 16 }}>进入主页</StyledUserMoreButton>
+      <StyledUserMoreButton
+        onClick={(e: any) => handleJumpHome(e)}
+        style={{ marginBottom: 16 }}
+      >进入主页</StyledUserMoreButton>
       <Dropdown overlay={menu}>
-        <StyledUserMoreButton>...</StyledUserMoreButton>
+        <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>
     </StyledUserMore>
   )
