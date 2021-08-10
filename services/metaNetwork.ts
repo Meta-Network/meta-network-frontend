@@ -14,16 +14,23 @@ export const hexGridsByFilter = (data: PointScopeState): Promise<axiosResult<hex
 
 /**
  * 校验坐标点是否可用
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const hexGridsCoordinateValidation = (data: PointState): Promise<axiosResult<boolean>> =>
   API.put('/hex-grids/coordinate/validation', data)
 
 /**
  * 占领坐标
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const hexGrids = (data: PointState): Promise<axiosResult<hexGridsByFilterState>> =>
   API.post('/hex-grids', data)
+
+/**
+ * 当前用户占领的地块
+ * @returns
+ */
+export const hexGridsMine = (): Promise<axiosResult<hexGridsByFilterState>> =>
+  API.get('/hex-grids/mine')

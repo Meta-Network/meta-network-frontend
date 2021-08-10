@@ -12,7 +12,7 @@ import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
@@ -28,9 +28,11 @@ import UserAvatar from '../components/IndexPage/UserAvatar'
 import UserMore from '../components/IndexPage/UserMore'
 import { AddSvg } from '../components/Svg/Index'
 import NoticeBardOccupied from '../components/NoticeBardOccupied/Index'
+import MarkContainer from '../components/MarkContainer/Index'
 
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
+  hexGridsMine
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
 
@@ -88,7 +90,12 @@ export default function Home() {
   // 邀请码
   const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
   // 占领通知状态
-  const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false);
+  const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false)
+  // 自己的占领坐标
+  const [hexGridsMineData, setHexGridsMineData] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
+  // 自己的占领坐标 完成标签
+  const [hexGridsMineTag, setHexGridsMineTag] = useState<boolean>(false)
+
 
 
   // 收藏坐标点
@@ -111,7 +118,6 @@ export default function Home() {
 
   // 计算所有可选择坐标范围
   useEffect(() => {
-
     //  未开启选择功能
     if (!noticeBardOccupiedState) {
       setAllNodeChoose([])
@@ -173,6 +179,7 @@ export default function Home() {
     }, false)
 
     fetchInviteCode()
+    fetchHexGridsMine()
 
     // messageFn()
   }, []);
@@ -187,6 +194,22 @@ export default function Home() {
         }
       } catch (e) {
         console.log(e)
+      }
+  }, [])
+
+  // 获取自己的坐标点
+  const fetchHexGridsMine = useCallback(
+    async () => {
+      setHexGridsMineTag(false)
+      try {
+        const res = await hexGridsMine()
+        if (res.statusCode === 200 && res.data) {
+          setHexGridsMineData(res.data)
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setHexGridsMineTag(true)
       }
   }, [])
 
@@ -536,7 +559,6 @@ export default function Home() {
             </span>
           </span>,
           className: 'custom-message',
-          duration: 0,
           icon: ''
         });
 
@@ -556,8 +578,10 @@ export default function Home() {
       <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode} inviteCodeData={inviteCodeData}></ToggleSlider>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
-      <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied>
-
+      {
+        !isEmpty(hexGridsMineData) && hexGridsMineTag ?
+        <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+      }
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
@@ -606,21 +630,7 @@ export default function Home() {
         <UserMore currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
       </animated.div>
 
-      <svg width="100%" height="100%" id="mask-container">
-        <defs>
-          <mask id="mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
-            <linearGradient id="linearGradient" gradientUnits="objectBoundingBox" x2="0" y2="1">
-              <stop stopColor="white" stopOpacity="0" offset="0%" />
-              <stop stopColor="white" stopOpacity="1" offset="20%" />
-              <stop stopColor="white" stopOpacity="1" offset="40%" />
-              <stop stopColor="white" stopOpacity="1" offset="60%" />
-              <stop stopColor="white" stopOpacity="1" offset="80%" />
-              <stop stopColor="white" stopOpacity="0" offset="100%" />
-            </linearGradient>
-            <rect width="100%" height="100%" fill="url(#linearGradient)" />
-          </mask>
-        </defs>
-      </svg>
+      <MarkContainer></MarkContainer>
     </>
   )
 }
