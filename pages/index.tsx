@@ -19,6 +19,7 @@ import { Hex } from '../utils/lib'
 import { randomRange, cubeToAxial } from '../utils/index'
 import { NodeState, PointState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
+import { InviitationsMineState } from '../typings/ucenter.d'
 
 import ToggleSlider from '../components/Slider/ToggleSlider'
 import DeploySite from '../components/DeploySite/Index'
@@ -27,7 +28,10 @@ import UserAvatar from '../components/IndexPage/UserAvatar'
 import UserMore from '../components/IndexPage/UserMore'
 import { AddSvg } from '../components/Svg/Index'
 
-import { hexGridsByFilter, hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
+import { 
+  hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
+ } from '../services/metaNetwork'
+ import { invitationsMine } from '../services/ucenter'
 
 
 let d3: any = null
@@ -80,6 +84,8 @@ export default function Home() {
   const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
   // User Info
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
+  // 邀请码
+  const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
 
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
@@ -156,8 +162,23 @@ export default function Home() {
       apiUserInfo.start({ opacity: 0, display: 'none' })
     }, false)
 
+    fetchInviteCode()
+
     // messageFn()
   }, []);
+
+  // 获取邀请码
+  const fetchInviteCode = useCallback(
+    async () => {
+      try {
+        const res = await invitationsMine()
+        if (res.statusCode === 200) {
+          setInviteCodeData(res.data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+  }, [])
 
   // 设置内容拖动 缩放
   const setContainerDrag = useCallback(() => {
@@ -522,7 +543,7 @@ export default function Home() {
 
   return (
     <>
-      <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode}></ToggleSlider>
+      <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode} inviteCodeData={inviteCodeData}></ToggleSlider>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       <div id="container">

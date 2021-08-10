@@ -45,7 +45,7 @@ const CopyText = styled.section`
   justify-content: space-between;
   padding: 10px 15px;
   p {
-    padding: 0;
+    padding: 0 40px 0 0;
     margin: 0;
     font-style: normal;
     font-weight: normal;
@@ -53,6 +53,9 @@ const CopyText = styled.section`
     line-height: 18px;
     text-align: center;
     color: #F5F5F5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 `
 

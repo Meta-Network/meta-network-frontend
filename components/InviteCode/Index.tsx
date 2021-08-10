@@ -2,22 +2,24 @@ import React from 'react';
 import styled from 'styled-components'
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
+import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface Props {
   isModalVisible: boolean,
   setIsModalVisible: (value: boolean) => void
+  inviteCodeData: InviitationsMineState[]
 }
 
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, inviteCodeData }) => {
   // 内容
   const Content: React.FC = () => {
     return (
       <div>
         <p>使用邀请码招呼朋友们加入元宇宙吧！一个邀请码仅能给一个ID使用。</p>
         {
-          [1,1,1].map((_, idx: number) => (
+          inviteCodeData.map((i, idx) => (
             <StyledContentCopy key={idx}>
-              <Copy text="48176613c75ed62fd928378605fbe0539501767c"></Copy>
+              <Copy text={ i.signature }></Copy>
             </StyledContentCopy>
           ))
         }

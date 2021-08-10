@@ -6,26 +6,33 @@ import {
 } from '@ant-design/icons'
 import { Drawer, Avatar, message, Popconfirm } from 'antd';
 import styled from 'styled-components'
-import { useUser } from '../../hooks/useUser'
 import { isEmpty } from 'lodash'
-import { accountsTokenDelete } from '../../services/ucenter'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+
+import { useUser } from '../../hooks/useUser'
+import { accountsTokenDelete } from '../../services/ucenter'
 import Bookmark from '../Bookmark/Index'
+import InviteCode from '../InviteCode/Index'
 import { NodeState } from '../../typings/node.d'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
+import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface Props {
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   bookmarkNode: hexGridsByFilterState[]
+  inviteCodeData: InviitationsMineState[]
 }
 
-const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
+const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData }) => {
 
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user } = useUser()
   const router = useRouter()
+  // 收藏
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
+  // 邀请码
+  const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false);
 
   const showDrawer = () => {
     setVisibleSlider(true);
@@ -106,7 +113,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
           </a>
         </li>
         <li>
-          <a href="">
+          <a href="javascript:;" onClick={() => setIsModalVisibleInviteCode(true)}>
             邀请码
           </a>
         </li>
@@ -168,6 +175,11 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode }) => {
         bookmarkNode={bookmarkNode}
         setVisibleSlider={setVisibleSlider}
       ></Bookmark>
+      <InviteCode
+        isModalVisible={isModalVisibleInviteCode}
+        setIsModalVisible={setIsModalVisibleInviteCode}
+        inviteCodeData={inviteCodeData}
+      ></InviteCode>
     </>
   )
 }
