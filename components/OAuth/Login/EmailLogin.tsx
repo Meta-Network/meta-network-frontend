@@ -6,6 +6,7 @@ import EmailCode from './EmailCode'
 import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 
 interface Props {
@@ -32,14 +33,41 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         hcaptchaToken: 'hcaptcha_token_here'
       })
       if (res.statusCode === 200) {
-        message.success('登录成功')
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              登录成功
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
         router.push('/')
       } else {
-        message.warning(`登录失败：${res.message}`)
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              登录失败：{res.message}
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
       }
     } catch (e) {
       console.error(e)
-      message.error('登录失败')
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+            登录失败
+          </span>
+        </span>,
+        className: 'custom-message',
+        icon: ''
+      });
     } finally {
       setLoading(false)
     }

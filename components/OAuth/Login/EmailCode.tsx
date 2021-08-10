@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components'
 import { useCountDown } from 'ahooks';
-import { verifyEmail, accountsEmailVerificationCode } from '../../../services/ucenter'
+import { accountsEmailVerificationCode } from '../../../services/ucenter'
 import { message } from 'antd';
 import { trim } from 'lodash'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 interface Props {
   form: any
@@ -23,23 +24,68 @@ const EmailCode: React.FC<Props> = ({ form }) => {
     try {
       let { email } = await form.getFieldsValue()
       if (!(email ? trim(email) : email)) {
-        message.warning('请输入邮箱')
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              请输入邮箱
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
         return
       }
       // 开始倒计时
-      setTargetDate(Date.now() + 5 * 1000)
-      message.success('发送验证码...')
+      setTargetDate(Date.now() + 60 * 1000)
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+          发送验证码...
+          </span>
+        </span>,
+        className: 'custom-message',
+        icon: ''
+      });
       const res = await accountsEmailVerificationCode({
         key: trim(email)
       })
       if (res.statusCode === 201) {
-        message.success('发送成功')
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+            发送成功
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
       } else {
-        message.warning(`发送失败: ${res.message}`)
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              发送失败: {res.message}
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
       }
     } catch (e) {
       console.log(e)
-      message.error('发送失败')
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+            发送失败
+          </span>
+        </span>,
+        className: 'custom-message',
+        icon: ''
+      });
     }
   }
 

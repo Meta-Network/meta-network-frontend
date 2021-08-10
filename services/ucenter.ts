@@ -1,7 +1,8 @@
 import { uCenterAPI } from "./client";
 import { axiosResult } from '../typings/request'
 import {
-  AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps
+  AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
+  InviitationsMineState
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -10,14 +11,7 @@ import {
  * @param data
  * @returns
  */
-export const verifyEmail = (data: any): Promise<axiosResult<string>> => uCenterAPI.post('/api/verify', data)
-
-/**
- * 验证邮箱是否存在
- * @param data
- * @returns
- */
-export const accountsEmailVerify = (data: { email: string }): Promise<axiosResult<{ isExists: boolean }>> =>
+export const accountsEmailVerify = (data: { account: string }): Promise<axiosResult<{ isExists: boolean }>> =>
   uCenterAPI.post('accounts/email/is-exists', data)
 
 /**
@@ -40,17 +34,11 @@ export const accountsEmailSignup = (
   uCenterAPI.post(`/accounts/email/signup/${signature}`, data)
 
 /**
- * 邀请码
+ * 当前用户邀请码
  * @returns
  */
-export const invitation = (): Promise<axiosResult<string>> =>
-  uCenterAPI.post('/invitation', {
-    "sub": "someone@example.com",
-    "message": "welcome to meta network",
-    "inviter_user_id": 0,
-    "matataki_user_id": 0,
-    "expired_at": "2021-07-30T11:22:51.991Z"
-  })
+export const invitationsMine = (): Promise<axiosResult<InviitationsMineState[]>> =>
+  uCenterAPI.get('/invitations/mine')
 
 /**
  * 邮箱登录

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd';
 import { EmailModeProps } from '../../../typings/oauth'
-import { accountsEmailVerify, accountsEmailSignup, invitation } from '../../../services/ucenter'
+import { accountsEmailVerify, accountsEmailSignup } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useMount } from 'ahooks'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 
 interface Props {
@@ -16,19 +17,8 @@ interface Props {
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formResister] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
-
-  // test code
-  useMount(() => {
-    const fetch = async () => {
-      const res = await invitation()
-      if (res.statusCode === 201) {
-        formResister.setFieldsValue({ inviteCode: res.data });
-      }
-    }
-
-    fetch()
-  });
 
   // 注册
   const onFinishEmail = async (values: any): Promise<void> => {
@@ -41,14 +31,41 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         hcaptchaToken: 'hcaptcha_token_here'
       })
       if (resEmailSignup.statusCode === 201) {
-        message.success('注册成功')
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              注册成功
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
         router.push('/')
       } else {
-        message.warning(`注册失败：${resEmailSignup.message}`)
+        message.info({
+          content: <span>
+            <ExclamationCircleOutlined />
+            <span>
+              注册失败：{resEmailSignup.message}
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        });
       }
     } catch (e) {
       console.error(e)
-      message.error('注册失败')
+      message.info({
+        content: <span>
+          <ExclamationCircleOutlined />
+          <span>
+            注册失败
+          </span>
+        </span>,
+        className: 'custom-message',
+        icon: ''
+      });
     }
   };
 
@@ -58,26 +75,33 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 
   // 校验邮箱是否存在
   const verifyEmailRule = async (): Promise<void> => {
-    try {
-      setLoading(true)
+    // https://github.com/ant-design/ant-design/issues/23077
+    return new Promise((resolve, reject) => {
+      clearTimeout(timer)
+      let _timer = setTimeout(async () => {
+        try {
+          setLoading(true)
 
-      const values = await formResister.getFieldsValue()
-
-      const res = await accountsEmailVerify({ email: trim(values.email) })
-      if (res.statusCode === 200) {
-        if (res.data.isExists) {
-          return Promise.reject(new Error('邮箱已注册'))
+          const values = await formResister.getFieldsValue()
+          const res = await accountsEmailVerify({ account: trim(values.email) })
+          if (res.statusCode === 200) {
+            if (res.data.isExists) {
+              reject('邮箱已注册')
+            }
+          } else {
+            reject('验证失败')
+          }
+          resolve()
+        } catch (errorInfo) {
+          console.log('Failed:', errorInfo);
+          reject('验证失败')
+        } finally {
+          setLoading(false)
         }
-      } else {
-        return Promise.reject(new Error('验证失败'))
-      }
-      return Promise.resolve()
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-      return Promise.reject(new Error('验证失败'))
-    } finally {
-      setLoading(false)
-    }
+      }, 500)
+
+      setTimer(_timer)
+    })
   };
 
   return (
