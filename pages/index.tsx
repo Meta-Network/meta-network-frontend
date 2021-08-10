@@ -13,6 +13,7 @@ import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-desi
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { cloneDeep, isEmpty } from 'lodash'
+import { useMount } from 'ahooks'
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
@@ -96,8 +97,6 @@ export default function Home() {
   // 自己的占领坐标 完成标签
   const [hexGridsMineTag, setHexGridsMineTag] = useState<boolean>(false)
 
-
-
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
     return allNode.filter(i => !!i)
@@ -168,7 +167,7 @@ export default function Home() {
   }, [hex])
 
   // init
-  useEffect(() => {
+  useMount(() => {
     fetchHexGriids()
 
     resizeFn()
@@ -182,7 +181,7 @@ export default function Home() {
     fetchHexGridsMine()
 
     // messageFn()
-  }, []);
+  });
 
   // 获取邀请码
   const fetchInviteCode = useCallback(
@@ -579,7 +578,7 @@ export default function Home() {
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
-        !isEmpty(hexGridsMineData) && hexGridsMineTag ?
+        isEmpty(hexGridsMineData) && hexGridsMineTag ?
         <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
       <div id="container">
