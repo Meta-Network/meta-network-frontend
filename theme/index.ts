@@ -1,8 +1,8 @@
 export const theme = {
   // font family
   // TODO:
-  fontFamilyZH: 'Source Han Sans TC',
-  fontFamilyEN: 'Inter',
+  fontFamilyZH: 'Noto Sans TC, sans-serif',
+  fontFamilyEN: 'Inter, sans-serif',
 
   // Title
   fontSize1: '42px',
