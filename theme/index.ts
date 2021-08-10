@@ -1,7 +1,7 @@
 export const theme = {
   // font family
   // TODO:
-  fontFamilyZH: '思源黑 Source Han Sans TC',
+  fontFamilyZH: 'Source Han Sans TC',
   fontFamilyEN: 'Inter',
 
   // Title

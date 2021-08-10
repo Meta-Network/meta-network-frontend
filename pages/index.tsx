@@ -27,11 +27,12 @@ import Occupied from '../components/Occupied/Index'
 import UserAvatar from '../components/IndexPage/UserAvatar'
 import UserMore from '../components/IndexPage/UserMore'
 import { AddSvg } from '../components/Svg/Index'
+import NoticeBardOccupied from '../components/NoticeBardOccupied/Index'
 
-import { 
+import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
- } from '../services/metaNetwork'
- import { invitationsMine } from '../services/ucenter'
+} from '../services/metaNetwork'
+import { invitationsMine } from '../services/ucenter'
 
 
 let d3: any = null
@@ -86,6 +87,9 @@ export default function Home() {
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
   // 邀请码
   const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
+  // 占领通知状态
+  const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false);
+
 
   // 收藏坐标点
   const bookmarkNode = useMemo(() => {
@@ -107,6 +111,13 @@ export default function Home() {
 
   // 计算所有可选择坐标范围
   useEffect(() => {
+
+    //  未开启选择功能
+    if (!noticeBardOccupiedState) {
+      setAllNodeChoose([])
+      return
+    }
+
     if (allNode.length) {
       let points = []
       let distance = 1
@@ -129,10 +140,9 @@ export default function Home() {
           continue
         }
       }
-      console.log('points', points)
       setAllNodeChoose(points)
     }
-  }, [allNode, hex])
+  }, [allNode, hex, noticeBardOccupiedState])
 
   // 计算半径为10不可选区域
   useEffect(() => {
@@ -546,6 +556,8 @@ export default function Home() {
       <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode} inviteCodeData={inviteCodeData}></ToggleSlider>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
+      <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied>
+
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
