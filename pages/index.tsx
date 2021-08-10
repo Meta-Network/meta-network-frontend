@@ -122,6 +122,11 @@ export default function Home() {
       setAllNodeChoose([])
       return
     }
+    // 已经占领
+    if (!isEmpty(hexGridsMineData)) {
+      setAllNodeChoose([])
+      return
+    }
 
     if (allNode.length) {
       let points = []
@@ -477,6 +482,15 @@ export default function Home() {
           <Text>
             <tspan x="0" y="-10">{node[0]?.username || '暂无昵称'}</tspan>
             <tspan x="0" y="10">{'暂无简介'}</tspan>
+            {
+              (
+                !isEmpty(hexGridsMineData) &&
+                hexGridsMineData.x === node[0].x &&
+                hexGridsMineData.y === node[0].y &&
+                hexGridsMineData.z === node[0].z
+              ) ?
+              <tspan x="0" y="30">⭐️</tspan> : null
+            }
           </Text>
         </>
       )
