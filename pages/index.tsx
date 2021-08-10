@@ -152,7 +152,7 @@ export default function Home() {
       }
       setAllNodeChoose(points)
     }
-  }, [allNode, hex, noticeBardOccupiedState])
+  }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
 
   // 计算半径为10不可选区域
   useEffect(() => {
