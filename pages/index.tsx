@@ -255,9 +255,14 @@ export default function Home() {
         const res = await hexGridsMine()
         if (res.statusCode === 200 && res.data) {
           setHexGridsMineData(res.data)
+
+          translateMap({ x: res.data.x, y: res.data.y, z: res.data.z }, false)
+        } else {
+          throw new Error('没有占领')
         }
       } catch (e) {
         console.log(e)
+        translateMap({ x: 0, y: 11, z: -11 }, false)
       } finally {
         setHexGridsMineTag(true)
       }
@@ -307,16 +312,8 @@ export default function Home() {
       svg.attr("transform", tran);
     }
 
-    let { x, y } = calcTranslate(layout, { x: 0, y: -11 })
-    svg.transition()
-      .duration(1300)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(x, y).scale(1),
-      )
-
     svg.node();
-  }, [width, height, layout])
+  }, [width, height])
 
   // 渲染坐标地图
   useEffect(() => {
@@ -352,10 +349,13 @@ export default function Home() {
   }, [])
 
   // 偏移地图坐标
-  const translateMap = useCallback(({ x, y, z }: PointState) => {
+  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
+      if (!showUserInfo) {
+        return
+      }
       const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
       if (!node.length) {
         messageFn('没有坐标数据')
