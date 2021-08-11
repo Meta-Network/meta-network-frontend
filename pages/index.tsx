@@ -6,8 +6,6 @@ import { SVG } from '@svgdotjs/svg.js'
 import { Display } from 'rot-js'
 import { hexbin } from 'd3-hexbin';
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
-import tippy from 'tippy.js';
-import Tippy from '@tippyjs/react';
 import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
