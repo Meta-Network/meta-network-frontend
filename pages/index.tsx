@@ -382,8 +382,10 @@ export default function Home() {
       setCurrentNodeChoose(point)
       setIsModalVisibleOccupied(true)
       return
-    } else if (mode === 'default' || mode === 'disabled') {
+    } else if (mode === 'default') {
       messageFn('请选择紧挨已注册用户的地块')
+      return
+    } else if (mode === 'disabled') {
       return
     }
 
@@ -588,6 +590,33 @@ export default function Home() {
     fetchBookmark()
   }
 
+  // 处理移除收藏
+  const HandleRemoveBookmark = useCallback(
+    (bookmarkNodeList: hexGridsByFilterState[]) => {
+      const key = 'MetaNetWorkBookmark'
+      const bookmark = StoreGet(key)
+      let bookmarkList: PointState[] = JSON.parse(bookmark)
+
+      for (let i = 0; i < bookmarkNodeList.length; i++) {
+        const ele = bookmarkNodeList[i];
+        const idx = bookmarkList.findIndex(j =>
+          j.x === ele.x &&
+          j.y === ele.y &&
+          j.z === ele.z
+        )
+        if (~idx) {
+          bookmarkList.splice(idx, 1)
+        }
+      }
+
+      StoreSet(key, JSON.stringify(bookmarkList))
+      fetchBookmark()
+
+      messageFn('移除收藏成功')
+    },
+    [fetchBookmark]
+  )
+
   // 处理占领
   const handleOccupied = async () => {
     console.log('currentNodeChoose', currentNodeChoose)
@@ -622,7 +651,11 @@ export default function Home() {
 
   return (
     <>
-      <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode} inviteCodeData={inviteCodeData}></ToggleSlider>
+      <ToggleSlider
+        translateMap={translateMap}
+        bookmarkNode={bookmarkNode}
+        inviteCodeData={inviteCodeData}
+        HandleRemoveBookmark={HandleRemoveBookmark}></ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>

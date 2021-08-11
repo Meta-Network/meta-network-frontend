@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components'
 import { Avatar, Radio, Button } from 'antd';
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
@@ -7,18 +7,66 @@ import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
 import { NodeState } from '../../typings/node.d'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
+import { cloneDeep } from 'lodash';
 
 interface Props {
-  isModalVisible: boolean,
+  readonly isModalVisible: boolean,
+  readonly bookmarkNode: hexGridsByFilterState[]
   setIsModalVisible: (value: boolean) => void
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
-  bookmarkNode: hexGridsByFilterState[]
   setVisibleSlider: (value: boolean) => void
+  HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
 
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode, setVisibleSlider }) => {
-
+const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode, setVisibleSlider, HandleRemoveBookmark }) => {
   const [selected, setSelected] = useState<boolean>(false)
+  const [bookmarkNodeChecked, setBookmarkNodeChecked] = useState<boolean[]>([])
+
+  // 监听数据 重制状态
+  // selected, isModalVisible
+  useEffect(() => {
+    const list = bookmarkNode.map(() => false)
+    setBookmarkNodeChecked(list)
+
+    // 如果删除完了
+    // 如果关闭了窗口
+    if (bookmarkNode.length <= 0 || !isModalVisible) {
+      setSelected(false)
+    }
+
+  }, [bookmarkNode, selected, isModalVisible])
+
+  // 切换 单选按钮
+  const toggleRadio = useCallback(
+    (idx: number) => {
+      let list = cloneDeep(bookmarkNodeChecked)
+      list[idx] = !list[idx]
+      setBookmarkNodeChecked(list)
+    },
+    [bookmarkNodeChecked],
+  )
+  // 选中全部
+  const checkedAll = useCallback(
+    (value: boolean) => {
+      let list = bookmarkNodeChecked.map(i => i = value)
+      setBookmarkNodeChecked(list)
+    },
+    [bookmarkNodeChecked],
+  )
+
+  // 选中统计
+  const countCheck = useMemo(() => {
+    return (bookmarkNodeChecked.filter(i => !!i)).length
+  }, [bookmarkNodeChecked])
+
+  // 移除选中项
+  const removeChecked = useCallback(
+    () => {
+      const list = bookmarkNode.filter((_, idx) => bookmarkNodeChecked[idx])
+      HandleRemoveBookmark(list)
+    },
+    [bookmarkNode, bookmarkNodeChecked, HandleRemoveBookmark],
+  )
 
   /**
    * 切换收藏坐标点
@@ -49,40 +97,53 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
             {
               selected ?
               <StyledItemHeadSelected onClick={ () => setSelected(false) }>完成</StyledItemHeadSelected> :
-              <StyledItemHeadIconSelected onClick={ () => setSelected(true) } />
+              (
+                bookmarkNode.length > 0 ?
+                <StyledItemHeadIconSelected onClick={ () => setSelected(true) } /> : null
+              )
             }
           </div>
         </StyledItemHead>
-        <StyledItem >
-          {
-            bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
-              <StyledItemLi key={idx}>
-                <Avatar size={40} src={''} icon={<UserOutlined />} />
-                <StyledItemLiUser>
-                  <h3>{ i.username || '暂无昵称' }</h3>
-                  <p>{'暂无简介'}</p>
-                </StyledItemLiUser>
-                {
-                  selected ?
-                  <StyledItemHeadIconRadio></StyledItemHeadIconRadio>:
-                  <StyledItemLiButton
-                    onClick={ () => ToggleFn({
-                      x: i.x,
-                      y: i.y,
-                      z: i.z,
-                    }) }>查看</StyledItemLiButton>
-                }
-              </StyledItemLi>
-            ))
-          }
-          {
-            selected ?
-            <StyledContentFooter>
-              <Button className="custom-default">全部选中</Button>
-              <Button className="custom-primary">移除3项</Button>
-            </StyledContentFooter>: null
-          }
-        </StyledItem>
+          <StyledItem >
+            {
+              bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
+                <StyledItemLi key={idx}>
+                  <Avatar size={40} src={'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
+                  <StyledItemLiUser>
+                    <h3>{ i.username || '暂无昵称' }</h3>
+                    <p>{'暂无简介'} x:{i.x} y:{i.y} z:{i.z}</p>
+                  </StyledItemLiUser>
+                  {
+                    selected ?
+                    <StyledItemHeadIconRadio
+                      onClick={() => toggleRadio(idx)}
+                      className="custom-radio"
+                      checked={ bookmarkNodeChecked[idx] }></StyledItemHeadIconRadio>:
+                    <StyledItemLiButton
+                      onClick={ () => ToggleFn({
+                        x: i.x,
+                        y: i.y,
+                        z: i.z,
+                      }) }>查看</StyledItemLiButton>
+                  }
+                </StyledItemLi>
+              ))
+            }
+            {
+              selected ?
+              <StyledContentFooter>
+                <Button
+                  className="custom-default"
+                  onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
+                >
+                  {
+                    countCheck >= bookmarkNodeChecked.length ? '取消全选' : '全部选中'
+                  }
+                </Button>
+                <Button className="custom-primary" onClick={removeChecked}>移除{countCheck}项</Button>
+              </StyledContentFooter>: null
+            }
+          </StyledItem>
       </>
     )
   }

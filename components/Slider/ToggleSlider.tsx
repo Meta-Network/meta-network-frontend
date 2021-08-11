@@ -19,12 +19,13 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface Props {
-  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   readonly bookmarkNode: hexGridsByFilterState[]
   readonly inviteCodeData: InviitationsMineState[]
+  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
 
-const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData }) => {
+const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, HandleRemoveBookmark }) => {
 
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user } = useUser()
@@ -174,6 +175,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
         translateMap={translateMap}
         bookmarkNode={bookmarkNode}
         setVisibleSlider={setVisibleSlider}
+        HandleRemoveBookmark={HandleRemoveBookmark}
       ></Bookmark>
       <InviteCode
         isModalVisible={isModalVisibleInviteCode}

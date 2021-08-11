@@ -66,3 +66,17 @@
     border: 1px solid #CAF12E;
   }
 }
+
+// antd radio
+.custom-radio {
+  .ant-radio-inner {
+    background-color: transparent;
+    border-color: #CAF12E;
+  }
+  .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+    border-color: #CAF12E;
+  }
+  .ant-radio-inner::after {
+    background-color: #CAF12E;
+  }
+}
