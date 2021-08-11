@@ -228,7 +228,7 @@ export default function Home() {
   const fetchBookmark = useCallback(() => {
     const key = 'MetaNetWorkBookmark'
     const bookmark = StoreGet(key)
-    let bookmarkList: PointState[] = JSON.parse(bookmark)
+    let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
     setBookmark(bookmarkList)
   }, [])
 
@@ -556,7 +556,6 @@ export default function Home() {
   const HandleBookmark = (currentNode: hexGridsByFilterState) => {
     const key = 'MetaNetWorkBookmark'
     const bookmark = StoreGet(key)
-    console.log('bookmark', JSON.parse(bookmark))
     const x = currentNode.x
     const y = currentNode.y
     const z = currentNode.z
@@ -567,7 +566,7 @@ export default function Home() {
       StoreSet(key, JSON.stringify([point]))
       messageFn('收藏成功')
     } else {
-      let bookmarkList: PointState[] = JSON.parse(bookmark)
+      let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
         i.x === x &&
         i.y === y &&
@@ -593,7 +592,7 @@ export default function Home() {
     (bookmarkNodeList: hexGridsByFilterState[]) => {
       const key = 'MetaNetWorkBookmark'
       const bookmark = StoreGet(key)
-      let bookmarkList: PointState[] = JSON.parse(bookmark)
+      let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
 
       for (let i = 0; i < bookmarkNodeList.length; i++) {
         const ele = bookmarkNodeList[i];
