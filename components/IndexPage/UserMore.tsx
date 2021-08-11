@@ -1,18 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
+import { PointState } from '../../typings/node';
+import { isArray } from 'lodash';
 
 interface Props {
+  readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
 }
 
-const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
+const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) => {
+  // 是否收藏
+  const isBookmark = useMemo(() => {
+    if (!isArray(bookmark)) {
+      return false
+    }
+    console.log('bookmark', bookmark)
+    const res = bookmark.findIndex(i =>
+      i.x === currentNode.x &&
+      i.y === currentNode.y &&
+      i.z === currentNode.z
+    )
+    return ~res
+  }, [ bookmark, currentNode])
 
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
@@ -39,7 +55,6 @@ const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
         </span>
       </span>,
       className: 'custom-message',
-      duration: 2,
       icon: ''
     });
   }
@@ -48,7 +63,7 @@ const UserMore: React.FC<Props> = ({ currentNode, HandleBookmark }) => {
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="bookmark" icon={<TagsOutlined />}>
         {
-          false ? '取消收藏': '收藏'
+          isBookmark ? '取消收藏': '收藏'
         }
       </Menu.Item>
       <Menu.Item disabled key="beat" icon={<SmileOutlined />}>

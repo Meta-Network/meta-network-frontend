@@ -20,8 +20,8 @@ import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface Props {
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
-  bookmarkNode: hexGridsByFilterState[]
-  inviteCodeData: InviitationsMineState[]
+  readonly bookmarkNode: hexGridsByFilterState[]
+  readonly inviteCodeData: InviitationsMineState[]
 }
 
 const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData }) => {

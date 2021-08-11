@@ -12,11 +12,12 @@ import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { cloneDeep, isEmpty } from 'lodash'
+import { assign, cloneDeep, isEmpty } from 'lodash'
 import { useMount } from 'ahooks'
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
+import { StoreGet, StoreSet } from '../utils/store'
 import { randomRange, cubeToAxial } from '../utils/index'
 import { NodeState, PointState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
@@ -65,7 +66,7 @@ export default function Home() {
     "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
     "origin": { "x": 100, "y": 100 },
     "map": "hexagon",
-    "mapProps": [22]
+    "mapProps": [15]
   })
   const [layout, setLayout] = useState( { "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
   const [size, setSize] = useState({ x: layout.width, y: layout.height })
@@ -96,11 +97,26 @@ export default function Home() {
   const [hexGridsMineData, setHexGridsMineData] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
   // 自己的占领坐标 完成标签
   const [hexGridsMineTag, setHexGridsMineTag] = useState<boolean>(false)
-
   // 收藏坐标点
+  const [bookmark, setBookmark] = useState<PointState[]>([])
+  // 收藏坐标点 合并数据后
   const bookmarkNode = useMemo(() => {
-    return allNode.filter(i => !!i)
-  }, [allNode])
+    let _bookmark = cloneDeep(bookmark)
+
+    for (let i = 0; i < _bookmark.length; i++) {
+      const ele = _bookmark[i];
+      const _node = allNode.filter(node =>
+        node.x === ele.x &&
+        node.y === ele.y &&
+        node.z === ele.z
+      )
+      if (_node.length) {
+        assign(ele, _node)
+      }
+    }
+
+    return _bookmark as hexGridsByFilterState[]
+  }, [ allNode, bookmark ])
 
   // resize event
   const resizeFn = () => {
@@ -172,21 +188,30 @@ export default function Home() {
   }, [hex])
 
   // init
-  useMount(() => {
-    fetchHexGriids()
+  useMount(
+    async () => {
+      await fetchHexGriids()
+      await fetchHexGridsMine()
+      renderHexGrids()
 
-    resizeFn()
-    window.addEventListener('resize', resizeFn)
+      resizeFn()
+      window.addEventListener('resize', resizeFn)
 
-    document.addEventListener('click', () => {
-      apiUserInfo.start({ opacity: 0, display: 'none' })
-    }, false)
+      document.addEventListener('click', () => {
+        apiUserInfo.start({ opacity: 0, display: 'none' })
+      }, false)
 
-    fetchInviteCode()
-    fetchHexGridsMine()
+      fetchInviteCode()
+      fetchBookmark()
+    }
+  );
 
-    // messageFn()
-  });
+  const fetchBookmark = useCallback(() => {
+    const key = 'MetaNetWorkBookmark'
+    const bookmark = StoreGet(key)
+    let bookmarkList: PointState[] = JSON.parse(bookmark)
+    setBookmark(bookmarkList)
+  }, [])
 
   // 获取邀请码
   const fetchInviteCode = useCallback(
@@ -273,7 +298,7 @@ export default function Home() {
   }, [ width, height ]);
 
   // 渲染坐标地图
-  useEffect(() => {
+  const renderHexGrids = useCallback(() => {
     const generator = GridGenerator.getGenerator(config.map);
     const hexagons = generator.apply(null, config.mapProps);
 
@@ -326,7 +351,7 @@ export default function Home() {
     const showUserMore = () => {
       const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
       if (!node.length) {
-        message.warning('没有坐标数据')
+        messageFn('没有坐标数据')
         return
       }
       setCurrentNode(node[0])
@@ -351,17 +376,7 @@ export default function Home() {
       setIsModalVisibleOccupied(true)
       return
     } else if (mode === 'default' || mode === 'disabled') {
-      message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
-          <span>
-            请选择紧挨已注册用户的地块
-          </span>
-        </span>,
-        className: 'custom-message',
-        duration: 1,
-        icon: ''
-      });
+      messageFn('请选择紧挨已注册用户的地块')
       return
     }
 
@@ -372,45 +387,45 @@ export default function Home() {
     })
   }
 
-  const messageFn = () => {
-    message.info({
-      content: <StyledMessageRelative>
-        <ExclamationCircleOutlined />
-        {/* 140 - 12 + 40 */}
-        <span style={{ paddingRight: 168, overflow: 'hidden' }}>
-          现在就开始建立你在元宇宙网络的个人站点吧！
-          <StyledMessageButton>开始创建</StyledMessageButton>
-        </span>
-      </StyledMessageRelative>,
-      className: 'custom-message',
-      duration: 0,
-      icon: ''
-    });
+  // const messageFn = () => {
+  //   message.info({
+  //     content: <StyledMessageRelative>
+  //       <ExclamationCircleOutlined />
+  //       {/* 140 - 12 + 40 */}
+  //       <span style={{ paddingRight: 168, overflow: 'hidden' }}>
+  //         现在就开始建立你在元宇宙网络的个人站点吧！
+  //         <StyledMessageButton>开始创建</StyledMessageButton>
+  //       </span>
+  //     </StyledMessageRelative>,
+  //     className: 'custom-message',
+  //     duration: 0,
+  //     icon: ''
+  //   });
 
-    message.info({
-      content: <span className="g-green">
-        <ExclamationCircleOutlined />
-        <span>
-          首先，请认领一块空白的地块
-        </span>
-      </span>,
-      className: 'custom-message',
-      duration: 0,
-      icon: ''
-    });
+  //   message.info({
+  //     content: <span className="g-green">
+  //       <ExclamationCircleOutlined />
+  //       <span>
+  //         首先，请认领一块空白的地块
+  //       </span>
+  //     </span>,
+  //     className: 'custom-message',
+  //     duration: 0,
+  //     icon: ''
+  //   });
 
-    message.info({
-      content: <span>
-        <ExclamationCircleOutlined />
-        <span>
-          请选择紧挨已注册用户的地块
-        </span>
-      </span>,
-      className: 'custom-message',
-      duration: 0,
-      icon: ''
-    });
-  };
+  //   message.info({
+  //     content: <span>
+  //       <ExclamationCircleOutlined />
+  //       <span>
+  //         请选择紧挨已注册用户的地块
+  //       </span>
+  //     </span>,
+  //     className: 'custom-message',
+  //     duration: 0,
+  //     icon: ''
+  //   });
+  // };
 
   // 计算节点模式
   const calcNodeMode = ({
@@ -477,11 +492,20 @@ export default function Home() {
 
     const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
     if (node.length) {
+
+      // 是否收藏
+      const isBookmark = bookmark.findIndex(i =>
+        i.x === node[0].x &&
+        i.y === node[0].y &&
+        i.z === node[0].z
+      )
+
       return (
         <>
           <Text>
             <tspan x="0" y="-10">{node[0]?.username || '暂无昵称'}</tspan>
             <tspan x="0" y="10">{'暂无简介'}</tspan>
+            {/* 自己的坐标点 */}
             {
               (
                 !isEmpty(hexGridsMineData) &&
@@ -489,7 +513,12 @@ export default function Home() {
                 hexGridsMineData.y === node[0].y &&
                 hexGridsMineData.z === node[0].z
               ) ?
-              <tspan x="0" y="30">⭐️</tspan> : null
+              <tspan x="0" y="-30">🏡</tspan> : null
+            }
+            {/* 收藏的坐标点 */}
+            {
+              ~isBookmark ?
+              <tspan x="0" y="38">⭐️</tspan> : null
             }
           </Text>
         </>
@@ -503,45 +532,53 @@ export default function Home() {
     return null
   }, [allNode, allNodeDisabled, allNodeChoose])
 
-  // 处理收藏
-  const HandleBookmark = (currentNode: hexGridsByFilterState) => {
-    // const allNodeList = cloneDeep(allNode)
-    // const findIdx = allNodeList.findIndex(i => i.x === currentNode.x && i.y === currentNode.y && i.z === currentNode.z)
-    // if (~findIdx) {
-    //   allNodeList[findIdx].bookmark = !allNodeList[findIdx].bookmark
-    // } else {
-    //   message.warning('收藏失败')
-    //   return
-    // }
-
-    // setAllNode(allNodeList)
-    // setCurrentNode(allNodeList[findIdx])
-
-    // message.info({
-    //   content: <span>
-    //     <ExclamationCircleOutlined />
-    //     <span>
-    //       {
-    //         currentNode.bookmark ? '取消收藏成功' : '收藏成功'
-    //       }
-    //     </span>
-    //   </span>,
-    //   className: 'custom-message',
-    //   duration: 2,
-    //   icon: ''
-    // });
-
+  const messageFn = useCallback((text: string) => {
     message.info({
       content: <span>
         <ExclamationCircleOutlined />
         <span>
-          收藏操作
+          {text}
         </span>
       </span>,
       className: 'custom-message',
-      duration: 2,
       icon: ''
-    });
+    })
+  }, [])
+
+  // 处理收藏
+  const HandleBookmark = (currentNode: hexGridsByFilterState) => {
+    const key = 'MetaNetWorkBookmark'
+    const bookmark = StoreGet(key)
+    console.log('bookmark', JSON.parse(bookmark))
+    const x = currentNode.x
+    const y = currentNode.y
+    const z = currentNode.z
+    const point = { x, y, z }
+
+    // 没有收藏记录
+    if (isEmpty(bookmark)) {
+      StoreSet(key, JSON.stringify([point]))
+      messageFn('收藏成功')
+    } else {
+      let bookmarkList: PointState[] = JSON.parse(bookmark)
+      const bookmarkListIdx = bookmarkList.findIndex(i =>
+        i.x === x &&
+        i.y === y &&
+        i.z === z
+      )
+      // 取消收藏
+      if (~bookmarkListIdx) {
+        bookmarkList.splice(bookmarkListIdx, 1)
+        messageFn('取消收藏')
+      } else {
+        bookmarkList.push(point)
+        messageFn('收藏成功')
+      }
+
+      StoreSet(key, JSON.stringify(bookmarkList))
+    }
+
+    fetchBookmark()
   }
 
   // 处理占领
@@ -564,17 +601,7 @@ export default function Home() {
     try {
       const res = await hexGrids(currentNodeChoose)
       if (res.statusCode === 201) {
-        message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
-            <span>
-              占领成功
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
-
+        messageFn('占领成功')
         fetchHexGriids()
         setIsModalVisibleOccupied(false)
       } else {
@@ -589,12 +616,6 @@ export default function Home() {
   return (
     <>
       <ToggleSlider translateMap={translateMap} bookmarkNode={bookmarkNode} inviteCodeData={inviteCodeData}></ToggleSlider>
-      <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
-      <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
-      {
-        isEmpty(hexGridsMineData) && hexGridsMineTag ?
-        <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
-      }
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
@@ -634,16 +655,21 @@ export default function Home() {
         </HexGrid>
         <div className="point"></div>
       </div>
-
+      <MarkContainer></MarkContainer>
       <animated.div style={stylesUserInfo}>
         <UserAvatar url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75' }></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
-        <UserMore currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
+        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
       </animated.div>
 
-      <MarkContainer></MarkContainer>
+      <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
+      <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
+      {
+        isEmpty(hexGridsMineData) && hexGridsMineTag ?
+        <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+      }
     </>
   )
 }
