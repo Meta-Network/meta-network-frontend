@@ -3,9 +3,7 @@ import styled from 'styled-components'
 import { Avatar, Radio, Button } from 'antd';
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
 
-import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
-import { NodeState } from '../../typings/node.d'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { cloneDeep } from 'lodash';
 
@@ -18,6 +16,11 @@ interface Props {
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
 
+/**
+ * 收藏 Modal
+ * @param param0
+ * @returns
+ */
 const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode, setVisibleSlider, HandleRemoveBookmark }) => {
   const [selected, setSelected] = useState<boolean>(false)
   const [bookmarkNodeChecked, setBookmarkNodeChecked] = useState<boolean[]>([])
@@ -98,6 +101,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
               selected ?
               <StyledItemHeadSelected onClick={ () => setSelected(false) }>完成</StyledItemHeadSelected> :
               (
+                // 没有数据不展示多选按钮
                 bookmarkNode.length > 0 ?
                 <StyledItemHeadIconSelected onClick={ () => setSelected(true) } /> : null
               )
