@@ -124,3 +124,17 @@ export const axialToCube = (x: number, y: number) => ({
   y: -x-y,
   z: y,
 })
+
+// 计算偏移位置
+export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) => {
+  // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
+  // 方向不同 算法有细微差别
+
+  let _x = layout.width * (Math.sqrt(3) * -x + Math.sqrt(3) / 2 * -y)
+  let _y = layout.height * (3 / 2 * -y)
+  _x = _x * layout.spacing
+  _y = _y * layout.spacing
+  return {
+    x: _x, y: _y
+  }
+}

@@ -18,7 +18,7 @@ import { useMount } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { randomRange, cubeToAxial } from '../utils/index'
+import { randomRange, cubeToAxial, calcTranslate } from '../utils/index'
 import { NodeState, PointState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
@@ -68,6 +68,8 @@ export default function Home() {
     "map": "hexagon",
     "mapProps": [15]
   })
+  const [map, setMap] = useState<string>('hexagon')
+  const [mapProps, setMapProps] = useState<number[]>([15])
   const [layout, setLayout] = useState( { "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
   const [size, setSize] = useState({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(config.width);
@@ -189,10 +191,9 @@ export default function Home() {
 
   // init
   useMount(
-    async () => {
-      await fetchHexGriids()
-      await fetchHexGridsMine()
-      renderHexGrids()
+    () => {
+      fetchHexGriids()
+      fetchHexGridsMine()
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
@@ -206,6 +207,26 @@ export default function Home() {
     }
   );
 
+  // 计算最远距离
+  const calcMaxDistance = (node: hexGridsByFilterState[]) => {
+    let max = 0
+    for (let i = 0; i < node.length; i++) {
+      const ele = node[i];
+      if (Math.abs(ele.x) > max) {
+        max = Math.abs(ele.x)
+      }
+      if (Math.abs(ele.y) > max) {
+        max = Math.abs(ele.y)
+      }
+      if (Math.abs(ele.z) > max) {
+        max = Math.abs(ele.z)
+      }
+    }
+
+    return [max + 6]
+  }
+
+  // 获取收藏记录
   const fetchBookmark = useCallback(() => {
     const key = 'MetaNetWorkBookmark'
     const bookmark = StoreGet(key)
@@ -286,7 +307,7 @@ export default function Home() {
       svg.attr("transform", tran);
     }
 
-    let { x, y } = calcTranslate({ x: 0, y: -11 })
+    let { x, y } = calcTranslate(layout, { x: 0, y: -11 })
     svg.transition()
       .duration(1300)
       .call(
@@ -295,18 +316,18 @@ export default function Home() {
       )
 
     svg.node();
-  }, [ width, height ]);
+  }, [width, height, layout])
 
   // 渲染坐标地图
-  const renderHexGrids = useCallback(() => {
-    const generator = GridGenerator.getGenerator(config.map);
-    const hexagons = generator.apply(null, config.mapProps);
+  useEffect(() => {
+    const generator = GridGenerator.getGenerator(map);
+    const _mapProps = allNode.length ? calcMaxDistance(allNode) : mapProps
+    const hexagons = generator.apply(null, _mapProps);
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
-
     setContainerDrag()
-  }, []);
+  }, [ mapProps, allNode, map, setContainerDrag ]);
 
   // 获取范围坐标点
   const fetchHexGriids = useCallback(
@@ -330,22 +351,8 @@ export default function Home() {
       }
   }, [])
 
-  // 计算偏移位置
-  const calcTranslate = ({ x, y }: { x: number, y: number }) => {
-    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
-    // 方向不同 算法有细微差别
-
-    let _x = layout.width * (Math.sqrt(3) * -x + Math.sqrt(3) / 2 * -y)
-    let _y = layout.height * (3 / 2 * -y)
-    _x = _x * layout.spacing
-    _y = _y * layout.spacing
-    return {
-      x: _x, y: _y
-    }
-  }
-
   // 偏移地图坐标
-  const translateMap = ({ x, y, z }: PointState) => {
+  const translateMap = useCallback(({ x, y, z }: PointState) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
@@ -359,7 +366,7 @@ export default function Home() {
     }
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    let { x: _x, y: _y } = calcTranslate({ x: hexX, y: HexY })
+    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
     svg.transition()
     .duration(1000)
     .call(
@@ -367,7 +374,7 @@ export default function Home() {
       d3.zoomIdentity.translate(_x, _y).scale(1),
     )
     .on('end', showUserMore)
-  }
+  }, [ allNode, apiUserInfo, layout ])
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
@@ -530,9 +537,9 @@ export default function Home() {
       return <Text className={styles['hexagon-add']}>+</Text>
     }
     return null
-  }, [allNode, allNodeDisabled, allNodeChoose])
+  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, hexGridsMineData])
 
-  const messageFn = useCallback((text: string) => {
+  const messageFn = (text: string) => {
     message.info({
       content: <span>
         <ExclamationCircleOutlined />
@@ -543,7 +550,7 @@ export default function Home() {
       className: 'custom-message',
       icon: ''
     })
-  }, [])
+  }
 
   // 处理收藏
   const HandleBookmark = (currentNode: hexGridsByFilterState) => {
