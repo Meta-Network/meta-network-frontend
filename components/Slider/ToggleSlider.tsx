@@ -14,7 +14,7 @@ import { useUser } from '../../hooks/useUser'
 import { accountsTokenDelete } from '../../services/ucenter'
 import Bookmark from '../Bookmark/Index'
 import InviteCode from '../InviteCode/Index'
-import { NodeState } from '../../typings/node.d'
+import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
@@ -34,6 +34,8 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
   // 邀请码
   const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false);
+  // 搜索
+  const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
 
   const showDrawer = () => {
     setVisibleSlider(true);
@@ -80,7 +82,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
           <h4>导航</h4>
         </li>
         <li>
-          <a href="">
+          <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
             <SearchOutlined />
             搜索
           </a>
@@ -182,6 +184,10 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
         setIsModalVisible={setIsModalVisibleInviteCode}
         inviteCodeData={inviteCodeData}
       ></InviteCode>
+      <SearchModal
+        isModalVisible={isModalVisibleSearch}
+        setIsModalVisible={setIsModalVisibleSearch}
+      ></SearchModal>
     </>
   )
 }

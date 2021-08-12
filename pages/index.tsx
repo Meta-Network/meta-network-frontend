@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
-import { defineGrid, extendHex } from 'honeycomb-grid'
 import { SVG } from '@svgdotjs/svg.js'
 import { Display } from 'rot-js'
 import { hexbin } from 'd3-hexbin';
@@ -16,8 +15,8 @@ import { useMount } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { randomRange, cubeToAxial, calcTranslate } from '../utils/index'
-import { NodeState, PointState } from '../typings/node.d'
+import { cubeToAxial, calcTranslate } from '../utils/index'
+import { PointState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
 
