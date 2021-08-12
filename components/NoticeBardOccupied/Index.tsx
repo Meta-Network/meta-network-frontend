@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { animated } from 'react-spring'
+import { useUser } from '../../hooks/useUser'
+import { isEmpty } from 'lodash';
+import { message } from 'antd'
 
 interface Props {
   readonly status: boolean
-  readonly style: React.CSSProperties
+  readonly style: any
   setNoticeBardOccupiedState: (value: boolean) => void
 }
 
 const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState, style }) => {
+  const { user } = useUser()
+
+  const ToggleState = useCallback(() => {
+    if (isEmpty(user)) {
+      message.info('请登录')
+      return
+    }
+    setNoticeBardOccupiedState(!status)
+  }, [ user, status, setNoticeBardOccupiedState ])
+
   return (
     <StyledMessageRelative style={style}>
       <ExclamationCircleOutlined />
@@ -19,7 +32,11 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
           status ? '首先，请认领一块空白的地块' : '现在就开始建立你在元宇宙网络的个人站点吧！'
         }
       </StyledText>
-      <StyledMessageButton status={status} onClick={ () => setNoticeBardOccupiedState(!status) }>{ status ? '放弃创建' : '开始创建' }</StyledMessageButton>
+      <StyledMessageButton
+        status={status}
+        onClick={ToggleState}>
+          { status ? '放弃创建' : '开始创建' }
+        </StyledMessageButton>
     </StyledMessageRelative>
   )
 }
