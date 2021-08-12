@@ -72,6 +72,9 @@ export default function Home() {
   const [width, setWidth] = useState<number>(config.width);
   const [height, setHeight] = useState<number>(config.height);
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
+  // 默认坐标点
+  const defaultPoint = { x: 0, y: 11, z: -11 }
+
   // 所有节点
   const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
   // 所有可以选择的节点
@@ -268,7 +271,7 @@ export default function Home() {
         }
       } catch (e) {
         console.log(e)
-        translateMap({ x: 0, y: 11, z: -11 }, false)
+        translateMap(defaultPoint, false)
       } finally {
         setHexGridsMineTag(true)
       }
@@ -654,13 +657,23 @@ export default function Home() {
     }
   }
 
+  // 重置定位
+  const HandlePosition = () => {
+    if (isEmpty(hexGridsMineData)) {
+      translateMap(defaultPoint, false)
+    } else {
+      translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
+    }
+  }
+
   return (
     <>
       <ToggleSlider
         translateMap={translateMap}
         bookmarkNode={bookmarkNode}
         inviteCodeData={inviteCodeData}
-        HandleRemoveBookmark={HandleRemoveBookmark}></ToggleSlider>
+        HandleRemoveBookmark={HandleRemoveBookmark}
+        HandlePosition={HandlePosition}></ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>

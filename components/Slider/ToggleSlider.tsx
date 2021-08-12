@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
-  LeftOutlined, BookOutlined
+  LeftOutlined, BookOutlined, EnvironmentOutlined
 } from '@ant-design/icons'
 import { Drawer, Avatar, message, Popconfirm } from 'antd';
 import styled from 'styled-components'
@@ -23,10 +23,12 @@ interface Props {
   readonly inviteCodeData: InviitationsMineState[]
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
+  HandlePosition: () => void
 }
 
-const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, HandleRemoveBookmark }) => {
+const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, HandleRemoveBookmark, HandlePosition }) => {
 
+  // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user } = useUser()
   const router = useRouter()
@@ -152,11 +154,11 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
   return (
     <>
       <StyledButton onClick={showDrawer}>
-        {
-          isEmpty(user) ? '未登录' : '已登录'
-        }
         <MenuUnfoldOutlined />
       </StyledButton>
+      <StyledButtonMap onClick={HandlePosition}>
+        <EnvironmentOutlined />
+      </StyledButtonMap>
       <StyledSlider
         title=""
         closable={false}
@@ -199,21 +201,42 @@ const StyledButton = styled.button`
   top: 74px;
   z-index: 1;
   border: none;
-  border-top: 2px solid #C4C4C4;
-  border-right: 2px solid #C4C4C4;
-  border-bottom: 2px solid #C4C4C4;
+  border-top: 2px solid ${ props => props.theme.colorGreen };
+  border-right: 2px solid ${ props => props.theme.colorGreen };
+  border-bottom: 2px solid ${ props => props.theme.colorGreen };
   border-radius: 0 4px 4px 0;
-  background: #452d63;
+  background: rgba(19, 19, 19, 0.1);
   outline: none;
-  padding: 14px;
-  /* font-size: 16px; */
+  padding: 16px;
   font-size: ${ props => props.theme.fontSize4 };
-  color: #C4C4C4;
+  color: ${ props => props.theme.colorGreen };
   line-height: 24px;
   box-sizing: border-box;
   cursor: pointer;
   & > span {
-    margin-left: 10px;
+    font-size: 24px;
+  }
+`
+const StyledButtonMap = styled.button`
+  position: fixed;
+  left: 0;
+  top: 162px;
+  z-index: 1;
+  border: none;
+  border-top: 2px solid #caa2e7;
+  border-right: 2px solid #caa2e7;
+  border-bottom: 2px solid #caa2e7;
+  border-radius: 0 4px 4px 0;
+  background: rgba(19, 19, 19, 0.1);
+  outline: none;
+  padding: 16px;
+  font-size: ${ props => props.theme.fontSize4 };
+  color: #caa2e7;
+  line-height: 24px;
+  box-sizing: border-box;
+  cursor: pointer;
+  & > span {
+    font-size: 24px;
   }
 `
 const StyledSlider = styled(Drawer)`
