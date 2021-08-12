@@ -1,16 +1,17 @@
 import React from 'react';
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-
+import { animated } from 'react-spring'
 
 interface Props {
   readonly status: boolean
+  readonly style: React.CSSProperties
   setNoticeBardOccupiedState: (value: boolean) => void
 }
 
-const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState }) => {
+const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState, style }) => {
   return (
-    <StyledMessageRelative>
+    <StyledMessageRelative style={style}>
       <ExclamationCircleOutlined />
       {/* 140 - 12 + 40 */}
       <StyledText>
@@ -23,7 +24,7 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
   )
 }
 
-const StyledMessageRelative = styled.section`
+const StyledMessageRelative = styled(animated.section)`
   position: fixed;
   background-color: #2C2B2A;
   left: 50%;

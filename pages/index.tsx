@@ -87,8 +87,6 @@ export default function Home() {
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
   // 占领 Modal
   const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
-  // User Info
-  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
   // 邀请码
   const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
   // 占领通知状态
@@ -117,6 +115,17 @@ export default function Home() {
 
     return _bookmark as hexGridsByFilterState[]
   }, [ allNode, bookmark ])
+  // Animated react spriing
+  // User Info
+  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
+  // NoticeBard Occupied
+  const noticeBardOccupiedAnimatedStyles = useSpring({
+    from: { x: '-50%', y: -40, opacity: 0 },
+    to: { x: '-50%', y: 0, opacity: 1 },
+    config: {
+      duration: 300
+    }
+  })
 
   // resize event
   const resizeFn = () => {
@@ -705,7 +714,7 @@ export default function Home() {
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
         isEmpty(hexGridsMineData) && hexGridsMineTag ?
-        <NoticeBardOccupied status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+        <NoticeBardOccupied style={ noticeBardOccupiedAnimatedStyles } status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
     </>
   )
