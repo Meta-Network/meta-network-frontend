@@ -15,10 +15,15 @@ export interface hexGridsByFilterState {
   x: number
   y: number
   z: number
-  userId: number
-  username: string
   subdomain: string
   metaSpaceSiteId: number
   metaSpaceSiteUrl: string
   metaSpaceSiteProofUrl: string
+
+  userAvatar: string
+  userBio: string
+  userId: number
+  userNickname: string
+  username: string
+
 }

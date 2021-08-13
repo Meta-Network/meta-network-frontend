@@ -584,8 +584,8 @@ const Home = () => {
       return (
         <>
           <Text>
-            <tspan x="0" y="-10">{node[0]?.username || '暂无昵称'}</tspan>
-            <tspan x="0" y="10">{'暂无简介'}</tspan>
+            <tspan x="0" y="-10">{node[0]?.userNickname || node[0]?.username || '暂无昵称'}</tspan>
+            <tspan x="0" y="10">{ node[0]?.userBio || '暂无简介'}</tspan>
             {/* 自己的坐标点 */}
             {
               isNodeOwner(node[0]) ?
@@ -763,8 +763,6 @@ const Home = () => {
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
                     className={`${styles[`hexagon-${nodeMode}`]} hexagon-x${x}_y${y}_z${z}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
-                    {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
-                    {/* <Text>{`x: ${hex.q}, z: ${hex.r}, y: ${hex.s}`}</Text> */}
                     {
                       nodeContent({
                         x: x,
@@ -782,7 +780,7 @@ const Home = () => {
       </div>
       <MarkContainer></MarkContainer>
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url={'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserAvatar>
+        <UserAvatar url={ currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75' }></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
