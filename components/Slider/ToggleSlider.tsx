@@ -120,6 +120,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
         <li>
           <a href="javascript:;" onClick={() => setIsModalVisibleInviteCode(true)}>
             邀请码
+            <StyledCount>{inviteCodeData.length}</StyledCount>
           </a>
         </li>
       </StyledSliderCItem>
@@ -294,6 +295,8 @@ const StyledSliderCItem = styled.ul`
       margin: 0;
     }
     a {
+      display: flex;
+      align-items: center;
       font-style: normal;
       font-weight: normal;
       font-size: 16px;
@@ -301,7 +304,6 @@ const StyledSliderCItem = styled.ul`
       color: #C4C4C4;
       transition: all .2s;
       padding: 8px 0;
-      display: block;
       text-align: left;
       &:hover {
         color: #F5F5F5;
@@ -347,6 +349,22 @@ const StyledSliderCAccount = styled.ul`
       }
     }
   }
+`
+
+const StyledCount = styled.span`
+  display: inline-block;
+  background: #CAF12E;
+  border-radius: 100%;
+  width: 18px;
+  height: 18px;
+  font-family: ${props => props.theme.fontFamilyEN};
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: #131313;
+  margin-left: 30px;
 `
 
 export default ToggleSlider
