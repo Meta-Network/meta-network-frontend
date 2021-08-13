@@ -58,21 +58,21 @@ if (process.browser) {
 export default function Home() {
   // hex all 坐标点
   const [hex, setHex] = useState([]);
-  const [config, setConfig] = useState({
-    "width": 1000,
-    "height": 800,
-    "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
-    "origin": { "x": 100, "y": 100 },
-    "map": "hexagon",
-    "mapProps": [15]
-  })
+  // const [config, setConfig] = useState({
+  //   "width": 1000,
+  //   "height": 800,
+  //   "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
+  //   "origin": { "x": 100, "y": 100 },
+  //   "map": "hexagon",
+  //   "mapProps": [15]
+  // })
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
   const [layout, setLayout] = useState( { "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
   const [size, setSize] = useState({ x: layout.width, y: layout.height })
-  const [width, setWidth] = useState<number>(config.width);
-  const [height, setHeight] = useState<number>(config.height);
-  const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(800);
+  const [origin, setOrigin] = useState<{ x: number, y: number }>({ "x": 100, "y": 100 });
   // 默认坐标点
   const defaultPoint = { x: 0, y: 11, z: -11 }
   // 默认坐标范围
