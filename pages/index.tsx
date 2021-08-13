@@ -149,6 +149,8 @@ const Home = () => {
   const haxagonOwnerRef = useRef();
   const inViewPortHexagonOwner = useInViewport(haxagonOwnerRef)
 
+  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner, haxagonOwnerRef)
+
   // resize event
   const { run: resizeFn } = useThrottleFn(
     () => {
@@ -180,6 +182,11 @@ const Home = () => {
 
       // 没有 DOM 不计算
       if (!haxagonOwnerRef) {
+        return
+      }
+
+      // 没有 DOM getBoundingClientRect 不计算
+      if (!((haxagonOwnerRef.current as any).getBoundingClientRect)) {
         return
       }
 
@@ -608,7 +615,7 @@ const Home = () => {
       return <Text className={styles['hexagon-add']}>+</Text>
     }
     return null
-  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, hexGridsMineData])
+  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner])
 
   const messageFn = (text: string) => {
     message.info({
@@ -795,6 +802,7 @@ const Home = () => {
       }
       <HexGridsCount count={hexGridsCountData}></HexGridsCount>
       {
+        // inViewPortHexagonOwner !== undefined
         !inViewPortHexagonOwner && !isEmpty(hexGridsMineData) ?
         <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
       }
