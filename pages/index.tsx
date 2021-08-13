@@ -28,10 +28,11 @@ import UserMore from '../components/IndexPage/UserMore'
 import { AddSvg } from '../components/Svg/Index'
 import NoticeBardOccupied from '../components/NoticeBardOccupied/Index'
 import MarkContainer from '../components/MarkContainer/Index'
+import HexGridsCount from '../components/HexGridsCount/Index'
 
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
-  hexGridsMine, hexGridsForbiddenZoneRadius
+  hexGridsMine, hexGridsForbiddenZoneRadius, hexGridsCountByFilter
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
 
@@ -74,6 +75,15 @@ export default function Home() {
   const [origin, setOrigin] = useState<{ x: number, y: number }>(config.origin);
   // 默认坐标点
   const defaultPoint = { x: 0, y: 11, z: -11 }
+  // 默认坐标范围
+  const defaultHexGridsRange = {
+    "xMin": -90,
+    "xMax": 90,
+    "yMin": -90,
+    "yMax": 90,
+    "zMin": -90,
+    "zMax": 90
+  }
 
   // 所有节点
   const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
@@ -130,6 +140,8 @@ export default function Home() {
   })
   // 默认禁用区域半径
   const [forbiiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
+  // 统计所有坐标点
+  const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
 
 
   // resize event
@@ -216,6 +228,7 @@ export default function Home() {
 
       fetchInviteCode()
       fetchBookmark()
+      fetchHexGridsCountByFilter()
     }
   );
 
@@ -266,6 +279,19 @@ export default function Home() {
         const res = await hexGridsForbiddenZoneRadius()
         if (res.statusCode === 200 && res.data > 0) {
           setforbiiddenZoneRadius(res.data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+  }, [])
+
+  // 获取统计所有坐标点
+  const fetchHexGridsCountByFilter = useCallback(
+    async () => {
+      try {
+        const res = await hexGridsCountByFilter(defaultHexGridsRange)
+        if (res.statusCode === 200) {
+          setHexGridsCountData(res.data)
         }
       } catch (e) {
         console.log(e)
@@ -355,14 +381,7 @@ export default function Home() {
   const fetchHexGriids = useCallback(
     async () => {
       try {
-        const res = await hexGridsByFilter({
-          "xMin": -40,
-          "xMax": 40,
-          "yMin": -40,
-          "yMax": 40,
-          "zMin": -40,
-          "zMax": 40
-        })
+        const res = await hexGridsByFilter(defaultHexGridsRange)
         if (res.statusCode === 200) {
           setAllNode(res.data)
         } else {
@@ -744,6 +763,7 @@ export default function Home() {
         isEmpty(hexGridsMineData) && hexGridsMineTag ?
         <NoticeBardOccupied style={ noticeBardOccupiedAnimatedStyles } status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
+      <HexGridsCount count={hexGridsCountData}></HexGridsCount>
     </>
   )
 }
@@ -775,13 +795,4 @@ const StyledMessageButton = styled.button`
   line-height: 24px;
   text-align: center;
   box-sizing: border-box;
-`
-const StyledUserInfo = styled.div`
-  position: fixed;
-  left: 700px;
-  top: 400px;
-  z-index: 10;
-  background-color: #fff;
-  width: 100px;
-  height: 100px;
 `

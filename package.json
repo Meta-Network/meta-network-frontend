@@ -13,6 +13,7 @@
     "@svgdotjs/svg.js": "^3.1.1",
     "@tippyjs/react": "^4.2.5",
     "ahooks": "^2.10.9",
+    "animated-number-react": "^0.1.2",
     "antd": "^4.16.9",
     "axios": "^0.21.1",
     "axios-extensions": "^3.1.3",

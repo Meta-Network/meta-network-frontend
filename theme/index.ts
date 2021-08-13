@@ -1,6 +1,5 @@
 export const theme = {
   // font family
-  // TODO:
   fontFamilyZH: 'Noto Sans TC, sans-serif',
   fontFamilyEN: 'Inter, sans-serif',
 

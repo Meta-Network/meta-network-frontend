@@ -13,6 +13,13 @@ export const hexGridsByFilter = (data: PointScopeState): Promise<axiosResult<hex
   API.post('/hex-grids/by-filter', data)
 
 /**
+ * 统计已被占领的地块
+ * @returns
+ */
+export const hexGridsCountByFilter = (data: PointScopeState): Promise<axiosResult<number>> =>
+  API.post('/hex-grids/count/by-filter', data)
+
+/**
  * 校验坐标点是否可用
  * @param data
  * @returns
