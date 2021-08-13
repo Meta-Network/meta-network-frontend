@@ -34,3 +34,10 @@ export const hexGrids = (data: PointState): Promise<axiosResult<hexGridsByFilter
  */
 export const hexGridsMine = (): Promise<axiosResult<hexGridsByFilterState>> =>
   API.get('/hex-grids/mine')
+
+/**
+ * 不可用区域半径
+ * @returns
+ */
+export const hexGridsForbiddenZoneRadius = (): Promise<axiosResult<number>> =>
+  API.get('/hex-grids/forbidden-zone/radius')

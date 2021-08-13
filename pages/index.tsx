@@ -31,7 +31,7 @@ import MarkContainer from '../components/MarkContainer/Index'
 
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
-  hexGridsMine
+  hexGridsMine, hexGridsForbiddenZoneRadius
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
 
@@ -128,6 +128,9 @@ export default function Home() {
       duration: 300
     }
   })
+  // 默认禁用区域半径
+  const [forbiiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
+
 
   // resize event
   const resizeFn = () => {
@@ -184,24 +187,24 @@ export default function Home() {
   // 计算半径为10不可选区域
   useEffect(() => {
     let points = []
-    let distance = 10
     let center = new Hex(0, 0, 0)
 
     for (let i = 0; i < hex.length; i++) {
       const ele: any = hex[i];
-      let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
+      let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= forbiiddenZoneRadius
       if (distanceResult) {
         points.push(ele)
       }
     }
 
     setAllNodeDisabled(points)
-  }, [hex])
+  }, [hex, forbiiddenZoneRadius])
 
   // init
   useMount(
     () => {
       fetchHexGriids()
+      fetchFoorbiddenZoneRadius()
       fetchHexGridsMine()
 
       resizeFn()
@@ -250,6 +253,19 @@ export default function Home() {
         const res = await invitationsMine()
         if (res.statusCode === 200) {
           setInviteCodeData(res.data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+  }, [])
+
+  // 获取禁用区域半径
+  const fetchFoorbiddenZoneRadius = useCallback(
+    async () => {
+      try {
+        const res = await hexGridsForbiddenZoneRadius()
+        if (res.statusCode === 200 && res.data > 0) {
+          setforbiiddenZoneRadius(res.data)
         }
       } catch (e) {
         console.log(e)
