@@ -2,6 +2,11 @@ import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { HexagonsState } from '../typings/node.d'
 import { Hex } from './lib'
 
+interface CoordinateState {
+  x: number,
+  y: number,
+}
+
 interface generatePointsProps {
   x: number,
   y: number,
@@ -190,4 +195,16 @@ export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance
     }
   }
   return points
+}
+
+/**
+ * 返回两点的角度
+ * @param start
+ * @param end
+ * @returns
+ */
+export const angle = (start: CoordinateState, end: CoordinateState) => {
+  let diff_x = end.x - start.x
+  let diff_y = end.y - start.y
+  return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI)
 }

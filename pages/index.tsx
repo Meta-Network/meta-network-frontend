@@ -10,13 +10,12 @@ import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-desi
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { assign, cloneDeep, isEmpty } from 'lodash'
-import { useMount, useUnmount, useThrottleFn } from 'ahooks'
-import { useResizeDetector } from 'react-resize-detector';
+import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
@@ -30,6 +29,7 @@ import { AddSvg } from '../components/Svg/Index'
 import NoticeBardOccupied from '../components/NoticeBardOccupied/Index'
 import MarkContainer from '../components/MarkContainer/Index'
 import HexGridsCount from '../components/HexGridsCount/Index'
+import HomeArrow from '../components/HomeArrow/Index'
 
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
@@ -69,7 +69,7 @@ const Home = () => {
   // })
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
-  const [layout, setLayout] = useState( { "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
+  const [layout, setLayout] = useState({ "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
   const [size, setSize] = useState({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(1000);
   const [height, setHeight] = useState<number>(800);
@@ -127,7 +127,7 @@ const Home = () => {
     }
 
     return _bookmark as hexGridsByFilterState[]
-  }, [ allNode, bookmark ])
+  }, [allNode, bookmark])
   // Animated react spriing
   // User Info
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
@@ -143,6 +143,11 @@ const Home = () => {
   const [forbiiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
   // 统计所有坐标点
   const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+  // 箭头角度
+  const [homeAngle, setHomeAngle] = useState<number>(0)
+  // 自己的坐标是否在屏幕内
+  const haxagonOwnerRef = useRef();
+  const inViewPortHexagonOwner = useInViewport(haxagonOwnerRef)
 
   // resize event
   const { run: resizeFn } = useThrottleFn(
@@ -157,7 +162,41 @@ const Home = () => {
         })
       }
     },
-    { wait: 500 },
+    { wait: 300 },
+  );
+
+  const { run: calcAngle } = useThrottleFn(
+    () => {
+
+      // 在窗口内不计算
+      if (inViewPortHexagonOwner) {
+        return
+      }
+
+      // 没有坐标点不计算
+      if (isEmpty(hexGridsMineData)) {
+        return
+      }
+
+      // 没有 DOM 不计算
+      if (!haxagonOwnerRef) {
+        return
+      }
+
+      // TODO:
+      const { x, y, width: domWidth, height: domHeight } = (haxagonOwnerRef.current as any).getBoundingClientRect()
+      const angleResult = angle(
+        { x: 0, y: 0 },
+        {
+          x: x - width / 2 + (domWidth / 2),
+          y: y - height / 2 + (domHeight / 2)
+        }
+      )
+
+      console.log('angle', angleResult)
+      setHomeAngle(angleResult)
+    },
+    { wait: 300 },
   );
 
   // 隐藏用户信息
@@ -249,7 +288,7 @@ const Home = () => {
       } catch (e) {
         console.log(e)
       }
-  }, [])
+    }, [])
 
   // 获取禁用区域半径
   const fetchFoorbiddenZoneRadius = useCallback(
@@ -262,7 +301,7 @@ const Home = () => {
       } catch (e) {
         console.log(e)
       }
-  }, [])
+    }, [])
 
   // 获取统计所有坐标点
   const fetchHexGridsCountByFilter = useCallback(
@@ -275,7 +314,7 @@ const Home = () => {
       } catch (e) {
         console.log(e)
       }
-  }, [])
+    }, [])
 
   // 获取自己的坐标点
   const fetchHexGridsMine = useCallback(
@@ -296,7 +335,7 @@ const Home = () => {
       } finally {
         setHexGridsMineTag(true)
       }
-  }, [])
+    }, [])
 
   // 设置内容拖动 缩放
   const setContainerDrag = useCallback(() => {
@@ -340,6 +379,8 @@ const Home = () => {
         tran = Object.assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
       }
       svg.attr("transform", tran);
+
+      calcAngle()
     }
 
     svg.node();
@@ -354,7 +395,7 @@ const Home = () => {
     console.log('hexagons', hexagons)
     setHex(hexagons)
     setContainerDrag()
-  }, [ mapProps, allNode, map, setContainerDrag ]);
+  }, [mapProps, allNode, map, setContainerDrag]);
 
   // 获取范围坐标点
   const fetchHexGriids = useCallback(
@@ -369,7 +410,7 @@ const Home = () => {
       } catch (e) {
         console.log('e', e)
       }
-  }, [])
+    }, [])
 
   // 偏移地图坐标
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
@@ -391,13 +432,13 @@ const Home = () => {
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
     svg.transition()
-    .duration(1000)
-    .call(
-      zoom.transform,
-      d3.zoomIdentity.translate(_x, _y).scale(1),
-    )
-    .on('end', showUserMore)
-  }, [ allNode, apiUserInfo, layout ])
+      .duration(1000)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(_x, _y).scale(1),
+      )
+      .on('end', showUserMore)
+  }, [allNode, apiUserInfo, layout])
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
@@ -459,8 +500,16 @@ const Home = () => {
   //   });
   // };
 
+  // 节点是不是拥有者
+  const isNodeOwner = useCallback(({ x, y, z }: PointState) => {
+    return !isEmpty(hexGridsMineData) &&
+      hexGridsMineData.x === x &&
+      hexGridsMineData.y === y &&
+      hexGridsMineData.z === z
+  }, [hexGridsMineData])
+
   // 计算节点模式
-  const calcNodeMode = ({
+  const calcNodeMode = useCallback(({
     x, y, z
   }: {
     x: number,
@@ -495,7 +544,7 @@ const Home = () => {
     return 'default'
 
 
-  }
+  }, [allNode, allNodeChoose, allNodeDisabled])
 
   // 节点内容
   const nodeContent = useCallback(({
@@ -539,18 +588,15 @@ const Home = () => {
             <tspan x="0" y="10">{'暂无简介'}</tspan>
             {/* 自己的坐标点 */}
             {
-              (
-                !isEmpty(hexGridsMineData) &&
-                hexGridsMineData.x === node[0].x &&
-                hexGridsMineData.y === node[0].y &&
-                hexGridsMineData.z === node[0].z
-              ) ?
-              <tspan x="0" y="-30">🏡</tspan> : null
+              isNodeOwner(node[0]) ?
+              // TODO:
+              //@ts-ignore
+              <tspan x="0" y="-30" ref={haxagonOwnerRef}>🏡</tspan> : null
             }
             {/* 收藏的坐标点 */}
             {
               ~isBookmark ?
-              <tspan x="0" y="38">⭐️</tspan> : null
+                <tspan x="0" y="38">⭐️</tspan> : null
             }
           </Text>
         </>
@@ -672,13 +718,20 @@ const Home = () => {
   }
 
   // 重置定位
-  const HandlePosition = () => {
+  const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
       translateMap(defaultPoint, false)
     } else {
       translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
     }
-  }
+  }, [hexGridsMineData, translateMap])
+
+  // 箭头 重置定位
+  const HandleResetOwnerPosition = useCallback(() => {
+    if (!isEmpty(hexGridsMineData)) {
+      translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
+    }
+  }, [ hexGridsMineData, translateMap ])
 
   return (
     <>
@@ -729,7 +782,7 @@ const Home = () => {
       </div>
       <MarkContainer></MarkContainer>
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75' }></UserAvatar>
+        <UserAvatar url={'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
@@ -740,9 +793,13 @@ const Home = () => {
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
         isEmpty(hexGridsMineData) && hexGridsMineTag ?
-        <NoticeBardOccupied style={ noticeBardOccupiedAnimatedStyles } status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+          <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
       <HexGridsCount count={hexGridsCountData}></HexGridsCount>
+      {
+        !inViewPortHexagonOwner && !isEmpty(hexGridsMineData) ?
+        <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
+      }
     </>
   )
 }
