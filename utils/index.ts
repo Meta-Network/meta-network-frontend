@@ -1,3 +1,7 @@
+import { hexGridsByFilterState } from '../typings/metaNetwork.d'
+import { HexagonsState } from '../typings/node.d'
+import { Hex } from './lib'
+
 interface generatePointsProps {
   x: number,
   y: number,
@@ -10,9 +14,9 @@ interface generatePointsProps {
 /**
  * 计算正六边形
  * @param width : ;
- * @param height 
- * @param edge 
- * @returns 
+ * @param height
+ * @param edge
+ * @returns
  */
 export const computeHexagonPoints = (width: number, height: number, edge: number): number[][] => {
   let centerX = width /2 ;
@@ -125,7 +129,12 @@ export const axialToCube = (x: number, y: number) => ({
   z: y,
 })
 
-// 计算偏移位置
+/**
+ * 计算偏移位置
+ * @param layout
+ * @param param1
+ * @returns
+ */
 export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) => {
   // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
   // 方向不同 算法有细微差别
@@ -137,4 +146,48 @@ export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) =
   return {
     x: _x, y: _y
   }
+}
+
+/**
+ * 计算最远距离
+ * @param node
+ * @param attach
+ * @returns number[]
+ */
+export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 6) => {
+  let max = 0
+  for (let i = 0; i < node.length; i++) {
+    const ele = node[i];
+    if (Math.abs(ele.x) > max) {
+      max = Math.abs(ele.x)
+    }
+    if (Math.abs(ele.y) > max) {
+      max = Math.abs(ele.y)
+    }
+    if (Math.abs(ele.z) > max) {
+      max = Math.abs(ele.z)
+    }
+  }
+
+  return [max + attach]
+}
+
+/**
+ * 计算范围内坐标点
+ * // center.subtract 不合规的坐标点会报错
+ * @param center
+ * @param hexGrids
+ * @param distance
+ * @returns HexagonsState[]
+ */
+export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance: number) => {
+  let points: HexagonsState[] = []
+  for (let i = 0; i < hexGrids.length; i++) {
+    const ele = hexGrids[i];
+    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
+    if (distanceResult) {
+      points.push(ele)
+    }
+  }
+  return points
 }

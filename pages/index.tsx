@@ -10,13 +10,14 @@ import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-desi
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { assign, cloneDeep, isEmpty } from 'lodash'
-import { useMount } from 'ahooks'
+import { useMount, useUnmount, useThrottleFn } from 'ahooks'
+import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate } from '../utils/index'
-import { PointState } from '../typings/node.d'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange } from '../utils/index'
+import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
 
@@ -55,9 +56,9 @@ if (process.browser) {
 //   }
 // }
 
-export default function Home() {
+const Home = () => {
   // hex all 坐标点
-  const [hex, setHex] = useState([]);
+  const [hex, setHex] = useState<HexagonsState[]>([]);
   // const [config, setConfig] = useState({
   //   "width": 1000,
   //   "height": 800,
@@ -143,19 +144,26 @@ export default function Home() {
   // 统计所有坐标点
   const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
 
-
   // resize event
-  const resizeFn = () => {
-    if (process.browser) {
-      setWidth(window.innerWidth * 1)
-      setHeight(window.innerHeight * 1)
+  const { run: resizeFn } = useThrottleFn(
+    () => {
+      if (process.browser) {
+        setWidth(window.innerWidth * 1)
+        setHeight(window.innerHeight * 1)
 
-      setOrigin({
-        x: (window.innerWidth * 1) / 2,
-        y: (window.innerHeight * 1) / 2,
-      })
-    }
-  }
+        setOrigin({
+          x: (window.innerWidth * 1) / 2,
+          y: (window.innerHeight * 1) / 2,
+        })
+      }
+    },
+    { wait: 500 },
+  );
+
+  // 隐藏用户信息
+  const hideUserInfo = useCallback(() => {
+    apiUserInfo.start({ opacity: 0, display: 'none' })
+  }, [apiUserInfo])
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -175,18 +183,12 @@ export default function Home() {
       let distance = 1
 
       for (let i = 0; i < allNode.length; i++) {
-        const eleAllNode: any = allNode[i];
+        const eleAllNode = allNode[i];
         // 捕获 new hex 错误
         try {
           let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
-
-          for (let i = 0; i < hex.length; i++) {
-            const ele: any = hex[i];
-            let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-            if (distanceResult) {
-              points.push(ele)
-            }
-          }
+          const pointsRes = calcCenterRange(center, hex, distance)
+          points.push(...pointsRes)
         } catch (e) {
           console.log('e', e)
           continue
@@ -198,16 +200,8 @@ export default function Home() {
 
   // 计算半径为10不可选区域
   useEffect(() => {
-    let points = []
-    let center = new Hex(0, 0, 0)
-
-    for (let i = 0; i < hex.length; i++) {
-      const ele: any = hex[i];
-      let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= forbiiddenZoneRadius
-      if (distanceResult) {
-        points.push(ele)
-      }
-    }
+    const center = new Hex(0, 0, 0)
+    const points = calcCenterRange(center, hex, forbiiddenZoneRadius)
 
     setAllNodeDisabled(points)
   }, [hex, forbiiddenZoneRadius])
@@ -221,10 +215,7 @@ export default function Home() {
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
-
-      document.addEventListener('click', () => {
-        apiUserInfo.start({ opacity: 0, display: 'none' })
-      }, false)
+      document.addEventListener('click', hideUserInfo, false)
 
       fetchInviteCode()
       fetchBookmark()
@@ -232,24 +223,12 @@ export default function Home() {
     }
   );
 
-  // 计算最远距离
-  const calcMaxDistance = (node: hexGridsByFilterState[]) => {
-    let max = 0
-    for (let i = 0; i < node.length; i++) {
-      const ele = node[i];
-      if (Math.abs(ele.x) > max) {
-        max = Math.abs(ele.x)
-      }
-      if (Math.abs(ele.y) > max) {
-        max = Math.abs(ele.y)
-      }
-      if (Math.abs(ele.z) > max) {
-        max = Math.abs(ele.z)
-      }
-    }
+  useUnmount(() => {
+    window.removeEventListener('resize', resizeFn)
+    document.removeEventListener('resize', hideUserInfo)
+  })
 
-    return [max + 6]
-  }
+
 
   // 获取收藏记录
   const fetchBookmark = useCallback(() => {
@@ -796,3 +775,5 @@ const StyledMessageButton = styled.button`
   text-align: center;
   box-sizing: border-box;
 `
+
+export default Home

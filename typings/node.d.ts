@@ -18,3 +18,9 @@ export interface PointState {
   y: number,
   z: number,
 }
+
+export interface HexagonsState {
+  q: number,
+  r: number,
+  s: number,
+}
