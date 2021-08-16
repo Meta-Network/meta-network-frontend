@@ -208,3 +208,28 @@ export const angle = (start: CoordinateState, end: CoordinateState) => {
   let diff_y = end.y - start.y
   return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI)
 }
+
+/**
+ * https://github.com/alibaba/hooks/blob/master/packages/hooks/src/useInViewport/index.ts
+ * 计算 DOM 是否在屏幕内
+ * @param el
+ * @returns
+ */
+export function isInViewPort(el: HTMLElement): boolean | undefined  {
+  if (!el) {
+    return undefined;
+  }
+
+  const viewPortWidth =
+    window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  const viewPortHeight =
+    window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  const rect = el.getBoundingClientRect();
+
+  if (rect) {
+    const { top, bottom, left, right } = rect;
+    return bottom > 0 && top <= viewPortHeight && left <= viewPortWidth && right > 0;
+  }
+
+  return false;
+}

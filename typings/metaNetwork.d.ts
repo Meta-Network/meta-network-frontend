@@ -4,7 +4,8 @@ export interface PointScopeState {
   yMin: number,
   yMax: number,
   zMin: number,
-  zMax: number
+  zMax: number,
+  simpleQuery: string
 }
 
 export interface hexGridsByFilterState {

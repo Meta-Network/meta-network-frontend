@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react';
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
 import { SVG } from '@svgdotjs/svg.js'
@@ -15,9 +15,9 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
-import { hexGridsByFilterState } from '../typings/metaNetwork.d'
+import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
 
 import ToggleSlider from '../components/Slider/ToggleSlider'
@@ -77,13 +77,14 @@ const Home = () => {
   // 默认坐标点
   const defaultPoint = { x: 0, y: 11, z: -11 }
   // 默认坐标范围
-  const defaultHexGridsRange = {
+  const defaultHexGridsRange: PointScopeState = {
     "xMin": -90,
     "xMax": 90,
     "yMin": -90,
     "yMax": 90,
     "zMin": -90,
-    "zMax": 90
+    "zMax": 90,
+    "simpleQuery": ''
   }
 
   // 所有节点
@@ -146,62 +147,65 @@ const Home = () => {
   // 箭头角度
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
-  const haxagonOwnerRef = useRef();
-  const inViewPortHexagonOwner = useInViewport(haxagonOwnerRef)
+  const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean|undefined>()
+  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
-  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner, haxagonOwnerRef)
-
-  // resize event
+  /**
+   * resize event
+   */
   const { run: resizeFn } = useThrottleFn(
     () => {
       if (process.browser) {
-        setWidth(window.innerWidth * 1)
-        setHeight(window.innerHeight * 1)
+        setWidth(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth * 1)
+        setHeight(window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight * 1)
 
         setOrigin({
-          x: (window.innerWidth * 1) / 2,
-          y: (window.innerHeight * 1) / 2,
+          x: (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth * 1) / 2,
+          y: (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight * 1) / 2,
         })
       }
     },
     { wait: 300 },
   );
 
+  /**
+   * 计算角度
+   */
   const { run: calcAngle } = useThrottleFn(
     () => {
+      const _init = () => {
+        const tag = document.querySelector<HTMLElement>('.hexagon-owner')
+        const inViewPortResult = isInViewPort(tag!)
+        setInViewPortHexagonOwner(inViewPortResult)
 
-      // 在窗口内不计算
-      if (inViewPortHexagonOwner) {
-        return
-      }
-
-      // 没有坐标点不计算
-      if (isEmpty(hexGridsMineData)) {
-        return
-      }
-
-      // 没有 DOM 不计算
-      if (!haxagonOwnerRef) {
-        return
-      }
-
-      // 没有 DOM getBoundingClientRect 不计算
-      if (!((haxagonOwnerRef.current as any).getBoundingClientRect)) {
-        return
-      }
-
-      // TODO:
-      const { x, y, width: domWidth, height: domHeight } = (haxagonOwnerRef.current as any).getBoundingClientRect()
-      const angleResult = angle(
-        { x: 0, y: 0 },
-        {
-          x: x - width / 2 + (domWidth / 2),
-          y: y - height / 2 + (domHeight / 2)
+        // 在窗口内不计算 undefined 不计算
+        if (inViewPortHexagonOwner || inViewPortHexagonOwner === undefined) {
+          return
         }
-      )
 
-      console.log('angle', angleResult)
-      setHomeAngle(angleResult)
+        // 没有坐标点不计算
+        if (isEmpty(hexGridsMineData)) {
+          return
+        }
+
+        // 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
+        // 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
+
+        const { x, y, width: domWidth, height: domHeight } = tag!.getBoundingClientRect()
+        const angleResult = angle(
+          { x: 0, y: 0 },
+          {
+            x: x - width / 2 + (domWidth / 2),
+            y: y - height / 2 + (domHeight / 2)
+          }
+        )
+
+        console.log('angle', angleResult)
+        setHomeAngle(angleResult)
+      }
+      if (process.browser) {
+        _init()
+      }
     },
     { wait: 300 },
   );
@@ -592,13 +596,11 @@ const Home = () => {
         <>
           <Text>
             <tspan x="0" y="-10">{node[0]?.userNickname || node[0]?.username || '暂无昵称'}</tspan>
-            <tspan x="0" y="10">{ node[0]?.userBio || '暂无简介'}</tspan>
+            <tspan x="0" y="10">{node[0]?.userBio || '暂无简介'}</tspan>
             {/* 自己的坐标点 */}
             {
               isNodeOwner(node[0]) ?
-              // TODO:
-              //@ts-ignore
-              <tspan x="0" y="-30" ref={haxagonOwnerRef}>🏡</tspan> : null
+              <tspan x="0" y="-30" className="hexagon-owner">🏡</tspan> : null
             }
             {/* 收藏的坐标点 */}
             {
@@ -738,7 +740,7 @@ const Home = () => {
     if (!isEmpty(hexGridsMineData)) {
       translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
     }
-  }, [ hexGridsMineData, translateMap ])
+  }, [hexGridsMineData, translateMap])
 
   return (
     <>
@@ -787,7 +789,7 @@ const Home = () => {
       </div>
       <MarkContainer></MarkContainer>
       <animated.div style={stylesUserInfo}>
-        <UserAvatar url={ currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75' }></UserAvatar>
+        <UserAvatar url={currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
@@ -802,8 +804,7 @@ const Home = () => {
       }
       <HexGridsCount count={hexGridsCountData}></HexGridsCount>
       {
-        // inViewPortHexagonOwner !== undefined
-        !inViewPortHexagonOwner && !isEmpty(hexGridsMineData) ?
+        !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
         <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
       }
     </>
