@@ -59,18 +59,32 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
   };
 
 
-  // 搜素
+  /**
+   * 搜素 event
+   * @param value
+   */
   const handlePressEnter = (value: string) => {
     handleSearch(value)
   }
-  const { run: test } = useDebounceFn(
+  // input changed
+  const { run: handleSearchChanged } = useDebounceFn(
     (value: string) => {
       handleSearch(value)
     },
     {
-      wait: 500,
+      wait: 300,
     },
   );
+  // tag
+  const handleTagClick = (value: string) => {
+    form.setFieldsValue({ searchValue: value })
+    handleSearch(value)
+  }
+  useEffect(() => {
+    console.log('form')
+  }, [form])
+
+
 
   /**
    * 处理搜索
@@ -210,9 +224,9 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
                 prefix={<SearchOutlined />}
                 className="custom-search"
                 maxLength={40}
-                allowClear={false}
+                allowClear={true}
                 onPressEnter={(e: any) => handlePressEnter(e.target.value)}
-                onChange={(e: any) => test(e.target.value)}
+                onChange={(e: any) => handleSearchChanged(e.target.value)}
               />
             </Form.Item>
           </Form>
@@ -259,7 +273,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
                 <StyledContentHiitory>
                   {
                     searchHistoryList.map((i, idx) => (
-                      <Tag closable onClose={(e: any) => removeHistory(e, i)} key={idx} className="custom-tag" onClick={() => handleSearch(i.value)}>
+                      <Tag closable onClose={(e: any) => removeHistory(e, i)} key={idx} className="custom-tag" onClick={() => handleTagClick(i.value)}>
                         {i.value}
                       </Tag>
                     ))
