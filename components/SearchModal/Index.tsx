@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components'
-import { Input, Avatar, Popconfirm, message, Tag } from 'antd'
-import { SearchOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
+import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
+import { SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { useDebounceFn } from 'ahooks'
+
 import CustomModal from '../CustomModal/Index'
-import { InviitationsMineState } from '../../typings/ucenter'
+import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
+import { SearchHistory } from '../../typings/node.d'
+import { hexGridsByFilter } from '../../services/metaNetwork'
+import { PointScopeState, hexGridsByFilterState } from '../../typings/metaNetwork.d';
+import { assign, uniqBy, trim } from 'lodash';
+import { compose } from '../../utils/index'
 
 interface Props {
-  isModalVisible: boolean,
+  readonly isModalVisible: boolean,
+  readonly defaultHexGridsRange: PointScopeState
   setIsModalVisible: (value: boolean) => void
+  setVisibleSlider: (value: boolean) => void
+  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
 }
 
 /**
@@ -15,71 +25,165 @@ interface Props {
  * @param param0
  * @returns
  */
-const SearchModal: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
+const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, setIsModalVisible, setVisibleSlider, translateMap }) => {
+  const [form] = Form.useForm();
   // 是否显示历史记录内容
   const [showSearch, setShowSearch] = useState<boolean>(false)
+  // 搜索历史
+  const [searchHistoryList, setSearchHistoryList] = useState<SearchHistory[]>([])
+  // 搜索结果
+  const [searchList, setSearchList] = useState<hexGridsByFilterState[]>([])
+  // 搜索
+  const [loading, setLoading] = useState<boolean>(false)
 
-  // 内容
-  const Content: React.FC = () => {
-    return (
-      <div>
-        <Input
-          placeholder="搜索"
-          prefix={<SearchOutlined />}
-          className="custom-search"
-          onFocus={() => setShowSearch(true)}
-          onBlur={() => setShowSearch(false)}
-        />
-        {
-          showSearch ?
-            <StyledContentItem>
-              <StyledContentItemHead>
-                <StyledContentItemHeadTitle>ID层</StyledContentItemHeadTitle>
-              </StyledContentItemHead>
-              <StyledItem >
-                {
-                  [1, 2, 3, 4, 5].map((i, idx) => (
-                    <StyledItemLi key={idx}>
-                      <Avatar size={40} src={'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
-                      <StyledItemLiUser>
-                        <h3>{'暂无昵称'}</h3>
-                        <p>{'暂无简介'}</p>
-                      </StyledItemLiUser>
-                      <StyledItemLiButton>查看</StyledItemLiButton>
-                    </StyledItemLi>
-                  ))
-                }
-                {
-                  [1].length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
-                }
-              </StyledItem>
-            </StyledContentItem> :
-            <StyledContentItem>
-              <StyledContentItemHead>
-                <StyledContentItemHeadTitle>搜索历史</StyledContentItemHeadTitle>
-                {
-                  [1].length <= 0 ? null :
-                  <Popconfirm placement="top" title={'确认删除历史记录'} onConfirm={() => message.info('删除')} okText="Yes" cancelText="No">
-                    <StyledContentItemHeadDelete>删除</StyledContentItemHeadDelete>
-                  </Popconfirm>
-                }
-              </StyledContentItemHead>
-              <StyledContentHiitory>
-                {
-                  [1, 2, 3, 4, 5, 6].map((i, idx) => (
-                    <Tag closable onClose={(e: any) => console.log(e)} key={idx} className="custom-tag">
-                      加菲众
-                    </Tag>
-                  ))
-                }
-                {
-                  [1].length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
-                }
-              </StyledContentHiitory>
-            </StyledContentItem>
+  const KEY = 'MetaNetWorkSearchHistory'
+
+  // init
+  useEffect(() => {
+    if (isModalVisible) {
+      fetchHistory()
+    } else {
+      setSearchList([])
+      setLoading(false)
+      setShowSearch(false)
+      form.resetFields()
+    }
+  }, [isModalVisible, form])
+
+  const onFinish = (values: any) => {
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+
+  // 搜素
+  const handlePressEnter = (value: string) => {
+    handleSearch(value)
+  }
+  const { run: test } = useDebounceFn(
+    (value: string) => {
+      handleSearch(value)
+    },
+    {
+      wait: 500,
+    },
+  );
+
+  /**
+   * 处理搜索
+   * @param val
+   * @returns
+   */
+  const handleSearch = (val: string) => {
+    const value = trim(val) || ''
+    if (!value) {
+      setShowSearch(false)
+      return
+    }
+
+    fetchSearch(value)
+    mergedHistory(value)
+    fetchHistory()
+  }
+
+  /**
+   * 获取搜索内容
+   */
+  const fetchSearch = useCallback(
+    async (value: string): Promise<void> => {
+      setShowSearch(true)
+      setLoading(true)
+      try {
+        const data = assign(defaultHexGridsRange, { simpleQuery: value })
+        const res = await hexGridsByFilter(data)
+        if (res.statusCode === 200) {
+          setSearchList(res.data)
+        } else {
+          console.log('获取失败')
         }
-      </div>
-    )
+      } catch (e) {
+        console.log('e', e)
+      } finally {
+        setLoading(false)
+      }
+    }, [defaultHexGridsRange])
+
+  /**
+   * 合并历史记录
+   * @param value
+   */
+  const mergedHistory = (value: string): void => {
+    console.log('value', value)
+
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+    searchHistory.push({
+      value: value,
+      lastTime: Date.now()
+    })
+
+    const list = uniqBy(searchHistory, 'value')
+
+    if (list.length > 12) {
+      list.shift()
+    }
+
+    StoreSet(KEY, JSON.stringify(list))
+  }
+
+  /**
+   * 获取搜索历史
+   */
+  const fetchHistory = (): void => {
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+    // 防止意外过滤一次
+    const filterEmpty = (data: SearchHistory[]) => data.filter((i: SearchHistory) => !!i.value)
+    const filterDuplication = (data: SearchHistory[]) => uniqBy(data, 'value')
+
+    const list = compose(filterDuplication, filterEmpty)(searchHistory)
+    setSearchHistoryList(list.reverse())
+  }
+
+  /**
+   * 删除所有历史
+   */
+  const removeAllHistory = (): void => {
+    StoreRemove(KEY)
+    fetchHistory()
+  }
+
+  /**
+   * 删除历史
+   * @param history
+   */
+  const removeHistory = (e: any, history: SearchHistory): void => {
+    e.preventDefault()
+
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+
+    const idx = searchHistory.findIndex(i => i.value === history.value)
+    if (~idx) {
+      searchHistory.splice(idx, 1)
+      StoreSet(KEY, JSON.stringify(searchHistory))
+
+      fetchHistory()
+    }
+  }
+
+  /**
+   * 查看搜索记录
+   * @param i
+   */
+  const handleViewNode = (i: hexGridsByFilterState) => {
+    setIsModalVisible(false)
+    setVisibleSlider(false)
+
+    translateMap({ x: i.x, y: i.y, z: i.z })
   }
 
   return (
@@ -88,7 +192,85 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => 
         <StyledContentHead>
           <StyledContentHeadTitle>搜索</StyledContentHeadTitle>
         </StyledContentHead>
-        <Content></Content>
+        <div>
+          <Form
+            form={form}
+            name="search"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Form.Item
+              label=""
+              name="searchValue"
+              rules={[{ required: true, message: 'Please search!' }]}
+            >
+              <Input
+                placeholder="搜索"
+                prefix={<SearchOutlined />}
+                className="custom-search"
+                maxLength={40}
+                allowClear={false}
+                onPressEnter={(e: any) => handlePressEnter(e.target.value)}
+                onChange={(e: any) => test(e.target.value)}
+              />
+            </Form.Item>
+          </Form>
+
+          {
+            showSearch ?
+              <StyledContentItem>
+                <StyledContentItemHead>
+                  <StyledContentItemHeadTitle>ID层</StyledContentItemHeadTitle>
+                </StyledContentItemHead>
+                <StyledItem >
+                  {
+                    searchList.map((i) => (
+                      <StyledItemLi key={i.userId}>
+                        <Avatar size={40} src={i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
+                        <StyledItemLiUser>
+                          <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
+                          <p>{i.userBio || '暂无简介'}</p>
+                        </StyledItemLiUser>
+                        <StyledItemLiButton onClick={() => handleViewNode(i)}>查看</StyledItemLiButton>
+                      </StyledItemLi>
+                    ))
+                  }
+                  {
+                    searchList.length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
+                  }
+                  {
+                    loading ? <StyledEmpty>
+                      <Spin></Spin>
+                    </StyledEmpty> : null
+                  }
+                </StyledItem>
+              </StyledContentItem> :
+              <StyledContentItem>
+                <StyledContentItemHead>
+                  <StyledContentItemHeadTitle>搜索历史</StyledContentItemHeadTitle>
+                  {
+                    searchHistoryList.length <= 0 ? null :
+                      <Popconfirm placement="top" title={'确认删除历史记录'} onConfirm={() => removeAllHistory()} okText="Yes" cancelText="No">
+                        <StyledContentItemHeadDelete>删除</StyledContentItemHeadDelete>
+                      </Popconfirm>
+                  }
+                </StyledContentItemHead>
+                <StyledContentHiitory>
+                  {
+                    searchHistoryList.map((i, idx) => (
+                      <Tag closable onClose={(e: any) => removeHistory(e, i)} key={idx} className="custom-tag" onClick={() => handleSearch(i.value)}>
+                        {i.value}
+                      </Tag>
+                    ))
+                  }
+                  {
+                    searchHistoryList.length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
+                  }
+                </StyledContentHiitory>
+              </StyledContentItem>
+          }
+        </div>
       </StyledContent>
     </CustomModal>
   )

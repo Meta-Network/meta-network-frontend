@@ -15,18 +15,19 @@ import { accountsTokenDelete } from '../../services/ucenter'
 import Bookmark from '../Bookmark/Index'
 import InviteCode from '../InviteCode/Index'
 import SearchModal from '../SearchModal/Index'
-import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
+import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface Props {
   readonly bookmarkNode: hexGridsByFilterState[]
   readonly inviteCodeData: InviitationsMineState[]
+  readonly defaultHexGridsRange: PointScopeState
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
   HandlePosition: () => void
 }
 
-const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, HandleRemoveBookmark, HandlePosition }) => {
+const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, defaultHexGridsRange, HandleRemoveBookmark, HandlePosition }) => {
 
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
@@ -189,7 +190,10 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
       ></InviteCode>
       <SearchModal
         isModalVisible={isModalVisibleSearch}
+        defaultHexGridsRange={defaultHexGridsRange}
         setIsModalVisible={setIsModalVisibleSearch}
+        setVisibleSlider={setVisibleSlider}
+        translateMap={translateMap}
       ></SearchModal>
     </>
   )

@@ -102,6 +102,17 @@
   &.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
     box-shadow: none;
   }
+
+  .ant-input,
+  .ant-input:hover {
+    background-color: transparent !important;
+  }
+}
+// .ant-form-item-has-error :not(.ant-input-disabled).ant-input,
+.ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper.custom-search,
+// .ant-form-item-has-error :not(.ant-input-disabled).ant-input:hover,
+.ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper.custom-search:hover {
+  background-color: rgba(245, 245, 245, 0.2);
 }
 
 // antd tag
@@ -117,6 +128,7 @@
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
+  cursor: pointer;
   .ant-tag-close-icon {
     color: #C4C4C4;
     margin-left: 8px;

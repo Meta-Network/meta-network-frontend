@@ -26,5 +26,4 @@ export interface hexGridsByFilterState {
   userId: number
   userNickname: string
   username: string
-
 }

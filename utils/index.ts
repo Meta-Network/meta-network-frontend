@@ -233,3 +233,17 @@ export function isInViewPort(el: HTMLElement): boolean | undefined  {
 
   return false;
 }
+
+// compose
+// https://github.com/reduxjs/redux/blob/master/src/compose.ts
+export const compose = (...fn: Function[]) => {
+  if (fn.length === 0) {
+    return <T>(arg: T) => arg
+  }
+
+  if (fn.length === 1) {
+    return fn[0]
+  }
+
+  return fn.reduce((a, b) => (...args: any) => a(b(...args)))
+}

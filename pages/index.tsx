@@ -148,7 +148,7 @@ const Home = () => {
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean|undefined>()
-  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+  // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   /**
    * resize event
@@ -748,6 +748,7 @@ const Home = () => {
         translateMap={translateMap}
         bookmarkNode={bookmarkNode}
         inviteCodeData={inviteCodeData}
+        defaultHexGridsRange={defaultHexGridsRange}
         HandleRemoveBookmark={HandleRemoveBookmark}
         HandlePosition={HandlePosition}></ToggleSlider>
       <div id="container">

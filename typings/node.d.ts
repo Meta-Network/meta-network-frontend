@@ -24,3 +24,8 @@ export interface HexagonsState {
   r: number,
   s: number,
 }
+
+export interface SearchHistory {
+  value: string
+  lastTime: number
+}
