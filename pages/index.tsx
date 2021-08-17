@@ -5,6 +5,8 @@ import { SVG } from '@svgdotjs/svg.js'
 import { Display } from 'rot-js'
 import { hexbin } from 'd3-hexbin';
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
+import HexagonRound from '../components/ReactHexgrid/HexagonRound'
+
 import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
@@ -69,7 +71,7 @@ const Home = () => {
   // })
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
-  const [layout, setLayout] = useState({ "width": 70, "height": 70, "flat": false, "spacing": 1.1 })
+  const [layout, setLayout] = useState({ "width": 66, "height": 66, "flat": false, "spacing": 1.1 })
   const [size, setSize] = useState({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(1000);
   const [height, setHeight] = useState<number>(800);
@@ -147,7 +149,7 @@ const Home = () => {
   // 箭头角度
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
-  const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean|undefined>()
+  const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   /**
@@ -600,7 +602,7 @@ const Home = () => {
             {/* 自己的坐标点 */}
             {
               isNodeOwner(node[0]) ?
-              <tspan x="0" y="-30" className="hexagon-owner">🏡</tspan> : null
+                <tspan x="0" y="-30" className="hexagon-owner">🏡</tspan> : null
             }
             {/* 收藏的坐标点 */}
             {
@@ -765,7 +767,7 @@ const Home = () => {
                 const nodeMode = calcNodeMode({ x, y, z })
 
                 return (
-                  <Hexagon
+                  <HexagonRound
                     key={i}
                     q={hex.q}
                     r={hex.r}
@@ -780,7 +782,7 @@ const Home = () => {
                         z: z
                       })
                     }
-                  </Hexagon>
+                  </HexagonRound>
                 )
               })
             }
@@ -800,14 +802,14 @@ const Home = () => {
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
-        isEmpty(hexGridsMineData) && hexGridsMineTag ?
-          <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
-      }
-      <HexGridsCount count={hexGridsCountData}></HexGridsCount>
-      {
-        !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
-        <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
-      }
+    isEmpty(hexGridsMineData) && hexGridsMineTag ?
+      <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+  }
+  <HexGridsCount count={hexGridsCountData}></HexGridsCount>
+  {
+    !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
+      <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
+  }
     </>
   )
 }
