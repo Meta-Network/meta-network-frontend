@@ -51,8 +51,8 @@ class HexagonRoound extends Component {
     this.setState({ hex, pixel });
   }
   onMouseEnter(e: any) {
-    if (this.props.onMouseEnter) {
-      this.props.onMouseEnter(e, this);
+    if ((this.props as any).onMouseEnter) {
+      (this.props as any).onMouseEnter(e, this);
     }
   }
   onMouseOver(e: any) {
