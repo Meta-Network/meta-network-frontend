@@ -425,11 +425,25 @@ const Home = () => {
       }
     }, [])
 
+  /**
+   * 处理节点样式
+   */
+  const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
+    const hexagonList: any = document.querySelectorAll<HTMLElement>(`.hexagon-group`)
+    const list = [...hexagonList]
+    list.map(i => {
+      i.style.opacity = ''
+    })
+    document.querySelector<HTMLElement>(`.hexagon-x${x}_y${y}_z${z}`)!.style.opacity = '1'
+  }
+
   // 偏移地图坐标
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
+      HandleHexagonStyle({ x, y, z })
+
       if (!showUserInfo) {
         return
       }
