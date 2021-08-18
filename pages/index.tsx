@@ -10,14 +10,14 @@ import HexagonRound from '../components/ReactHexgrid/HexagonRound'
 import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis, randomRange } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
@@ -145,6 +145,20 @@ const Home = () => {
       duration: 300
     }
   })
+  // map render
+  const transApi = useSpringRef()
+  const transition = useTransition(hex, {
+    ref: transApi,
+    trail: 3000 / hex.length,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+    delay: () => {
+      return randomRange(200, 800)
+    }
+  })
+  useChain([transApi], [ 0.1 ])
+
   // 默认禁用区域半径
   const [forbiiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
   // 统计所有坐标点
@@ -416,15 +430,15 @@ const Home = () => {
   }, [width, height])
 
   // 渲染坐标地图
-  useEffect(() => {
+  const render = useCallback((list: hexGridsByFilterState[]) => {
     const generator = GridGenerator.getGenerator(map);
-    const _mapProps = allNode.length ? calcMaxDistance(allNode) : mapProps
+    const _mapProps = list.length ? calcMaxDistance(list) : mapProps
     const hexagons = generator.apply(null, _mapProps);
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
     setContainerDrag()
-  }, [mapProps, allNode, map, setContainerDrag]);
+  }, [mapProps, map, setContainerDrag]);
 
   // 获取范围坐标点
   const fetchHexGriids = useCallback(
@@ -433,13 +447,16 @@ const Home = () => {
         const res = await hexGridsByFilter(defaultHexGridsRange)
         if (res.statusCode === 200) {
           setAllNode(res.data)
+          render(res.data)
         } else {
-          console.log('获取失败')
+          // console.log('获取失败')
+          throw new Error('获取失败')
         }
       } catch (e) {
         console.log('e', e)
+        render([])
       }
-    }, [])
+    }, [ render ])
 
   // 偏移地图坐标
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
@@ -782,21 +799,30 @@ const Home = () => {
             {
               // note: key must be unique between re-renders.
               // using config.mapProps+i makes a new key when the goal template chnages.
-              hex.map((hex: any, i) => {
+              // transition((style: any, item: any) => {
+              //   console.log('style', style)
+              //   console.log('item', item)
+              //   return <></>
+              // })
+
+              // hex.map((hex: any, i) => {
+                transition((style, hex: HexagonsState) => {
                 let x = hex.q
                 let y = hex.s
                 let z = hex.r
 
                 const nodeMode = calcNodeMode({ x, y, z })
+                let key = `x${x}_y${y}_z${z}`
 
                 return (
                   <HexagonRound
-                    key={i}
+                    style={style}
+                    key={key}
                     q={hex.q}
                     r={hex.r}
                     s={hex.s}
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                    className={`${`hexagon-${nodeMode}`} hexagon-x${x}_y${y}_z${z}`}>
+                    className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     {
                       nodeContent({
