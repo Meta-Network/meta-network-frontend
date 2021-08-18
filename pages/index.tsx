@@ -11,7 +11,7 @@ import { Popover, Menu, Dropdown, message } from 'antd';
 import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
-import { assign, cloneDeep, isEmpty } from 'lodash'
+import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 
 import styles from './index/index.module.scss'
@@ -147,14 +147,18 @@ const Home = () => {
   })
   // map render
   const transApi = useSpringRef()
-  const transition = useTransition(hex, {
+  const transition = useTransition(shuffle(hex), {
     ref: transApi,
     trail: 3000 / hex.length,
+    // trail: 1000,
     from: { opacity: 0, scale: 0 },
     enter: { opacity: 1, scale: 1 },
     leave: { opacity: 0, scale: 0 },
     delay: () => {
-      return randomRange(200, 800)
+      return random(400, 1200)
+    },
+    onStart: () => {
+      console.log('animated start')
     }
   })
   useChain([transApi], [ 0.1 ])
