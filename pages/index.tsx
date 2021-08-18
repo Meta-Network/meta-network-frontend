@@ -17,7 +17,7 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
@@ -425,18 +425,6 @@ const Home = () => {
       }
     }, [])
 
-  /**
-   * 处理节点样式
-   */
-  const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
-    const hexagonList: any = document.querySelectorAll<HTMLElement>(`.hexagon-group`)
-    const list = [...hexagonList]
-    list.map(i => {
-      i.style.opacity = ''
-    })
-    document.querySelector<HTMLElement>(`.hexagon-x${x}_y${y}_z${z}`)!.style.opacity = '1'
-  }
-
   // 偏移地图坐标
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
     const svg = d3.select('#container svg')
@@ -766,7 +754,8 @@ const Home = () => {
         inviteCodeData={inviteCodeData}
         defaultHexGridsRange={defaultHexGridsRange}
         HandleRemoveBookmark={HandleRemoveBookmark}
-        HandlePosition={HandlePosition}></ToggleSlider>
+        HandlePosition={HandlePosition}>
+      </ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
           <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
@@ -787,7 +776,7 @@ const Home = () => {
                     r={hex.r}
                     s={hex.s}
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                    className={`${styles[`hexagon-${nodeMode}`]} hexagon-x${x}_y${y}_z${z}`}>
+                    className={`${`hexagon-${nodeMode}`} hexagon-x${x}_y${y}_z${z}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     {
                       nodeContent({

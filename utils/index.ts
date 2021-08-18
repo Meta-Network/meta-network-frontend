@@ -1,5 +1,5 @@
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
-import { HexagonsState } from '../typings/node.d'
+import { HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
 
 interface CoordinateState {
@@ -246,4 +246,27 @@ export const compose = (...fn: Function[]) => {
   }
 
   return fn.reduce((a, b) => (...args: any) => a(b(...args)))
+}
+
+/**
+ * 处理节点样式
+ * @param param0
+ */
+export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
+  // 只需要处理已有的块
+  const hexagonListExist: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-exist`)
+  const hexagonListActive: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-active`)
+  const hexagonListV: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-v`)
+
+  const list = [...hexagonListExist, ...hexagonListActive, ...hexagonListV]
+  list.map(i => {
+    if (i.classList.contains('active')) {
+      i.classList.remove('active')
+    }
+  })
+
+  const hexagon = document.querySelector<HTMLElement>(`.hexagon-x${x}_y${y}_z${z}`)
+  if (hexagon) {
+    hexagon.classList.add('active')
+  }
 }

@@ -17,6 +17,7 @@ import InviteCode from '../InviteCode/Index'
 import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
+import { SearchIcon, SwitchVerticalIcon, BookmarkIcon, ArrowTopLeftIcon, InviteIcon, LogoutIcon } from '../Icon/Index'
 
 interface Props {
   readonly bookmarkNode: hexGridsByFilterState[]
@@ -31,7 +32,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
 
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
-  const { user } = useUser()
+  const { user, isLoggin } = useUser()
   const router = useRouter()
   // 收藏
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
@@ -69,7 +70,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
         <Avatar size={40} icon={<UserOutlined />} src={user?.avatar} />
         <StyledSliderCUserInfo>
           {
-            isEmpty(user) ? '[未登录]' : user.nickname || user.username || '暂无昵称'
+            isLoggin ? user.nickname || user.username || '暂无昵称' : '[未登录]'
           }
         </StyledSliderCUserInfo>
         <LeftOutlined className="arrow" />
@@ -86,19 +87,19 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
         </li>
         <li>
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
-            <SearchOutlined />
+            <SearchIcon />
             搜索
           </a>
         </li>
         <li>
-          <a href="">
-            <SwapOutlined />
+          <a href="javascript:;" className="disabled">
+            <SwitchVerticalIcon />
             切换 ID层
           </a>
         </li>
         <li>
           <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
-            <BookOutlined />
+            <BookmarkIcon />
             我的收藏
           </a>
         </li>
@@ -113,15 +114,19 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
           <h4>个人</h4>
         </li>
         <li>
-          <a href="">
-            管理后台
-            <ArrowLeftOutlined className="right" />
+          <a href="javascript:;" className={isLoggin ? '' : 'disabled'}>
+            <ArrowTopLeftIcon />
+            前往管理后台
           </a>
         </li>
         <li>
-          <a href="javascript:;" onClick={() => setIsModalVisibleInviteCode(true)}>
+          <a href="javascript:;" onClick={() => isLoggin && setIsModalVisibleInviteCode(true)} className={isLoggin ? '' : 'disabled'}>
+            <InviteIcon />
             邀请码
-            <StyledCount>{inviteCodeData.length}</StyledCount>
+            {
+              isLoggin ?
+                <StyledCount>{inviteCodeData.length}</StyledCount> : null
+            }
           </a>
         </li>
       </StyledSliderCItem>
@@ -133,21 +138,21 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
     return (
       <StyledSliderCAccount>
         {
-          isEmpty(user) ?
-            <>
-              <li>
-                <Link href="/oauth/login">
-                  <a>
-                    前往注册/登陆
-                    <ArrowLeftOutlined className="right" /></a>
-                </Link>
-              </li>
-            </> :
+          isLoggin ?
             <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
-              <li>
-                <a href="javascript:;" className="red">登出账户</a>
-              </li>
-            </Popconfirm>
+              <StyledSliderCAccountButton className="g-red">
+                <LogoutIcon />
+                登出账户
+              </StyledSliderCAccountButton>
+            </Popconfirm> :
+            <Link href="/oauth/login">
+              <a>
+                <StyledSliderCAccountButton className="g-green">
+                  <ArrowTopLeftIcon />
+                  前往注册/登陆
+                </StyledSliderCAccountButton>
+              </a>
+            </Link>
         }
       </StyledSliderCAccount>
     )
@@ -206,15 +211,15 @@ const StyledButton = styled.button`
   top: 74px;
   z-index: 1;
   border: none;
-  border-top: 2px solid ${ props => props.theme.colorGreen };
-  border-right: 2px solid ${ props => props.theme.colorGreen };
-  border-bottom: 2px solid ${ props => props.theme.colorGreen };
+  border-top: 2px solid ${props => props.theme.colorGreen};
+  border-right: 2px solid ${props => props.theme.colorGreen};
+  border-bottom: 2px solid ${props => props.theme.colorGreen};
   border-radius: 0 4px 4px 0;
   background: rgba(19, 19, 19, 0.1);
   outline: none;
   padding: 16px;
-  font-size: ${ props => props.theme.fontSize4 };
-  color: ${ props => props.theme.colorGreen };
+  font-size: ${props => props.theme.fontSize4};
+  color: ${props => props.theme.colorGreen};
   line-height: 24px;
   box-sizing: border-box;
   cursor: pointer;
@@ -235,7 +240,7 @@ const StyledButtonMap = styled.button`
   background: rgba(19, 19, 19, 0.1);
   outline: none;
   padding: 16px;
-  font-size: ${ props => props.theme.fontSize4 };
+  font-size: ${props => props.theme.fontSize4};
   color: #caa2e7;
   line-height: 24px;
   box-sizing: border-box;
@@ -275,21 +280,22 @@ const StyledSliderCUser = styled.section`
   }
 `
 const StyledSliderCUserInfo = styled.span`
+  font-family: ${props => props.theme.fontFamilyZH};
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 36px;
-  letter-spacing: 0.02em;
-  color: #fff;
-  margin-left: 16px;
+  color: #C4C4C4;
+  margin-left: 12px;
 `
 
 const StyledSliderCItem = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 24px 0 0 0;
+  margin: 24px 18px 0 0;
   li {
     h4 {
+      font-family: ${props => props.theme.fontFamilyZH};
       font-style: normal;
       font-weight: bold;
       font-size: 12px;
@@ -299,6 +305,8 @@ const StyledSliderCItem = styled.ul`
       margin: 0;
     }
     a {
+      font-family: ${props => props.theme.fontFamilyZH};
+      padding: 8px 0 8px 12px;
       display: flex;
       align-items: center;
       font-style: normal;
@@ -307,10 +315,17 @@ const StyledSliderCItem = styled.ul`
       line-height: 24px;
       color: #C4C4C4;
       transition: all .2s;
-      padding: 8px 0;
       text-align: left;
       &:hover {
-        color: #F5F5F5;
+        color: ${props => props.theme.colorGreen};
+        background: rgba(245, 245, 245, 0.1);
+      }
+      &.disabled {
+        opacity: .4;
+        &:hover {
+          color: #C4C4C4;
+          background: transparent;
+        }
       }
       span {
         margin-right: 8px;
@@ -323,35 +338,30 @@ const StyledSliderCItem = styled.ul`
   }
 `
 
-const StyledSliderCAccount = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: auto 0 0 0;
-  li {
-    a {
-      font-style: normal;
-      font-weight: normal;
-      font-size: 16px;
-      line-height: 24px;
-      color: #F5F5F5;
-      transition: all .2s;
-      padding: 8px 0;
-      display: block;
-      text-align: left;
-      &:hover {
-        color: ${props => props.theme.colorGreen};
-        background-color: #2C2B2A;
-        border-radius: 4px 0 0 4px;
-      }
-      &.red {
-        color: ${props => props.theme.colorRed};
-      }
-      span {
-        &.right {
-          margin-left: 8px;
-        }
-      }
-    }
+const StyledSliderCAccount = styled.section`
+padding: 0 18px 0 0;
+margin: auto 0 0 0;
+`
+const StyledSliderCAccountButton = styled.button`
+  font-family: ${props => props.theme.fontFamilyZH};
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  background: #131313;
+  box-shadow: inset 0px 1px 0px rgba(196, 196, 196, 0.2);
+  border-radius: 4px;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  span {
+    margin-right: 24px;
   }
 `
 

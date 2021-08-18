@@ -4,8 +4,10 @@ import type { AppProps } from 'next/app'
 
 import 'antd/dist/antd.css'
 import 'tippy.js/dist/tippy.css'; // optional for styling
-import '../styles/globals.scss'
+
+import '../styles/hexagon.scss'
 import '../styles/custom.scss'
+import '../styles/globals.scss'
 
 import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
