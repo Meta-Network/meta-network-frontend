@@ -17,7 +17,7 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
@@ -134,6 +134,9 @@ const Home = () => {
   // Animated react spriing
   // User Info
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
+  // 拖动隐藏开关
+  const [userInfoTag, setUserInfoTag] = useState<boolean>(false)
+
   // NoticeBard Occupied
   const noticeBardOccupiedAnimatedStyles = useSpring({
     from: { x: '-50%', y: -40, opacity: 0 },
@@ -151,6 +154,7 @@ const Home = () => {
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+
 
   /**
    * resize event
@@ -214,8 +218,15 @@ const Home = () => {
 
   // 隐藏用户信息
   const hideUserInfo = useCallback(() => {
+    // console.log(111)
     apiUserInfo.start({ opacity: 0, display: 'none' })
   }, [apiUserInfo])
+  // const { run: hideUserInfoThrottle } = useThrottleFn(
+  //   () => {
+  //     hideUserInfo();
+  //   },
+  //   { wait: 300 },
+  // );
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -393,6 +404,11 @@ const Home = () => {
       }
       svg.attr("transform", tran);
 
+      // TODO: 应该需要优化
+      if (!userInfoTag) {
+        hideUserInfo()
+      }
+
       calcAngle()
     }
 
@@ -430,9 +446,11 @@ const Home = () => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
-      HandleHexagonStyle({ x, y, z })
+      setUserInfoTag(true)
 
+      HandleHexagonStyle({ x, y, z })
       if (!showUserInfo) {
+        setUserInfoTag(false)
         return
       }
       const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
@@ -442,7 +460,9 @@ const Home = () => {
       }
       setCurrentNode(node[0])
       apiUserInfo.start({ opacity: 1, display: 'block' })
+      setUserInfoTag(false)
     }
+
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
@@ -599,8 +619,8 @@ const Home = () => {
       return (
         <>
           <Text>
-            <tspan x="0" y="-10">{node[0]?.userNickname || node[0]?.username || '暂无昵称'}</tspan>
-            <tspan x="0" y="10">{node[0]?.userBio || '暂无简介'}</tspan>
+            <tspan x="0" y="-10">{strEllipsis(node[0]?.userNickname || node[0]?.username) || '暂无昵称'}</tspan>
+            <tspan x="0" y="10">{strEllipsis(node[0]?.userBio) || '暂无简介'}</tspan>
             {/* 自己的坐标点 */}
             {
               isNodeOwner(node[0]) ?

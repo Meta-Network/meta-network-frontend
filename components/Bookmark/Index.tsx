@@ -226,6 +226,9 @@ const StyledItem = styled.ul`
   min-height: 200px;
   max-height: 420px;
   overflow: auto;
+  @media screen and (max-width: 768px) {
+    max-height: 280px;
+  }
 `
 const StyledItemLi = styled.li`
   display: flex;

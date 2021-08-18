@@ -101,6 +101,11 @@ const StyledUserMore = styled.div`
   top: 50%;
   transform: translate(80px,-50%);
   z-index: 10;
+  @media screen and (max-width: 768px) {
+    top: auto;
+    bottom: 10%;
+    transform: translate(-50%, 0);
+  }
 `
 const StyledUserMoreButton = styled.button`
   background: #F5F5F5;
@@ -117,6 +122,9 @@ const StyledUserMoreButton = styled.button`
   display: block;
   outline: none;
   cursor: pointer;
+  @media screen and (max-width: 768px) {
+    margin: 0 auto;
+  }
 `
 
 export default UserMore

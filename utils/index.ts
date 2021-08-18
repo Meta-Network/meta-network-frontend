@@ -1,3 +1,4 @@
+import { trim } from 'lodash';
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
@@ -269,4 +270,18 @@ export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
   if (hexagon) {
     hexagon.classList.add('active')
   }
+}
+
+/**
+ * 字符省略
+ * @param value
+ * @param length
+ * @returns
+ */
+export const strEllipsis = (value: string, length: number = 12) => {
+  let val = trim(value)
+  if (!val) {
+    return ''
+  }
+  return val.length > length ? val.slice(0, length) + '...' : val
 }

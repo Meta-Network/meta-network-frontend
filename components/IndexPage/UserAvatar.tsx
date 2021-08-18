@@ -36,6 +36,10 @@ const StyledUserAvatarImage = styled.div`
     height: 100%;
     object-fit: cover;
   }
+  @media screen and (max-width: 768px) {
+    width: 176px;
+    height: 176px;
+  }
 `
 
 const StyledUserAvatarArrow = styled.div`
