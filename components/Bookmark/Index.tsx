@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components'
 import { Avatar, Radio, Button } from 'antd';
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
+import { cloneDeep } from 'lodash';
 
 import CustomModal from '../CustomModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
-import { cloneDeep } from 'lodash';
-
+import { SortTopIcon, SortDoneIcon } from '../Icon/Index'
 interface Props {
   readonly isModalVisible: boolean,
   readonly bookmarkNode: hexGridsByFilterState[]
@@ -93,7 +93,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
         <StyledItemHead>
           <StyledItemHeadLeft>
             <StyledItemHeadTitle>按收藏时间</StyledItemHeadTitle>
-            <StyledItemHeadIcon />
+            <SortTopIcon />
           </StyledItemHeadLeft>
 
           <div>
@@ -202,11 +202,8 @@ const StyledItemHeadTitle = styled.section`
   color: #F5F5F5;
   margin-right: 12px;
 `
-const StyledItemHeadIcon = styled(AlignCenterOutlined)`
-  color: #fff;
-  cursor: pointer;
-`
-const StyledItemHeadIconSelected = styled(AlignCenterOutlined)`
+
+const StyledItemHeadIconSelected = styled(SortDoneIcon)`
   color: #fff;
   cursor: pointer;
 `

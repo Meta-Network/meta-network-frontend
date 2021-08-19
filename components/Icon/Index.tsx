@@ -39,3 +39,13 @@ const LogoutSvg = () => (
   <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.11111 15.6667L4.55556 12.1111M4.55556 12.1111L8.11111 8.55556M4.55556 12.1111L17 12.1111M12.5556 15.6667V16.5556C12.5556 18.0283 11.3616 19.2222 9.88889 19.2222H3.66667C2.19391 19.2222 1 18.0283 1 16.5556V7.66667C1 6.19391 2.19391 5 3.66667 5H9.88889C11.3616 5 12.5556 6.19391 12.5556 7.66667V8.55556" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 export const LogoutIcon: React.FC = props => <Icon component={LogoutSvg} {...props} />;
+
+const SortTopSvg = () => (
+  <svg width="18" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h11.375M1 4.5h7.875M1 8h5.25m3.5 0 3.5-3.5m0 0 3.5 3.5m-3.5-3.5V15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const SortTopIcon: React.FC = props => <Icon component={SortTopSvg} {...props} />;
+
+const SortDoneSvg = () => (
+  <svg width="16" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.108 12.75h-13m13-4h-13m13-4h-6m-2-3.5-4 4-2.5-2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const SortDoneIcon: React.FC = props => <Icon component={SortDoneSvg} {...props} />;

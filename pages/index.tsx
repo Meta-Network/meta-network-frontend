@@ -47,17 +47,6 @@ if (process.browser) {
   zoom = d3.zoom();
 }
 
-// const configs = {
-//   "hexagon": {
-//     "width": 1000,
-//     "height": 800,
-//     "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
-//     "origin": { "x": 100, "y": 100 },
-//     "map": "hexagon",
-//     "mapProps": [22]
-//   }
-// }
-
 const Home = () => {
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([]);
@@ -827,11 +816,6 @@ const Home = () => {
             {
               // note: key must be unique between re-renders.
               // using config.mapProps+i makes a new key when the goal template chnages.
-              // transition((style: any, item: any) => {
-              //   console.log('style', style)
-              //   console.log('item', item)
-              //   return <></>
-              // })
 
               // hex.map((hex: any, i) => {
               transition((style, hex: HexagonsState) => {
