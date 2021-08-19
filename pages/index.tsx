@@ -125,9 +125,11 @@ const Home = () => {
         node.z === ele.z
       )
       if (_node.length) {
-        assign(ele, _node)
+        assign(ele, _node[0])
       }
     }
+
+    console.log('_bookmark', _bookmark)
 
     return _bookmark as hexGridsByFilterState[]
   }, [allNode, bookmark])
@@ -312,7 +314,7 @@ const Home = () => {
 
   useUnmount(() => {
     window.removeEventListener('resize', resizeFn)
-    document.removeEventListener('resize', hideUserInfo)
+    document.removeEventListener('click', hideUserInfo)
   })
 
 
@@ -504,6 +506,13 @@ const Home = () => {
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
+    // 重复点击垱前块
+    if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
+      console.log('eeee', e)
+      // TODO: 有点问题 无法停止
+      e.stopPropagation()
+    }
+
     if (mode === 'choose') {
       setCurrentNodeChoose(point)
       setIsModalVisibleOccupied(true)

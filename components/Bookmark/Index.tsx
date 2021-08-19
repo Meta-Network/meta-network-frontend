@@ -112,10 +112,10 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
             {
               bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
                 <StyledItemLi key={idx}>
-                  <Avatar size={40} src={'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
+                  <Avatar size={40} src={ i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
                   <StyledItemLiUser>
-                    <h3>{ i.username || '暂无昵称' }</h3>
-                    <p>{'暂无简介'} x:{i.x} y:{i.y} z:{i.z}</p>
+                    <h3>{ i.userNickname || i.username || '暂无昵称' }</h3>
+                    <p>{ i.userBio || '暂无简介' }</p>
                   </StyledItemLiUser>
                   {
                     selected ?
