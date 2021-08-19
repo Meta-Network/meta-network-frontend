@@ -33,6 +33,7 @@ const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'),
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
 
+import { CircleSuccessIcon } from '../components/Icon/Index'
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
   hexGridsMine, hexGridsForbiddenZoneRadius, hexGridsCountByFilter
@@ -549,7 +550,7 @@ const Home = () => {
   //   });
 
   //   message.info({
-  //     content: <span>
+  //     content: <span className="message-content">
   //       <ExclamationCircleOutlined />
   //       <span>
   //         请选择紧挨已注册用户的地块
@@ -679,8 +680,8 @@ const Home = () => {
 
   const messageFn = (text: string) => {
     message.info({
-      content: <span>
-        <ExclamationCircleOutlined />
+      content: <span className="message-content">
+        <CircleSuccessIcon />
         <span>
           {text}
         </span>

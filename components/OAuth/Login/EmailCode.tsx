@@ -5,6 +5,7 @@ import { accountsEmailVerificationCode } from '../../../services/ucenter'
 import { message } from 'antd';
 import { trim } from 'lodash'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 
 interface Props {
   form: any
@@ -25,8 +26,8 @@ const EmailCode: React.FC<Props> = ({ form }) => {
       let { email } = await form.getFieldsValue()
       if (!(email ? trim(email) : email)) {
         message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
+          content: <span className="message-content">
+            <CircleWarningIcon />
             <span>
               请输入邮箱
             </span>
@@ -39,8 +40,8 @@ const EmailCode: React.FC<Props> = ({ form }) => {
       // 开始倒计时
       setTargetDate(Date.now() + 60 * 1000)
       message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
+        content: <span className="message-content">
+          <CircleSuccessIcon />
           <span>
           发送验证码...
           </span>
@@ -53,8 +54,8 @@ const EmailCode: React.FC<Props> = ({ form }) => {
       })
       if (res.statusCode === 201) {
         message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
+          content: <span className="message-content">
+            <CircleSuccessIcon />
             <span>
             发送成功
             </span>
@@ -63,22 +64,13 @@ const EmailCode: React.FC<Props> = ({ form }) => {
           icon: ''
         });
       } else {
-        message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
-            <span>
-              发送失败: {res.message}
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        throw new Error(res.message)
       }
     } catch (e) {
       console.log(e)
       message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
+        content: <span className="message-content">
+          <CircleWarningIcon />
           <span>
             发送失败
           </span>

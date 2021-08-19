@@ -7,7 +7,7 @@ import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-
+import { CircleSuccessIcon, CircleWarningIcon } from "../../Icon/Index";
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -34,8 +34,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (res.statusCode === 200) {
         message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
+          content: <span className="message-content">
+            <CircleSuccessIcon />
             <span>
               登录成功
             </span>
@@ -45,22 +45,13 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         });
         router.push('/')
       } else {
-        message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
-            <span>
-              登录失败：{res.message}
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        throw new Error(res.message)
       }
     } catch (e) {
       console.error(e)
       message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
+        content: <span className="message-content">
+          <CircleWarningIcon />
           <span>
             登录失败
           </span>

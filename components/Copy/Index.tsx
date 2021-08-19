@@ -7,6 +7,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
+import { CircleSuccessIcon } from '../Icon/Index'
+
 interface Props {
   text: string
 }
@@ -15,8 +17,8 @@ const Copy: React.FC<Props> = ({ text }) => {
 
   const handleCopy = () => {
     message.info({
-      content: <span>
-        <ExclamationCircleOutlined />
+      content: <span className="message-content">
+        <CircleSuccessIcon />
         <span>
           复制成功
         </span>

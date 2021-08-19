@@ -8,7 +8,7 @@ import { isArray } from 'lodash';
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node';
-import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon } from '../Icon/Index'
+import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, CircleSuccessIcon } from '../Icon/Index'
 
 interface Props {
   readonly bookmark: PointState[]
@@ -49,8 +49,8 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
   // Copy
   const handleCopy = () => {
     message.info({
-      content: <span>
-        <ExclamationCircleOutlined />
+      content: <span className="message-content">
+        <CircleSuccessIcon />
         <span>
           复制成功
         </span>

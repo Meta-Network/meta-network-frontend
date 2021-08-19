@@ -8,7 +8,7 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useMount } from 'ahooks'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-
+import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -32,8 +32,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (resEmailSignup.statusCode === 201) {
         message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
+          content: <span className="message-content">
+            <CircleSuccessIcon />
             <span>
               注册成功
             </span>
@@ -43,22 +43,13 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         });
         router.push('/')
       } else {
-        message.info({
-          content: <span>
-            <ExclamationCircleOutlined />
-            <span>
-              注册失败：{resEmailSignup.message}
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        throw new Error(resEmailSignup.message)
       }
     } catch (e) {
       console.error(e)
       message.info({
-        content: <span>
-          <ExclamationCircleOutlined />
+        content: <span className="message-content">
+          <CircleWarningIcon />
           <span>
             注册失败
           </span>
