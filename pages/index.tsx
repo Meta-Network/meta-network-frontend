@@ -146,7 +146,7 @@ const Home = () => {
     enter: { opacity: 1, scale: 1 },
     leave: { opacity: 0, scale: 0 },
     delay: () => {
-      return random(200, 600)
+      return random(100, 200)
     },
     onStart: () => {
       console.log('animated start')
