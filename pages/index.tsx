@@ -140,14 +140,14 @@ const Home = () => {
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex), {
     ref: transApi,
-    // trail: 3000 / hex.length,
-    // trail: 1000,
-    // from: { opacity: 0, scale: 0 },
-    // enter: { opacity: 1, scale: 1 },
-    // leave: { opacity: 0, scale: 0 },
-    // delay: () => {
-    //   return random(300, 800)
-    // },
+    trail: 3000 / hex.length,
+    trail: 1000,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+    delay: () => {
+      return random(200, 600)
+    },
     onStart: () => {
       console.log('animated start')
     }

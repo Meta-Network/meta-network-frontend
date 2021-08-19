@@ -59,3 +59,18 @@ const CopySvg = () => (
   <svg width="20" height="21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.667 6.333V13c0 .92.746 1.667 1.666 1.667h5M6.667 6.333V4.667c0-.92.746-1.667 1.666-1.667h3.822c.22 0 .433.088.59.244l3.678 3.679a.833.833 0 0 1 .244.589V13c0 .92-.747 1.667-1.667 1.667h-1.667M6.667 6.333H5.333a2 2 0 0 0-2 2v8C3.333 17.253 4.08 18 5 18h6.333a2 2 0 0 0 2-2v-1.333" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 export const CopyIcon: React.FC = props => <Icon component={CopySvg} {...props} />;
+
+const CircleSvg = () => (
+  <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86L7.86 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 4"/></svg>
+);
+export const CircleIcon: React.FC = props => <Icon component={CircleSvg} {...props} />;
+
+const CircleSuccessSvg = () => (
+  <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86L7.86 2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="m17.5 8-7.219 7.875L7 12.295" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const CircleSuccessIcon: React.FC = props => <Icon component={CircleSuccessSvg} {...props} />;
+
+const CircleWarningSvg = () => (
+  <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86L7.86 2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="m17.5 8-7.219 7.875L7 12.295" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const CircleWarningIcon: React.FC = props => <Icon component={CircleWarningSvg} {...props} />;
