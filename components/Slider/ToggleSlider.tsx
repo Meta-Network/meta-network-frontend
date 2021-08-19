@@ -114,7 +114,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
           <h4>个人</h4>
         </li>
         <li>
-          <a href="javascript:;" className={isLoggin ? '' : 'disabled'}>
+          <a href={ isLoggin ? 'https://meta-cms.vercel.app' : 'javascript:;' } className={isLoggin ? '' : 'disabled'} target="_blank" rel="noopener noreferrer">
             <ArrowTopLeftIcon />
             前往管理后台
           </a>
