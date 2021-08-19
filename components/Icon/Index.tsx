@@ -21,9 +21,14 @@ const SwitchVerticalSvg = () => (
 export const SwitchVerticalIcon: React.FC = props => <Icon component={SwitchVerticalSvg} {...props} />;
 
 const BookmarkSvg = () => (
-  <svg width="18" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.556C4 4.696 4.696 4 5.556 4h7.777c.86 0 1.556.696 1.556 1.556V18l-5.445-2.722L4 18V5.556z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  <svg width="18" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.556C4 4.696 4.696 4 5.556 4h7.777c.86 0 1.556.696 1.556 1.556V18l-5.445-2.722L4 18V5.556z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 export const BookmarkIcon: React.FC = props => <Icon component={BookmarkSvg} {...props} />;
+
+const BookmarkFillSvg = () => (
+  <svg width="18" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.556C4 4.696 4.696 4 5.556 4h7.777c.86 0 1.556.696 1.556 1.556V18l-5.445-2.722L4 18V5.556z" stroke="none" fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const BookmarkFillIcon: React.FC = props => <Icon component={BookmarkFillSvg} {...props} />;
 
 const ArrowTopLeftSvg = () => (
   <svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 17L4 7" stroke="currentColor" strokeWidth="2.13983" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 17V7H14" stroke="currentColor" strokeWidth="2.13983" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -49,3 +54,8 @@ const SortDoneSvg = () => (
   <svg width="16" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.108 12.75h-13m13-4h-13m13-4h-6m-2-3.5-4 4-2.5-2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 export const SortDoneIcon: React.FC = props => <Icon component={SortDoneSvg} {...props} />;
+
+const CopySvg = () => (
+  <svg width="20" height="21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.667 6.333V13c0 .92.746 1.667 1.666 1.667h5M6.667 6.333V4.667c0-.92.746-1.667 1.666-1.667h3.822c.22 0 .433.088.59.244l3.678 3.679a.833.833 0 0 1 .244.589V13c0 .92-.747 1.667-1.667 1.667h-1.667M6.667 6.333H5.333a2 2 0 0 0-2 2v8C3.333 17.253 4.08 18 5 18h6.333a2 2 0 0 0 2-2v-1.333" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+export const CopyIcon: React.FC = props => <Icon component={CopySvg} {...props} />;

@@ -4,10 +4,11 @@ import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { isArray } from 'lodash';
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node';
-import { isArray } from 'lodash';
+import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon } from '../Icon/Index'
 
 interface Props {
   readonly bookmark: PointState[]
@@ -34,7 +35,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
     message.info('进入主页')
-    window.open('https://meta-network.vercel.app/', '_blank')
+    window.open('https://meta-cms.vercel.app/', '_blank')
   }
 
   // 菜单点击
@@ -61,18 +62,17 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="bookmark" icon={<TagsOutlined />}>
+      <Menu.Item key="bookmark" icon={ isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
         {
           isBookmark ? '取消收藏': '收藏'
         }
       </Menu.Item>
-      <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
+      {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
         拍一拍
-      </Menu.Item>
-
-      <CopyToClipboard text={'https://meta-network.vercel.app/'}
+      </Menu.Item> */}
+      <CopyToClipboard text={'https://meta-cms.vercel.app/'}
         onCopy={() => handleCopy()}>
-        <Menu.Item key="copy" icon={<CopyOutlined />}>
+        <Menu.Item key="copy" icon={<CopyIcon />}>
           复制地址
         </Menu.Item>
       </CopyToClipboard>
@@ -85,7 +85,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
         onClick={(e: any) => handleJumpHome(e)}
         style={{ marginBottom: 16 }}
       >
-        <ArrowLeftOutlined />{' '}进入主页
+        <ArrowTopLeftIcon />{' '}进入主页
       </StyledUserMoreButton>
       <Dropdown overlay={menu}>
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
@@ -122,8 +122,13 @@ const StyledUserMoreButton = styled.button`
   display: block;
   outline: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
   @media screen and (max-width: 768px) {
     margin: 0 auto;
+  }
+  & > span {
+    margin-right: 6px;
   }
 `
 
