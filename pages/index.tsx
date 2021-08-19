@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic'
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
 import { G, SVG } from '@svgdotjs/svg.js'
@@ -17,21 +18,20 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis, randomRange } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { InviitationsMineState } from '../typings/ucenter.d'
 
-import ToggleSlider from '../components/Slider/ToggleSlider'
-import DeploySite from '../components/DeploySite/Index'
-import Occupied from '../components/Occupied/Index'
-import UserAvatar from '../components/IndexPage/UserAvatar'
-import UserMore from '../components/IndexPage/UserMore'
-import { AddSvg } from '../components/Svg/Index'
-import NoticeBardOccupied from '../components/NoticeBardOccupied/Index'
-import MarkContainer from '../components/MarkContainer/Index'
-import HexGridsCount from '../components/HexGridsCount/Index'
-import HomeArrow from '../components/HomeArrow/Index'
+const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
+const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
+const Occupied = dynamic(() => import('../components/Occupied/Index'), { ssr: false })
+const UserAvatar = dynamic(() => import('../components/IndexPage/UserAvatar'), { ssr: false })
+const UserMore = dynamic(() => import('../components/IndexPage/UserMore'), { ssr: false })
+const NoticeBardOccupied = dynamic(() => import('../components/NoticeBardOccupied/Index'), { ssr: false })
+const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'), { ssr: false })
+const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
+const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
 
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
@@ -39,7 +39,6 @@ import {
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
 import { useUser } from '../hooks/useUser'
-
 
 let d3: any = null
 let zoom: any = null
@@ -132,7 +131,7 @@ const Home = () => {
 
     console.log('_bookmark', _bookmark)
 
-    return _bookmark as hexGridsByFilterState[]
+    return _bookmark.reverse() as hexGridsByFilterState[]
   }, [allNode, bookmark])
   // Animated react spriing
   // User Info
