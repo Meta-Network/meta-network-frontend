@@ -141,7 +141,6 @@ const Home = () => {
   const transition = useTransition(shuffle(hex), {
     ref: transApi,
     trail: 3000 / hex.length,
-    trail: 1000,
     from: { opacity: 0, scale: 0 },
     enter: { opacity: 1, scale: 1 },
     leave: { opacity: 0, scale: 0 },
