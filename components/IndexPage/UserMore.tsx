@@ -21,7 +21,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
     if (!isArray(bookmark)) {
       return false
     }
-    console.log('bookmark', bookmark)
+    // console.log('bookmark', bookmark)
     const res = bookmark.findIndex(i =>
       i.x === currentNode.x &&
       i.y === currentNode.y &&

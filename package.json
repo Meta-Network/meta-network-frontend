@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "svgo": "svgo -f ./assets/svg/svgo -o ./assets/svg/svgoOutput --config=assets/svg/svgo.config.js"
+    "svgo": "svgo -f ./assets/svg/svgo -o ./assets/svg/svgoOutput"
   },
   "peerDependencies": {
     "prop-types": "^15.0.1"
