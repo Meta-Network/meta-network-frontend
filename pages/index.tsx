@@ -38,6 +38,7 @@ import {
   hexGridsMine, hexGridsForbiddenZoneRadius, hexGridsCountByFilter
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
+import { useUser } from '../hooks/useUser'
 
 
 let d3: any = null
@@ -174,6 +175,8 @@ const Home = () => {
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+
+  const { isLoggin } = useUser()
 
 
   /**
@@ -877,7 +880,7 @@ const Home = () => {
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
-        isEmpty(hexGridsMineData) && hexGridsMineTag ?
+        isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
           <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
       <HexGridsCount count={hexGridsCountData}></HexGridsCount>
