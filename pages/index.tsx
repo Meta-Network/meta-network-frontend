@@ -509,6 +509,10 @@ const Home = () => {
       setIsModalVisibleOccupied(true)
       return
     } else if (mode === 'default') {
+      // 未登录不提示
+      if (!isLoggin) {
+        return
+      }
       messageFn('请选择紧挨已注册用户的地块')
       return
     } else if (mode === 'disabled') {
