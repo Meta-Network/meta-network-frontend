@@ -22,7 +22,7 @@ const D =  React.memo( function D () {
 
 const E =  React.memo( function E ({ state1 }: any) {
 
-  console.log('eeeeeee')
+  console.log('eeeeeee state1', state1)
 
   return (
     <div>EEEEEEE {state1}</div>

@@ -549,7 +549,7 @@ const Home = () => {
     z: number
   }) => {
 
-    console.log('nodeContent')
+    // console.log('nodeContent')
 
     // 禁止选择节点
     const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
