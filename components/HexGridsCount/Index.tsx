@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Tooltip } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import AnimatedNumber from "animated-number-react";
+import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+
+import { PointScopeState } from '../../typings/metaNetwork'
+import { fetchHexGridsCountByFilter } from '../../helpers/index'
 
 interface Props {
-  readonly count: number
+  readonly range: PointScopeState
 }
 
 /**
@@ -13,21 +17,37 @@ interface Props {
  * @param param0
  * @returns
  */
-const HexGridsCount: React.FC<Props> = ({ count }) => {
+const HexGridsCount: React.FC<Props> = ({ range }) => {
 
-  const textAnimatedStyles = useSpring({
-    from: { x: 40, opacity: 0 },
-    to: { x: 0, opacity: 1 },
+  // 统计所有坐标点
+  const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+
+  const [ styles, api ] = useSpring(() => ({
+    x: 40,
+    opacity: 0,
     config: {
       duration: 300
+  } }))
+
+  // 获取所有坐标点统计
+  const fetchHexGridsCountByFilterFn = useCallback(async () => {
+    const res = await fetchHexGridsCountByFilter(range)
+    if (res === hexGridsCountData) {
+      return
     }
+    setHexGridsCountData(res)
+    api.start({ x: 0, opacity: 1 })
+  }, [ range, hexGridsCountData, api ])
+
+  useMount(() => {
+    fetchHexGridsCountByFilterFn()
   })
 
   return (
     <Tooltip title="坐标点统计">
-      <StyledText style={textAnimatedStyles}>
+      <StyledText style={styles}>
         <AnimatedNumber
-          value={count}
+          value={hexGridsCountData}
           formatValue={(value: number) => value.toFixed(0)}
         />
       </StyledText>

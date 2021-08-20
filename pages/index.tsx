@@ -2,14 +2,11 @@ import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } f
 import dynamic from 'next/dynamic'
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
-import { G, SVG } from '@svgdotjs/svg.js'
-import { Display } from 'rot-js'
-import { hexbin } from 'd3-hexbin';
+import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
 import HexagonRound from '../components/ReactHexgrid/HexagonRound'
 
-import { Popover, Menu, Dropdown, message } from 'antd';
-import { PlusOutlined, ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons'
+import { message } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
@@ -21,7 +18,6 @@ import { StoreGet, StoreSet } from '../utils/store'
 import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
-import { InviitationsMineState } from '../typings/ucenter.d'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -36,10 +32,10 @@ const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: 
 import { CircleSuccessIcon } from '../components/Icon/Index'
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
-  hexGridsMine, hexGridsForbiddenZoneRadius, hexGridsCountByFilter
+  hexGridsMine
 } from '../services/metaNetwork'
-import { invitationsMine } from '../services/ucenter'
 import { useUser } from '../hooks/useUser'
+import { fetchForbiddenZoneRadius } from '../helpers/index'
 
 let d3: any = null
 let zoom: any = null
@@ -47,18 +43,11 @@ if (process.browser) {
   d3 = require('d3')
   zoom = d3.zoom();
 }
+const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 
 const Home = () => {
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([]);
-  // const [config, setConfig] = useState({
-  //   "width": 1000,
-  //   "height": 800,
-  //   "layout": { "width": 70, "height": 70, "flat": false, "spacing": 1.1 },
-  //   "origin": { "x": 100, "y": 100 },
-  //   "map": "hexagon",
-  //   "mapProps": [15]
-  // })
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
   const [layout, setLayout] = useState({ "width": 66, "height": 66, "flat": false, "spacing": 1.1 })
@@ -67,9 +56,9 @@ const Home = () => {
   const [height, setHeight] = useState<number>(800);
   const [origin, setOrigin] = useState<{ x: number, y: number }>({ "x": 100, "y": 100 });
   // 默认坐标点
-  const defaultPoint = { x: 0, y: 11, z: -11 }
+  const [defaultPoint] = useState<PointState>( { x: 0, y: 11, z: -11 })
   // 默认坐标范围
-  const defaultHexGridsRange: PointScopeState = {
+  const [ defaultHexGridsRange ] = useState<PointScopeState>({
     "xMin": -90,
     "xMax": 90,
     "yMin": -90,
@@ -77,7 +66,7 @@ const Home = () => {
     "zMin": -90,
     "zMax": 90,
     "simpleQuery": ''
-  }
+  })
 
   // 所有节点
   const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
@@ -93,8 +82,7 @@ const Home = () => {
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
   // 占领 Modal
   const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
-  // 邀请码
-  const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
+
   // 占领通知状态
   const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false)
   // 自己的占领坐标
@@ -135,29 +123,28 @@ const Home = () => {
     to: { x: '-50%', y: 0, opacity: 1 },
     config: {
       duration: 300
-    }
+    },
+    delay: 1000
   })
   // map render
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex), {
     ref: transApi,
-    trail: 3000 / hex.length,
-    from: { opacity: 0, scale: 0 },
-    enter: { opacity: 1, scale: 1 },
-    leave: { opacity: 0, scale: 0 },
-    delay: () => {
-      return random(100, 200)
-    },
-    onStart: () => {
-      console.log('animated start')
-    }
+    // trail: 3000 / hex.length,
+    // from: { opacity: 0, scale: 0 },
+    // enter: { opacity: 1, scale: 1 },
+    // leave: { opacity: 0, scale: 0 },
+    // delay: () => {
+    //   return random(30, 80)
+    // },
+    // onStart: () => {
+    //   console.log('animated start')
+    // }
   })
   useChain([transApi], [0.1])
 
   // 默认禁用区域半径
-  const [forbiiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
-  // 统计所有坐标点
-  const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+  const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
   // 箭头角度
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
@@ -173,12 +160,15 @@ const Home = () => {
   const { run: resizeFn } = useThrottleFn(
     () => {
       if (process.browser) {
-        setWidth(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth * 1)
-        setHeight(window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight * 1)
+        const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+
+        setWidth(_width * 1)
+        setHeight(_height * 1)
 
         setOrigin({
-          x: (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth * 1) / 2,
-          y: (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight * 1) / 2,
+          x: (_width * 1) / 2,
+          y: (_height * 1) / 2,
         })
       }
     },
@@ -235,7 +225,7 @@ const Home = () => {
 
   // 隐藏用户信息
   const hideUserInfo = useCallback(() => {
-    // console.log(111)
+    console.log(111)
     apiUserInfo.start({ opacity: 0, display: 'none' })
   }, [apiUserInfo])
   // const { run: hideUserInfoThrottle } = useThrottleFn(
@@ -278,28 +268,21 @@ const Home = () => {
     }
   }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
 
-  // 计算半径为10不可选区域
-  useEffect(() => {
-    const center = new Hex(0, 0, 0)
-    const points = calcCenterRange(center, hex, forbiiddenZoneRadius)
-
-    setAllNodeDisabled(points)
-  }, [hex, forbiiddenZoneRadius])
 
   // init
   useMount(
     () => {
       fetchHexGriids()
-      fetchFoorbiddenZoneRadius()
-      fetchHexGridsMine()
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
-      document.addEventListener('click', hideUserInfo, false)
+      const _test = () => {
+        console.log('document')
+        hideUserInfo()
+      }
+      document.addEventListener('click', _test, false)
 
-      fetchInviteCode()
       fetchBookmark()
-      fetchHexGridsCountByFilter()
     }
   );
 
@@ -308,54 +291,22 @@ const Home = () => {
     document.removeEventListener('click', hideUserInfo)
   })
 
+  // 计算半径为10不可选区域
+  const calcForbiddenZoneRadius = (hex: HexagonsState[], forbiddenZoneRadius: number) => {
+    const center = new Hex(0, 0, 0)
+    const points = calcCenterRange(center, hex, forbiddenZoneRadius)
+
+    setAllNodeDisabled(points)
+    console.log('计算半径为10不可选区域 只需要执行一次')
+  }
 
 
   // 获取收藏记录
   const fetchBookmark = useCallback(() => {
-    const key = 'MetaNetWorkBookmark'
-    const bookmark = StoreGet(key)
+    const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
     setBookmark(bookmarkList)
   }, [])
-
-  // 获取邀请码
-  const fetchInviteCode = useCallback(
-    async () => {
-      try {
-        const res = await invitationsMine()
-        if (res.statusCode === 200) {
-          setInviteCodeData(res.data)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }, [])
-
-  // 获取禁用区域半径
-  const fetchFoorbiddenZoneRadius = useCallback(
-    async () => {
-      try {
-        const res = await hexGridsForbiddenZoneRadius()
-        if (res.statusCode === 200 && res.data > 0) {
-          setforbiiddenZoneRadius(res.data)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }, [])
-
-  // 获取统计所有坐标点
-  const fetchHexGridsCountByFilter = useCallback(
-    async () => {
-      try {
-        const res = await hexGridsCountByFilter(defaultHexGridsRange)
-        if (res.statusCode === 200) {
-          setHexGridsCountData(res.data)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }, [])
 
   // 获取自己的坐标点
   const fetchHexGridsMine = useCallback(
@@ -376,11 +327,12 @@ const Home = () => {
       } finally {
         setHexGridsMineTag(true)
       }
-    }, [])
+    }, [ defaultPoint ])
 
   // 设置内容拖动 缩放
   const setContainerDrag = useCallback(() => {
     const svg = d3.select('#container svg')
+    let oldTransform: { k: number, x: number, y: number } | null = null
 
     svg.call(
       zoom
@@ -389,13 +341,19 @@ const Home = () => {
         .on("zoom", zoomed)
     )
 
-    function zoomed({ transform }: any) {
+    function zoomed({ transform }: { transform: { k: number, x: number, y: number } } ) {
+      // console.log('transform', transform, oldTransform)
+      // 原点 点击不往下执行
+      if (oldTransform && oldTransform.k === transform.k && oldTransform.x === transform.x && oldTransform.y === transform.y) {
+        return
+      }
+
       // 边界判定
       let tran = transform
+      oldTransform = cloneDeep(transform)
 
       const svg = d3.select('#container svg > g')
       let svgBox = svg.node().getBBox()
-      // console.log('transform', transform)
       let svgContentWidth = svgBox.width
       let svgContentHeight = svgBox.height
 
@@ -407,22 +365,23 @@ const Home = () => {
       }
 
       if (transform.x >= numberFloor(svgContentWidth, transform.k)) {
-        tran = Object.assign(transform, { x: numberFloor(svgContentWidth, transform.k) })
+        tran = assign(transform, { x: numberFloor(svgContentWidth, transform.k) })
       }
       if (transform.y >= numberFloor(svgContentHeight, transform.k)) {
-        tran = Object.assign(transform, { y: numberFloor(svgContentHeight, transform.k) })
+        tran = assign(transform, { y: numberFloor(svgContentHeight, transform.k) })
       }
 
       if (transform.x <= numberFloor(-(svgContentWidth), transform.k)) {
-        tran = Object.assign(transform, { x: numberFloor(-(svgContentWidth), transform.k) })
+        tran = assign(transform, { x: numberFloor(-(svgContentWidth), transform.k) })
       }
       if (transform.y <= numberFloor(-(svgContentHeight), transform.k)) {
-        tran = Object.assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
+        tran = assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
       }
       svg.attr("transform", tran);
 
       // TODO: 应该需要优化
       if (!userInfoTag) {
+        console.log('zoom')
         hideUserInfo()
       }
 
@@ -433,7 +392,7 @@ const Home = () => {
   }, [width, height])
 
   // 渲染坐标地图
-  const render = useCallback((list: hexGridsByFilterState[]) => {
+  const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
     const generator = GridGenerator.getGenerator(map);
     const _mapProps = list.length ? calcMaxDistance(list) : mapProps
     const hexagons = generator.apply(null, _mapProps);
@@ -441,25 +400,34 @@ const Home = () => {
     console.log('hexagons', hexagons)
     setHex(hexagons)
     setContainerDrag()
-  }, [mapProps, map, setContainerDrag]);
+    calcForbiddenZoneRadius(hexagons, forbiddenZoneRadius)
+    fetchHexGridsMine()
+  }, [mapProps, map, setContainerDrag, fetchHexGridsMine]);
 
   // 获取范围坐标点
   const fetchHexGriids = useCallback(
     async () => {
       try {
         const res = await hexGridsByFilter(defaultHexGridsRange)
+
+        // 获取禁用坐标
+        const forbiddenZoneRadiusResult = await fetchForbiddenZoneRadius(forbiddenZoneRadius)
+        if (forbiddenZoneRadiusResult !== forbiddenZoneRadius) {
+          setforbiiddenZoneRadius(forbiddenZoneRadiusResult)
+        }
+
         if (res.statusCode === 200) {
           setAllNode(res.data)
-          render(res.data)
+          render(res.data, forbiddenZoneRadiusResult)
         } else {
           // console.log('获取失败')
           throw new Error('获取失败')
         }
       } catch (e) {
         console.log('e', e)
-        render([])
+        render([], 0)
       }
-    }, [render])
+    }, [defaultHexGridsRange, forbiddenZoneRadius, render])
 
   // 偏移地图坐标
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
@@ -468,7 +436,6 @@ const Home = () => {
     const showUserMore = () => {
       setUserInfoTag(true)
 
-      HandleHexagonStyle({ x, y, z })
       if (!showUserInfo) {
         setUserInfoTag(false)
         return
@@ -482,6 +449,8 @@ const Home = () => {
       apiUserInfo.start({ opacity: 1, display: 'block' })
       setUserInfoTag(false)
     }
+
+    HandleHexagonStyle({ x, y, z })
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
@@ -500,7 +469,6 @@ const Home = () => {
     // 重复点击垱前块
     if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
       console.log('eeee', e)
-      // TODO: 有点问题 无法停止
       e.stopPropagation()
     }
 
@@ -525,46 +493,6 @@ const Home = () => {
       z: point.z
     })
   }
-
-  // const messageFn = () => {
-  //   message.info({
-  //     content: <StyledMessageRelative>
-  //       <ExclamationCircleOutlined />
-  //       {/* 140 - 12 + 40 */}
-  //       <span style={{ paddingRight: 168, overflow: 'hidden' }}>
-  //         现在就开始建立你在元宇宙网络的个人站点吧！
-  //         <StyledMessageButton>开始创建</StyledMessageButton>
-  //       </span>
-  //     </StyledMessageRelative>,
-  //     className: 'custom-message',
-  //     duration: 0,
-  //     icon: ''
-  //   });
-
-  //   message.info({
-  //     content: <span className="g-green">
-  //       <ExclamationCircleOutlined />
-  //       <span>
-  //         首先，请认领一块空白的地块
-  //       </span>
-  //     </span>,
-  //     className: 'custom-message',
-  //     duration: 0,
-  //     icon: ''
-  //   });
-
-  //   message.info({
-  //     content: <span className="message-content">
-  //       <ExclamationCircleOutlined />
-  //       <span>
-  //         请选择紧挨已注册用户的地块
-  //       </span>
-  //     </span>,
-  //     className: 'custom-message',
-  //     duration: 0,
-  //     icon: ''
-  //   });
-  // };
 
   // 节点是不是拥有者
   const isNodeOwner = useCallback(({ x, y, z }: PointState) => {
@@ -620,6 +548,9 @@ const Home = () => {
     y: number,
     z: number
   }) => {
+
+    console.log('nodeContent')
+
     // 禁止选择节点
     const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
     if (nodeDisabled.length) {
@@ -628,9 +559,11 @@ const Home = () => {
 
     if (allNode.length === 0) {
       // 没有节点
-      if (x === 0 && y === 10 + 1 && z === -10 - 1) {
+      if (x === defaultPoint.x && y === defaultPoint.y && z === defaultPoint.z) {
         return (
-          <Text className={styles['hexagon-add']}>+</Text>
+          <g style={{ transform: 'translate(-10px, -10px)' }}>
+            <svg width="19" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.752 1.107v16m8-8h-16" stroke="#F5F5F5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </g>
         )
       } else {
         return null
@@ -677,10 +610,12 @@ const Home = () => {
 
     const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
     if (nodeChoose.length) {
-      return <Text className={styles['hexagon-add']}>+</Text>
+      return <g style={{ transform: 'translate(-10px, -10px)' }}>
+        <svg width="19" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.752 1.107v16m8-8h-16" stroke="#F5F5F5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </g>
     }
     return null
-  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner])
+  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner, defaultPoint])
 
   const messageFn = (text: string) => {
     message.info({
@@ -697,8 +632,7 @@ const Home = () => {
 
   // 处理收藏
   const HandleBookmark = (currentNode: hexGridsByFilterState) => {
-    const key = 'MetaNetWorkBookmark'
-    const bookmark = StoreGet(key)
+    const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     const x = currentNode.x
     const y = currentNode.y
     const z = currentNode.z
@@ -706,7 +640,7 @@ const Home = () => {
 
     // 没有收藏记录
     if (isEmpty(bookmark)) {
-      StoreSet(key, JSON.stringify([point]))
+      StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
       messageFn('收藏成功')
     } else {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
@@ -724,7 +658,7 @@ const Home = () => {
         messageFn('收藏成功')
       }
 
-      StoreSet(key, JSON.stringify(bookmarkList))
+      StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
     }
 
     fetchBookmark()
@@ -733,8 +667,7 @@ const Home = () => {
   // 处理移除收藏
   const HandleRemoveBookmark = useCallback(
     (bookmarkNodeList: hexGridsByFilterState[]) => {
-      const key = 'MetaNetWorkBookmark'
-      const bookmark = StoreGet(key)
+      const bookmark = StoreGet(KeyMetaNetWorkBookmark)
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
 
       for (let i = 0; i < bookmarkNodeList.length; i++) {
@@ -749,7 +682,7 @@ const Home = () => {
         }
       }
 
-      StoreSet(key, JSON.stringify(bookmarkList))
+      StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
       fetchBookmark()
 
       messageFn('移除收藏成功')
@@ -796,7 +729,7 @@ const Home = () => {
     } else {
       translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
     }
-  }, [hexGridsMineData, translateMap])
+  }, [hexGridsMineData, defaultPoint, translateMap])
 
   // 箭头 重置定位
   const HandleResetOwnerPosition = useCallback(() => {
@@ -810,7 +743,6 @@ const Home = () => {
       <ToggleSlider
         translateMap={translateMap}
         bookmarkNode={bookmarkNode}
-        inviteCodeData={inviteCodeData}
         defaultHexGridsRange={defaultHexGridsRange}
         HandleRemoveBookmark={HandleRemoveBookmark}
         HandlePosition={HandlePosition}>
@@ -871,7 +803,7 @@ const Home = () => {
         isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
           <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
       }
-      <HexGridsCount count={hexGridsCountData}></HexGridsCount>
+      <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       {
         !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
           <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
@@ -879,34 +811,5 @@ const Home = () => {
     </>
   )
 }
-
-const StyledMessageRelative = styled.span`
-  position: relative;
-`
-
-const StyledMessageButton = styled.button`
-  width: 140px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  position: absolute;
-  right: -12px;
-  top: -10px;
-  bottom: -10px;
-  border-radius: 0 4px 4px 0;
-  border: none;
-  border-left: 1px solid #131313;
-  outline: none;
-  cursor: pointer;
-  background-color: transparent;
-  color: ${props => props.theme.colorGreen};
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  box-sizing: border-box;
-`
 
 export default Home

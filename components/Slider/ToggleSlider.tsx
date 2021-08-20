@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
   SearchOutlined, SwapOutlined, ArrowLeftOutlined,
@@ -9,6 +9,8 @@ import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 
 import { useUser } from '../../hooks/useUser'
 import { accountsTokenDelete } from '../../services/ucenter'
@@ -18,17 +20,50 @@ import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 import { SearchIcon, SwitchVerticalIcon, BookmarkIcon, ArrowTopLeftIcon, InviteIcon, LogoutIcon } from '../Icon/Index'
+import { fetchInviteCode } from '../../helpers/index'
 
 interface Props {
   readonly bookmarkNode: hexGridsByFilterState[]
-  readonly inviteCodeData: InviitationsMineState[]
   readonly defaultHexGridsRange: PointScopeState
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
   HandlePosition: () => void
 }
 
-const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeData, defaultHexGridsRange, HandleRemoveBookmark, HandlePosition }) => {
+interface SliderContenAccoountProps {
+  readonly isLoggin: boolean
+  signOut: () => void
+}
+
+// 侧边栏 内容 账户操作
+const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(function SliderContenAccoount ({ isLoggin, signOut }) {
+  console.log('SliderContenAccoount')
+
+  return (
+    <StyledSliderCAccount>
+      {
+        isLoggin ?
+          <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
+            <StyledSliderCAccountButton className="g-red">
+              <LogoutIcon />
+              登出账户
+            </StyledSliderCAccountButton>
+          </Popconfirm> :
+          <Link href="/oauth/login">
+            <a>
+              <StyledSliderCAccountButton className="g-green">
+                <ArrowTopLeftIcon />
+                前往注册/登陆
+              </StyledSliderCAccountButton>
+            </a>
+          </Link>
+      }
+    </StyledSliderCAccount>
+  )
+})
+
+const ToggleSlider: React.FC<Props> = React.memo( function ToggleSlider ({ translateMap, bookmarkNode, defaultHexGridsRange, HandleRemoveBookmark, HandlePosition }) {
+  console.log('ToggleSlider')
 
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
@@ -38,8 +73,28 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
   // 邀请码
   const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false);
+  // 邀请码
+  const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
   // 搜索
   const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
+
+  // TODO：阻塞让动效卡顿
+  const animatedStylesMenu = useSpring({
+    from: { x: -60, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+    config: {
+      duration: 300
+    }
+  })
+
+  const animatedStylesId = useSpring({
+    from: { x: -60, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+    config: {
+      duration: 300
+    },
+    delay: 100
+  })
 
   const showDrawer = () => {
     setVisibleSlider(true);
@@ -63,8 +118,28 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
     }
   }
 
+  // 获取邀请码
+  const fetchInviteCodeFn = useCallback(
+    async () => {
+      const res = await fetchInviteCode()
+      if (!res.length) {
+        return
+      }
+      setInviteCodeData(res)
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (isLoggin) {
+      fetchInviteCodeFn()
+    }
+  }, [isLoggin, fetchInviteCodeFn])
+
   // 侧边栏 用户内容
   const SliderContentUser: React.FC = () => {
+    console.log('SliderContentUser')
+
     return (
       <StyledSliderCUser>
         <Avatar size={40} icon={<UserOutlined />} src={user?.avatar} />
@@ -80,6 +155,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
 
   // 侧边栏 菜单 导航
   const SliderContenItemtNav: React.FC = () => {
+    console.log('SliderContenItemtNav')
     return (
       <StyledSliderCItem>
         <li>
@@ -108,6 +184,8 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
   }
   // 侧边栏 菜单 用户
   const SliderContenItemtUser: React.FC = () => {
+    console.log('SliderContenItemtUser')
+
     return (
       <StyledSliderCItem>
         <li>
@@ -133,37 +211,12 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
     )
   }
 
-  // 侧边栏 内容 账户操作
-  const SliderContenAccoount: React.FC = () => {
-    return (
-      <StyledSliderCAccount>
-        {
-          isLoggin ?
-            <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
-              <StyledSliderCAccountButton className="g-red">
-                <LogoutIcon />
-                登出账户
-              </StyledSliderCAccountButton>
-            </Popconfirm> :
-            <Link href="/oauth/login">
-              <a>
-                <StyledSliderCAccountButton className="g-green">
-                  <ArrowTopLeftIcon />
-                  前往注册/登陆
-                </StyledSliderCAccountButton>
-              </a>
-            </Link>
-        }
-      </StyledSliderCAccount>
-    )
-  }
-
   return (
     <>
-      <StyledButton onClick={showDrawer}>
+      <StyledButton onClick={showDrawer} style={{ ...animatedStylesMenu }}>
         <MenuUnfoldOutlined />
       </StyledButton>
-      <StyledButtonMap onClick={HandlePosition}>
+      <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStylesId }}>
         <EnvironmentOutlined />
       </StyledButtonMap>
       <StyledSlider
@@ -177,7 +230,7 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
           <SliderContentUser></SliderContentUser>
           <SliderContenItemtNav></SliderContenItemtNav>
           <SliderContenItemtUser></SliderContenItemtUser>
-          <SliderContenAccoount></SliderContenAccoount>
+          <SliderContenAccoount isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount>
         </StyledSliderContent>
       </StyledSlider>
       <Bookmark
@@ -202,10 +255,10 @@ const ToggleSlider: React.FC<Props> = ({ translateMap, bookmarkNode, inviteCodeD
       ></SearchModal>
     </>
   )
-}
+})
 
 
-const StyledButton = styled.button`
+const StyledButton = styled(animated.button)`
   position: fixed;
   left: 0;
   top: 74px;
@@ -227,7 +280,7 @@ const StyledButton = styled.button`
     font-size: 24px;
   }
 `
-const StyledButtonMap = styled.button`
+const StyledButtonMap = styled(animated.button)`
   position: fixed;
   left: 0;
   top: 162px;
