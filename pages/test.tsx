@@ -54,6 +54,44 @@ const G = ({state1}: any) => {
   )
 }
 
+const C1: React.FC = React.memo( function C1 ({ state1 }) {
+  const [state, setstate] = useState('');
+
+  console.log('c1')
+  return (
+    <div>
+      <div>C1 state { state }</div>
+      <div>C1 state1 { state1 }</div>
+      <button onClick={ () => setstate(Date.now()) }>C1</button>
+    </div>
+  )
+})
+
+
+const C2: React.FC = React.memo( function C2 ({ fn }) {
+  const [state, setstate] = useState('');
+
+  console.log('c2')
+  return (
+    <div>
+      <div>C2 state { state }</div>
+      <button onClick={ () => setstate(Date.now()) }>C2</button>
+    </div>
+  )
+})
+
+const C3: React.FC = React.memo( function C3 ({ v }) {
+  const [state, setstate] = useState('');
+
+  console.log('c3', v)
+  return (
+    <div>
+      <div>C3 state { state }</div>
+      <button onClick={ () => setstate(Date.now()) }>C3</button>
+    </div>
+  )
+})
+
 const Test = () => {
 
   const [state, setstate] = useState('');
@@ -92,6 +130,12 @@ const Test = () => {
     )
   })
 
+  const c2Test = () => {
+    console.log('c2Test')
+  }
+
+  const c3V = '123 v3'
+
   return (
     <div>
       111111111111
@@ -107,6 +151,9 @@ const Test = () => {
       <G state1={state1}></G>
       <hr />
       <Child2></Child2>
+      <C1 state1={state1}></C1>
+      <C2 fn={c2Test}></C2>
+      <C3 v={c3V}></C3>
     </div>
   )
 }
