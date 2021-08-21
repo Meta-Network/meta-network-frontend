@@ -92,6 +92,23 @@ const C3: React.FC = React.memo( function C3 ({ v }) {
   )
 })
 
+const c4Test = () => {
+  console.log('c4Test')
+}
+
+const C4: React.FC = React.memo( function C4 ({}) {
+  const [state, setstate] = useState('');
+
+  console.log('c4')
+  return (
+    <div>
+      <div>C4 state { state }</div>
+      <button onClick={ () => setstate(Date.now()) }>C4</button>
+      <button onClick={ () => c4Test() }>C4 fn</button>
+    </div>
+  )
+})
+
 const Test = () => {
 
   const [state, setstate] = useState('');
@@ -154,6 +171,7 @@ const Test = () => {
       <C1 state1={state1}></C1>
       <C2 fn={c2Test}></C2>
       <C3 v={c3V}></C3>
+      <C4></C4>
     </div>
   )
 }
