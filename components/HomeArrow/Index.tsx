@@ -13,7 +13,7 @@ interface Props {
  * @param param0
  * @returns
  */
-const HomeArrow: React.FC<Props> = ({ angleValue = 0, HandleResetOwnerPosition }) => {
+const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ angleValue = 0, HandleResetOwnerPosition }) {
   return (
     <Tooltip title="自己坐标方位">
       <StyledArrow style={{ transform: `rotate(${angleValue}deg)` }} onClick={HandleResetOwnerPosition}>
@@ -21,7 +21,7 @@ const HomeArrow: React.FC<Props> = ({ angleValue = 0, HandleResetOwnerPosition }
       </StyledArrow>
     </Tooltip>
   )
-}
+})
 
 const StyledArrow = styled.section`
   position: fixed;

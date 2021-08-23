@@ -37,8 +37,6 @@ interface Props {
 
 
 const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ translateMap, bookmarkNode, defaultHexGridsRange, HandleRemoveBookmark, HandlePosition }) {
-  console.log('ToggleSlider')
-
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user, isLoggin } = useUser()

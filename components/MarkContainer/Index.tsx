@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MarkContainer: React.FC = () => {
+const MarkContainer: React.FC = React.memo(function MarkContainer () {
   return (
     <svg width="100%" height="100%" id="mask-container">
       <defs>
@@ -18,6 +18,6 @@ const MarkContainer: React.FC = () => {
       </defs>
     </svg>
   )
-}
+})
 
 export default MarkContainer

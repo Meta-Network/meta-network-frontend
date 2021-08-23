@@ -13,7 +13,7 @@ interface Props {
   setIsModalVisible: (value: boolean) => void
 }
 
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
+const DeploySite: React.FC<Props> = React.memo(function DeploySite ({ isModalVisible, setIsModalVisible }) {
 
   const [steps, setSteps] = useState<number>(0);
   const [formSiteName] = Form.useForm();
@@ -144,7 +144,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible }) => {
       </StyledContent>
     </CustomModal>
   )
-}
+})
 
 const StyledContent = styled.section`
   color: #fff;

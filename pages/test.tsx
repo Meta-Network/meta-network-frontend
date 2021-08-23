@@ -2,8 +2,6 @@ import React, { useState, useMemo } from 'react';
 
 
 const C = () => {
-
-
   console.log('cccccc')
 
   return (
@@ -12,7 +10,6 @@ const C = () => {
 }
 
 const D =  React.memo( function D () {
-
   console.log('dddddd')
 
   return (
@@ -109,30 +106,44 @@ const C4: React.FC = React.memo( function C4 ({}) {
   )
 })
 
+const C5: React.FC = () => {
+  console.log('C5')
+  const [state, setstate] = useState('');
+
+  return (
+    <div>
+      <button onClick={ () => setstate(String(Date.now())) }>toggle</button>
+      <div>C5</div>
+    </div>
+  )
+}
+
 const Test = () => {
+
+  console.log('Test Parent')
 
   const [state, setstate] = useState('');
   const [state1, setstate1] = useState('');
 
 
   const childC: React.FC = () => {
-
-    console.log(2222)
+    console.log('childC')
     return (
       <div>
-        <button onClick={ () => setstate('2222') }>toggle</button>
-        <div>222222</div>
+        <button onClick={ () => setstate('childC') }>toggle</button>
+        <button onClick={ () => setstate(String(Date.now())) }>toggle</button>
+        <div>childC</div>
       </div>
     )
   }
 
   const childC1: React.FC = () => {
 
-    console.log(2222)
+    console.log(childC1)
     return (
       <div>
-        <button onClick={ () => setstate('2222') }>toggle</button>
-        <div>222222</div>
+        <button onClick={ () => setstate('childC1') }>toggle</button>
+        <div>childC1</div>
       </div>
     )
   }
@@ -147,6 +158,18 @@ const Test = () => {
     )
   })
 
+  const C6: React.FC = () => {
+    console.log('C6')
+    const [state, setstateC6] = useState('');
+
+    return (
+      <div>
+        <button onClick={ () => setstateC6(String(Date.now())) }>toggle</button>
+        <div>C6</div>
+      </div>
+    )
+  }
+
   const c2Test = () => {
     console.log('c2Test')
   }
@@ -155,7 +178,7 @@ const Test = () => {
 
   return (
     <div>
-      111111111111
+      Parent
       <button onClick={ () => setstate('1111') }>toggle</button>
       <button onClick={ () => setstate1(Date.now()) }>toggle1</button>
       <button onClick={ () => setstate1('0000000000') }>toggle1</button>
@@ -172,6 +195,8 @@ const Test = () => {
       <C2 fn={c2Test}></C2>
       <C3 v={c3V}></C3>
       <C4></C4>
+      <C5></C5>
+      <C6></C6>
     </div>
   )
 }

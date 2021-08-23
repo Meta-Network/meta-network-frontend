@@ -17,8 +17,7 @@ interface Props {
  * @param param0
  * @returns
  */
-const HexGridsCount: React.FC<Props> = ({ range }) => {
-
+const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ range }) {
   // 统计所有坐标点
   const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
 
@@ -53,7 +52,7 @@ const HexGridsCount: React.FC<Props> = ({ range }) => {
       </StyledText>
     </Tooltip>
   )
-}
+})
 
 const StyledText = styled(animated.span)`
   position: fixed;

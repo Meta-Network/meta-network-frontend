@@ -15,7 +15,10 @@ interface Props {
 const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState, style }) => {
   const { user } = useUser()
 
-  const ToggleState = useCallback(() => {
+  const ToggleState = useCallback((e: any) => {
+
+    e.stopPropagation()
+
     if (isEmpty(user)) {
       message.info('请登录')
       return
@@ -34,7 +37,7 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
       </StyledText>
       <StyledMessageButton
         status={status}
-        onClick={ToggleState}>
+        onClick={(e: any) => ToggleState(e)}>
           { status ? '放弃创建' : '开始创建' }
         </StyledMessageButton>
     </StyledMessageRelative>

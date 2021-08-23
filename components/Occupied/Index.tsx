@@ -12,7 +12,7 @@ interface Props {
   handleOccupied: () => Promise<void>
 }
 
-const Occupied: React.FC<Props> = ({ isModalVisible, setIsModalVisible, handleOccupied }) => {
+const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible, setIsModalVisible, handleOccupied }) {
   // loading button
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -59,7 +59,7 @@ const Occupied: React.FC<Props> = ({ isModalVisible, setIsModalVisible, handleOc
       </StyledContent>
     </CustomModal>
   )
-}
+})
 
 const StyledContent = styled.section`
   color: #fff;
