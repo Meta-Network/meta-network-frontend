@@ -423,7 +423,6 @@ const Home = () => {
 
           let _map: Map<string, hexGridsByFilterState> = new Map()
           res.data.forEach(i => {
-            console.log('i', i)
             const { x, y, z } = i
             _map.set(`${x}${y}${z}`, i)
           })
