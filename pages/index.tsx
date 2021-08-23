@@ -15,7 +15,9 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance, calcCenterRange, angle, isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
+import { cubeToAxial, calcTranslate, calcMaxDistance,
+  calcCenterRangeAsMap, angle,
+  isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 
@@ -73,10 +75,11 @@ const Home = () => {
 
   // 所有节点
   const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
+  const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map());
   // 所有可以选择的节点
-  const [allNodeChoose, setAllNodeChoose] = useState<any[]>([]);
+  const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map());
   // 所有禁止选择的节点
-  const [allNodeDisabled, setAllNodeDisabled] = useState<any[]>([]);
+  const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map());
   // 当前选择节点
   const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
   // 当前占领节点
@@ -100,20 +103,17 @@ const Home = () => {
 
     for (let i = 0; i < _bookmark.length; i++) {
       const ele = _bookmark[i];
-      const _node = allNode.filter(node =>
-        node.x === ele.x &&
-        node.y === ele.y &&
-        node.z === ele.z
-      )
-      if (_node.length) {
-        assign(ele, _node[0])
+      const { x, y, z } = ele
+      const _node = allNodeMap.get(`${x}${y}${z}`)
+      if (_node) {
+        assign(ele, _node)
       }
     }
 
     console.log('_bookmark', _bookmark)
 
     return _bookmark.reverse() as hexGridsByFilterState[]
-  }, [allNode, bookmark])
+  }, [allNodeMap, bookmark])
   // Animated react spriing
   // User Info
   const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
@@ -247,12 +247,12 @@ const Home = () => {
     // }
     // 已经占领
     if (!isEmpty(hexGridsMineData)) {
-      setAllNodeChoose([])
+      setAllNodeChoose(new Map())
       return
     }
 
     if (allNode.length) {
-      let points = []
+      let points: Map<string, HexagonsState> = new Map()
       let distance = 1
 
       for (let i = 0; i < allNode.length; i++) {
@@ -260,13 +260,13 @@ const Home = () => {
         // 捕获 new hex 错误
         try {
           let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
-          const pointsRes = calcCenterRange(center, hex, distance)
-          points.push(...pointsRes)
+          calcCenterRangeAsMap(center, hex, distance, points)
         } catch (e) {
           console.log('e', e)
           continue
         }
       }
+
       setAllNodeChoose(points)
     }
   }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
@@ -297,7 +297,7 @@ const Home = () => {
   // 计算半径为10不可选区域
   const calcForbiddenZoneRadius = (hex: HexagonsState[], forbiddenZoneRadius: number) => {
     const center = new Hex(0, 0, 0)
-    const points = calcCenterRange(center, hex, forbiddenZoneRadius)
+    const points = calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
 
     setAllNodeDisabled(points)
     console.log('计算半径为10不可选区域 只需要执行一次')
@@ -420,7 +420,17 @@ const Home = () => {
         }
 
         if (res.statusCode === 200) {
+
+          let _map: Map<string, hexGridsByFilterState> = new Map()
+          res.data.forEach(i => {
+            console.log('i', i)
+            const { x, y, z } = i
+            _map.set(`${x}${y}${z}`, i)
+          })
+
           setAllNode(res.data)
+          setAllNodeMap(_map)
+
           render(res.data, forbiddenZoneRadiusResult)
         } else {
           // console.log('获取失败')
@@ -443,12 +453,12 @@ const Home = () => {
         setUserInfoTag(false)
         return
       }
-      const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
-      if (!node.length) {
+      const node = allNodeMap.get(`${x}${y}${z}`)
+      if (!node) {
         messageFn('没有坐标数据')
         return
       }
-      setCurrentNode(node[0])
+      setCurrentNode(node)
       apiUserInfo.start({ opacity: 1, display: 'block' })
       setUserInfoTag(false)
     }
@@ -465,13 +475,13 @@ const Home = () => {
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
       .on('end', showUserMore)
-  }, [allNode, apiUserInfo, layout])
+  }, [allNodeMap, apiUserInfo, layout])
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
     // 重复点击垱前块
     if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
-      console.log('eeee', e)
+      // console.log('eeee', e)
       e.stopPropagation()
     }
 
@@ -514,34 +524,34 @@ const Home = () => {
     z: number
   }) => {
     // 禁止选择节点
-    const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
-    if (nodeDisabled.length) {
+    const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
+    if (nodeDisabledHas) {
       return 'disabled'
     }
 
-    if (allNode.length === 0) {
+    if (!allNodeMap.size) {
       // 没有节点
-      if (x === 0 && y === 10 + 1 && z === -10 - 1) {
+      if (x === defaultPoint.x && y === defaultPoint.y && z === defaultPoint.z) {
         return 'choose'
       } else {
         return 'default'
       }
     }
 
-    const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
-    if (node.length) {
+    const nodeHas = allNodeMap.has(`${x}${y}${z}`)
+    if (nodeHas) {
       // return node[0]!.user.role || 'exist'
       return 'exist'
     }
 
-    const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
-    if (nodeChoose.length) {
+    const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
+    if (nodeChooseHas) {
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
     return 'default'
 
 
-  }, [allNode, allNodeChoose, allNodeDisabled, noticeBardOccupiedState])
+  }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState])
 
   // 节点内容
   const nodeContent = useCallback(({
@@ -554,15 +564,13 @@ const Home = () => {
 
     // console.log('nodeContent')
 
-    // TODO: 可以考虑 array 变 object 加快搜索时间（但是数据很小影响不大）
-
     // 禁止选择节点
-    const nodeDisabled = allNodeDisabled.filter(i => i.q === x && i.s === y && i.r === z)
-    if (nodeDisabled.length) {
+    const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
+    if (nodeDisabledHas) {
       return null
     }
 
-    if (allNode.length === 0) {
+    if (!allNodeMap.size) {
       // 没有节点
       if (x === defaultPoint.x && y === defaultPoint.y && z === defaultPoint.z) {
         return (
@@ -573,31 +581,30 @@ const Home = () => {
       }
     }
 
-    const node = allNode.filter(i => i.x === x && i.y === y && i.z === z)
-    if (node.length) {
-
+    const node = allNodeMap.get(`${x}${y}${z}`)
+    if (node) {
       // 是否收藏
       const isBookmark = bookmark.findIndex(i =>
-        i.x === node[0].x &&
-        i.y === node[0].y &&
-        i.z === node[0].z
+        i.x === node.x &&
+        i.y === node.y &&
+        i.z === node.z
       )
 
       return (
         <NodeUser
-          node={node[0]}
+          node={node}
           isBookmark={Boolean(~isBookmark)}
-          isOwner={isNodeOwner(node[0])}
+          isOwner={isNodeOwner(node)}
         ></NodeUser>
       )
     }
 
-    const nodeChoose = allNodeChoose.filter(i => i.q === x && i.s === y && i.r === z)
-    if (nodeChoose.length) {
+    const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
+    if (nodeChooseHas) {
       return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0  }} />
     }
     return null
-  }, [allNode, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner, defaultPoint, noticeBardOccupiedState])
+  }, [allNodeMap, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner, defaultPoint, noticeBardOccupiedState])
 
   const messageFn = (text: string) => {
     message.info({

@@ -28,7 +28,7 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
             <a>
               <StyledSliderCAccountButton className="g-green">
                 <ArrowTopLeftIcon />
-                前往注册/登陆
+                前往注册/登录
               </StyledSliderCAccountButton>
             </a>
           </Link>

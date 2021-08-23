@@ -199,6 +199,32 @@ export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance
 }
 
 /**
+ * 计算范围内坐标点
+ * 公用方法为了减少一层循坏 直接传data set value
+ * @param center 
+ * @param hexGrids 
+ * @param distance 
+ * @param data 
+ * @returns Map<string, HexagonsState>
+ */
+export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], distance: number, data?: Map<string, HexagonsState>) => {
+  let points: Map<string, HexagonsState> = new Map()
+  for (let i = 0; i < hexGrids.length; i++) {
+    const ele = hexGrids[i];
+    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
+    if (distanceResult) {
+      // qsr xyz
+      if (data) {
+        data.set(`${ele.q}${ele.s}${ele.r}`, ele)
+      } else {
+        points.set(`${ele.q}${ele.s}${ele.r}`, ele)
+      }
+    }
+  }
+  return points
+}
+
+/**
  * 返回两点的角度
  * @param start
  * @param end
