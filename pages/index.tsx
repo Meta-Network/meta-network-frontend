@@ -480,8 +480,8 @@ const Home = () => {
       setIsModalVisibleOccupied(true)
       return
     } else if (mode === 'default') {
-      // 未登录不提示
-      if (!isLoggin) {
+      // 未登录不提示 未开启占地功能不提示
+      if (!isLoggin || !noticeBardOccupiedState) {
         return
       }
       messageFn('请选择紧挨已注册用户的地块')
