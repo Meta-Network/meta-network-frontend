@@ -42,7 +42,7 @@ class HexagonRoound extends Component {
     const pixel = HexUtils.hexToPixel(hex, layout);
     this.state = { hex, pixel };
 
-    console.log('HexagonRoound')
+    // console.log('HexagonRoound')
   }
 
   // TODO Refactor to reduce duplicate

@@ -13,7 +13,7 @@ interface Props {
 
 const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, node, isOwner }) {
 
-  console.log('NodeUser components')
+  // console.log('NodeUser components')
 
   return (
     <>

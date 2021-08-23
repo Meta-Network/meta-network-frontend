@@ -31,8 +31,7 @@ const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'),
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
 
-import NodeChoose from '../components/IndexPage/NodeChoose'
-import NodeUser from '../components/IndexPage/NodeUser'
+import NodeContent from '../components/IndexPage/NodeContent'
 
 import { CircleSuccessIcon } from '../components/Icon/Index'
 import {
@@ -109,8 +108,7 @@ const Home = () => {
         assign(ele, _node)
       }
     }
-
-    console.log('_bookmark', _bookmark)
+    // console.log('_bookmark', _bookmark)
 
     return _bookmark.reverse() as hexGridsByFilterState[]
   }, [allNodeMap, bookmark])
@@ -152,7 +150,7 @@ const Home = () => {
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
-  // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   const { isLoggin } = useUser()
 
@@ -185,11 +183,6 @@ const Home = () => {
     () => {
       const _init = () => {
 
-        // 条件与显示箭头相反
-        if (!(!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData))) {
-          return
-        }
-
         const tag = document.querySelector<HTMLElement>('.hexagon-owner')
         const inViewPortResult = isInViewPort(tag!)
         setInViewPortHexagonOwner(inViewPortResult)
@@ -216,7 +209,7 @@ const Home = () => {
           }
         )
 
-        console.log('angle', angleResult)
+        // console.log('angle', angleResult)
         setHomeAngle(angleResult)
       }
       if (process.browser) {
@@ -387,6 +380,7 @@ const Home = () => {
         console.log('zoom')
         hideUserInfo()
       }
+      console.log('calcAngle calcAngle')
 
       calcAngle()
     }
@@ -522,6 +516,8 @@ const Home = () => {
     y: number,
     z: number
   }) => {
+    // console.log('calcNodeMode')
+
     // 禁止选择节点
     const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
     if (nodeDisabledHas) {
@@ -547,65 +543,15 @@ const Home = () => {
     if (nodeChooseHas) {
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
+
+    // console.log('calcNodeMode default')
+
     return 'default'
 
 
   }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState])
 
-  // 节点内容
-  const nodeContent = useCallback(({
-    x, y, z
-  }: {
-    x: number,
-    y: number,
-    z: number
-  }) => {
-
-    // console.log('nodeContent')
-
-    // 禁止选择节点
-    const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
-    if (nodeDisabledHas) {
-      return null
-    }
-
-    if (!allNodeMap.size) {
-      // 没有节点
-      if (x === defaultPoint.x && y === defaultPoint.y && z === defaultPoint.z) {
-        return (
-          <NodeChoose />
-        )
-      } else {
-        return null
-      }
-    }
-
-    const node = allNodeMap.get(`${x}${y}${z}`)
-    if (node) {
-      // 是否收藏
-      const isBookmark = bookmark.findIndex(i =>
-        i.x === node.x &&
-        i.y === node.y &&
-        i.z === node.z
-      )
-
-      return (
-        <NodeUser
-          node={node}
-          isBookmark={Boolean(~isBookmark)}
-          isOwner={isNodeOwner(node)}
-        ></NodeUser>
-      )
-    }
-
-    const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
-    if (nodeChooseHas) {
-      return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0  }} />
-    }
-    return null
-  }, [allNodeMap, allNodeDisabled, allNodeChoose, bookmark, isNodeOwner, defaultPoint, noticeBardOccupiedState])
-
-  const messageFn = (text: string) => {
+  const messageFn = useCallback((text: string) => {
     message.info({
       content: <span className="message-content">
         <CircleSuccessIcon />
@@ -616,10 +562,10 @@ const Home = () => {
       className: 'custom-message',
       icon: ''
     })
-  }
+  }, [])
 
   // 处理收藏
-  const HandleBookmark = (currentNode: hexGridsByFilterState) => {
+  const HandleBookmark = useCallback((currentNode: hexGridsByFilterState) => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     const x = currentNode.x
     const y = currentNode.y
@@ -650,7 +596,7 @@ const Home = () => {
     }
 
     fetchBookmark()
-  }
+  }, [ fetchBookmark ])
 
   // 处理移除收藏
   const HandleRemoveBookmark = useCallback(
@@ -679,7 +625,7 @@ const Home = () => {
   )
 
   // 处理占领
-  const handleOccupied = async () => {
+  const handleOccupied = useCallback(async () => {
     console.log('currentNodeChoose', currentNodeChoose)
     try {
       const resPointValidation = await hexGridsCoordinateValidation(currentNodeChoose)
@@ -708,7 +654,7 @@ const Home = () => {
       console.log(e)
       message.warning(e.message)
     }
-  }
+  }, [ currentNodeChoose, fetchHexGriids ])
 
   // 重置定位
   const HandlePosition = useCallback(() => {
@@ -744,9 +690,13 @@ const Home = () => {
 
               // hex.map((hex: any, i) => {
               transition((style, hex: HexagonsState) => {
-                let x = hex.q
-                let y = hex.s
-                let z = hex.r
+                // let x = hex.q
+                // let y = hex.s
+                // let z = hex.r
+
+                let { q: x, s: y, r: z } = hex
+
+                // console.log('transition')
 
                 const nodeMode = calcNodeMode({ x, y, z })
                 let key = `x${x}_y${y}_z${z}`
@@ -763,13 +713,16 @@ const Home = () => {
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
                     className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
-                    {
-                      nodeContent({
-                        x: x,
-                        y: y,
-                        z: z
-                      })
-                    }
+                    <NodeContent
+                      coordinate={{x, y, z}}
+                      allNodeDisabled={allNodeDisabled}
+                      allNodeMap={allNodeMap}
+                      allNodeChoose={allNodeChoose}
+                      defaultPoint={defaultPoint}
+                      bookmark={bookmark}
+                      noticeBardOccupiedState={noticeBardOccupiedState}
+                      isNodeOwner={isNodeOwner}
+                    ></NodeContent>
                   </HexagonRound>
                 )
               })

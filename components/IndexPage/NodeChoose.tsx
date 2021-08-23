@@ -6,7 +6,7 @@ interface Props {
 
 const NodeChoose: React.FC<Props> = React.memo( function NodeChoose ({ style}) {
 
-  console.log('NodeChoose components')
+  // console.log('NodeChoose components')
 
   return (
     <g style={{ transform: 'translate(-10px, -10px)', ...style }}>
