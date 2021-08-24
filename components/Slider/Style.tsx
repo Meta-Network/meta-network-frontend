@@ -70,28 +70,6 @@ export const StyledButton = styled(animated.button)`
     font-size: 24px;
   }
 `
-export const StyledButtonMap = styled(animated.button)`
-  position: absolute;
-  right: -58px;
-  top: 162px;
-  z-index: 1;
-  border: none;
-  border-top: 2px solid #caa2e7;
-  border-right: 2px solid #caa2e7;
-  border-bottom: 2px solid #caa2e7;
-  border-radius: 0 4px 4px 0;
-  background: rgba(19, 19, 19, 0.1);
-  outline: none;
-  padding: 16px;
-  font-size: ${props => props.theme.fontSize4};
-  color: #caa2e7;
-  line-height: 24px;
-  box-sizing: border-box;
-  cursor: pointer;
-  & > span {
-    font-size: 24px;
-  }
-`
 export const StyledSlider = styled.section<{ visible: boolean }>`
   width: ${ props => props.visible ? '256px' : '60px' };
   transition: all .2s;

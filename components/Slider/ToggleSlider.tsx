@@ -23,7 +23,7 @@ import { SearchIcon, SwitchVerticalIcon, BookmarkIcon, ArrowTopLeftIcon, InviteI
 import { fetchInviteCode } from '../../helpers/index'
 import {
   StyledSliderCAccount, StyledSliderCAccountButton, StyledCount,
-  StyledButton, StyledButtonMap, StyledSlider,
+  StyledButton, StyledSlider,
   StyledSliderContent, StyledSliderCUser, StyledSliderCUserInfo,
   StyledSliderCItem
 } from './Style'
@@ -38,11 +38,10 @@ interface Props {
   readonly defaultHexGridsRange: PointScopeState
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
-  HandlePosition: () => void
 }
 
 
-const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ translateMap, bookmarkNode, defaultHexGridsRange, HandleRemoveBookmark, HandlePosition }) {
+const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ translateMap, bookmarkNode, defaultHexGridsRange, HandleRemoveBookmark }) {
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user, isLoggin } = useUser()
@@ -55,24 +54,6 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
   const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
   // 搜索
   const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
-
-  // TODO：阻塞让动效卡顿
-  // const animatedStylesMenu = useSpring({
-  //   from: { x: -60, opacity: 0 },
-  //   to: { x: 0, opacity: 1 },
-  //   config: {
-  //     duration: 300
-  //   }
-  // })
-
-  const animatedStylesId = useSpring({
-    from: { x: -60, opacity: 0 },
-    to: { x: 0, opacity: 1 },
-    config: {
-      duration: 300
-    },
-    delay: 100
-  })
 
   const Toggle = () => {
     setVisibleSlider(!visibleSlider);
@@ -119,9 +100,6 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
         visible={visibleSlider}
         className="slider"
       >
-        <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStylesId }}>
-          <EnvironmentOutlined />
-        </StyledButtonMap>
         <StyledSliderContent visible={visibleSlider}>
           <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user}></SliderContentUser>
           <SliderContenItemtNav visible={visibleSlider} setIsModalVisibleSearch={setIsModalVisibleSearch} setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>

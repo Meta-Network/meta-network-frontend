@@ -31,6 +31,7 @@ const NoticeBardOccupied = dynamic(() => import('../components/NoticeBardOccupie
 const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'), { ssr: false })
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
+const MapPosition = dynamic(() => import('../components/MapPosition/Index'), { ssr: false })
 
 import NodeContent from '../components/IndexPage/NodeContent'
 
@@ -692,7 +693,7 @@ const Home = () => {
         bookmarkNode={bookmarkNode}
         defaultHexGridsRange={defaultHexGridsRange}
         HandleRemoveBookmark={HandleRemoveBookmark}
-        HandlePosition={HandlePosition}>
+      >
       </ToggleSlider>
       <div id="container">
         <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
@@ -767,6 +768,7 @@ const Home = () => {
         !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
           <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
       }
+      <MapPosition HandlePosition={HandlePosition}></MapPosition>
     </>
   )
 }
