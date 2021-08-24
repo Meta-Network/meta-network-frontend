@@ -1,14 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 interface Props {
   readonly url: string
+  readonly mode?: 'fixed' | 'follow'
 }
 
-const UserAvatar: React.FC<Props> = ({ url }) => {
+const UserAvatar: React.FC<Props> = ({ url, mode = 'fixed' }) => {
   return (
-    <StyledUserAvatar>
+    <StyledUserAvatar mode={mode}>
       <StyledUserAvatarImage>
         <img src={ url } alt="avatar" />
       </StyledUserAvatarImage>
@@ -17,12 +18,15 @@ const UserAvatar: React.FC<Props> = ({ url }) => {
   )
 }
 
-const StyledUserAvatar = styled.div`
+const StyledUserAvatarFixed = css`
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -160%);
   z-index: 10;
+`;
+const StyledUserAvatar = styled.div<{ mode: 'fixed' | 'follow' }>`
+  ${(props) => (props.mode === 'fixed' ? StyledUserAvatarFixed : '' )}
 `
 const StyledUserAvatarImage = styled.div`
   background-color: #fff;

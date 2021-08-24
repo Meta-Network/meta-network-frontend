@@ -5,8 +5,7 @@ import dynamic from 'next/dynamic'
 import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
 import HexagonRound from '../components/ReactHexgrid/HexagonRound'
-
-import { message } from 'antd';
+import { message, Popover } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
@@ -15,9 +14,11 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
-import { cubeToAxial, calcTranslate, calcMaxDistance,
+import {
+  cubeToAxial, calcTranslate, calcMaxDistance,
   calcCenterRangeAsMap, angle,
-  isInViewPort, HandleHexagonStyle, strEllipsis } from '../utils/index'
+  isInViewPort, HandleHexagonStyle, strEllipsis
+} from '../utils/index'
 import { PointState, HexagonsState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 
@@ -60,9 +61,9 @@ const Home = () => {
   const [height, setHeight] = useState<number>(800);
   const [origin, setOrigin] = useState<{ x: number, y: number }>({ "x": 100, "y": 100 });
   // 默认坐标点
-  const [defaultPoint] = useState<PointState>( { x: 0, y: 11, z: -11 })
+  const [defaultPoint] = useState<PointState>({ x: 0, y: 11, z: -11 })
   // 默认坐标范围
-  const [ defaultHexGridsRange ] = useState<PointScopeState>({
+  const [defaultHexGridsRange] = useState<PointScopeState>({
     "xMin": -90,
     "xMax": 90,
     "yMin": -90,
@@ -131,16 +132,16 @@ const Home = () => {
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex), {
     ref: transApi,
-    trail: 3000 / hex.length,
-    from: { opacity: 0, scale: 0 },
-    enter: { opacity: 1, scale: 1 },
-    leave: { opacity: 0, scale: 0 },
-    delay: () => {
-      return random(30, 80)
-    },
-    onStart: () => {
-      console.log('animated start')
-    }
+    // trail: 3000 / hex.length,
+    // from: { opacity: 0, scale: 0 },
+    // enter: { opacity: 1, scale: 1 },
+    // leave: { opacity: 0, scale: 0 },
+    // delay: () => {
+    //   return random(30, 80)
+    // },
+    // onStart: () => {
+    //   console.log('animated start')
+    // }
   })
   useChain([transApi], [0.1])
 
@@ -323,7 +324,7 @@ const Home = () => {
       } finally {
         setHexGridsMineTag(true)
       }
-    }, [ defaultPoint ])
+    }, [defaultPoint])
 
   // 设置内容拖动 缩放
   const setContainerDrag = useCallback(() => {
@@ -337,7 +338,7 @@ const Home = () => {
         .on("zoom", zoomed)
     )
 
-    function zoomed({ transform }: { transform: { k: number, x: number, y: number } } ) {
+    function zoomed({ transform }: { transform: { k: number, x: number, y: number } }) {
       // console.log('transform', transform, oldTransform)
       // 原点 点击不往下执行
       if (oldTransform && oldTransform.k === transform.k && oldTransform.x === transform.x && oldTransform.y === transform.y) {
@@ -380,7 +381,7 @@ const Home = () => {
         console.log('zoom')
         hideUserInfo()
       }
-      console.log('calcAngle calcAngle')
+      // console.log('calcAngle calcAngle')
 
       calcAngle()
     }
@@ -500,6 +501,18 @@ const Home = () => {
     })
   }
 
+  const handleHexagonEventMouseEnter = (point: PointState, mode: string) => {
+    if (mode === 'exist') {
+      console.log('handleHexagonEventMouseEnter', point)
+    }
+  }
+
+  const handleHexagonEventMouseLeave = (point: PointState, mode: string) => {
+    if (mode === 'exist') {
+      console.log('handleHexagonEventMouseLeave', point)
+    }
+  }
+
   // 节点是不是拥有者
   const isNodeOwner = useCallback(({ x, y, z }: PointState) => {
     return !isEmpty(hexGridsMineData) &&
@@ -596,7 +609,7 @@ const Home = () => {
     }
 
     fetchBookmark()
-  }, [ fetchBookmark ])
+  }, [fetchBookmark])
 
   // 处理移除收藏
   const HandleRemoveBookmark = useCallback(
@@ -654,7 +667,7 @@ const Home = () => {
       console.log(e)
       message.warning(e.message)
     }
-  }, [ currentNodeChoose, fetchHexGriids ])
+  }, [currentNodeChoose, fetchHexGriids])
 
   // 重置定位
   const HandlePosition = useCallback(() => {
@@ -711,10 +724,12 @@ const Home = () => {
                     r={hex.r}
                     s={hex.s}
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
+                    onMouseEnter={ () => handleHexagonEventMouseEnter({ x, y, z }, nodeMode) }
+                    onMouseLeave={ () => handleHexagonEventMouseLeave({ x, y, z }, nodeMode) }
                     className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     <NodeContent
-                      coordinate={{x, y, z}}
+                      coordinate={{ x, y, z }}
                       allNodeDisabled={allNodeDisabled}
                       allNodeMap={allNodeMap}
                       allNodeChoose={allNodeChoose}

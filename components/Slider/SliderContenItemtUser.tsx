@@ -7,30 +7,31 @@ import { InviitationsMineState } from '../../typings/ucenter.d'
 interface SliderContenItemtUserProps {
   readonly isLoggin: boolean
   readonly inviteCodeData: InviitationsMineState[]
+  readonly visible: boolean
   setIsModalVisibleInviteCode: (val: boolean) => void
 }
 
 // 侧边栏 菜单 用户
-const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser ({ isLoggin, inviteCodeData, setIsModalVisibleInviteCode }) {
+const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser ({ isLoggin, inviteCodeData, setIsModalVisibleInviteCode, visible }) {
   console.log('SliderContenItemtUser', isLoggin, inviteCodeData)
 
   return (
-    <StyledSliderCItem>
+    <StyledSliderCItem visible={visible}>
       <li>
         <h4>个人</h4>
       </li>
       <li>
         <a href={ isLoggin ? 'https://meta-cms.vercel.app' : 'javascript:;' } className={isLoggin ? '' : 'disabled'} target="_blank" rel="noopener noreferrer">
           <ArrowTopLeftIcon />
-          前往管理后台
+          { visible ? '前往管理后台' : '' }
         </a>
       </li>
       <li>
         <a href="javascript:;" onClick={() => isLoggin && setIsModalVisibleInviteCode(true)} className={isLoggin ? '' : 'disabled'}>
           <InviteIcon />
-          邀请码
+          { visible ? '邀请码' : '' }
           {
-            isLoggin ?
+            isLoggin && visible ?
               <StyledCount>{inviteCodeData.length}</StyledCount> : null
           }
         </a>

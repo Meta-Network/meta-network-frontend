@@ -21,11 +21,17 @@ import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwor
 import { InviitationsMineState } from '../../typings/ucenter.d'
 import { SearchIcon, SwitchVerticalIcon, BookmarkIcon, ArrowTopLeftIcon, InviteIcon, LogoutIcon } from '../Icon/Index'
 import { fetchInviteCode } from '../../helpers/index'
-import { StyledSliderCAccount, StyledSliderCAccountButton, StyledCount, StyledButton, StyledButtonMap, StyledSlider, StyledSliderContent, StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCItem } from './Style'
+import {
+  StyledSliderCAccount, StyledSliderCAccountButton, StyledCount,
+  StyledButton, StyledButtonMap, StyledSlider,
+  StyledSliderContent, StyledSliderCUser, StyledSliderCUserInfo,
+  StyledSliderCItem
+} from './Style'
 import SliderContenAccoount from './SliderContenAccoount'
 import SliderContenItemtUser from './SliderContenItemtUser'
 import SliderContenItemtNav from './SliderContenItemtNav'
 import SliderContentUser from './SliderContentUser'
+import SliderToggle from './SliderToggle'
 
 interface Props {
   readonly bookmarkNode: hexGridsByFilterState[]
@@ -51,13 +57,13 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
   const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
 
   // TODO：阻塞让动效卡顿
-  const animatedStylesMenu = useSpring({
-    from: { x: -60, opacity: 0 },
-    to: { x: 0, opacity: 1 },
-    config: {
-      duration: 300
-    }
-  })
+  // const animatedStylesMenu = useSpring({
+  //   from: { x: -60, opacity: 0 },
+  //   to: { x: 0, opacity: 1 },
+  //   config: {
+  //     duration: 300
+  //   }
+  // })
 
   const animatedStylesId = useSpring({
     from: { x: -60, opacity: 0 },
@@ -68,11 +74,8 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
     delay: 100
   })
 
-  const showDrawer = () => {
-    setVisibleSlider(true);
-  };
-  const onClose = () => {
-    setVisibleSlider(false);
+  const Toggle = () => {
+    setVisibleSlider(!visibleSlider);
   };
 
   const signOut = useCallback(
@@ -112,24 +115,19 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
 
   return (
     <>
-      <StyledButton onClick={showDrawer} style={{ ...animatedStylesMenu }}>
-        <MenuUnfoldOutlined />
-      </StyledButton>
-      <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStylesId }}>
-        <EnvironmentOutlined />
-      </StyledButtonMap>
       <StyledSlider
-        title=""
-        closable={false}
-        onClose={onClose}
         visible={visibleSlider}
-        placement="left"
+        className="slider"
       >
-        <StyledSliderContent>
-          <SliderContentUser isLoggin={isLoggin} user={user}></SliderContentUser>
-          <SliderContenItemtNav setIsModalVisibleSearch={setIsModalVisibleSearch} setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>
-          <SliderContenItemtUser isLoggin={isLoggin} inviteCodeData={inviteCodeData} setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}></SliderContenItemtUser>
-          <SliderContenAccoount isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount>
+        <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStylesId }}>
+          <EnvironmentOutlined />
+        </StyledButtonMap>
+        <StyledSliderContent visible={visibleSlider}>
+          <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user}></SliderContentUser>
+          <SliderContenItemtNav visible={visibleSlider} setIsModalVisibleSearch={setIsModalVisibleSearch} setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>
+          <SliderContenItemtUser visible={visibleSlider} isLoggin={isLoggin} inviteCodeData={inviteCodeData} setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}></SliderContenItemtUser>
+          <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount>
+          <SliderToggle visible={visibleSlider} Toggle={Toggle}></SliderToggle>
         </StyledSliderContent>
       </StyledSlider>
       <Bookmark
