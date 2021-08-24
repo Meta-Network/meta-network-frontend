@@ -679,13 +679,6 @@ const Home = () => {
     }
   }, [hexGridsMineData, defaultPoint, translateMap])
 
-  // 箭头 重置定位
-  const HandleResetOwnerPosition = useCallback(() => {
-    if (!isEmpty(hexGridsMineData)) {
-      translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
-    }
-  }, [hexGridsMineData, translateMap])
-
   return (
     <>
       <ToggleSlider
@@ -766,7 +759,7 @@ const Home = () => {
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       {
         !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
-          <HomeArrow angleValue={homeAngle} HandleResetOwnerPosition={HandleResetOwnerPosition}></HomeArrow> : null
+          <HomeArrow angleValue={homeAngle}></HomeArrow> : null
       }
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
     </>
