@@ -133,16 +133,16 @@ const Home = () => {
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex), {
     ref: transApi,
-    // trail: 3000 / hex.length,
-    // from: { opacity: 0, scale: 0 },
-    // enter: { opacity: 1, scale: 1 },
-    // leave: { opacity: 0, scale: 0 },
-    // delay: () => {
-    //   return random(30, 80)
-    // },
-    // onStart: () => {
-    //   console.log('animated start')
-    // }
+    trail: 3000 / hex.length,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+    delay: () => {
+      return random(30, 80)
+    },
+    onStart: () => {
+      console.log('animated start')
+    }
   })
   useChain([transApi], [0.1])
 
