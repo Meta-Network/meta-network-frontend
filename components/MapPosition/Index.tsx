@@ -21,7 +21,7 @@ const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePos
   })
 
   return (
-    <Tooltip title="定位">
+    <Tooltip title="定位" placement="left">
       <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStyles }}>
         <EnvironmentOutlined />
       </StyledButtonMap>

@@ -21,7 +21,7 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
         <h4>导航</h4>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '搜索'}>
+        <Tooltip title={visible ? '' : '搜索'} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
             <SearchIcon />
             {visible ? '搜索' : ''}
@@ -29,7 +29,7 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '切换 ID层'}>
+        <Tooltip title={visible ? '' : '切换 ID层'} placement="right">
           <a href="javascript:;" className="disabled">
             <SwitchVerticalIcon />
             {visible ? '切换 ID层' : ''}
@@ -37,7 +37,7 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '我的收藏'}>
+        <Tooltip title={visible ? '' : '我的收藏'} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
             <BookmarkIcon />
             {visible ? '我的收藏' : ''}

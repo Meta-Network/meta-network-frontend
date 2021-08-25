@@ -22,7 +22,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <h4>个人</h4>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '前往管理后台'}>
+        <Tooltip title={visible ? '' : '前往管理后台'} placement="right">
           <a href={isLoggin ? 'https://meta-cms.vercel.app' : 'javascript:;'} className={isLoggin ? '' : 'disabled'} target="_blank" rel="noopener noreferrer">
             <ArrowTopLeftIcon />
             {visible ? '前往管理后台' : ''}
@@ -30,7 +30,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '邀请码'}>
+        <Tooltip title={visible ? '' : '邀请码'} placement="right">
           <a href="javascript:;" onClick={() => isLoggin && setIsModalVisibleInviteCode(true)} className={isLoggin ? '' : 'disabled'}>
             <InviteIcon />
             {visible ? '邀请码' : ''}

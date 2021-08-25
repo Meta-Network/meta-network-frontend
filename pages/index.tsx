@@ -32,6 +32,7 @@ const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'),
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
 const MapPosition = dynamic(() => import('../components/MapPosition/Index'), { ssr: false })
+const MapZoom = dynamic(() => import('../components/MapZoom/Index'), { ssr: false })
 
 import NodeContent from '../components/IndexPage/NodeContent'
 
@@ -768,6 +769,7 @@ const Home = () => {
           <HomeArrow angleValue={homeAngle}></HomeArrow> : null
       }
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
+      <MapZoom></MapZoom>
     </>
   )
 }

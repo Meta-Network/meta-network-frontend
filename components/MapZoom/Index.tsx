@@ -9,15 +9,13 @@ import { PointScopeState } from '../../typings/metaNetwork'
 import { fetchHexGridsCountByFilter } from '../../helpers/index'
 
 interface Props {
-  readonly range: PointScopeState
 }
 
 /**
- * 统计所有坐标点数量
- * @param param0
+ * 缩放统计
  * @returns
  */
-const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ range }) {
+const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
   // 统计所有坐标点
   const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
 
@@ -28,22 +26,12 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
       duration: 300
   } }))
 
-  // 获取所有坐标点统计
-  const fetchHexGridsCountByFilterFn = useCallback(async () => {
-    const res = await fetchHexGridsCountByFilter(range)
-    if (res === hexGridsCountData) {
-      return
-    }
-    setHexGridsCountData(res)
-    api.start({ x: 0, opacity: 1 })
-  }, [ range, hexGridsCountData, api ])
-
   useMount(() => {
-    fetchHexGridsCountByFilterFn()
+    api.start({ x: 0, opacity: 1 })
   })
 
   return (
-    <Tooltip title="坐标点统计" placement="left">
+    <Tooltip title="缩放百分比" placement="left">
       <StyledText style={styles}>
         <AnimatedNumber
           value={hexGridsCountData}
@@ -57,10 +45,10 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
 const StyledText = styled(animated.span)`
   position: fixed;
   right: 20px;
-  bottom: 40px;
+  bottom: 10px;
   font-size: 14px;
   color: #F5F5F5;
   font-family: ${props => props.theme.fontFamilyEN};
 `
 
-export default HexGridsCount
+export default MapZoom
