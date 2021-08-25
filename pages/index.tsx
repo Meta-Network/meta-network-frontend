@@ -131,20 +131,26 @@ const Home = () => {
   })
   // map render
   const transApi = useSpringRef()
-  const transition = useTransition(shuffle(hex), {
-    ref: transApi,
-    trail: 3000 / hex.length,
-    from: { opacity: 0, scale: 0 },
-    enter: { opacity: 1, scale: 1 },
-    leave: { opacity: 0, scale: 0 },
-    delay: () => {
-      return random(30, 80)
-    },
-    onStart: () => {
-      console.log('animated start')
-    }
-  })
+  const transition = useTransition(shuffle(hex),
+    process.env.NODE_ENV !== 'development'
+      ? {
+        ref: transApi,
+        trail: 3000 / hex.length,
+        from: { opacity: 0, scale: 0 },
+        enter: { opacity: 1, scale: 1 },
+        leave: { opacity: 0, scale: 0 },
+        delay: () => {
+          return random(30, 80)
+        },
+        onStart: () => {
+          console.log('animated start')
+        }
+      }
+      : {}
+  )
   useChain([transApi], [0.1])
+
+  // console.log('Node', process.env.NODE_ENV)
 
   // 默认禁用区域半径
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
@@ -718,8 +724,8 @@ const Home = () => {
                     r={hex.r}
                     s={hex.s}
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                    onMouseEnter={ () => handleHexagonEventMouseEnter({ x, y, z }, nodeMode) }
-                    onMouseLeave={ () => handleHexagonEventMouseLeave({ x, y, z }, nodeMode) }
+                    onMouseEnter={() => handleHexagonEventMouseEnter({ x, y, z }, nodeMode)}
+                    onMouseLeave={() => handleHexagonEventMouseLeave({ x, y, z }, nodeMode)}
                     className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     <NodeContent

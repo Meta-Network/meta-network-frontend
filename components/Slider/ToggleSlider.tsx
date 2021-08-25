@@ -101,10 +101,10 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
         className="slider"
       >
         <StyledSliderContent visible={visibleSlider}>
-          <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user}></SliderContentUser>
+          <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderContentUser>
           <SliderContenItemtNav visible={visibleSlider} setIsModalVisibleSearch={setIsModalVisibleSearch} setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>
           <SliderContenItemtUser visible={visibleSlider} isLoggin={isLoggin} inviteCodeData={inviteCodeData} setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}></SliderContenItemtUser>
-          <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount>
+          {/* <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount> */}
           <SliderToggle visible={visibleSlider} Toggle={Toggle}></SliderToggle>
         </StyledSliderContent>
       </StyledSlider>

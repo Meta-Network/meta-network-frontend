@@ -21,7 +21,7 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
       {
         isLoggin
           ?
-          <Tooltip title="登出">
+          <Tooltip title={ visible ? '' : '登出' }>
             <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
               <StyledSliderCAccountButton className="g-red" visible={visible}>
                 <LogoutIcon />
@@ -30,7 +30,7 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
             </Popconfirm>
           </Tooltip>
           :
-          <Tooltip title="登录">
+          <Tooltip title={ visible ? '' : '登录' }>
             <Link href="/oauth/login">
               <a>
                 <StyledSliderCAccountButton className="g-green" visible={visible}>

@@ -1,36 +1,69 @@
 import React from 'react';
-import { Avatar } from 'antd';
+import { Avatar, Menu, Dropdown } from 'antd';
 import {
   UserOutlined,
   LeftOutlined,
 } from '@ant-design/icons'
+import Link from 'next/link'
 
-import { StyledSliderCUser, StyledSliderCUserInfo } from './Style'
+import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
 
 interface SliderContentUserProps {
   readonly isLoggin: boolean
   readonly user: UsersMeProps
   readonly visible: boolean
+  signOut: () => void
 }
 
 // 侧边栏 用户内容
-const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function SliderContentUser({ user, isLoggin, visible }) {
+const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function SliderContentUser({
+  user, isLoggin, visible,
+  signOut
+}) {
   console.log('SliderContentUser')
+
+  const handleClick = ({ key }: { key: string }) => {
+    if (key === 'signOut') {
+      signOut()
+    }
+  };
+
+  const menu = (
+    <Menu onClick={handleClick}>
+      <Menu.Item key="signOut">
+        登出
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <StyledSliderCUser visible={visible}>
-      <Avatar size={40} icon={<UserOutlined />} src={user?.avatar} />
       {
-        visible
-          ? <StyledSliderCUserInfo>
+        isLoggin
+          ? <>
+            <Dropdown overlay={menu}>
+              <StyledSliderCUserAvatar size={40} icon={<UserOutlined />} src={user?.avatar} />
+            </Dropdown>
             {
-              isLoggin ? user.nickname || user.username || '暂无昵称' : '[未登录]'
+              visible
+                ? <>
+                  <StyledSliderCUserInfo>
+                    {user.nickname || user.username || '暂无昵称'}
+                  </StyledSliderCUserInfo>
+                  <LeftOutlined className="arrow" />
+                </>
+                : null
             }
-          </StyledSliderCUserInfo>
-          : null
+          </>
+          : <Link href="/oauth/login">
+            <a style={{ width: '100%', padding: '0 8px 0 0', textAlign: 'center' }}>
+              <StyledSliderCUserInfo style={{ marginLeft: 0 }}>
+                登录
+              </StyledSliderCUserInfo>
+            </a>
+          </Link>
       }
-      <LeftOutlined className="arrow" />
     </StyledSliderCUser>
   )
 })

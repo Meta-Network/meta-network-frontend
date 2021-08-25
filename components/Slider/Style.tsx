@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
-import { Drawer } from 'antd';
+import { Avatar, Drawer } from 'antd';
 
 export const StyledSliderCAccount = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '0 18px 0 0;' : '0 8px 0 0;'};
@@ -111,6 +111,11 @@ export const StyledSliderCUser = styled.section<{ visible: boolean }>`
     flex: 0 0 40px;
   }
 `
+
+export const StyledSliderCUserAvatar = styled(Avatar)`
+  cursor: pointer;
+`
+
 export const StyledSliderCUserInfo = styled.span`
   font-family: ${props => props.theme.fontFamilyZH};
   font-style: normal;
@@ -180,7 +185,8 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
 `
 
 export const StyledSliderToggle = styled.section<{ visible: boolean }>`
-  margin-top: 60px;
+  /* margin-top: 60px; */
+  margin-top: auto;
   padding: ${props => props.visible ? '0 0 0 4px;' : '0 0 0 14px'};
   cursor: pointer;
   span {
