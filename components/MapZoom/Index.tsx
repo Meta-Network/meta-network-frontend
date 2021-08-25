@@ -21,7 +21,8 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
     opacity: 0,
     config: {
       duration: 300
-  } }))
+    }
+  }))
 
   const handleScale = useCallback(() => {
     const dom = document.querySelector<HTMLElement>('#container svg g')
@@ -49,8 +50,13 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
   }, [])
 
   useMount(() => {
-    api.start({ x: 0, opacity: 1 })
-    window.requestAnimationFrame( handleScale );
+    if (process.browser) {
+      const domShow = () => {
+        api.start({ x: 0, opacity: 1 })
+      }
+      window.requestAnimationFrame( domShow )
+      window.requestAnimationFrame( handleScale )
+    }
   })
 
   return (

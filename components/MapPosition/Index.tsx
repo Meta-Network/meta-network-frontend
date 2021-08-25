@@ -5,6 +5,7 @@ import {
 } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
+import { useMount } from 'ahooks'
 
 interface Props {
   HandlePosition: () => void
@@ -12,17 +13,26 @@ interface Props {
 
 const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePosition }) {
 
-  const animatedStyles = useSpring({
-    from: { x: 60, opacity: 0 },
-    to: { x: 0, opacity: 1 },
+  const [styles, api] = useSpring(() => ({
+    x: 60,
+    opacity: 0,
     config: {
       duration: 300
+    }
+  }))
+
+  useMount(() => {
+    if (process.browser) {
+      const domShow = () => {
+        api.start({ x: 0, opacity: 1 })
+      }
+      window.requestAnimationFrame(domShow)
     }
   })
 
   return (
     <Tooltip title="定位" placement="left">
-      <StyledButtonMap onClick={HandlePosition} style={{ ...animatedStyles }}>
+      <StyledButtonMap onClick={HandlePosition} style={{ ...styles }}>
         <EnvironmentOutlined />
       </StyledButtonMap>
     </Tooltip>
