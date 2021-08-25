@@ -222,7 +222,7 @@ const Home = () => {
         setHomeAngle(angleResult)
       }
       if (process.browser) {
-        _init()
+        window.requestAnimationFrame(_init)
       }
     },
     { wait: 300 },
