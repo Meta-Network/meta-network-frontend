@@ -39,7 +39,10 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
   }, [ range, hexGridsCountData, api ])
 
   useMount(() => {
-    fetchHexGridsCountByFilterFn()
+    // fetchHexGridsCountByFilterFn()
+    if (process.browser) {
+      window.requestAnimationFrame(fetchHexGridsCountByFilterFn)
+    }
   })
 
   return (
