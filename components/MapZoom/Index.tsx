@@ -2,22 +2,19 @@ import React, { useCallback, useState } from 'react';
 import { Tooltip } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import AnimatedNumber from "animated-number-react";
-import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+import { useMount } from 'ahooks'
 
-import { PointScopeState } from '../../typings/metaNetwork'
-import { fetchHexGridsCountByFilter } from '../../helpers/index'
+import { amountSplit } from '../../utils/index'
 
-interface Props {
-}
+interface Props {}
 
 /**
  * 缩放统计
  * @returns
  */
 const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
-  // 统计所有坐标点
-  const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+
+  const [value, setValue] = useState<Number>(0);
 
   const [ styles, api ] = useSpring(() => ({
     x: 40,
@@ -26,17 +23,40 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
       duration: 300
   } }))
 
+  const handleScale = useCallback(() => {
+    const dom = document.querySelector<HTMLElement>('#container svg g')
+
+    if (dom) {
+      const transformScale = dom.getAttribute('transform')
+      const transformScaleMatch =  transformScale?.match('scale\(.*\)')
+      const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
+      // console.log('transformScaleValue', transformScaleValue)
+
+      // (4 - 1)     3
+      const scale = 3 / 100
+      let percentage = 0
+      if (transformScaleValue > 1) {
+        percentage = (transformScaleValue - 1) / scale
+      } else if (transformScaleValue < 1) {
+        percentage = - (transformScaleValue / scale)
+      } else {
+      }
+      // console.log('percentage', percentage)
+      setValue( Number(amountSplit(String(percentage), 2)) )
+    }
+
+    window.requestAnimationFrame( handleScale )
+  }, [])
+
   useMount(() => {
     api.start({ x: 0, opacity: 1 })
+    window.requestAnimationFrame( handleScale );
   })
 
   return (
     <Tooltip title="缩放百分比" placement="left">
       <StyledText style={styles}>
-        <AnimatedNumber
-          value={hexGridsCountData}
-          formatValue={(value: number) => value.toFixed(0)}
-        />
+        {value}%
       </StyledText>
     </Tooltip>
   )

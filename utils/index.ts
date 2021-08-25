@@ -312,3 +312,17 @@ export const strEllipsis = (value: string, length: number = 12) => {
   }
   return val.length > length ? val.slice(0, length) + '...' : val
 }
+
+/**
+ * 数字截取
+ * @param amount 
+ * @param decimal 
+ * @returns 
+ */
+export const amountSplit = (amount: string, decimal: number) => {
+  let point = amount.indexOf('.');
+  if (~point) {
+    return amount.slice(0, point + 1 + decimal);
+  }
+  return amount;
+};

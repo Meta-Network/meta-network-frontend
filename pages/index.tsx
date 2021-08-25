@@ -159,7 +159,7 @@ const Home = () => {
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
-  console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+  // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   const { isLoggin } = useUser()
 
