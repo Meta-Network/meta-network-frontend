@@ -7,7 +7,6 @@ import { isEmpty } from 'lodash';
 import { PointState } from '../../typings/node';
 
 import UserAvatar from './UserAvatar'
-import UserMore from './UserMore'
 
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
@@ -17,19 +16,19 @@ let ID: number
 interface Props {
   readonly url: string
   readonly bookmark: PointState[]
+  readonly currentNodeMouse: hexGridsByFilterState
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
 }
 
-const UserInfo: React.FC<Props> = ({ url, bookmark, currentNode, HandleBookmark }) => {
+const UserInfoMouse: React.FC<Props> = ({ url, bookmark, currentNodeMouse, currentNode, HandleBookmark }) => {
 
   const refAvatar = useRef<HTMLDivElement>(null)
-  const refMore = useRef<HTMLDivElement>(null)
 
   const handleFollow = useCallback(
     () => {
-      const { x, y, z } = currentNode
-      if (!isEmpty(currentNode) && x && y && z) {
+      const { x, y, z } = currentNodeMouse
+      if (!isEmpty(currentNodeMouse) && x && y && z) {
         const key = `x${x}_y${y}_z${z}`
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
@@ -43,45 +42,40 @@ const UserInfo: React.FC<Props> = ({ url, bookmark, currentNode, HandleBookmark 
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
           }
-          if (refMore.current) {
-            refMore!.current.style.left =`${x}px`
-            refMore!.current.style.top = `${y}px`
-            refMore!.current.style.opacity = '1'
-            // console.log('refMore', refMore.current)
-          }
         }
       }
       cancelAnimationFrame(ID)
       ID = requestAnimationFrame(handleFollow)
-    }, [currentNode])
+    }, [currentNodeMouse])
 
   useEffect(() => {
-    console.log('currentNode', currentNode, ID)
+    console.log('currentNodeMouse', currentNodeMouse, ID)
 
-    if (isEmpty(currentNode)) {
+    if (isEmpty(currentNodeMouse)) {
       if (refAvatar.current) {
         refAvatar!.current.style.opacity = '0'
       }
-      if (refMore.current) {
-        refMore!.current.style.opacity = '0'
-      }
       cancelAnimationFrame(ID)
     } else {
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(handleFollow)
+
+      // 如果当前聚焦和鼠标经过为同一个
+      if (
+        currentNodeMouse.x === currentNode.x
+        && currentNodeMouse.y === currentNode.y
+        && currentNodeMouse.z === currentNode.z
+      ) {
+        cancelAnimationFrame(ID)
+      } else {
+        cancelAnimationFrame(ID)
+        ID = requestAnimationFrame(handleFollow)
+      }
     }
-  }, [currentNode, handleFollow])
+  }, [currentNodeMouse, currentNode, handleFollow])
 
   return (
-    <>
-      <StyledUserAvatar ref={refAvatar}>
-        <UserAvatar url={url}></UserAvatar>
-      </StyledUserAvatar>
-
-      <StyledUserMore ref={refMore}>
-        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
-      </StyledUserMore>
-    </>
+    <StyledUserAvatar ref={refAvatar}>
+      <UserAvatar url={url}></UserAvatar>
+    </StyledUserAvatar>
   )
 }
 
@@ -95,19 +89,4 @@ const StyledUserAvatar = styled.div`
   opacity: 0;
 `
 
-const StyledUserMore = styled.div`
-  position: fixed;
-  left: 0;
-  top: 0;
-  transform: translate(134.31px, 10px);
-  z-index: 9;
-  /* transition: all .2s; */
-  opacity: 0;
-  /* @media screen and (max-width: 768px) {
-    top: auto;
-    bottom: 10%;
-    transform: translate(-50%, 0);
-  } */
-`
-
-export default UserInfo
+export default UserInfoMouse

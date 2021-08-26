@@ -34,6 +34,7 @@ const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: 
 const MapPosition = dynamic(() => import('../components/MapPosition/Index'), { ssr: false })
 const MapZoom = dynamic(() => import('../components/MapZoom/Index'), { ssr: false })
 const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr: false })
+const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 
 import NodeContent from '../components/IndexPage/NodeContent'
 
@@ -85,6 +86,7 @@ const Home = () => {
   const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map());
   // 当前选择节点
   const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
+    const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
   // 当前占领节点
   const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState);
   // 部署网站 Modal
@@ -513,12 +515,18 @@ const Home = () => {
   const handleHexagonEventMouseEnter = (point: PointState, mode: string) => {
     if (mode === 'exist') {
       console.log('handleHexagonEventMouseEnter', point)
+      const { x, y, z } = point
+      let node = allNodeMap.get(`${x}${y}${z}`)
+      if (node) {
+        setCurrentNodeMouse(node)
+      }
     }
   }
 
   const handleHexagonEventMouseLeave = (point: PointState, mode: string) => {
     if (mode === 'exist') {
       console.log('handleHexagonEventMouseLeave', point)
+      setCurrentNodeMouse({} as hexGridsByFilterState)
     }
   }
 
@@ -772,6 +780,7 @@ const Home = () => {
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
       <MapZoom></MapZoom>
       <UserInfo bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark} url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfo>
+      <UserInfoMouse bookmark={bookmark} currentNode={currentNode} currentNodeMouse={currentNodeMouse} HandleBookmark={HandleBookmark} url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfoMouse>
     </>
   )
 }
