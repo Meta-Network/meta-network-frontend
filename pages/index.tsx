@@ -463,8 +463,13 @@ const Home = () => {
         messageFn('没有坐标数据')
         return
       }
-      setCurrentNode(node)
-      // apiUserInfo.start({ opacity: 1, display: 'block' })
+      // 重复点击垱前块 Toggle
+      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+        //
+      } else {
+        setCurrentNode(node)
+      }
+
       setUserInfoTag(false)
     }
 
@@ -480,7 +485,7 @@ const Home = () => {
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
       .on('end', showUserMore)
-  }, [allNodeMap, apiUserInfo, layout])
+  }, [allNodeMap, currentNode, layout])
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
@@ -488,6 +493,8 @@ const Home = () => {
     if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
       // console.log('eeee', e)
       e.stopPropagation()
+
+      setCurrentNode({} as hexGridsByFilterState)
     }
 
     if (mode === 'choose') {
@@ -512,7 +519,8 @@ const Home = () => {
     })
   }
 
-  const handleHexagonEventMouseEnter = (point: PointState, mode: string) => {
+  const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
+    e.stopPropagation()
     if (mode === 'exist') {
       console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
@@ -523,7 +531,8 @@ const Home = () => {
     }
   }
 
-  const handleHexagonEventMouseLeave = (point: PointState, mode: string) => {
+  const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
+    e.stopPropagation()
     if (mode === 'exist') {
       console.log('handleHexagonEventMouseLeave', point)
       setCurrentNodeMouse({} as hexGridsByFilterState)
@@ -734,8 +743,8 @@ const Home = () => {
                     r={hex.r}
                     s={hex.s}
                     onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                    onMouseEnter={() => handleHexagonEventMouseEnter({ x, y, z }, nodeMode)}
-                    onMouseLeave={() => handleHexagonEventMouseLeave({ x, y, z }, nodeMode)}
+                    onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
+                    onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
                     className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
                     {/* <Text>{HexUtils.getID(hex)}</Text> */}
                     <NodeContent
@@ -779,8 +788,18 @@ const Home = () => {
       }
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
       <MapZoom></MapZoom>
-      <UserInfo bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark} url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfo>
-      <UserInfoMouse bookmark={bookmark} currentNode={currentNode} currentNodeMouse={currentNodeMouse} HandleBookmark={HandleBookmark} url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfoMouse>
+      <UserInfo
+        bookmark={bookmark}
+        currentNode={currentNode}
+        HandleBookmark={HandleBookmark}
+        url={ currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}
+      ></UserInfo>
+      <UserInfoMouse
+        bookmark={bookmark}
+        currentNode={currentNode}
+        currentNodeMouse={currentNodeMouse}
+        HandleBookmark={HandleBookmark}
+        url={ currentNodeMouse.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfoMouse>
     </>
   )
 }
