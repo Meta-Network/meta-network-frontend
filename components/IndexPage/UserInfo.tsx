@@ -34,18 +34,26 @@ const UserInfo: React.FC<Props> = ({ url, bookmark, currentNode, HandleBookmark 
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
         if (dom) {
-          // console.log('dom', dom, dom.getBoundingClientRect())
+          // console.log('dom', dom)
+          // console.log('dom', dom.getBoundingClientRect())
           let domClient = dom.getBoundingClientRect()
-          let { x, y } = domClient
+          let { x, y, width, height } = domClient
           if (refAvatar.current) {
+            // console.dir(refAvatar!.current)
+            const avatarWidth = refAvatar!.current.clientWidth
+
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
+            refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
           }
           if (refMore.current) {
+            const moreHeight = refMore!.current.clientHeight
+
             refMore!.current.style.left =`${x}px`
             refMore!.current.style.top = `${y}px`
+            refMore!.current.style.transform = `translate(${width + 20}px, ${(height - moreHeight) / 2}px)`
             refMore!.current.style.opacity = '1'
             // console.log('refMore', refMore.current)
           }
@@ -89,7 +97,7 @@ const StyledUserAvatar = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  transform: translate(-42.845px, -250px);
+  /* transform: translate(-42.845px, -250px); */
   z-index: 9;
   /* transition: all .2s; */
   opacity: 0;
@@ -99,7 +107,7 @@ const StyledUserMore = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  transform: translate(134.31px, 10px);
+  /* transform: translate(134.31px, 10px); */
   z-index: 9;
   /* transition: all .2s; */
   opacity: 0;

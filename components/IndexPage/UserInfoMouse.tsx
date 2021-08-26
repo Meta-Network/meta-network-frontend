@@ -35,10 +35,13 @@ const UserInfoMouse: React.FC<Props> = ({ url, bookmark, currentNodeMouse, curre
         if (dom) {
           // console.log('dom', dom, dom.getBoundingClientRect())
           let domClient = dom.getBoundingClientRect()
-          let { x, y } = domClient
+          let { x, y, width } = domClient
           if (refAvatar.current) {
+            let avatarWidth = refAvatar!.current.clientWidth
+
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
+            refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
           }
@@ -83,7 +86,7 @@ const StyledUserAvatar = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  transform: translate(-42.845px, -250px);
+  /* transform: translate(-42.845px, -250px); */
   z-index: 9;
   /* transition: all .2s; */
   opacity: 0;
