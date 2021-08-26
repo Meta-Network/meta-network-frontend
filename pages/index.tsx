@@ -702,6 +702,7 @@ const Home = () => {
     } else {
       translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
     }
+    setCurrentNode({} as hexGridsByFilterState)
   }, [hexGridsMineData, defaultPoint, translateMap])
 
   return (
