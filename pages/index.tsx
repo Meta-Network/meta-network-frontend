@@ -119,10 +119,6 @@ const Home = () => {
     return _bookmark.reverse() as hexGridsByFilterState[]
   }, [allNodeMap, bookmark])
   // Animated react spriing
-  // User Info
-  const [stylesUserInfo, apiUserInfo] = useSpring(() => ({ opacity: 0, display: 'none' }))
-  // 拖动隐藏开关
-  const [userInfoTag, setUserInfoTag] = useState<boolean>(false)
 
   // NoticeBard Occupied
   const noticeBardOccupiedAnimatedStyles = useSpring({
@@ -231,18 +227,6 @@ const Home = () => {
     { wait: 300 },
   );
 
-  // 隐藏用户信息
-  const hideUserInfo = useCallback(() => {
-    console.log(111)
-    apiUserInfo.start({ opacity: 0, display: 'none' })
-  }, [apiUserInfo])
-  // const { run: hideUserInfoThrottle } = useThrottleFn(
-  //   () => {
-  //     hideUserInfo();
-  //   },
-  //   { wait: 300 },
-  // );
-
   // 计算所有可选择坐标范围
   useEffect(() => {
     //  未开启选择功能
@@ -284,19 +268,12 @@ const Home = () => {
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
-      const _test = () => {
-        console.log('document')
-        hideUserInfo()
-      }
-      document.addEventListener('click', _test, false)
-
       fetchBookmark()
     }
   );
 
   useUnmount(() => {
     window.removeEventListener('resize', resizeFn)
-    document.removeEventListener('click', hideUserInfo)
   })
 
   // 计算半径为10不可选区域
@@ -387,13 +364,6 @@ const Home = () => {
       }
       svg.attr("transform", tran);
 
-      // TODO: 应该需要优化
-      if (!userInfoTag) {
-        console.log('zoom')
-        hideUserInfo()
-      }
-      // console.log('calcAngle calcAngle')
-
       calcAngle()
     }
 
@@ -452,10 +422,8 @@ const Home = () => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
-      setUserInfoTag(true)
 
       if (!showUserInfo) {
-        setUserInfoTag(false)
         return
       }
       const node = allNodeMap.get(`${x}${y}${z}`)
@@ -469,8 +437,6 @@ const Home = () => {
       } else {
         setCurrentNode(node)
       }
-
-      setUserInfoTag(false)
     }
 
     HandleHexagonStyle({ x, y, z })
@@ -768,14 +734,6 @@ const Home = () => {
         {/* <div className="point"></div> */}
       </div>
       <MarkContainer></MarkContainer>
-      {/* <animated.div style={stylesUserInfo}>
-        <UserAvatar url={currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserAvatar>
-      </animated.div>
-
-      <animated.div style={stylesUserInfo}>
-        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
-      </animated.div> */}
-
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
