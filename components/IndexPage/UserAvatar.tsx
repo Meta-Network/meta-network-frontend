@@ -1,33 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 interface Props {
   readonly url: string
-  readonly mode?: 'fixed' | 'follow'
 }
 
-const UserAvatar: React.FC<Props> = ({ url, mode = 'fixed' }) => {
+const UserAvatar: React.FC<Props> = ({ url }) => {
   return (
-    <StyledUserAvatar mode={mode}>
+    <>
       <StyledUserAvatarImage>
         <img src={ url } alt="avatar" />
       </StyledUserAvatarImage>
       <StyledUserAvatarArrow></StyledUserAvatarArrow>
-    </StyledUserAvatar>
+    </>
   )
 }
 
-const StyledUserAvatarFixed = css`
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -160%);
-  z-index: 10;
-`;
-const StyledUserAvatar = styled.div<{ mode: 'fixed' | 'follow' }>`
-  ${(props) => (props.mode === 'fixed' ? StyledUserAvatarFixed : '' )}
-`
 const StyledUserAvatarImage = styled.div`
   background-color: #fff;
   width: 200px;

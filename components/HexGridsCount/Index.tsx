@@ -64,6 +64,7 @@ const StyledText = styled(animated.span)`
   font-size: 14px;
   color: #F5F5F5;
   font-family: ${props => props.theme.fontFamilyEN};
+  z-index: 8;
 `
 
 export default HexGridsCount

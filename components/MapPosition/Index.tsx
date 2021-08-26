@@ -43,7 +43,7 @@ export const StyledButtonMap = styled(animated.button)`
   position: fixed;
   right: 10px;
   bottom: 60px;
-  z-index: 10;
+  z-index: 8;
   border: none;
   border-radius: 4px;
   background: rgba(19, 19, 19, 0.1);

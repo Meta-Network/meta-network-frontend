@@ -34,6 +34,7 @@ const StyledArrow = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 8;
   img {
     width: 120px;
     height: 120px;

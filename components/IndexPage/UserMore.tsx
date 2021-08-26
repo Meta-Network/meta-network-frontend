@@ -80,7 +80,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
   );
 
   return (
-    <StyledUserMore>
+    <>
       <StyledUserMoreButton
         onClick={(e: any) => handleJumpHome(e)}
         style={{ marginBottom: 16 }}
@@ -90,23 +90,10 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
       <Dropdown overlay={menu}>
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>
-    </StyledUserMore>
+    </>
   )
 }
 
-const StyledUserMore = styled.div`
-  position: fixed;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(80px,-50%);
-  z-index: 10;
-  @media screen and (max-width: 768px) {
-    top: auto;
-    bottom: 10%;
-    transform: translate(-50%, 0);
-  }
-`
 const StyledUserMoreButton = styled.button`
   background: #F5F5F5;
   border: none;

@@ -33,6 +33,7 @@ const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'),
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
 const MapPosition = dynamic(() => import('../components/MapPosition/Index'), { ssr: false })
 const MapZoom = dynamic(() => import('../components/MapZoom/Index'), { ssr: false })
+const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr: false })
 
 import NodeContent from '../components/IndexPage/NodeContent'
 
@@ -461,7 +462,7 @@ const Home = () => {
         return
       }
       setCurrentNode(node)
-      apiUserInfo.start({ opacity: 1, display: 'block' })
+      // apiUserInfo.start({ opacity: 1, display: 'block' })
       setUserInfoTag(false)
     }
 
@@ -572,7 +573,7 @@ const Home = () => {
 
   }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState])
 
-  const messageFn = useCallback((text: string) => {
+  const messageFn = (text: string) => {
     message.info({
       content: <span className="message-content">
         <CircleSuccessIcon />
@@ -583,7 +584,7 @@ const Home = () => {
       className: 'custom-message',
       icon: ''
     })
-  }, [])
+  }
 
   // 处理收藏
   const HandleBookmark = useCallback((currentNode: hexGridsByFilterState) => {
@@ -749,13 +750,13 @@ const Home = () => {
         {/* <div className="point"></div> */}
       </div>
       <MarkContainer></MarkContainer>
-      <animated.div style={stylesUserInfo}>
+      {/* <animated.div style={stylesUserInfo}>
         <UserAvatar url={currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserAvatar>
       </animated.div>
 
       <animated.div style={stylesUserInfo}>
         <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
-      </animated.div>
+      </animated.div> */}
 
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
@@ -770,6 +771,7 @@ const Home = () => {
       }
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
       <MapZoom></MapZoom>
+      <UserInfo bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark} url={ 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfo>
     </>
   )
 }
