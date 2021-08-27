@@ -86,7 +86,7 @@ const Home = () => {
   const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map());
   // 当前选择节点
   const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
-    const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
+  const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
   // 当前占领节点
   const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState);
   // 部署网站 Modal
@@ -363,6 +363,7 @@ const Home = () => {
 
       // 边界判定
       let tran = transform
+      // console.log('transform', transform)
       oldTransform = cloneDeep(transform)
 
       const svg = d3.select('#container svg > g')
@@ -734,20 +735,20 @@ const Home = () => {
 
   // 处理历史记录点击
   const HandleHistoryViewClick = useCallback((point: PointState) => {
-      const { x, y, z } = point
+    const { x, y, z } = point
 
-       // 重复点击垱前块
-      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-        setCurrentNode({} as hexGridsByFilterState)
-      }
+    // 重复点击垱前块
+    if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+      setCurrentNode({} as hexGridsByFilterState)
+    }
 
-      translateMap({
-        x,
-        y,
-        z
-      })
+    translateMap({
+      x,
+      y,
+      z
+    })
 
-      HandleHistoryView(point)
+    HandleHistoryView(point)
   }, [currentNode, translateMap, HandleHistoryView])
 
   return (
@@ -768,18 +769,9 @@ const Home = () => {
 
               // hex.map((hex: any, i) => {
               transition((style, hex: HexagonsState) => {
-                // let x = hex.q
-                // let y = hex.s
-                // let z = hex.r
-
-                let { q: x, s: y, r: z } = hex
-
-                // console.log('transition')
-
+                const { q: x, s: y, r: z } = hex
                 const nodeMode = calcNodeMode({ x, y, z })
                 let key = `x${x}_y${y}_z${z}`
-
-                // console.log('map transition')
 
                 return (
                   <HexagonRound
@@ -810,14 +802,20 @@ const Home = () => {
           </Layout>
         </HexGrid>
         {/* 辅助点 */}
-        {/* <div className="point"></div> */}
+        {
+          process.env.NODE_ENV === 'development' ? <div className="point"></div> : null
+        }
       </div>
       <MarkContainer></MarkContainer>
       <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
       <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
       {
         isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
-          <NoticeBardOccupied style={noticeBardOccupiedAnimatedStyles} status={noticeBardOccupiedState} setNoticeBardOccupiedState={setNoticeBardOccupiedState}></NoticeBardOccupied> : null
+          <NoticeBardOccupied
+            style={noticeBardOccupiedAnimatedStyles}
+            status={noticeBardOccupiedState}
+            setNoticeBardOccupiedState={setNoticeBardOccupiedState}
+          ></NoticeBardOccupied> : null
       }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       {
@@ -830,13 +828,13 @@ const Home = () => {
         bookmark={bookmark}
         currentNode={currentNode}
         HandleBookmark={HandleBookmark}
-        url={ currentNode.userAvatar }
+        url={currentNode.userAvatar}
       ></UserInfo>
       <UserInfoMouse
         currentNode={currentNode}
         currentNodeMouse={currentNodeMouse}
-        url={ currentNodeMouse.userAvatar }></UserInfoMouse>
-      <NodeHistory historyViewList={ historyViewNode } HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
+        url={currentNodeMouse.userAvatar}></UserInfoMouse>
+      <NodeHistory historyViewList={historyViewNode} HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
     </>
   )
 }

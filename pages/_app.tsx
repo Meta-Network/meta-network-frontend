@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import HeadInfo from '../components/HeadInfo/Index'
 
 import 'antd/dist/antd.css'
 import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -18,9 +20,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   useToken()
 
   return (
-    <ThemeProvider theme={ theme }>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <>
+      <HeadInfo></HeadInfo>
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </>
   )
 }
 export default MyApp
