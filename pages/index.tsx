@@ -25,8 +25,6 @@ import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
 const Occupied = dynamic(() => import('../components/Occupied/Index'), { ssr: false })
-const UserAvatar = dynamic(() => import('../components/IndexPage/UserAvatar'), { ssr: false })
-const UserMore = dynamic(() => import('../components/IndexPage/UserMore'), { ssr: false })
 const NoticeBardOccupied = dynamic(() => import('../components/NoticeBardOccupied/Index'), { ssr: false })
 const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'), { ssr: false })
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
@@ -35,6 +33,7 @@ const MapPosition = dynamic(() => import('../components/MapPosition/Index'), { s
 const MapZoom = dynamic(() => import('../components/MapZoom/Index'), { ssr: false })
 const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr: false })
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
+const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 
 import NodeContent from '../components/IndexPage/NodeContent'
 
@@ -53,6 +52,7 @@ if (process.browser) {
   zoom = d3.zoom();
 }
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
+const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
 
 const Home = () => {
   // hex all 坐标点
@@ -118,6 +118,26 @@ const Home = () => {
 
     return _bookmark.reverse() as hexGridsByFilterState[]
   }, [allNodeMap, bookmark])
+
+  // 历史预览
+  const [historyView, setHistoryView] = useState<PointState[]>([])
+  const historyViewNode = useMemo(() => {
+    let _historyView = cloneDeep(historyView)
+
+    for (let i = 0; i < _historyView.length; i++) {
+      const ele = _historyView[i];
+      const { x, y, z } = ele
+      const _node = allNodeMap.get(`${x}${y}${z}`)
+      if (_node) {
+        assign(ele, _node)
+      }
+    }
+    // console.log('_historyView', _historyView)
+
+    return _historyView as hexGridsByFilterState[]
+  }, [allNodeMap, historyView])
+
+
   // Animated react spriing
 
   // NoticeBard Occupied
@@ -269,6 +289,7 @@ const Home = () => {
       resizeFn()
       window.addEventListener('resize', resizeFn)
       fetchBookmark()
+      fetchHistoryView()
     }
   );
 
@@ -291,6 +312,13 @@ const Home = () => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
     setBookmark(bookmarkList)
+  }, [])
+
+  // 获取历史浏览记录
+  const fetchHistoryView = useCallback(() => {
+    const historyViewStore = StoreGet(KeyMetaNetWorkHistoryView)
+    let historyViewStoreList: PointState[] = historyViewStore ? JSON.parse(historyViewStore) : []
+    setHistoryView(historyViewStoreList)
   }, [])
 
   // 获取自己的坐标点
@@ -483,6 +511,8 @@ const Home = () => {
       y: point.y,
       z: point.z
     })
+
+    HandleHistoryView(point)
   }
 
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
@@ -572,9 +602,7 @@ const Home = () => {
   // 处理收藏
   const HandleBookmark = useCallback((currentNode: hexGridsByFilterState) => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
-    const x = currentNode.x
-    const y = currentNode.y
-    const z = currentNode.z
+    const { x, y, z } = currentNode
     const point = { x, y, z }
 
     // 没有收藏记录
@@ -671,6 +699,57 @@ const Home = () => {
     setCurrentNode({} as hexGridsByFilterState)
   }, [hexGridsMineData, defaultPoint, translateMap])
 
+  const HandleHistoryView = useCallback((point: PointState) => {
+    const historyView = StoreGet(KeyMetaNetWorkHistoryView)
+    const { x, y, z } = point
+
+    // 没有历史浏览记录
+    if (isEmpty(historyView)) {
+      StoreSet(KeyMetaNetWorkHistoryView, JSON.stringify([point]))
+    } else {
+      let historyViewList: PointState[] = historyView ? JSON.parse(historyView) : []
+      const historyViewIdx = historyViewList.findIndex(i =>
+        i.x === x &&
+        i.y === y &&
+        i.z === z
+      )
+
+      // 浏览过了
+      if (~historyViewIdx) {
+        const temp = cloneDeep(historyViewList[historyViewIdx])
+        historyViewList.splice(historyViewIdx, 1)
+        historyViewList.push(temp)
+      } else {
+        if (historyViewList.length >= 6) {
+          historyViewList.shift()
+        }
+        historyViewList.push(point)
+      }
+
+      StoreSet(KeyMetaNetWorkHistoryView, JSON.stringify(historyViewList))
+    }
+
+    fetchHistoryView()
+  }, [fetchHistoryView])
+
+  // 处理历史记录点击
+  const HandleHistoryViewClick = useCallback((point: PointState) => {
+      const { x, y, z } = point
+
+       // 重复点击垱前块
+      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+        setCurrentNode({} as hexGridsByFilterState)
+      }
+
+      translateMap({
+        x,
+        y,
+        z
+      })
+
+      HandleHistoryView(point)
+  }, [currentNode, HandleHistoryView])
+
   return (
     <>
       <ToggleSlider
@@ -757,6 +836,7 @@ const Home = () => {
         currentNode={currentNode}
         currentNodeMouse={currentNodeMouse}
         url={ currentNodeMouse.userAvatar }></UserInfoMouse>
+      <NodeHistory historyViewList={ historyViewNode } HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
     </>
   )
 }
