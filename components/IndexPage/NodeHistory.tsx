@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components'
 import { Avatar, Tooltip } from 'antd'
 import { UserOutlined } from '@ant-design/icons';
+import { useSpring, animated } from 'react-spring'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork';
 import { PointState } from '../../typings/node';
@@ -12,6 +13,11 @@ interface Props {
 }
 
 const NodeHistory: React.FC<Props> = ({ historyViewList, HandleHistoryViewClick }) => {
+  const styles = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 0.6 },
+  })
+
   // 处理点击
   const handleClick = useCallback(
     (e: Event, point: PointState) => {
@@ -25,11 +31,12 @@ const NodeHistory: React.FC<Props> = ({ historyViewList, HandleHistoryViewClick 
     <StyledHistory>
       {
         historyViewList.map((i, idx) => (
-          <Tooltip title={ i.userNickname || i.username || '暂无昵称' } placement="bottom" key={idx}>
-            <StyledHistoryNode onClick={ (e: any) => handleClick(e, { x: i.x, y: i.y, z: i.z }) }>
-              <Avatar size={22 + (idx * 2)} icon={<UserOutlined />} src={ i.userAvatar } />
+          <Tooltip title={i.userNickname || i.username || '暂无昵称'} placement="bottom" key={`${i.x}${i.y}${i.z}`}>
+            <StyledHistoryNode
+              style={styles} onClick={(e: any) => handleClick(e, { x: i.x, y: i.y, z: i.z })}>
+              <Avatar size={22 + (idx * 2)} icon={<UserOutlined />} src={i.userAvatar} />
             </StyledHistoryNode>
-            </Tooltip>
+          </Tooltip>
         ))
       }
     </StyledHistory>
@@ -47,11 +54,11 @@ const StyledHistory = styled.div`
   justify-content: space-between;
 `
 
-const StyledHistoryNode = styled.div`
+const StyledHistoryNode = styled(animated.div)`
   margin: 0 10px;
   transition: all .3s;
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.6;
   &:hover {
     transform: scale(1.16);
     opacity: 1;

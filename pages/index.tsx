@@ -162,9 +162,9 @@ const Home = () => {
         delay: () => {
           return random(30, 80)
         },
-        onStart: () => {
-          console.log('animated start')
-        }
+        // onStart: () => {
+        //   console.log('animated start')
+        // }
       }
       : {}
   )
@@ -748,7 +748,7 @@ const Home = () => {
       })
 
       HandleHistoryView(point)
-  }, [currentNode, HandleHistoryView])
+  }, [currentNode, translateMap, HandleHistoryView])
 
   return (
     <>
