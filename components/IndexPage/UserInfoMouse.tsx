@@ -15,13 +15,11 @@ let ID: number
 
 interface Props {
   readonly url: string
-  readonly bookmark: PointState[]
   readonly currentNodeMouse: hexGridsByFilterState
   readonly currentNode: hexGridsByFilterState
-  HandleBookmark: (value: hexGridsByFilterState) => void
 }
 
-const UserInfoMouse: React.FC<Props> = ({ url, bookmark, currentNodeMouse, currentNode, HandleBookmark }) => {
+const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url, currentNodeMouse, currentNode }) {
 
   const refAvatar = useRef<HTMLDivElement>(null)
 
@@ -80,7 +78,7 @@ const UserInfoMouse: React.FC<Props> = ({ url, bookmark, currentNodeMouse, curre
       <UserAvatar url={url}></UserAvatar>
     </StyledUserAvatar>
   )
-}
+})
 
 const StyledUserAvatar = styled.div`
   position: fixed;

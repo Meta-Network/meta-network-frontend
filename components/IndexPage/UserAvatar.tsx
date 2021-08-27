@@ -10,7 +10,9 @@ const UserAvatar: React.FC<Props> = ({ url }) => {
   return (
     <>
       <StyledUserAvatarImage>
-        <img src={ url } alt="avatar" />
+        {
+          url ? <img src={ url } alt="avatar" /> : null
+        }
       </StyledUserAvatarImage>
       <StyledUserAvatarArrow></StyledUserAvatarArrow>
     </>

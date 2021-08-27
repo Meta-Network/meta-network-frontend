@@ -21,8 +21,7 @@ interface Props {
   HandleBookmark: (value: hexGridsByFilterState) => void
 }
 
-const UserInfo: React.FC<Props> = ({ url, bookmark, currentNode, HandleBookmark }) => {
-
+const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmark, currentNode, HandleBookmark }) {
   const refAvatar = useRef<HTMLDivElement>(null)
   const refMore = useRef<HTMLDivElement>(null)
 
@@ -91,7 +90,7 @@ const UserInfo: React.FC<Props> = ({ url, bookmark, currentNode, HandleBookmark 
       </StyledUserMore>
     </>
   )
-}
+})
 
 const StyledUserAvatar = styled.div`
   position: fixed;

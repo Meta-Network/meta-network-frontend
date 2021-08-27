@@ -751,14 +751,12 @@ const Home = () => {
         bookmark={bookmark}
         currentNode={currentNode}
         HandleBookmark={HandleBookmark}
-        url={ currentNode.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}
+        url={ currentNode.userAvatar }
       ></UserInfo>
       <UserInfoMouse
-        bookmark={bookmark}
         currentNode={currentNode}
         currentNodeMouse={currentNodeMouse}
-        HandleBookmark={HandleBookmark}
-        url={ currentNodeMouse.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'}></UserInfoMouse>
+        url={ currentNodeMouse.userAvatar }></UserInfoMouse>
     </>
   )
 }
