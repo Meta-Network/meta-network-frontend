@@ -63,7 +63,7 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
     }, [currentNode])
 
   useEffect(() => {
-    console.log('currentNode', currentNode, ID)
+    // console.log('currentNode', currentNode, ID)
 
     if (isEmpty(currentNode)) {
       if (refAvatar.current) {

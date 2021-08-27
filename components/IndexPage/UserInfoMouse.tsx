@@ -50,7 +50,7 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
     }, [currentNodeMouse])
 
   useEffect(() => {
-    console.log('currentNodeMouse', currentNodeMouse, ID)
+    // console.log('currentNodeMouse', currentNodeMouse, ID)
 
     if (isEmpty(currentNodeMouse)) {
       if (refAvatar.current) {

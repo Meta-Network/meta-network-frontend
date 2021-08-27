@@ -293,7 +293,7 @@ export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
   })
 
   const hexagon = document.querySelector<HTMLElement>(`.hexagon-x${x}_y${y}_z${z}`)
-  console.log('hexagon', hexagon)
+  // console.log('hexagon', hexagon)
   if (hexagon) {
     hexagon.classList.add('active')
   }
