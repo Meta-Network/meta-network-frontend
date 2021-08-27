@@ -53,6 +53,7 @@ if (process.browser) {
 }
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
+let ID: number
 
 const Home = () => {
   // hex all 坐标点
@@ -207,23 +208,22 @@ const Home = () => {
   /**
    * 计算角度
    */
-  const { run: calcAngle } = useThrottleFn(
+  const calcAngle = useCallback(
     () => {
-      const _init = () => {
+      const tag = document.querySelector<HTMLElement>('.hexagon-owner')
+      const inViewPortResult = isInViewPort(tag!)
+      setInViewPortHexagonOwner(inViewPortResult)
 
-        const tag = document.querySelector<HTMLElement>('.hexagon-owner')
-        const inViewPortResult = isInViewPort(tag!)
-        setInViewPortHexagonOwner(inViewPortResult)
+      // console.log('tag', tag, inViewPortResult)
 
-        // 在窗口内不计算 undefined 不计算
-        if (inViewPortHexagonOwner || inViewPortHexagonOwner === undefined) {
-          return
-        }
-
-        // 没有坐标点不计算
-        if (isEmpty(hexGridsMineData)) {
-          return
-        }
+      // 在窗口内不计算 undefined 不计算
+      // 没有坐标点不计算
+      if (
+        (inViewPortResult || inViewPortResult === undefined)
+        || isEmpty(hexGridsMineData)
+      ) {
+        //
+      } else {
 
         // 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
         // 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
@@ -240,12 +240,11 @@ const Home = () => {
         // console.log('angle', angleResult)
         setHomeAngle(angleResult)
       }
-      if (process.browser) {
-        window.requestAnimationFrame(_init)
-      }
-    },
-    { wait: 300 },
-  );
+
+      cancelAnimationFrame(ID)
+      ID = requestAnimationFrame(calcAngle)
+
+    }, [hexGridsMineData, width, height]);
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -297,6 +296,22 @@ const Home = () => {
     window.removeEventListener('resize', resizeFn)
   })
 
+  useEffect(() => {
+    if (process.browser) {
+      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+
+      ID = requestAnimationFrame(calcAngle)
+    }
+    return () => {
+      if (process.browser) {
+        const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
+
+        cancelAnimationFrame(ID)
+      }
+    }
+  }, [calcAngle])
+
   // 计算半径为10不可选区域
   const calcForbiddenZoneRadius = (hex: HexagonsState[], forbiddenZoneRadius: number) => {
     const center = new Hex(0, 0, 0)
@@ -320,27 +335,6 @@ const Home = () => {
     let historyViewStoreList: PointState[] = historyViewStore ? JSON.parse(historyViewStore) : []
     setHistoryView(historyViewStoreList)
   }, [])
-
-  // 获取自己的坐标点
-  const fetchHexGridsMine = useCallback(
-    async () => {
-      setHexGridsMineTag(false)
-      try {
-        const res = await hexGridsMine()
-        if (res.statusCode === 200 && res.data) {
-          setHexGridsMineData(res.data)
-
-          translateMap({ x: res.data.x, y: res.data.y, z: res.data.z }, false)
-        } else {
-          throw new Error('没有占领')
-        }
-      } catch (e) {
-        console.log(e)
-        translateMap(defaultPoint, false)
-      } finally {
-        setHexGridsMineTag(true)
-      }
-    }, [defaultPoint])
 
   // 设置内容拖动 缩放
   const setContainerDrag = useCallback(() => {
@@ -392,12 +386,67 @@ const Home = () => {
         tran = assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
       }
       svg.attr("transform", tran);
-
-      calcAngle()
     }
 
     svg.node();
   }, [width, height])
+
+  // 偏移地图坐标
+  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
+    const svg = d3.select('#container svg')
+
+    const showUserMore = () => {
+
+      if (!showUserInfo) {
+        return
+      }
+      const node = allNodeMap.get(`${x}${y}${z}`)
+      if (!node) {
+        messageFn('没有坐标数据')
+        return
+      }
+      // 重复点击垱前块 Toggle
+      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+        //
+      } else {
+        setCurrentNode(node)
+      }
+    }
+
+    HandleHexagonStyle({ x, y, z })
+
+    // 坐标转换，这么写方便后续能阅读懂
+    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+    svg.transition()
+      .duration(1000)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(_x, _y).scale(1),
+      )
+      .on('end', showUserMore)
+  }, [allNodeMap, currentNode, layout])
+
+  // 获取自己的坐标点
+  const fetchHexGridsMine = useCallback(
+    async () => {
+      setHexGridsMineTag(false)
+      try {
+        const res = await hexGridsMine()
+        if (res.statusCode === 200 && res.data) {
+          setHexGridsMineData(res.data)
+
+          translateMap({ x: res.data.x, y: res.data.y, z: res.data.z }, false)
+        } else {
+          throw new Error('没有占领')
+        }
+      } catch (e) {
+        console.log(e)
+        translateMap(defaultPoint, false)
+      } finally {
+        setHexGridsMineTag(true)
+      }
+    }, [defaultPoint, translateMap])
 
   // 渲染坐标地图
   const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
@@ -445,42 +494,6 @@ const Home = () => {
         render([], 0)
       }
     }, [defaultHexGridsRange, forbiddenZoneRadius, render])
-
-  // 偏移地图坐标
-  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
-    const svg = d3.select('#container svg')
-
-    const showUserMore = () => {
-
-      if (!showUserInfo) {
-        return
-      }
-      const node = allNodeMap.get(`${x}${y}${z}`)
-      if (!node) {
-        messageFn('没有坐标数据')
-        return
-      }
-      // 重复点击垱前块 Toggle
-      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-        //
-      } else {
-        setCurrentNode(node)
-      }
-    }
-
-    HandleHexagonStyle({ x, y, z })
-
-    // 坐标转换，这么写方便后续能阅读懂
-    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    svg.transition()
-      .duration(1000)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1),
-      )
-      .on('end', showUserMore)
-  }, [allNodeMap, currentNode, layout])
 
   // 处理点击地图事件
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
