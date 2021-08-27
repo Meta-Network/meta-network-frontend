@@ -81,6 +81,7 @@ export const StyledSlider = styled.section<{ visible: boolean }>`
   background-color: #131313;
   color: #fff;
   border-right: 2px solid ${props => props.theme.colorGreen};
+  will-change: width;
 `
 export const StyledSliderContent = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '76px 0 16px 18px;' : '76px 0 16px 8px'};

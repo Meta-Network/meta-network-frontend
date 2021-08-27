@@ -100,6 +100,7 @@ const StyledUserAvatar = styled.div`
   z-index: 9;
   /* transition: all .2s; */
   opacity: 0;
+  will-change: left, top;
 `
 
 const StyledUserMore = styled.div`
@@ -115,6 +116,7 @@ const StyledUserMore = styled.div`
     bottom: 10%;
     transform: translate(-50%, 0);
   } */
+  will-change: left, top;
 `
 
 export default UserInfo

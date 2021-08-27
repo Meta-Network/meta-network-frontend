@@ -88,6 +88,7 @@ const StyledUserAvatar = styled.div`
   z-index: 9;
   /* transition: all .2s; */
   opacity: 0;
+  will-change: left, top;
 `
 
 export default UserInfoMouse
