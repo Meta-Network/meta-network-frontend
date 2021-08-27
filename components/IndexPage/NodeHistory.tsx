@@ -61,7 +61,7 @@ const StyledHistoryNode = styled(animated.div)`
   opacity: 0.6;
   &:hover {
     transform: scale(1.16);
-    opacity: 1;
+    opacity: 1 !important;
   }
   &:nth-of-type(1) {
     margin-left: 0;
