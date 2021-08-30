@@ -74,3 +74,9 @@ const CircleWarningSvg = () => (
   <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86L7.86 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 4"/><path d="M12 16h.01M12 8v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 export const CircleWarningIcon: React.FC = props => <Icon component={CircleWarningSvg} {...props} />;
+
+const CircleEmptySvg = () => (
+  <svg width="24" height="25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.86 2.5h8.28L22 8.36v8.28l-5.86 5.86H7.86L2 16.64V8.36L7.86 2.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 4"/></svg>
+);
+export const CircleEmptyIcon: React.FC = props => <Icon component={CircleEmptySvg} {...props} />;
+
