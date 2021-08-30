@@ -1,5 +1,6 @@
-import React from 'react';
-import { Tooltip } from 'antd';
+import React from 'react'
+import { Tooltip } from 'antd'
+import { isMobile } from "react-device-detect"
 
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
@@ -20,7 +21,7 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
         <h4>导航</h4>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '搜索'} placement="right">
+        <Tooltip title={(visible || isMobile) ? '' : '搜索'} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
             <SearchIcon />
             {visible ? '搜索' : ''}
@@ -28,7 +29,7 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '切换 ID层'} placement="right">
+        <Tooltip title={(visible || isMobile) ? '' : '切换 ID层'} placement="right">
           <a href="javascript:;" className="disabled">
             <SwitchVerticalIcon />
             {visible ? '切换 ID层' : ''}

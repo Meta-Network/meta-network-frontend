@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
+import { isMobile } from "react-device-detect"
 
 import { StyledCount, StyledSliderCItem } from './Style'
 import { ArrowTopLeftIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
@@ -26,7 +27,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <h4>个人</h4>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '我的收藏'} placement="right">
+        <Tooltip title={(visible || isMobile) ? '' : '我的收藏'} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
             <BookmarkIcon />
             {visible ? '我的收藏' : ''}
@@ -34,7 +35,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '站点管理'} placement="right">
+        <Tooltip title={(visible || isMobile) ? '' : '站点管理'} placement="right">
           <a href={isLoggin ? 'https://meta-cms.vercel.app' : 'javascript:;'} className={isLoggin ? '' : 'disabled'} target="_blank" rel="noopener noreferrer">
             <ArrowTopLeftIcon />
             {visible ? '站点管理' : ''}
@@ -42,7 +43,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         </Tooltip>
       </li>
       <li>
-        <Tooltip title={visible ? '' : '邀请码'} placement="right">
+        <Tooltip title={(visible || isMobile) ? '' : '邀请码'} placement="right">
           <a href="javascript:;" onClick={() => isLoggin && setIsModalVisibleInviteCode(true)} className={isLoggin ? '' : 'disabled'}>
             <InviteIcon />
             {visible ? '邀请码' : ''}
