@@ -24,7 +24,9 @@ const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisi
       onCancel={handleCancel}
       className="custom-modal"
       footer={null}
-      closable={false}>
+      closable={false}
+      centered={true}
+    >
       {children}
     </Modal>
   )

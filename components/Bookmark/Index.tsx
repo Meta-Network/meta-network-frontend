@@ -220,11 +220,11 @@ const StyledItem = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
-  min-height: 200px;
+  min-height: 204px;
   max-height: 420px;
   overflow: auto;
   @media screen and (max-width: 768px) {
-    max-height: 280px;
+    max-height: 340px;
   }
 `
 const StyledItemLi = styled.li`
