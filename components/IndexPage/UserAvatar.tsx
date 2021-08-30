@@ -32,8 +32,9 @@ const StyledUserAvatarImage = styled.div`
     object-fit: cover;
   }
   @media screen and (max-width: 768px) {
-    width: 176px;
-    height: 176px;
+    width: 140px;
+    height: 140px;
+    border: 5px solid #fff;
   }
 `
 
@@ -48,6 +49,9 @@ const StyledUserAvatarArrow = styled.div`
   border-color: #fff transparent transparent;
   border-width: 28px 8px 0 8px;
   background-color: transparent;
+  @media screen and (max-width: 768px) {
+    border-width: 24px 6px 0 6px;
+  }
 `
 
 export default UserAvatar

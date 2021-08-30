@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+import { isBrowser } from "react-device-detect";
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
@@ -531,8 +532,8 @@ const Home = () => {
 
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
     e.stopPropagation()
-    if (mode === 'exist') {
-      console.log('handleHexagonEventMouseEnter', point)
+    if (isBrowser && mode === 'exist') {
+      // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
       let node = allNodeMap.get(`${x}${y}${z}`)
       if (node) {
@@ -543,8 +544,8 @@ const Home = () => {
 
   const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
     e.stopPropagation()
-    if (mode === 'exist') {
-      console.log('handleHexagonEventMouseLeave', point)
+    if (isBrowser && mode === 'exist') {
+      // console.log('handleHexagonEventMouseLeave', point)
       setCurrentNodeMouse({} as hexGridsByFilterState)
     }
   }

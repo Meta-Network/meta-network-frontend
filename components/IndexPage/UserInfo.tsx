@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork';
 import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash';
+import { isBrowser, isMobile } from "react-device-detect";
+
 import { PointState } from '../../typings/node';
 
 import UserAvatar from './UserAvatar'
@@ -40,19 +42,35 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
           if (refAvatar.current) {
             // console.dir(refAvatar!.current)
             const avatarWidth = refAvatar!.current.clientWidth
+            const avatarHeight = refAvatar!.current.clientHeight
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
-            refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
+
+            if (isBrowser) {
+              refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
+            }
+            if (isMobile) {
+              refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -184px)`
+            }
+
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
           }
           if (refMore.current) {
+            const moreWidth = refMore!.current.clientWidth
             const moreHeight = refMore!.current.clientHeight
 
             refMore!.current.style.left =`${x}px`
             refMore!.current.style.top = `${y}px`
-            refMore!.current.style.transform = `translate(${width + 20}px, ${(height - moreHeight) / 2}px)`
+
+            if (isBrowser) {
+              refMore!.current.style.transform = `translate(${width + 20}px, ${(height - moreHeight) / 2}px)`
+            }
+            if (isMobile) {
+              refMore!.current.style.transform = `translate(${(width - moreWidth) / 2}px, ${height + 20}px)`
+            }
+
             refMore!.current.style.opacity = '1'
             // console.log('refMore', refMore.current)
           }
@@ -117,6 +135,7 @@ const StyledUserMore = styled.div`
     transform: translate(-50%, 0);
   } */
   will-change: left, top;
+  width: 128px;
 `
 
 export default UserInfo

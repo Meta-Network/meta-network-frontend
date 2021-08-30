@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Script from 'next/script'
 
 export default function HeadInfo() {
   return (
@@ -22,6 +23,7 @@ export default function HeadInfo() {
       <meta name="twitter:title" content="Meta Network — Empowering creator with passion economy." />
       <meta name="twitter:description" content="Empowering creator with passion economy." />
       <meta name="twitter:image" content="/apple-touch-icon.png" />
+
     </Head>
   )
 }

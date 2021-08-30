@@ -48,7 +48,7 @@ const StyledHistory = styled.div`
   left: 50%;
   transform: translate(-50%, 0);
   top: 20px;
-  z-index: 9;
+  z-index: 8;
   display: flex;
   align-items: center;
   justify-content: space-between;

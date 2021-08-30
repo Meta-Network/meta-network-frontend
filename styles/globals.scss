@@ -38,9 +38,13 @@ a {
   text-align: center;
   .grid {
     font-size: 16px;
-    mask: url(#mask);
-    mask-image: url(#mask);
-    -webkit-mask-image: url(#mask);
+    @supports (mask: url) {
+      mask: url(#mask);
+    }
+    @supports (mask-image: url) {
+      mask-image: url(#mask);
+      -webkit-mask-image: url(#mask);
+    }
   }
   svg.grid g {
     transform-origin: 610.5px 457px;
