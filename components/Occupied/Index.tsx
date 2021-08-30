@@ -84,6 +84,16 @@ const StyledContentFooter = styled.section`
   padding: 32px 0 0 0;
   display: flex;
   justify-content: space-between;
+  @media screen and (max-width: 768px) {
+    display: block;
+    .custom-primary {
+      width: 100%;
+    }
+    .custom-default {
+      width: 100%;
+      margin-top: 16px;
+    }
+  }
 `
 const StyledContentTitle = styled.p`
   font-family:  ${ props => props.theme.fontFamilyZH };
