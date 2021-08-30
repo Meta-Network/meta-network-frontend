@@ -47,4 +47,4 @@ export const hexGridsMine = (): Promise<axiosResult<hexGridsByFilterState>> =>
  * @returns
  */
 export const hexGridsForbiddenZoneRadius = (): Promise<axiosResult<number>> =>
-  API.get('/hex-grids/forbidden-zone/radius')
+  API.get('/hex-grids/forbidden-zone/radius', { cache: true })

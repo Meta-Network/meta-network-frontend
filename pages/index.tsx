@@ -821,8 +821,13 @@ const Home = () => {
         }
       </div>
       <MarkContainer></MarkContainer>
-      <DeploySite isModalVisible={isModalVisibleDeploySite} setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
-      <Occupied isModalVisible={isModalVisibleOccupied} setIsModalVisible={setIsModalVisibleOccupied} handleOccupied={handleOccupied}></Occupied>
+      <DeploySite
+        isModalVisible={isModalVisibleDeploySite}
+        setIsModalVisible={setIsModalVisibleDeploySite}></DeploySite>
+      <Occupied
+        isModalVisible={isModalVisibleOccupied}
+        setIsModalVisible={setIsModalVisibleOccupied}
+        handleOccupied={handleOccupied}></Occupied>
       {
         isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
           <NoticeBardOccupied
@@ -848,7 +853,9 @@ const Home = () => {
         currentNode={currentNode}
         currentNodeMouse={currentNodeMouse}
         url={currentNodeMouse.userAvatar}></UserInfoMouse>
-      <NodeHistory historyViewList={historyViewNode} HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
+      <NodeHistory
+        historyViewList={historyViewNode}
+        HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
     </>
   )
 }

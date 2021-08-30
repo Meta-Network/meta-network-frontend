@@ -53,7 +53,7 @@ const StyledMessageRelative = styled(animated.section)`
   background-color: #2C2B2A;
   left: 50%;
   top: 40px;
-  z-index: 10;
+  z-index: 11;
   transform: translate(-50%, 0);
   padding: 0 0 0 16px;
   box-shadow: 0px 2px 10px 20px rgba(19, 19, 19, 0.15), inset 0px -4px 10px rgba(19, 19, 19, 0.04);
