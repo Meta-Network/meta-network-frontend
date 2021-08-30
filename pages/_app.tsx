@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components'
 import type { AppProps } from 'next/app'
-import Head from 'next/head'
+import { useMount } from 'ahooks'
+
 import HeadInfo from '../components/HeadInfo/Index'
 
 import 'antd/dist/antd.css'
@@ -14,7 +15,19 @@ import '../styles/globals.scss'
 import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
 
+let VConsole: any = null
+if (process.browser) {
+  VConsole = require('vconsole')
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
+
+
+  useMount(() => {
+    if ( process.browser && VConsole ) {
+      new VConsole()
+    }
+  })
 
   // refresh token
   useToken()
