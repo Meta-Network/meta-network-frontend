@@ -153,6 +153,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 const StyledEmailForm = styled(Form)`
   width: 346px;
   margin-top: 50px;
+  .ant-form-item-explain.ant-form-item-explain-error {
+    text-align: left;
+  }
 `
 
 const StyledFormItem = styled(Form.Item)`
