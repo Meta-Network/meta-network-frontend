@@ -42,7 +42,6 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
           if (refAvatar.current) {
             // console.dir(refAvatar!.current)
             const avatarWidth = refAvatar!.current.clientWidth
-            const avatarHeight = refAvatar!.current.clientHeight
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
@@ -135,7 +134,7 @@ const StyledUserMore = styled.div`
     transform: translate(-50%, 0);
   } */
   will-change: left, top;
-  width: 128px;
+  /* width: 128px; */
 `
 
 export default UserInfo

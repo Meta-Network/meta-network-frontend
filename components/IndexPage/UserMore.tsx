@@ -111,6 +111,7 @@ const StyledUserMoreButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  white-space: nowrap;
   @media screen and (max-width: 768px) {
     margin: 0 auto;
   }

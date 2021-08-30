@@ -5,6 +5,7 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork';
 import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash';
 import { PointState } from '../../typings/node';
+import { isBrowser, isMobile } from "react-device-detect";
 
 import UserAvatar from './UserAvatar'
 
@@ -39,7 +40,14 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
-            refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
+
+            if (isBrowser) {
+              refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -247px)`
+            }
+            if (isMobile) {
+              refAvatar!.current.style.transform = `translate(${(width - avatarWidth) / 2}px, -184px)`
+            }
+
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
           }
