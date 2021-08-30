@@ -157,7 +157,7 @@ const Home = () => {
     process.env.NODE_ENV !== 'development'
       ? {
         ref: transApi,
-        trail: 3000 / hex.length,
+        trail: 2000 / hex.length,
         from: { opacity: 0, scale: 0 },
         enter: { opacity: 1, scale: 1 },
         leave: { opacity: 0, scale: 0 },
