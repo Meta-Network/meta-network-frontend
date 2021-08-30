@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app'
 import { useMount } from 'ahooks'
 
 import HeadInfo from '../components/HeadInfo/Index'
+import { StoreGet, StoreSet, StoreRemove } from '../utils/store'
 
 import 'antd/dist/antd.css'
 import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -22,9 +23,9 @@ if (process.browser) {
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-
   useMount(() => {
-    if ( process.browser && VConsole ) {
+    const dev = StoreGet('MetaNetworkDEV')
+    if ( process.browser && VConsole && dev ) {
       new VConsole()
     }
   })
