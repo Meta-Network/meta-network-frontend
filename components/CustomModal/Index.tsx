@@ -43,6 +43,7 @@ const StyledClose = styled(CloseModalIcon)`
   right: 24px;
   top: 24px;
   color: #f5f5f5;
+  opacity: 0.4;
 `
 
 export default CustomModal
