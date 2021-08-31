@@ -36,6 +36,7 @@ const StyledArrow = styled.section`
   justify-content: center;
   z-index: 8;
   will-change: transform;
+  user-select: none;
   img {
     width: 120px;
     height: 120px;

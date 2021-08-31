@@ -53,6 +53,7 @@ export const StyledButtonMap = styled(animated.button)`
   line-height: 24px;
   box-sizing: border-box;
   cursor: pointer;
+  user-select: none;
   & > span {
     font-size: 20px;
   }

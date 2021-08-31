@@ -76,6 +76,7 @@ const StyledText = styled(animated.span)`
   color: #F5F5F5;
   font-family: ${props => props.theme.fontFamilyEN};
   z-index: 8;
+  user-select: none;
 `
 
 export default MapZoom
