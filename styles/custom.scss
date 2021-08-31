@@ -24,9 +24,18 @@
   top: 200px;
   .ant-modal-content {
     background-color: #131313;
+
+    @media screen and (max-width: 768px) {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
   }
   .ant-modal-body {
     padding: 20px 20px 45px 20px;
+    height: 100%;
   }
 }
 
@@ -49,6 +58,10 @@
     background: #CAF12E;
     border: 1px solid #CAF12E;
   }
+
+  @media screen and (max-width: 768px) {
+    width: 160px;
+  }
 }
 // antd button
 .custom-default {
@@ -68,6 +81,9 @@
     color: #CAF12E;
     background: transparent;
     border: 1px solid #CAF12E;
+  }
+  @media screen and (max-width: 768px) {
+    width: 160px;
   }
 }
 

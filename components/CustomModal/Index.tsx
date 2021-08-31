@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
+import styled from 'styled-components'
+import { isBrowser, isMobile } from "react-device-detect"
+import { CloseModalIcon } from '../Icon/Index'
 
 interface Props {
   isModalVisible: boolean,
@@ -8,11 +11,11 @@ interface Props {
 
 const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisible }) => {
 
-  const handleOk = () => {
+  const handleOk = (): void => {
     setIsModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     setIsModalVisible(false);
   };
 
@@ -28,8 +31,18 @@ const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisi
       centered={true}
     >
       {children}
+      {
+        isMobile ? <StyledClose onClick={() => handleCancel()}></StyledClose> : null
+      }
     </Modal>
   )
 }
+
+const StyledClose = styled(CloseModalIcon)`
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  color: #f5f5f5;
+`
 
 export default CustomModal

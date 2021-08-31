@@ -166,6 +166,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
 
 const StyledContainer = styled.section`
   color: #fff;
+  height: 100%;
 `
 
 const StyledContentHead = styled.section`
@@ -224,7 +225,8 @@ const StyledItem = styled.ul`
   max-height: 420px;
   overflow: auto;
   @media screen and (max-width: 768px) {
-    max-height: 340px;
+    /* max-height: 340px; */
+    max-height: calc(100% - 42px - 36px - 32px);
   }
 `
 const StyledItemLi = styled.li`
