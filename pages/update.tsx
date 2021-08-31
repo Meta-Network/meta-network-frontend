@@ -161,6 +161,7 @@ const Update: React.FC<Props> = () => {
           icon: ''
         })
       }
+
       return isJpgOrPng && isLtMB;
     },
     onChange(info: UploadAvatar) {
