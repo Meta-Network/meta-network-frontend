@@ -5,6 +5,7 @@ import {
   LeftOutlined,
 } from '@ant-design/icons'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
@@ -21,16 +22,23 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
   user, isLoggin, visible,
   signOut
 }) {
+  const router = useRouter()
+
   console.log('SliderContentUser')
 
   const handleClick = ({ key }: { key: string }) => {
     if (key === 'signOut') {
       signOut()
+    } else if (key === 'edit') {
+      router.push('/update')
     }
   };
 
   const menu = (
     <Menu onClick={handleClick}>
+      <Menu.Item key="edit">
+        编辑
+      </Menu.Item>
       <Menu.Item key="signOut">
         登出
       </Menu.Item>

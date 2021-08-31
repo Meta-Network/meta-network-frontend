@@ -75,3 +75,10 @@ export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get(
  * @returns
  */
 export const usersMePatch = (data: UsersMePatchProps): Promise<axiosResult<UsersMeProps>> => uCenterAPI.patch('/users/me', data)
+
+/**
+ * 获取一个可用于访问存储的签名
+ * @param data
+ * @returns
+ */
+export const storageToken = (): Promise<axiosResult<string>> => uCenterAPI.post('/storage/token')
