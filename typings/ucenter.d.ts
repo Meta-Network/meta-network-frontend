@@ -41,6 +41,12 @@ export interface UsersMeProps {
   twoFactors: []
 }
 
+export interface UsersMePatchProps {
+  nickname: string
+  avatar: string
+  bio: string
+}
+
 // ---------------- Inviations ----------------
 
 export interface InviitationsMineState {

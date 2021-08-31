@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd';
-import { EmailModeProps } from '../../../typings/oauth'
-import { accountsEmailVerify, accountsEmailSignup } from '../../../services/ucenter'
-import EmailCode from './EmailCode'
+import { Form, Input, Button, message, Avatar, Upload } from 'antd';
+import { ExclamationCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useMount } from 'ahooks'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+import { EmailModeProps } from '../../../typings/oauth'
+import { UsersMePatchProps } from '../../../typings/ucenter'
+import { accountsEmailVerify, accountsEmailSignup, usersMePatch } from '../../../services/ucenter'
+import { storageFleek } from '../../../services/storage'
+import EmailCode from './EmailCode'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 
 interface Props {
@@ -18,47 +21,73 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formResister] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
+  const [avatarUrl, setAvatarUrl] = useState<string|undefined>(undefined)
   const router = useRouter()
 
+
+  // 更新用户信息
+  const updateUserInfo = useCallback(
+    async (data: UsersMePatchProps) => {
+      try {
+        const res = await usersMePatch(data)
+        if (res.statusCode === 200) {
+          router.push('/')
+        } else {
+          throw new Error(res.message)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    [ router ]
+  )
+
   // 注册
-  const onFinishEmail = async (values: any): Promise<void> => {
-    console.log('Success:', values);
-    let { email, code, inviteCode } = values
-    try {
-      const resEmailSignup = await accountsEmailSignup(inviteCode, {
-        account: trim(email),
-        verifyCode: code,
-        hcaptchaToken: 'hcaptcha_token_here'
-      })
-      if (resEmailSignup.statusCode === 201) {
+  const onFinishEmail = useCallback(
+    async (values: any): Promise<void> => {
+      console.log('Success:', values);
+      let { email, code, inviteCode, nickname, bio } = values
+      try {
+        const resEmailSignup = await accountsEmailSignup(inviteCode, {
+          account: trim(email),
+          verifyCode: code,
+          hcaptchaToken: 'hcaptcha_token_here'
+        })
+        if (resEmailSignup.statusCode === 201) {
+          message.info({
+            content: <span className="message-content">
+              <CircleSuccessIcon />
+              <span>
+                注册成功
+              </span>
+            </span>,
+            className: 'custom-message',
+            icon: ''
+          });
+          await updateUserInfo({
+            avatar: "https://storageapi.fleek.co/casimir-crystal-team-bucket/metanetwork/users/0/e03373d5cd92b1b755895b99d8f0c4dd.png",
+            nickname: nickname,
+            bio: bio,
+          })
+        } else {
+          throw new Error(resEmailSignup.message)
+        }
+      } catch (e) {
+        console.error(e)
         message.info({
           content: <span className="message-content">
-            <CircleSuccessIcon />
+            <CircleWarningIcon />
             <span>
-              注册成功
+              注册失败
             </span>
           </span>,
           className: 'custom-message',
           icon: ''
         });
-        router.push('/')
-      } else {
-        throw new Error(resEmailSignup.message)
       }
-    } catch (e) {
-      console.error(e)
-      message.info({
-        content: <span className="message-content">
-          <CircleWarningIcon />
-          <span>
-            注册失败
-          </span>
-        </span>,
-        className: 'custom-message',
-        icon: ''
-      });
-    }
-  };
+    },
+    [],
+  )
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo);
@@ -95,6 +124,39 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     })
   };
 
+  const props = {
+    name: 'avatar',
+    action: storageFleek,
+    maxCount: 1,
+    beforeUpload(file: File) {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('您只能上传 JPG/PNG 文件！');
+      }
+      const isLtMB = file.size / 1024 / 1024 < 6;
+      if (!isLtMB) {
+        message.error('图片必须小于6MB！');
+      }
+      return isJpgOrPng && isLtMB;
+    },
+    onChange(info: any) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
+
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    setAvatarUrl('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png')
+    return 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+  };
+
   return (
     <StyledEmailForm
       form={formResister}
@@ -104,6 +166,42 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       onFinish={onFinishEmail}
       onFinishFailed={onFinishFailedEmail}
     >
+
+      <StyledFormItem
+        label=""
+        name="avatar"
+        getValueFromEvent={normFile}
+        rules={[
+          { required: false, message: '请上传头像' },
+        ]}
+      >
+        <Upload {...props} className="upload-avatar">
+          <Avatar size={64} icon={<UserOutlined />} src={ avatarUrl } />
+        </Upload>
+      </StyledFormItem>
+
+      <StyledFormItem
+        label=""
+        name="nickname"
+        rules={[
+          { required: true, message: '请输入昵称' },
+          { min: 1, max: 32, message: '长度 1-32' },
+        ]}
+      >
+        <Input className="form-input" placeholder="请输入昵称" autoComplete="new-text" />
+      </StyledFormItem>
+
+      <StyledFormItem
+        label=""
+        name="bio"
+        rules={[
+          { required: true, message: '请输入简介' },
+          { min: 1, max: 300, message: '长度 1-300' },
+        ]}
+      >
+        <Input className="form-input" placeholder="请输入简介" autoComplete="new-text" />
+      </StyledFormItem>
+
       <StyledFormItem
         label=""
         name="email"
@@ -181,6 +279,13 @@ const StyledFormItem = styled(Form.Item)`
   .form-input-password:hover,
   .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
     border-color: none !important;
+  }
+
+  .upload-avatar {
+    cursor: pointer;
+    .ant-upload-list {
+      display: none;
+    }
   }
 `
 const StyledFormCode = styled.div`

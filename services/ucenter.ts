@@ -2,7 +2,7 @@ import { uCenterAPI } from "./client";
 import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
-  InviitationsMineState
+  InviitationsMineState, UsersMePatchProps
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -69,3 +69,9 @@ export const accountsTokenDelete = (): Promise<axiosResult<void>> => uCenterAPI.
 export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me', {
   cache: true
 })
+
+/**
+ * 更新当前用户信息
+ * @returns
+ */
+export const usersMePatch = (data: UsersMePatchProps): Promise<axiosResult<UsersMeProps>> => uCenterAPI.patch('/users/me', data)
