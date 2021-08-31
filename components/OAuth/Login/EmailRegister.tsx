@@ -23,7 +23,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
       console.log('Success:', values);
-      let { email, code, inviteCode, nickname, bio } = values
+      let { email, code, inviteCode } = values
       try {
         const resEmailSignup = await accountsEmailSignup(inviteCode, {
           account: trim(email),
@@ -41,7 +41,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
             className: 'custom-message',
             icon: ''
           });
-          router.push('/')
+          router.push('/update')
         } else {
           throw new Error(resEmailSignup.message)
         }
@@ -51,7 +51,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           content: <span className="message-content">
             <CircleWarningIcon />
             <span>
-              注册失败
+              {e.toString()}
             </span>
           </span>,
           className: 'custom-message',
@@ -85,9 +85,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
             reject('验证失败')
           }
           resolve()
-        } catch (errorInfo) {
-          console.log('Failed:', errorInfo);
-          reject('验证失败')
+        } catch (e) {
+          console.log('Failed:', e);
+          reject(`验证失败 ${e.toString}`)
         } finally {
           setLoading(false)
         }

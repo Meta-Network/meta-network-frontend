@@ -137,11 +137,29 @@ const Update: React.FC<Props> = () => {
     beforeUpload(file: File) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        message.error('您只能上传 JPG/PNG 文件！');
+        message.info({
+          content: <span className="message-content">
+            <CircleWarningIcon />
+            <span>
+              您只能上传 JPG/PNG 文件！
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        })
       }
       const isLtMB = file.size / 1024 / 1024 < 6;
       if (!isLtMB) {
-        message.error('图片必须小于6MB！');
+        message.info({
+          content: <span className="message-content">
+            <CircleWarningIcon />
+            <span>
+              图片必须小于6MB！
+            </span>
+          </span>,
+          className: 'custom-message',
+          icon: ''
+        })
       }
       return isJpgOrPng && isLtMB;
     },
@@ -152,6 +170,16 @@ const Update: React.FC<Props> = () => {
       if (info.file.status === 'done') {
         console.log('info', info)
         if (info.file.response.statusCode === 201) {
+          message.info({
+            content: <span className="message-content">
+              <CircleWarningIcon />
+              <span>
+                上传成功
+              </span>
+            </span>,
+            className: 'custom-message',
+            icon: ''
+          })
           setAvatarUrl(info.file.response.data.publicUrl)
         }
         // message.success(`${info.file.name} file uploaded successfully`);
