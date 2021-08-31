@@ -72,11 +72,12 @@ const StyledText = styled.span`
   /* padding-left: 10px; */
   padding: 8px 40px 8px 10px;
   overflow: hidden;
-  /* white-space: nowrap; */
+  white-space: nowrap;
   border-right: 1px solid #131313;
   @media screen and (max-width: 768px) {
     padding-right: 16px;
     padding-left: 12px;
+    white-space: normal;
   }
 `
 const StyledMessageButton = styled.button<{ status: boolean }>`
