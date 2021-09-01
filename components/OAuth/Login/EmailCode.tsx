@@ -6,6 +6,7 @@ import { message } from 'antd';
 import { trim } from 'lodash'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
+import useToast from '../../../hooks/useToast'
 
 interface Props {
   form: any
@@ -16,6 +17,7 @@ const EmailCode: React.FC<Props> = ({ form }) => {
     console.log('onEnd of the time');
   };
   const [count, setTargetDate] = useCountDown({ onEnd: onEnd });
+  const { Toast } = useToast()
 
   /**
    * 发送邮箱验证码
@@ -25,59 +27,23 @@ const EmailCode: React.FC<Props> = ({ form }) => {
     try {
       let { email } = await form.getFieldsValue()
       if (!(email ? trim(email) : email)) {
-        message.info({
-          content: <span className="message-content">
-            <CircleWarningIcon />
-            <span>
-              请输入邮箱
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        Toast({ content: '请输入邮箱', type: 'warning' })
         return
       }
       // 开始倒计时
       setTargetDate(Date.now() + 60 * 1000)
-      message.info({
-        content: <span className="message-content">
-          <CircleSuccessIcon />
-          <span>
-          发送验证码...
-          </span>
-        </span>,
-        className: 'custom-message',
-        icon: ''
-      });
+      Toast({ content: '发送验证码...' })
       const res = await accountsEmailVerificationCode({
         key: trim(email)
       })
       if (res.statusCode === 201) {
-        message.info({
-          content: <span className="message-content">
-            <CircleSuccessIcon />
-            <span>
-            发送成功
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        Toast({ content: '发送成功' })
       } else {
         throw new Error(res.message)
       }
     } catch (e) {
       console.log(e)
-      message.info({
-        content: <span className="message-content">
-          <CircleWarningIcon />
-          <span>
-            发送失败
-          </span>
-        </span>,
-        className: 'custom-message',
-        icon: ''
-      });
+      Toast({ content: '发送失败', type: 'warning' })
     }
   }
 

@@ -9,6 +9,7 @@ import { UsersMeUsernameState } from '../../../typings/ucenter.d'
 import { accountsEmailVerify, accountsEmailSignup, usersMeUsername } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
+import useToast from '../../../hooks/useToast'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -19,6 +20,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
+  const { Toast } = useToast()
 
   // 更新用户名
   const updateUsername = useCallback(
@@ -49,16 +51,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           hcaptchaToken: 'hcaptcha_token_here'
         })
         if (resEmailSignup.statusCode === 201) {
-          message.info({
-            content: <span className="message-content">
-              <CircleSuccessIcon />
-              <span>
-                注册成功
-              </span>
-            </span>,
-            className: 'custom-message',
-            icon: ''
-          });
+          Toast({ content: '注册成功' })
           await updateUsername({
             username: username
           })
@@ -67,18 +60,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         }
       } catch (e) {
         console.error(e)
-        message.info({
-          content: <span className="message-content">
-            <CircleWarningIcon />
-            <span>
-              {e.toString()}
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        Toast({ content: e.toString(), type: 'warning' })
       }
-    }, [ updateUsername ],)
+    }, [ updateUsername, Toast ],)
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo);

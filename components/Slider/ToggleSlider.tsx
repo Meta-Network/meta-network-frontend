@@ -33,6 +33,8 @@ import SliderContenItemtNav from './SliderContenItemtNav'
 import SliderContentUser from './SliderContentUser'
 import SliderToggle from './SliderToggle'
 
+import useToast from '../../hooks/useToast'
+
 interface Props {
   readonly bookmarkNode: hexGridsByFilterState[]
   readonly defaultHexGridsRange: PointScopeState
@@ -46,6 +48,8 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user, isLoggin } = useUser()
   const router = useRouter()
+  const { Toast } = useToast()
+
   // 收藏
   const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
   // 邀请码
@@ -64,16 +68,16 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
       try {
         const res = await accountsTokenDelete()
         if (res.statusCode === 200) {
-          message.success('登出成功')
+          Toast({ content: '登出成功' })
           router.reload()
         } else {
-          message.warning(`登出失败: ${res.message}`)
+          throw new Error(res.message)
         }
       } catch (e) {
         console.log(e)
-        message.error('登出失败')
+        Toast({ content: e.toString(), type: 'warning' })
       }
-    }, [router]
+    }, [router, Toast]
   )
 
   // 获取邀请码

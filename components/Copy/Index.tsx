@@ -8,25 +8,16 @@ import { message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { CircleSuccessIcon } from '../Icon/Index'
-
+import useToast from '../../hooks/useToast'
 interface Props {
   text: string
 }
 
 const Copy: React.FC<Props> = ({ text }) => {
+  const { Toast } = useToast()
 
   const handleCopy = () => {
-    message.info({
-      content: <span className="message-content">
-        <CircleSuccessIcon />
-        <span>
-          复制成功
-        </span>
-      </span>,
-      className: 'custom-message',
-      duration: 2,
-      icon: ''
-    });
+    Toast({ content: '复制成功' })
   }
 
   return (

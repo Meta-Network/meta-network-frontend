@@ -16,6 +16,8 @@ import '../styles/globals.scss'
 import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
 
+import useToast from '../hooks/useToast'
+
 let VConsole: any = null
 if (process.browser) {
   VConsole = require('vconsole')
@@ -23,11 +25,16 @@ if (process.browser) {
 
 function MyApp({ Component, pageProps }: AppProps) {
 
+  const { Toast } = useToast()
+
   useMount(() => {
     const dev = StoreGet('MetaNetworkDEV')
     if ( process.browser && VConsole && dev ) {
       new VConsole()
     }
+
+    // Toast({ content: '默认' })
+    // Toast({ content: '默认', type: 'warning' })
   })
 
   // refresh token

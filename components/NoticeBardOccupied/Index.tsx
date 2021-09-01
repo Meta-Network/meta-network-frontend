@@ -7,6 +7,7 @@ import { message } from 'antd'
 import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'
 
 import { useUser } from '../../hooks/useUser'
+import useToast from '../../hooks/useToast'
 
 interface Props {
   readonly status: boolean
@@ -16,17 +17,18 @@ interface Props {
 
 const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState, style }) => {
   const { user } = useUser()
+  const { Toast } = useToast()
 
   const ToggleState = useCallback((e: any) => {
 
     e.stopPropagation()
 
     if (isEmpty(user)) {
-      message.info('请登录')
+      Toast({ content: '请登录', type: 'warning' })
       return
     }
     setNoticeBardOccupiedState(!status)
-  }, [ user, status, setNoticeBardOccupiedState ])
+  }, [ user, status, setNoticeBardOccupiedState, Toast ])
 
   return (
     <StyledMessageRelative style={style}>

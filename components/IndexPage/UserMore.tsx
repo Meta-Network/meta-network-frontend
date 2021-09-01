@@ -9,6 +9,7 @@ import { isArray } from 'lodash';
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node';
 import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, CircleSuccessIcon } from '../Icon/Index'
+import useToast from '../../hooks/useToast'
 
 interface Props {
   readonly bookmark: PointState[]
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) => {
+  const { Toast } = useToast()
+
   // 是否收藏
   const isBookmark = useMemo(() => {
     if (!isArray(bookmark)) {
@@ -34,7 +37,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
-    message.info('进入主页')
+    Toast({ content: '进入主页' })
     window.open('https://meta-cms.vercel.app/', '_blank')
   }
 
@@ -48,16 +51,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
 
   // Copy
   const handleCopy = () => {
-    message.info({
-      content: <span className="message-content">
-        <CircleSuccessIcon />
-        <span>
-          复制成功
-        </span>
-      </span>,
-      className: 'custom-message',
-      icon: ''
-    });
+    Toast({ content: '复制成功' })
   }
 
   const menu = (

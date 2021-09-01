@@ -8,6 +8,7 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { CircleSuccessIcon, CircleWarningIcon } from "../../Icon/Index";
+import useToast from '../../../hooks/useToast'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -17,6 +18,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [formLogin] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const router = useRouter()
+  const { Toast } = useToast()
 
   /**
    * 用户登录
@@ -33,32 +35,14 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         hcaptchaToken: 'hcaptcha_token_here'
       })
       if (res.statusCode === 200) {
-        message.info({
-          content: <span className="message-content">
-            <CircleSuccessIcon />
-            <span>
-              登录成功
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        });
+        Toast({ content: '登录成功' })
         router.push('/')
       } else {
         throw new Error(res.message)
       }
     } catch (e) {
       console.error(e)
-      message.info({
-        content: <span className="message-content">
-          <CircleWarningIcon />
-          <span>
-            登录失败
-          </span>
-        </span>,
-        className: 'custom-message',
-        icon: ''
-      });
+      Toast({ content: '登录失败', type: "warning" })
     } finally {
       setLoading(false)
     }

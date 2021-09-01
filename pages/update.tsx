@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components'
 import { Form, Input, Button, message, Avatar, Upload } from 'antd';
 import { ExclamationCircleOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons'
@@ -11,7 +11,7 @@ import { Storage } from '../typings/storage.d'
 import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import { CircleSuccessIcon, CircleWarningIcon } from '../components/Icon/Index'
-import { useMemo } from 'react';
+import useToast from '../hooks/useToast'
 
 interface Props { }
 
@@ -31,6 +31,7 @@ const Update: React.FC<Props> = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
   const [token, setToken] = useState<string>('')
   const router = useRouter()
+  const { Toast } = useToast()
 
   // 获取 Token
   const fetchToken = useCallback(
@@ -89,32 +90,14 @@ const Update: React.FC<Props> = () => {
           bio: trim(bio),
         })
         if (res.statusCode === 200) {
-          message.info({
-            content: <span className="message-content">
-              <CircleSuccessIcon />
-              <span>
-                更新成功
-              </span>
-            </span>,
-            className: 'custom-message',
-            icon: ''
-          });
+          Toast({ content: '更新成功' })
           router.push('/')
         } else {
           throw new Error(res.message)
         }
       } catch (e) {
         console.log(e)
-        message.info({
-          content: <span className="message-content">
-            <CircleWarningIcon />
-            <span>
-              更新失败
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        })
+        Toast({ content: '更新失败', type: 'warning' })
       } finally {
         setLoading(false)
       }
@@ -137,29 +120,11 @@ const Update: React.FC<Props> = () => {
     beforeUpload(file: File) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        message.info({
-          content: <span className="message-content">
-            <CircleWarningIcon />
-            <span>
-              您只能上传 JPG/PNG 文件！
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        })
+        Toast({ content: '您只能上传 JPG/PNG 文件！', type: 'warning' })
       }
       const isLtMB = file.size / 1024 / 1024 < 6;
       if (!isLtMB) {
-        message.info({
-          content: <span className="message-content">
-            <CircleWarningIcon />
-            <span>
-              图片必须小于6MB！
-            </span>
-          </span>,
-          className: 'custom-message',
-          icon: ''
-        })
+        Toast({ content: '图片必须小于6MB！', type: 'warning' })
       }
 
       return isJpgOrPng && isLtMB;
@@ -171,21 +136,12 @@ const Update: React.FC<Props> = () => {
       if (info.file.status === 'done') {
         console.log('info', info)
         if (info.file.response.statusCode === 201) {
-          message.info({
-            content: <span className="message-content">
-              <CircleWarningIcon />
-              <span>
-                上传成功
-              </span>
-            </span>,
-            className: 'custom-message',
-            icon: ''
-          })
+          Toast({ content: '上传成功' })
           setAvatarUrl(info.file.response.data.publicUrl)
         }
-        // message.success(`${info.file.name} file uploaded successfully`);
+        // (`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
-        // message.error(`${info.file.name} file upload failed.`);
+        // (`${info.file.name} file upload failed.`);
       }
     }
   }), [token])

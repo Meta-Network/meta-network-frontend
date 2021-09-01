@@ -45,6 +45,7 @@ import {
 } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
 import { fetchForbiddenZoneRadius } from '../helpers/index'
+import useToast from '../hooks/useToast'
 
 let d3: any = null
 let zoom: any = null
@@ -57,6 +58,8 @@ const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
 let ID: number
 
 const Home = () => {
+  const { Toast } = useToast()
+
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([]);
   const [map, setMap] = useState<string>('hexagon')
@@ -378,7 +381,7 @@ const Home = () => {
       }
       const node = allNodeMap.get(`${x}${y}${z}`)
       if (!node) {
-        messageFn('没有坐标数据')
+        Toast({ content: '没有坐标数据' })
         return
       }
       // 重复点击垱前块 Toggle
@@ -490,7 +493,7 @@ const Home = () => {
       if (!isLoggin || !noticeBardOccupiedState) {
         return
       }
-      messageFn('请选择紧挨已注册用户的地块')
+      Toast({ content: '请选择紧挨已注册用户的地块' })
       return
     } else if (mode === 'disabled') {
       return
@@ -505,19 +508,6 @@ const Home = () => {
     HandleHistoryView(point)
   }
 
-  const messageFn = (text: string) => {
-    message.info({
-      content: <span className="message-content">
-        <CircleSuccessIcon />
-        <span>
-          {text}
-        </span>
-      </span>,
-      className: 'custom-message',
-      icon: ''
-    })
-  }
-
   // 处理收藏
   const HandleBookmark = useCallback((currentNode: hexGridsByFilterState) => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
@@ -527,7 +517,7 @@ const Home = () => {
     // 没有收藏记录
     if (isEmpty(bookmark)) {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
-      messageFn('收藏成功')
+      Toast({ content: '收藏成功' })
     } else {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
@@ -538,10 +528,10 @@ const Home = () => {
       // 取消收藏
       if (~bookmarkListIdx) {
         bookmarkList.splice(bookmarkListIdx, 1)
-        messageFn('取消收藏')
+        Toast({ content: '取消收藏' })
       } else {
         bookmarkList.push(point)
-        messageFn('收藏成功')
+        Toast({ content: '收藏成功' })
       }
 
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
@@ -571,7 +561,7 @@ const Home = () => {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
       fetchBookmark()
 
-      messageFn('移除收藏成功')
+      Toast({ content: '移除收藏成功' })
     },
     [fetchBookmark]
   )
@@ -582,31 +572,31 @@ const Home = () => {
     try {
       const resPointValidation = await hexGridsCoordinateValidation(currentNodeChoose)
       if (resPointValidation.statusCode === 200 && resPointValidation.data) {
-        // message.info('允许占领')
+        // ('允许占领')
       } else {
-        message.warning(resPointValidation.message)
-        return
+        throw new Error(resPointValidation.message)
       }
     } catch (e) {
       console.log(e)
-      message.warning(e.message)
+      Toast({ content: e.message, type: 'warning' })
       return
     }
 
     try {
       const res = await hexGrids(currentNodeChoose)
       if (res.statusCode === 201) {
-        messageFn('占领成功')
+        Toast({ content: '占领成功' })
+
         fetchHexGriids()
         setIsModalVisibleOccupied(false)
       } else {
-        message.warning(res.message)
+        throw new Error(res.message)
       }
     } catch (e) {
       console.log(e)
-      message.warning(e.message)
+      Toast({ content: e.message, type: 'warning' })
     }
-  }, [currentNodeChoose, fetchHexGriids])
+  }, [currentNodeChoose, fetchHexGriids, Toast])
 
   // 重置定位
   const HandlePosition = useCallback(() => {
