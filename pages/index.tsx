@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
-import { isBrowser } from "react-device-detect";
+import { isBrowser } from "react-device-detect"
 
 import styles from './index/index.module.scss'
 import { Hex } from '../utils/lib'
@@ -298,7 +298,6 @@ const Home = () => {
     console.log('计算半径为10不可选区域 只需要执行一次')
   }
 
-
   // 获取收藏记录
   const fetchBookmark = useCallback(() => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
@@ -506,34 +505,6 @@ const Home = () => {
     HandleHistoryView(point)
   }
 
-  const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
-    if (isBrowser && mode === 'exist') {
-      // console.log('handleHexagonEventMouseEnter', point)
-      const { x, y, z } = point
-      let node = allNodeMap.get(`${x}${y}${z}`)
-      if (node) {
-        setCurrentNodeMouse(node)
-      }
-    }
-  }
-
-  const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
-    if (isBrowser && mode === 'exist') {
-      // console.log('handleHexagonEventMouseLeave', point)
-      setCurrentNodeMouse({} as hexGridsByFilterState)
-    }
-  }
-
-  // 节点是不是拥有者
-  const isNodeOwner = useCallback(({ x, y, z }: PointState) => {
-    return !isEmpty(hexGridsMineData) &&
-      hexGridsMineData.x === x &&
-      hexGridsMineData.y === y &&
-      hexGridsMineData.z === z
-  }, [hexGridsMineData])
-
   const messageFn = (text: string) => {
     message.info({
       content: <span className="message-content">
@@ -714,15 +685,14 @@ const Home = () => {
         layout={layout}
         hex={hex}
         handleHexagonEventClick={handleHexagonEventClick}
-        handleHexagonEventMouseEnter={handleHexagonEventMouseEnter}
-        handleHexagonEventMouseLeave={handleHexagonEventMouseLeave}
+        setCurrentNodeMouse={setCurrentNodeMouse}
         allNodeDisabled={allNodeDisabled}
         allNodeMap={allNodeMap}
         allNodeChoose={allNodeChoose}
         defaultPoint={defaultPoint}
         bookmark={bookmark}
         noticeBardOccupiedState={noticeBardOccupiedState}
-        isNodeOwner={isNodeOwner}
+        hexGridsMineData={hexGridsMineData}
         origin={origin}
       ></MapContainer>
       <MarkContainer></MarkContainer>
