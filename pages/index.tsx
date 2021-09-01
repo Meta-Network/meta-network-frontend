@@ -104,41 +104,10 @@ const Home = () => {
   const [hexGridsMineTag, setHexGridsMineTag] = useState<boolean>(false)
   // 收藏坐标点
   const [bookmark, setBookmark] = useState<PointState[]>([])
-  // 收藏坐标点 合并数据后
-  const bookmarkNode = useMemo(() => {
-    let _bookmark = cloneDeep(bookmark)
 
-    for (let i = 0; i < _bookmark.length; i++) {
-      const ele = _bookmark[i];
-      const { x, y, z } = ele
-      const _node = allNodeMap.get(`${x}${y}${z}`)
-      if (_node) {
-        assign(ele, _node)
-      }
-    }
-    // console.log('_bookmark', _bookmark)
-
-    return _bookmark.reverse() as hexGridsByFilterState[]
-  }, [allNodeMap, bookmark])
 
   // 历史预览
   const [historyView, setHistoryView] = useState<PointState[]>([])
-  const historyViewNode = useMemo(() => {
-    let _historyView = cloneDeep(historyView)
-
-    for (let i = 0; i < _historyView.length; i++) {
-      const ele = _historyView[i];
-      const { x, y, z } = ele
-      const _node = allNodeMap.get(`${x}${y}${z}`)
-      if (_node) {
-        assign(ele, _node)
-      }
-    }
-    // console.log('_historyView', _historyView)
-
-    return _historyView as hexGridsByFilterState[]
-  }, [allNodeMap, historyView])
-
 
   // NoticeBard Occupied
   const noticeBardOccupiedAnimatedStyles = useSpring({
@@ -660,7 +629,8 @@ const Home = () => {
     <>
       <ToggleSlider
         translateMap={translateMap}
-        bookmarkNode={bookmarkNode}
+        allNodeMap={allNodeMap}
+        bookmark={bookmark}
         defaultHexGridsRange={defaultHexGridsRange}
         HandleRemoveBookmark={HandleRemoveBookmark}
       >
@@ -716,7 +686,8 @@ const Home = () => {
         currentNodeMouse={currentNodeMouse}
         url={currentNodeMouse.userAvatar}></UserInfoMouse>
       <NodeHistory
-        historyViewList={historyViewNode}
+        allNodeMap={allNodeMap}
+        historyView={historyView}
         HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
       <PointDEV></PointDEV>
     </>

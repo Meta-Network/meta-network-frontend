@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-  MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined,
-  SearchOutlined, SwapOutlined, ArrowLeftOutlined,
-  LeftOutlined, BookOutlined, EnvironmentOutlined
-} from '@ant-design/icons'
-import { Drawer, Avatar, message, Popconfirm } from 'antd';
-import styled from 'styled-components'
-import { isEmpty } from 'lodash'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
+import { assign, cloneDeep } from 'lodash'
 
 import { useUser } from '../../hooks/useUser'
 import { accountsTokenDelete } from '../../services/ucenter'
@@ -19,13 +9,10 @@ import InviteCode from '../InviteCode/Index'
 import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
-import { SearchIcon, SwitchVerticalIcon, BookmarkIcon, ArrowTopLeftIcon, InviteIcon, LogoutIcon } from '../Icon/Index'
+import { PointState } from '../../typings/node.d'
 import { fetchInviteCode } from '../../helpers/index'
 import {
-  StyledSliderCAccount, StyledSliderCAccountButton, StyledCount,
-  StyledButton, StyledSlider,
-  StyledSliderContent, StyledSliderCUser, StyledSliderCUserInfo,
-  StyledSliderCItem
+  StyledSlider, StyledSliderContent
 } from './Style'
 import SliderContenAccoount from './SliderContenAccoount'
 import SliderContenItemtUser from './SliderContenItemtUser'
@@ -36,14 +23,18 @@ import SliderToggle from './SliderToggle'
 import useToast from '../../hooks/useToast'
 
 interface Props {
-  readonly bookmarkNode: hexGridsByFilterState[]
+  readonly allNodeMap: Map<string, hexGridsByFilterState>
+  readonly bookmark: PointState[]
   readonly defaultHexGridsRange: PointScopeState
   translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
 
 
-const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ translateMap, bookmarkNode, defaultHexGridsRange, HandleRemoveBookmark }) {
+const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
+  allNodeMap, bookmark,
+  translateMap, defaultHexGridsRange, HandleRemoveBookmark
+}) {
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false);
   const { user, isLoggin } = useUser()
@@ -59,10 +50,28 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
   // 搜索
   const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
 
-  const Toggle = () => {
-    setVisibleSlider(!visibleSlider);
-  };
+  /**
+   * 收藏坐标点 合并数据后
+   */
+  const bookmarkNode = useMemo(() => {
+    let _bookmark = cloneDeep(bookmark)
 
+    for (let i = 0; i < _bookmark.length; i++) {
+      const ele = _bookmark[i];
+      const { x, y, z } = ele
+      const _node = allNodeMap.get(`${x}${y}${z}`)
+      if (_node) {
+        assign(ele, _node)
+      }
+    }
+    // console.log('_bookmark', _bookmark)
+
+    return _bookmark.reverse() as hexGridsByFilterState[]
+  }, [allNodeMap, bookmark])
+
+  /**
+   * 退出登录
+   */
   const signOut = useCallback(
     async () => {
       try {
@@ -80,7 +89,9 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
     }, [router, Toast]
   )
 
-  // 获取邀请码
+  /**
+   * 获取邀请码
+   */
   const fetchInviteCodeFn = useCallback(
     async () => {
       const res = await fetchInviteCode()
@@ -114,7 +125,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({ transla
             setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}
             setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtUser>
           {/* <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount> */}
-          <SliderToggle visible={visibleSlider} Toggle={Toggle}></SliderToggle>
+          <SliderToggle visible={visibleSlider} Toggle={() => setVisibleSlider(!visibleSlider)}></SliderToggle>
         </StyledSliderContent>
       </StyledSlider>
       <Bookmark

@@ -1,24 +1,48 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components'
 import { Avatar, Tooltip } from 'antd'
 import { UserOutlined } from '@ant-design/icons';
 import { useSpring, animated } from 'react-spring'
+import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork';
 import { PointState } from '../../typings/node';
 
 interface Props {
-  readonly historyViewList: hexGridsByFilterState[]
+  readonly allNodeMap: Map<string, hexGridsByFilterState>
+  readonly historyView: PointState[]
   HandleHistoryViewClick: (value: PointState) => void
 }
 
-const NodeHistory: React.FC<Props> = ({ historyViewList, HandleHistoryViewClick }) => {
+const NodeHistory: React.FC<Props> = ({ allNodeMap, historyView, HandleHistoryViewClick }) => {
+
+  /**
+   * 历史预览列表
+   */
+  const historyViewList = useMemo(() => {
+    let _historyView = cloneDeep(historyView)
+
+    for (let i = 0; i < _historyView.length; i++) {
+      const ele = _historyView[i];
+      const { x, y, z } = ele
+      const _node = allNodeMap.get(`${x}${y}${z}`)
+      if (_node) {
+        assign(ele, _node)
+      }
+    }
+    // console.log('_historyView', _historyView)
+
+    return _historyView as hexGridsByFilterState[]
+  }, [allNodeMap, historyView])
+
   const styles = useSpring({
     from: { opacity: 0 },
     to: { opacity: 0.6 },
   })
 
-  // 处理点击
+  /**
+   * 处理点击
+   */
   const handleClick = useCallback(
     (e: Event, point: PointState) => {
       e.stopPropagation()
