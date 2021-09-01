@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } f
 import dynamic from 'next/dynamic'
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
-import { G, Point, SVG } from '@svgdotjs/svg.js'
+// import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
-import styled from 'styled-components'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
+// import styled from 'styled-components'
+// import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
-import { isBrowser } from "react-device-detect"
-import styles from './index/index.module.scss'
+// import { isBrowser } from "react-device-detect"
 
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
@@ -95,7 +94,6 @@ const Home = () => {
   const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
   // 占领 Modal
   const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
-
   // 占领通知状态
   const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false)
   // 自己的占领坐标
@@ -104,21 +102,8 @@ const Home = () => {
   const [hexGridsMineTag, setHexGridsMineTag] = useState<boolean>(false)
   // 收藏坐标点
   const [bookmark, setBookmark] = useState<PointState[]>([])
-
-
   // 历史预览
   const [historyView, setHistoryView] = useState<PointState[]>([])
-
-  // NoticeBard Occupied
-  const noticeBardOccupiedAnimatedStyles = useSpring({
-    from: { x: '-50%', y: -40, opacity: 0 },
-    to: { x: '-50%', y: 0, opacity: 1 },
-    config: {
-      duration: 300
-    },
-    delay: 1000
-  })
-
   // 默认禁用区域半径
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
   // 箭头角度
@@ -128,7 +113,6 @@ const Home = () => {
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   const { isLoggin } = useUser()
-
 
   /**
    * resize event
@@ -258,7 +242,9 @@ const Home = () => {
     }
   }, [calcAngle])
 
-  // 计算半径为10不可选区域
+  /**
+   * 计算半径为10不可选区域
+   */
   const calcForbiddenZoneRadius = (hex: HexagonsState[], forbiddenZoneRadius: number) => {
     const center = new Hex(0, 0, 0)
     const points = calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
@@ -267,21 +253,27 @@ const Home = () => {
     console.log('计算半径为10不可选区域 只需要执行一次')
   }
 
-  // 获取收藏记录
+  /**
+   * 获取收藏记录
+   */
   const fetchBookmark = useCallback(() => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
     setBookmark(bookmarkList)
   }, [])
 
-  // 获取历史浏览记录
+  /**
+   * 获取历史浏览记录
+   */
   const fetchHistoryView = useCallback(() => {
     const historyViewStore = StoreGet(KeyMetaNetWorkHistoryView)
     let historyViewStoreList: PointState[] = historyViewStore ? JSON.parse(historyViewStore) : []
     setHistoryView(historyViewStoreList)
   }, [])
 
-  // 设置内容拖动 缩放
+  /**
+   * 设置内容拖动 缩放
+   */
   const setContainerDrag = useCallback(() => {
     const svg = d3.select('#container svg')
     let oldTransform: { k: number, x: number, y: number } | null = null
@@ -336,7 +328,9 @@ const Home = () => {
     svg.node();
   }, [width, height])
 
-  // 偏移地图坐标
+  /**
+   * 偏移地图坐标
+   */
   const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
     const svg = d3.select('#container svg')
 
@@ -372,7 +366,9 @@ const Home = () => {
       .on('end', showUserMore)
   }, [allNodeMap, currentNode, layout, Toast])
 
-  // 获取自己的坐标点
+  /**
+   * 获取自己的坐标点
+   */
   const fetchHexGridsMine = useCallback(
     async () => {
       setHexGridsMineTag(false)
@@ -393,7 +389,9 @@ const Home = () => {
       }
     }, [defaultPoint, translateMap])
 
-  // 渲染坐标地图
+  /**
+   * 渲染坐标地图
+   */
   const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
     const generator = GridGenerator.getGenerator(map);
     const _mapProps = list.length ? calcMaxDistance(list) : mapProps
@@ -406,7 +404,9 @@ const Home = () => {
     fetchHexGridsMine()
   }, [mapProps, map, setContainerDrag, fetchHexGridsMine]);
 
-  // 获取范围坐标点
+  /**
+   * 获取范围坐标点
+   */
   const fetchHexGriids = useCallback(
     async () => {
       try {
@@ -440,7 +440,9 @@ const Home = () => {
       }
     }, [defaultHexGridsRange, forbiddenZoneRadius, render])
 
-  // 处理点击地图事件
+  /**
+   * 处理点击地图事件
+   */
   const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
     // 重复点击垱前块
     if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
@@ -474,7 +476,9 @@ const Home = () => {
     HandleHistoryView(point)
   }
 
-  // 处理收藏
+  /**
+   * 处理收藏
+   */
   const HandleBookmark = useCallback((currentNode: hexGridsByFilterState) => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
     const { x, y, z } = currentNode
@@ -506,7 +510,9 @@ const Home = () => {
     fetchBookmark()
   }, [fetchBookmark, Toast])
 
-  // 处理移除收藏
+  /**
+   * 处理移除收藏
+   */
   const HandleRemoveBookmark = useCallback(
     (bookmarkNodeList: hexGridsByFilterState[]) => {
       const bookmark = StoreGet(KeyMetaNetWorkBookmark)
@@ -574,6 +580,9 @@ const Home = () => {
     setCurrentNode({} as hexGridsByFilterState)
   }, [hexGridsMineData, defaultPoint, translateMap])
 
+  /**
+   * 浏览历史
+   */
   const HandleHistoryView = useCallback((point: PointState) => {
     const historyView = StoreGet(KeyMetaNetWorkHistoryView)
     const { x, y, z } = point
@@ -616,11 +625,7 @@ const Home = () => {
       setCurrentNode({} as hexGridsByFilterState)
     }
 
-    translateMap({
-      x,
-      y,
-      z
-    })
+    translateMap({ x, y, z })
 
     HandleHistoryView(point)
   }, [currentNode, translateMap, HandleHistoryView])
@@ -663,7 +668,6 @@ const Home = () => {
       {
         isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
           <NoticeBardOccupied
-            style={noticeBardOccupiedAnimatedStyles}
             status={noticeBardOccupiedState}
             setNoticeBardOccupiedState={setNoticeBardOccupiedState}
           ></NoticeBardOccupied> : null

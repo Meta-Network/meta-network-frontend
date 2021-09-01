@@ -1,23 +1,30 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { animated } from 'react-spring'
 import { isEmpty } from 'lodash';
-import { message } from 'antd'
-import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'
+import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 
+import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'
 import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
 
 interface Props {
   readonly status: boolean
-  readonly style: any
   setNoticeBardOccupiedState: (value: boolean) => void
 }
 
-const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState, style }) => {
+const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState }) => {
   const { user } = useUser()
   const { Toast } = useToast()
+
+  const noticeBardOccupiedAnimatedStyles = useSpring({
+    from: { x: '-50%', y: -40, opacity: 0 },
+    to: { x: '-50%', y: 0, opacity: 1 },
+    config: {
+      duration: 300
+    },
+    delay: 1000
+  })
 
   const ToggleState = useCallback((e: any) => {
 
@@ -28,10 +35,10 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
       return
     }
     setNoticeBardOccupiedState(!status)
-  }, [ user, status, setNoticeBardOccupiedState, Toast ])
+  }, [user, status, setNoticeBardOccupiedState, Toast])
 
   return (
-    <StyledMessageRelative style={style}>
+    <StyledMessageRelative style={noticeBardOccupiedAnimatedStyles}>
       {
         status ? <CircleEmptyIcon /> : <CircleWarningIcon />
       }
@@ -44,8 +51,8 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
       <StyledMessageButton
         status={status}
         onClick={(e: any) => ToggleState(e)}>
-          { status ? '放弃创建' : '开始创建' }
-        </StyledMessageButton>
+        {status ? '放弃创建' : '开始创建'}
+      </StyledMessageButton>
     </StyledMessageRelative>
   )
 }
@@ -101,7 +108,7 @@ const StyledMessageButton = styled.button<{ status: boolean }>`
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  color:  ${props => props.status ? '#C4C4C4': props.theme.colorGreen};
+  color:  ${props => props.status ? '#C4C4C4' : props.theme.colorGreen};
   white-space: nowrap;
   @media screen and (max-width: 768px) {
     padding: 0 16px;
