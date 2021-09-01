@@ -5,11 +5,12 @@ import { isBrowser, isMobile } from "react-device-detect"
 import { CloseModalIcon } from '../Icon/Index'
 
 interface Props {
+  mode?: 'full' | 'half-code' | 'half-occupied' | '',
   isModalVisible: boolean,
   setIsModalVisible: (value: boolean) => void
 }
 
-const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisible }) => {
+const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsModalVisible }) => {
 
   const handleOk = (): void => {
     setIsModalVisible(false);
@@ -25,14 +26,16 @@ const CustomModal: React.FC<Props> = ({ children, isModalVisible, setIsModalVisi
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
-      className="custom-modal"
+      className={ `custom-modal${mode ? ' ' + mode : ''}` }
       footer={null}
       closable={false}
       centered={true}
     >
       {children}
       {
-        isMobile ? <StyledClose onClick={() => handleCancel()}></StyledClose> : null
+        mode === 'full' || mode === 'half-code'
+        ? <StyledClose onClick={() => handleCancel()}></StyledClose>
+        : null
       }
     </Modal>
   )

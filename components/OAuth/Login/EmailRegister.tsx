@@ -5,7 +5,8 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 
 import { EmailModeProps } from '../../../typings/oauth'
-import { accountsEmailVerify, accountsEmailSignup } from '../../../services/ucenter'
+import { UsersMeUsernameState } from '../../../typings/ucenter.d'
+import { accountsEmailVerify, accountsEmailSignup, usersMeUsername } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 
@@ -19,11 +20,28 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
 
+  // 更新用户名
+  const updateUsername = useCallback(
+    async (data: UsersMeUsernameState) => {
+      try {
+        const res = await usersMeUsername(data)
+        if (res.statusCode === 200) {
+          console.log(res.message)
+        } else {
+          throw new Error(res.message)
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        router.push('/update')
+      }
+  }, [ router ])
+
   // 注册
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
       console.log('Success:', values);
-      let { email, code, inviteCode } = values
+      let { email, code, inviteCode, username } = values
       try {
         const resEmailSignup = await accountsEmailSignup(inviteCode, {
           account: trim(email),
@@ -41,7 +59,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
             className: 'custom-message',
             icon: ''
           });
-          router.push('/update')
+          await updateUsername({
+            username: username
+          })
         } else {
           throw new Error(resEmailSignup.message)
         }
@@ -58,9 +78,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           icon: ''
         });
       }
-    },
-    [ router ],
-  )
+    }, [ updateUsername ],)
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo);
@@ -106,6 +124,16 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       onFinish={onFinishEmail}
       onFinishFailed={onFinishFailedEmail}
     >
+      <StyledFormItem
+        label=""
+        name="username"
+        rules={[
+          { required: true, message: '请输入用户名' },
+        ]}
+      >
+        <Input className="form-input" placeholder="请输入用户名(不可修改)" autoComplete="new-text" />
+      </StyledFormItem>
+
       <StyledFormItem
         label=""
         name="email"

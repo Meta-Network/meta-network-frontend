@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Avatar, Radio, Button } from 'antd';
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
 import { cloneDeep } from 'lodash';
+import { isBrowser, isMobile } from "react-device-detect"
 
 import CustomModal from '../CustomModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
@@ -153,7 +154,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
   }
 
   return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
       <StyledContainer>
         <StyledContentHead>
           <StyledContentHeadTitle>我的收藏</StyledContentHeadTitle>

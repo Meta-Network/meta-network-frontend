@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
+import { isBrowser, isMobile } from "react-device-detect"
+
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
 import { InviitationsMineState } from '../../typings/ucenter.d'
@@ -28,7 +30,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, invite
   }
 
   return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'half-code' : '' }>
       <StyledContent>
         <StyledContentHead>
           <StyledContentHeadTitle>你的专属邀请码</StyledContentHeadTitle>
@@ -57,7 +59,7 @@ const StyledContentHeadTitle = styled.span`
   color: #C4C4C4;
 `
 const StyledContentCopy = styled.section`
-  margin-top: 40px
+  margin-top: 32px
 `
 
 export default DeploySite

@@ -2,7 +2,7 @@ import { uCenterAPI } from "./client";
 import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
-  InviitationsMineState, UsersMePatchProps
+  InviitationsMineState, UsersMePatchProps, UsersMeUsernameState
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -82,3 +82,11 @@ export const usersMePatch = (data: UsersMePatchProps): Promise<axiosResult<Users
  * @returns
  */
 export const storageToken = (): Promise<axiosResult<string>> => uCenterAPI.post('/storage/token')
+
+/**
+ * 更新用户的用户名
+ * @param data
+ * @returns
+ */
+export const usersMeUsername = (data: UsersMeUsernameState): Promise<axiosResult<string>> => uCenterAPI.put('/users/me/username', data)
+

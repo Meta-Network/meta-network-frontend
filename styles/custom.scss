@@ -24,18 +24,35 @@
   top: 200px;
   .ant-modal-content {
     background-color: #131313;
-
-    @media screen and (max-width: 768px) {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    }
   }
   .ant-modal-body {
     padding: 20px 20px 45px 20px;
     height: 100%;
+  }
+  &.full {
+    @media screen and (max-width: 768px) {
+      .ant-modal-content {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    }
+  }
+  &.half-code,
+  &.half-occupied {
+    @media screen and (max-width: 768px) {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: auto;
+      margin: 0 auto;
+      padding: 0;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
   }
 }
 

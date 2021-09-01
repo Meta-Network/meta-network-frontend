@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { useDebounceFn } from 'ahooks'
+import { isBrowser, isMobile } from "react-device-detect"
 
 import CustomModal from '../CustomModal/Index'
 import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
@@ -201,7 +202,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
   }
 
   return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
       <StyledContent>
         <StyledContentHead>
           <StyledContentHeadTitle>搜索</StyledContentHeadTitle>

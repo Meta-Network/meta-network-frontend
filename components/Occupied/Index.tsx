@@ -4,6 +4,8 @@ import {
   LeftOutlined
 } from '@ant-design/icons'
 import { Button } from 'antd'
+import { isBrowser, isMobile } from "react-device-detect"
+
 import CustomModal from '../CustomModal/Index'
 
 interface Props {
@@ -50,7 +52,7 @@ const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible
   }
 
   return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'half-occupied' : '' }>
       <StyledContent>
         <StyledContentHead>
           <StyledContentHeadTitle>创建 META SPACE</StyledContentHeadTitle>
