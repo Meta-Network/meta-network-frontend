@@ -33,7 +33,7 @@ const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsMod
     >
       {children}
       {
-        mode === 'full' || mode === 'half-code'
+        mode === 'full' || mode === 'half-code' || mode === 'half-occupied'
         ? <StyledClose onClick={() => handleCancel()}></StyledClose>
         : null
       }
