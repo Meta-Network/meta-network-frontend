@@ -102,7 +102,7 @@ const Update: React.FC<Props> = () => {
         setLoading(false)
       }
     },
-    [router, avatarUrl],
+    [router, avatarUrl, Toast],
   )
 
   const onFinishFailedEmail = (errorInfo: any): void => {
@@ -144,7 +144,7 @@ const Update: React.FC<Props> = () => {
         // (`${info.file.name} file upload failed.`);
       }
     }
-  }), [token])
+  }), [token, Toast])
 
   const normFile = (e: { file: File, fileList: File[] }) => {
     console.log('Upload event:', e);

@@ -4,15 +4,13 @@ import dynamic from 'next/dynamic'
 // import * as d3 from 'd3';
 import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
-import HexagonRound from '../components/ReactHexgrid/HexagonRound'
-import { message, Popover } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import { isBrowser } from "react-device-detect"
-
 import styles from './index/index.module.scss'
+
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
 import {
@@ -38,7 +36,6 @@ const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'),
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
 const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
 
-import { CircleSuccessIcon } from '../components/Icon/Index'
 import {
   hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
   hexGridsMine
@@ -404,7 +401,7 @@ const Home = () => {
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
       .on('end', showUserMore)
-  }, [allNodeMap, currentNode, layout])
+  }, [allNodeMap, currentNode, layout, Toast])
 
   // 获取自己的坐标点
   const fetchHexGridsMine = useCallback(
@@ -538,7 +535,7 @@ const Home = () => {
     }
 
     fetchBookmark()
-  }, [fetchBookmark])
+  }, [fetchBookmark, Toast])
 
   // 处理移除收藏
   const HandleRemoveBookmark = useCallback(
@@ -563,7 +560,7 @@ const Home = () => {
 
       Toast({ content: '移除收藏成功' })
     },
-    [fetchBookmark]
+    [fetchBookmark, Toast]
   )
 
   // 处理占领

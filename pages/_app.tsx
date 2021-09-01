@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app'
 import { useMount } from 'ahooks'
 
 import HeadInfo from '../components/HeadInfo/Index'
-import { StoreGet, StoreSet, StoreRemove } from '../utils/store'
+import { StoreGet } from '../utils/store'
 
 import 'antd/dist/antd.css'
 import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -16,7 +16,7 @@ import '../styles/globals.scss'
 import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
 
-import useToast from '../hooks/useToast'
+// import useToast from '../hooks/useToast'
 
 let VConsole: any = null
 if (process.browser) {
@@ -25,7 +25,7 @@ if (process.browser) {
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-  const { Toast } = useToast()
+  // const { Toast } = useToast()
 
   useMount(() => {
     const dev = StoreGet('MetaNetworkDEV')
@@ -33,7 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       new VConsole()
     }
 
-    // Toast({ content: '默认' })
+    // Toast({ content: '默认', duration: 0 })
     // Toast({ content: '默认', type: 'warning' })
   })
 
