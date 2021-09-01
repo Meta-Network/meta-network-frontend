@@ -20,7 +20,7 @@ import {
   calcCenterRangeAsMap, angle,
   isInViewPort, HandleHexagonStyle, strEllipsis
 } from '../utils/index'
-import { PointState, HexagonsState } from '../typings/node.d'
+import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
@@ -35,8 +35,8 @@ const MapZoom = dynamic(() => import('../components/MapZoom/Index'), { ssr: fals
 const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr: false })
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
-
-import NodeContent from '../components/IndexPage/NodeContent'
+const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
+const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
 
 import { CircleSuccessIcon } from '../components/Icon/Index'
 import {
@@ -61,22 +61,22 @@ const Home = () => {
   const [hex, setHex] = useState<HexagonsState[]>([]);
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
-  const [layout, setLayout] = useState({ "width": 66, "height": 66, "flat": false, "spacing": 1.1 })
-  const [size, setSize] = useState({ x: layout.width, y: layout.height })
+  const [layout, setLayout] = useState<LayoutState>({ width: 66, height: 66, flat: false, spacing: 1.1 })
+  const [size, setSize] = useState<AxialState>({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(1000);
   const [height, setHeight] = useState<number>(800);
-  const [origin, setOrigin] = useState<{ x: number, y: number }>({ "x": 100, "y": 100 });
+  const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 });
   // 默认坐标点
   const [defaultPoint] = useState<PointState>({ x: 0, y: 11, z: -11 })
   // 默认坐标范围
   const [defaultHexGridsRange] = useState<PointScopeState>({
-    "xMin": -90,
-    "xMax": 90,
-    "yMin": -90,
-    "yMax": 90,
-    "zMin": -90,
-    "zMax": 90,
-    "simpleQuery": ''
+    xMin: -90,
+    xMax: 90,
+    yMin: -90,
+    yMax: 90,
+    zMin: -90,
+    zMax: 90,
+    simpleQuery: ''
   })
 
   // 所有节点
@@ -140,8 +140,6 @@ const Home = () => {
   }, [allNodeMap, historyView])
 
 
-  // Animated react spriing
-
   // NoticeBard Occupied
   const noticeBardOccupiedAnimatedStyles = useSpring({
     from: { x: '-50%', y: -40, opacity: 0 },
@@ -151,28 +149,6 @@ const Home = () => {
     },
     delay: 1000
   })
-  // map render
-  const transApi = useSpringRef()
-  const transition = useTransition(shuffle(hex),
-    process.env.NODE_ENV !== 'development'
-      ? {
-        ref: transApi,
-        trail: 2000 / hex.length,
-        from: { opacity: 0, scale: 0 },
-        enter: { opacity: 1, scale: 1 },
-        leave: { opacity: 0, scale: 0 },
-        delay: () => {
-          return random(30, 80)
-        },
-        // onStart: () => {
-        //   console.log('animated start')
-        // }
-      }
-      : {}
-  )
-  useChain([transApi], [0.1])
-
-  // console.log('Node', process.env.NODE_ENV)
 
   // 默认禁用区域半径
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
@@ -558,49 +534,6 @@ const Home = () => {
       hexGridsMineData.z === z
   }, [hexGridsMineData])
 
-  // 计算节点模式
-  const calcNodeMode = useCallback(({
-    x, y, z
-  }: {
-    x: number,
-    y: number,
-    z: number
-  }) => {
-    // console.log('calcNodeMode')
-
-    // 禁止选择节点
-    const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
-    if (nodeDisabledHas) {
-      return 'disabled'
-    }
-
-    if (!allNodeMap.size) {
-      // 没有节点
-      if (x === defaultPoint.x && y === defaultPoint.y && z === defaultPoint.z) {
-        return 'choose'
-      } else {
-        return 'default'
-      }
-    }
-
-    const nodeHas = allNodeMap.has(`${x}${y}${z}`)
-    if (nodeHas) {
-      // return node[0]!.user.role || 'exist'
-      return 'exist'
-    }
-
-    const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
-    if (nodeChooseHas) {
-      return noticeBardOccupiedState ? 'choose' : 'default'
-    }
-
-    // console.log('calcNodeMode default')
-
-    return 'default'
-
-
-  }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState])
-
   const messageFn = (text: string) => {
     message.info({
       content: <span className="message-content">
@@ -774,52 +707,24 @@ const Home = () => {
         HandleRemoveBookmark={HandleRemoveBookmark}
       >
       </ToggleSlider>
-      <div id="container">
-        <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
-          <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
-            {
-              // note: key must be unique between re-renders.
-              // using config.mapProps+i makes a new key when the goal template chnages.
-
-              // hex.map((hex: any, i) => {
-              transition((style, hex: HexagonsState) => {
-                const { q: x, s: y, r: z } = hex
-                const nodeMode = calcNodeMode({ x, y, z })
-                let key = `x${x}_y${y}_z${z}`
-
-                return (
-                  <HexagonRound
-                    style={style}
-                    key={key}
-                    q={hex.q}
-                    r={hex.r}
-                    s={hex.s}
-                    onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                    onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
-                    onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
-                    className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
-                    {/* <Text>{HexUtils.getID(hex)}</Text> */}
-                    <NodeContent
-                      coordinate={{ x, y, z }}
-                      allNodeDisabled={allNodeDisabled}
-                      allNodeMap={allNodeMap}
-                      allNodeChoose={allNodeChoose}
-                      defaultPoint={defaultPoint}
-                      bookmark={bookmark}
-                      noticeBardOccupiedState={noticeBardOccupiedState}
-                      isNodeOwner={isNodeOwner}
-                    ></NodeContent>
-                  </HexagonRound>
-                )
-              })
-            }
-          </Layout>
-        </HexGrid>
-        {/* 辅助点 */}
-        {
-          process.env.NODE_ENV === 'development' ? <div className="point"></div> : null
-        }
-      </div>
+      <MapContainer
+        width={width}
+        height={height}
+        size={size}
+        layout={layout}
+        hex={hex}
+        handleHexagonEventClick={handleHexagonEventClick}
+        handleHexagonEventMouseEnter={handleHexagonEventMouseEnter}
+        handleHexagonEventMouseLeave={handleHexagonEventMouseLeave}
+        allNodeDisabled={allNodeDisabled}
+        allNodeMap={allNodeMap}
+        allNodeChoose={allNodeChoose}
+        defaultPoint={defaultPoint}
+        bookmark={bookmark}
+        noticeBardOccupiedState={noticeBardOccupiedState}
+        isNodeOwner={isNodeOwner}
+        origin={origin}
+      ></MapContainer>
       <MarkContainer></MarkContainer>
       <DeploySite
         isModalVisible={isModalVisibleDeploySite}
@@ -856,6 +761,7 @@ const Home = () => {
       <NodeHistory
         historyViewList={historyViewNode}
         HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
+      <PointDEV></PointDEV>
     </>
   )
 }

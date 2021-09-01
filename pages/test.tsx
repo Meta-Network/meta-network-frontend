@@ -118,12 +118,26 @@ const C5: React.FC = () => {
   )
 }
 
+
+const C7: React.FC = React.memo( function C7 ({ string, obj }) {
+  console.log('C7')
+  return (
+    <div>
+      <div>C7 string { string }</div>
+      <div>C7 obj { JSON.stringify(obj) }</div>
+    </div>
+  )
+})
+
 const Test = () => {
 
   console.log('Test Parent')
 
   const [state, setstate] = useState('');
   const [state1, setstate1] = useState('');
+
+  const [stateString, setstateString] = useState('');
+  const [stateObject, setstateObject] = useState({ a: 1 });
 
 
   const childC: React.FC = () => {
@@ -197,6 +211,13 @@ const Test = () => {
       <C4></C4>
       <C5></C5>
       <C6></C6>
+      <hr />
+      <div>
+        <C7 string={stateString} obj={stateObject}></C7>
+        <button onClick={ () => setstateString(String(Date.now())) }>toggle</button>
+        <button onClick={ () => setstateObject({ a: Date.now() }) }>toggle</button>
+
+      </div>
     </div>
   )
 }
