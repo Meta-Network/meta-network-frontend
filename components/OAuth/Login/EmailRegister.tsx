@@ -89,7 +89,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           resolve()
         } catch (e) {
           console.log('Failed:', e);
-          reject(`验证失败 ${e.toString}`)
+          reject(`验证失败 ${e.toString()}`)
         } finally {
           setLoading(false)
         }
