@@ -39,9 +39,11 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
 
   return (
     <StyledMessageRelative style={noticeBardOccupiedAnimatedStyles}>
-      {
-        status ? <CircleEmptyIcon /> : <CircleWarningIcon />
-      }
+      <StyledIconBox>
+        {
+          status ? <CircleEmptyIcon /> : <CircleWarningIcon />
+        }
+      </StyledIconBox>
       {/* 140 - 12 + 40 */}
       <StyledText>
         {
@@ -68,13 +70,19 @@ const StyledMessageRelative = styled(animated.section)`
   box-shadow: 0px 2px 10px 20px rgba(19, 19, 19, 0.15), inset 0px -4px 10px rgba(19, 19, 19, 0.04);
   border-radius: 12px;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   color: ${props => props.theme.colorGreen};
   @media screen and (max-width: 768px) {
     max-width: 92%;
     min-width: 92%;
   }
 `
+
+const StyledIconBox = styled.section`
+  display: flex;
+  align-items: center;
+`
+
 const StyledText = styled.span`
   color: ${props => props.theme.colorGreen};
   /* padding-right: 40px; */
@@ -90,7 +98,6 @@ const StyledText = styled.span`
   }
 `
 const StyledMessageButton = styled.button<{ status: boolean }>`
-  border-radius: 0 4px 4px 0;
   border: none;
   outline: none;
   cursor: pointer;
@@ -110,8 +117,16 @@ const StyledMessageButton = styled.button<{ status: boolean }>`
   line-height: 24px;
   color:  ${props => props.status ? '#C4C4C4' : props.theme.colorGreen};
   white-space: nowrap;
+  transition: all .2s;
+  border-radius: 0 12px 12px 0;
   @media screen and (max-width: 768px) {
     padding: 0 16px;
+  }
+
+  @media screen and (min-width: 768px) {
+    &:hover {
+      background-color: #131313;
+    }
   }
 `
 
