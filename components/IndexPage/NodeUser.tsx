@@ -30,8 +30,9 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
         : null
     }
     <Text>
-      <tspan x="0" y="-10">{strEllipsis(node?.userNickname || node?.username) || '暂无昵称'}</tspan>
-      <tspan x="0" y="10">{strEllipsis(node?.userBio) || '暂无简介'}</tspan>
+      <tspan x="0" y="-20" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || '暂无昵称'}</tspan>
+      <tspan x="0" y="0" style={{ fontSize: 8}}>{'站点名'}</tspan>
+      <tspan x="0" y="20" style={{ fontSize: 10}}>{strEllipsis(node?.userBio) || '暂无简介'}</tspan>
     </Text>
     {/* 收藏的坐标点 */}
     {

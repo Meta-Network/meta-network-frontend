@@ -14,7 +14,6 @@ interface Props {
   height: number
   size: AxialState
   layout: LayoutState
-  handleHexagonEventClick: (e: any, point: PointState, mode: string) => void
   allNodeDisabled: Map<string, HexagonsState>
   allNodeMap: Map<string, hexGridsByFilterState>
   allNodeChoose: Map<string, HexagonsState>
@@ -25,6 +24,7 @@ interface Props {
   hex: HexagonsState[]
   hexGridsMineData: hexGridsByFilterState
   setCurrentNodeMouse: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
+  handleHexagonEventClick: (e: any, point: PointState, mode: string) => void
 }
 
 
