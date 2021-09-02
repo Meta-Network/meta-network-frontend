@@ -5,6 +5,7 @@ import { Menu, Dropdown, message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { isArray } from 'lodash';
+import { isBrowser, isMobile } from "react-device-detect"
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node';
@@ -76,7 +77,11 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
       >
         <ArrowTopLeftIcon />{' '}进入主页
       </StyledUserMoreButton>
-      <Dropdown overlay={menu}>
+      <Dropdown
+        overlay={menu}
+        trigger={[ isBrowser ? 'hover' : isMobile ? 'click' : 'hover' ]}
+        placement={ 'bottomCenter' }
+        overlayClassName="custom-dropdown-more">
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>
     </>
@@ -101,6 +106,7 @@ const StyledUserMoreButton = styled.button`
   display: flex;
   align-items: center;
   white-space: nowrap;
+  user-select: none;
   @media screen and (max-width: 768px) {
     margin: 0 auto;
   }
