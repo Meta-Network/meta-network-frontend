@@ -49,11 +49,6 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
     }
   };
 
-  // Copy
-  const handleCopy = () => {
-    Toast({ content: '复制成功' })
-  }
-
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="bookmark" icon={ isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
@@ -65,7 +60,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
         拍一拍
       </Menu.Item> */}
       <CopyToClipboard text={'https://meta-cms.vercel.app/'}
-        onCopy={() => handleCopy()}>
+        onCopy={() => Toast({ content: '复制成功' })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
           复制地址
         </Menu.Item>

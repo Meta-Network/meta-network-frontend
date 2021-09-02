@@ -16,7 +16,7 @@ import '../styles/globals.scss'
 import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
 
-// import useToast from '../hooks/useToast'
+import useToast from '../hooks/useToast'
 
 let VConsole: any = null
 if (process.browser) {
@@ -25,7 +25,7 @@ if (process.browser) {
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-  // const { Toast } = useToast()
+  const { Toast } = useToast()
 
   useMount(() => {
     const dev = StoreGet('MetaNetworkDEV')
@@ -34,7 +34,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
 
     // Toast({ content: '默认', duration: 0 })
-    // Toast({ content: '默认', type: 'warning' })
+    // Toast({ content: '默认', type: 'warning', duration: 0 })
+    // Toast({ content: '默认111', type: 'warning', duration: 0 })
   })
 
   // refresh token
