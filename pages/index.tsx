@@ -106,11 +106,6 @@ const Home = () => {
   const [historyView, setHistoryView] = useState<PointState[]>([])
   // 默认禁用区域半径
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
-  // 箭头角度
-  const [homeAngle, setHomeAngle] = useState<number>(0)
-  // 自己的坐标是否在屏幕内
-  const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
-  // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   const { isLoggin } = useUser()
 
@@ -134,47 +129,6 @@ const Home = () => {
     },
     { wait: 300 },
   );
-
-  /**
-   * 计算角度
-   */
-  const calcAngle = useCallback(
-    () => {
-      const tag = document.querySelector<HTMLElement>('.hexagon-owner')
-      const inViewPortResult = isInViewPort(tag!)
-      setInViewPortHexagonOwner(inViewPortResult)
-
-      // console.log('tag', tag, inViewPortResult)
-
-      // 在窗口内不计算 undefined 不计算
-      // 没有坐标点不计算
-      if (
-        (inViewPortResult || inViewPortResult === undefined)
-        || isEmpty(hexGridsMineData)
-      ) {
-        //
-      } else {
-
-        // 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
-        // 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
-
-        const { x, y, width: domWidth, height: domHeight } = tag!.getBoundingClientRect()
-        const angleResult = angle(
-          { x: 0, y: 0 },
-          {
-            x: x - width / 2 + (domWidth / 2),
-            y: y - height / 2 + (domHeight / 2)
-          }
-        )
-
-        // console.log('angle', angleResult)
-        setHomeAngle(angleResult)
-      }
-
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(calcAngle)
-
-    }, [hexGridsMineData, width, height]);
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -225,22 +179,6 @@ const Home = () => {
   useUnmount(() => {
     window.removeEventListener('resize', resizeFn)
   })
-
-  useEffect(() => {
-    if (process.browser) {
-      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-
-      ID = requestAnimationFrame(calcAngle)
-    }
-    return () => {
-      if (process.browser) {
-        const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-
-        cancelAnimationFrame(ID)
-      }
-    }
-  }, [calcAngle])
 
   /**
    * 计算半径为10不可选区域
@@ -673,10 +611,8 @@ const Home = () => {
           ></NoticeBardOccupied> : null
       }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
-      {
-        !inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData) ?
-          <HomeArrow angleValue={homeAngle}></HomeArrow> : null
-      }
+      <HomeArrow
+        hexGridsMineData={hexGridsMineData} ></HomeArrow>
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
       <MapZoom></MapZoom>
       <UserInfo
