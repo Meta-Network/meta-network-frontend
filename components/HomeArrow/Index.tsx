@@ -1,9 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components'
 import { Tooltip } from 'antd';
 import { isEmpty } from 'lodash'
-import { useMount, useUnmount } from 'ahooks'
 
 import {
   angle, isInViewPort
@@ -44,6 +43,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
    */
   const calcAngle = useCallback(
     () => {
+
       const tag = document.querySelector<HTMLElement>('.hexagon-owner')
       const inViewPortResult = isInViewPort(tag!)
       setInViewPortHexagonOwner(inViewPortResult)
@@ -83,13 +83,14 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
     [ hexGridsMineData ],
   )
 
-  useMount(() => {
-    ID = requestAnimationFrame(calcAngle)
-  })
-
-  useUnmount(() => {
+  // watch hexGridsMineData
+  useEffect(() => {
     cancelAnimationFrame(ID)
-  })
+    ID = requestAnimationFrame(calcAngle)
+    return () => {
+      cancelAnimationFrame(ID)
+    }
+  }, [ hexGridsMineData, calcAngle ])
 
   return (
     <Tooltip title="自己坐标方位">

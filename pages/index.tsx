@@ -42,6 +42,7 @@ import {
 import { useUser } from '../hooks/useUser'
 import { fetchForbiddenZoneRadius } from '../helpers/index'
 import useToast from '../hooks/useToast'
+import useMetaNetwork from '../hooks/useMetaNetwork'
 
 let d3: any = null
 let zoom: any = null
@@ -55,6 +56,7 @@ let ID: number
 
 const Home = () => {
   const { Toast } = useToast()
+  const { fetchHexGridsMineHook } = useMetaNetwork()
 
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([]);
@@ -310,22 +312,16 @@ const Home = () => {
   const fetchHexGridsMine = useCallback(
     async () => {
       setHexGridsMineTag(false)
-      try {
-        const res = await hexGridsMine()
-        if (res.statusCode === 200 && res.data) {
-          setHexGridsMineData(res.data)
-
-          translateMap({ x: res.data.x, y: res.data.y, z: res.data.z }, false)
-        } else {
-          throw new Error('没有占领')
-        }
-      } catch (e) {
-        console.log(e)
+      const data = await fetchHexGridsMineHook()
+      if (data) {
+        setHexGridsMineData(data)
+        translateMap({ x: data.x, y: data.y, z: data.z }, false)
+      } else {
         translateMap(defaultPoint, false)
-      } finally {
-        setHexGridsMineTag(true)
       }
-    }, [defaultPoint, translateMap])
+
+      setHexGridsMineTag(true)
+    }, [defaultPoint, translateMap, fetchHexGridsMineHook])
 
   /**
    * 渲染坐标地图
@@ -377,42 +373,6 @@ const Home = () => {
         render([], 0)
       }
     }, [defaultHexGridsRange, forbiddenZoneRadius, render])
-
-  /**
-   * 处理点击地图事件
-   */
-  const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
-    // 重复点击垱前块
-    if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
-      // console.log('eeee', e)
-      e.stopPropagation()
-
-      setCurrentNode({} as hexGridsByFilterState)
-    }
-
-    if (mode === 'choose') {
-      setCurrentNodeChoose(point)
-      setIsModalVisibleOccupied(true)
-      return
-    } else if (mode === 'default') {
-      // 未登录不提示 未开启占地功能不提示
-      if (!isLoggin || !noticeBardOccupiedState) {
-        return
-      }
-      Toast({ content: '请选择紧挨已注册用户的地块' })
-      return
-    } else if (mode === 'disabled') {
-      return
-    }
-
-    translateMap({
-      x: point.x,
-      y: point.y,
-      z: point.z
-    })
-
-    HandleHistoryView(point)
-  }
 
   /**
    * 处理收藏
@@ -584,7 +544,6 @@ const Home = () => {
         size={size}
         layout={layout}
         hex={hex}
-        handleHexagonEventClick={handleHexagonEventClick}
         setCurrentNodeMouse={setCurrentNodeMouse}
         allNodeDisabled={allNodeDisabled}
         allNodeMap={allNodeMap}
@@ -594,6 +553,12 @@ const Home = () => {
         noticeBardOccupiedState={noticeBardOccupiedState}
         hexGridsMineData={hexGridsMineData}
         origin={origin}
+        currentNode={currentNode}
+        setCurrentNode={setCurrentNode}
+        setCurrentNodeChoose={setCurrentNodeChoose}
+        setIsModalVisibleOccupied={setIsModalVisibleOccupied}
+        HandleHistoryView={HandleHistoryView}
+        translateMap={translateMap}
       ></MapContainer>
       <MarkContainer></MarkContainer>
       <DeploySite

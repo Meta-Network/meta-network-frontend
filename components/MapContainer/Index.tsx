@@ -10,30 +10,35 @@ import { HexagonsState, PointState, AxialState, LayoutState } from '../../typing
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 
 interface Props {
-  width: number
-  height: number
-  size: AxialState
-  layout: LayoutState
-  allNodeDisabled: Map<string, HexagonsState>
-  allNodeMap: Map<string, hexGridsByFilterState>
-  allNodeChoose: Map<string, HexagonsState>
-  defaultPoint: PointState
-  bookmark: PointState[]
-  noticeBardOccupiedState: boolean
-  origin: AxialState
-  hex: HexagonsState[]
-  hexGridsMineData: hexGridsByFilterState
+  readonly width: number
+  readonly height: number
+  readonly size: AxialState
+  readonly layout: LayoutState
+  readonly allNodeDisabled: Map<string, HexagonsState>
+  readonly allNodeMap: Map<string, hexGridsByFilterState>
+  readonly allNodeChoose: Map<string, HexagonsState>
+  readonly defaultPoint: PointState
+  readonly bookmark: PointState[]
+  readonly noticeBardOccupiedState: boolean
+  readonly origin: AxialState
+  readonly hex: HexagonsState[]
+  readonly hexGridsMineData: hexGridsByFilterState
+  readonly currentNode: hexGridsByFilterState
   setCurrentNodeMouse: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
-  handleHexagonEventClick: (e: any, point: PointState, mode: string) => void
+  setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
+  setCurrentNodeChoose: React.Dispatch<React.SetStateAction<PointState>>
+  setIsModalVisibleOccupied: React.Dispatch<React.SetStateAction<boolean>>
+  HandleHistoryView: (point: PointState) => void
+  translateMap: (point: PointState, showUserInfo?: boolean) => void
 }
-
+import { useUser } from '../../hooks/useUser'
+import useToast from '../../hooks/useToast'
 
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
   height,
   size,
   layout,
-  handleHexagonEventClick,
   allNodeDisabled,
   allNodeMap,
   allNodeChoose,
@@ -43,8 +48,16 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   origin,
   hex,
   hexGridsMineData,
-  setCurrentNodeMouse
+  currentNode,
+  setCurrentNodeMouse,
+  setCurrentNode,
+  setCurrentNodeChoose,
+  setIsModalVisibleOccupied,
+  HandleHistoryView,
+  translateMap
 }) {
+  const { Toast } = useToast()
+  const { isLoggin } = useUser()
 
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex),
@@ -143,6 +156,42 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       // console.log('handleHexagonEventMouseLeave', point)
       setCurrentNodeMouse({} as hexGridsByFilterState)
     }
+  }
+
+  /**
+ * 处理点击地图事件
+ */
+  const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
+    // 重复点击垱前块
+    if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
+      // console.log('eeee', e)
+      e.stopPropagation()
+
+      setCurrentNode({} as hexGridsByFilterState)
+    }
+
+    if (mode === 'choose') {
+      setCurrentNodeChoose(point)
+      setIsModalVisibleOccupied(true)
+      return
+    } else if (mode === 'default') {
+      // 未登录不提示 未开启占地功能不提示
+      if (!isLoggin || !noticeBardOccupiedState) {
+        return
+      }
+      Toast({ content: '请选择紧挨已注册用户的地块' })
+      return
+    } else if (mode === 'disabled') {
+      return
+    }
+
+    translateMap({
+      x: point.x,
+      y: point.y,
+      z: point.z
+    })
+
+    HandleHistoryView(point)
   }
 
   return (
