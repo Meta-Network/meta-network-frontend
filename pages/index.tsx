@@ -35,10 +35,7 @@ const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'),
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
 const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
 
-import {
-  hexGridsByFilter, hexGridsCoordinateValidation, hexGrids,
-  hexGridsMine
-} from '../services/metaNetwork'
+import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
 import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
@@ -51,7 +48,6 @@ if (process.browser) {
 }
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
-let ID: number
 
 const Home = () => {
   const { Toast } = useToast()

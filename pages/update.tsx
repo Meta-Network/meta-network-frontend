@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message, Avatar, Upload } from 'antd';
+import { Form, Input, Button, message, Avatar, Upload } from 'antd'
 import { ExclamationCircleOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
