@@ -211,7 +211,8 @@
     overflow: hidden;
     @media screen and (max-width: 768px) {
       width: 90vw;
-      transform: translateY(-10px);
+      // transform: translateY(-10px);
+      // 向下展示会有点问题 暂时不增加间距
     }
     .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title {
       padding: 12px 12px;
