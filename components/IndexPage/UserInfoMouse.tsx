@@ -27,7 +27,7 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
   const handleFollow = useCallback(
     () => {
       const { x, y, z } = currentNodeMouse
-      if (!isEmpty(currentNodeMouse) && x && y && z) {
+      if (!isEmpty(currentNodeMouse)) {
         const key = `x${x}_y${y}_z${z}`
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
