@@ -5,7 +5,16 @@ import {
 } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { useMount } from 'ahooks'
+import { useMount, useUnmount } from 'ahooks'
+
+/**
+ * requestAnimationFrame
+ * cancelAnimationFrame
+ */
+ const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+ window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
+let ID: number
 
 interface Props {
   HandlePosition: () => void
@@ -26,8 +35,12 @@ const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePos
       const domShow = () => {
         api.start({ x: 0, opacity: 1 })
       }
-      window.requestAnimationFrame(domShow)
+      ID = requestAnimationFrame(domShow)
     }
+  })
+
+  useUnmount(() => {
+    cancelAnimationFrame(ID)
   })
 
   return (

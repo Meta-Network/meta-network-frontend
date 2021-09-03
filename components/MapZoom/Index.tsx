@@ -2,9 +2,19 @@ import React, { useCallback, useState } from 'react';
 import { Tooltip } from 'antd';
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { useMount } from 'ahooks'
+import { useMount, useUnmount } from 'ahooks'
 
 import { amountSplit } from '../../utils/index'
+
+/**
+ * requestAnimationFrame
+ * cancelAnimationFrame
+ */
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+ window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
+let ID: number
+let IDAnimation: number
 
 interface Props {}
 
@@ -45,8 +55,8 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
       // console.log('percentage', percentage)
       setValue( Number(amountSplit(String(percentage), 2)) )
     }
-
-    window.requestAnimationFrame( handleScale )
+    cancelAnimationFrame(ID)
+    ID = requestAnimationFrame( handleScale )
   }, [])
 
   useMount(() => {
@@ -54,9 +64,14 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
       const domShow = () => {
         api.start({ x: 0, opacity: 1 })
       }
-      window.requestAnimationFrame( domShow )
-      window.requestAnimationFrame( handleScale )
+      IDAnimation = requestAnimationFrame( domShow )
+      ID = requestAnimationFrame( handleScale )
     }
+  })
+
+  useUnmount(() => {
+    cancelAnimationFrame(IDAnimation)
+    cancelAnimationFrame(ID)
   })
 
   return (

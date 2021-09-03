@@ -8,6 +8,16 @@ import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import { PointScopeState } from '../../typings/metaNetwork'
 import { fetchHexGridsCountByFilterAPI } from '../../helpers/index'
 
+/**
+ * requestAnimationFrame
+ * cancelAnimationFrame
+ */
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+ window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
+
+let ID: number
+let IDAPI: number
 interface Props {
   readonly range: PointScopeState
 }
@@ -28,21 +38,35 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
       duration: 300
   } }))
 
+  /**
+   * show
+   */
+  const show = useCallback(
+    () => {
+      api.start({ x: 0, opacity: 1 })
+    },
+    [ api ],
+  )
+
   // 获取所有坐标点统计
   const fetchHexGridsCountByFilterFn = useCallback(async () => {
     const res = await fetchHexGridsCountByFilterAPI(range)
+    ID = requestAnimationFrame(show)
     if (res === hexGridsCountData) {
       return
     }
     setHexGridsCountData(res)
-    api.start({ x: 0, opacity: 1 })
-  }, [ range, hexGridsCountData, api ])
+  }, [ range, hexGridsCountData, show ])
 
   useMount(() => {
-    // fetchHexGridsCountByFilterFn()
     if (process.browser) {
-      window.requestAnimationFrame(fetchHexGridsCountByFilterFn)
+      IDAPI = requestAnimationFrame(fetchHexGridsCountByFilterFn)
     }
+  })
+
+  useUnmount(() => {
+    cancelAnimationFrame(ID)
+    cancelAnimationFrame(IDAPI)
   })
 
   return (
