@@ -29,8 +29,9 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
 
   const handleFollow = useCallback(
     () => {
+
       const { x, y, z } = currentNode
-      if (!isEmpty(currentNode) && x && y && z) {
+      if (!isEmpty(currentNode)) {
         const key = `x${x}_y${y}_z${z}`
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
@@ -93,6 +94,10 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
     } else {
       cancelAnimationFrame(ID)
       ID = requestAnimationFrame(handleFollow)
+    }
+
+    return () => {
+      cancelAnimationFrame(ID)
     }
   }, [currentNode, handleFollow])
 
