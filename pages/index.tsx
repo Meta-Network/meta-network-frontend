@@ -19,6 +19,10 @@ import {
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
+import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
+import { useUser } from '../hooks/useUser'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
+import useToast from '../hooks/useToast'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -35,16 +39,12 @@ const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'),
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
 const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
 
-import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
-import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
-import useToast from '../hooks/useToast'
 
 let d3: any = null
 let zoom: any = null
 if (process.browser) {
   d3 = require('d3')
-  zoom = d3.zoom();
+  zoom = d3.zoom()
 }
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
@@ -128,11 +128,6 @@ const Home = () => {
 
   // 计算所有可选择坐标范围
   useEffect(() => {
-    //  未开启选择功能
-    // if (!noticeBardOccupiedState) {
-    //   setAllNodeChoose([])
-    //   return
-    // }
     // 已经占领
     if (!isEmpty(hexGridsMineData)) {
       setAllNodeChoose(new Map())
