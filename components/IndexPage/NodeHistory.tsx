@@ -79,11 +79,12 @@ const StyledHistory = styled.div`
 `
 
 const StyledHistoryNode = styled(animated.div)`
-  margin: 0 10px;
+  margin: 0 6px;
   transition: all .3s;
   cursor: pointer;
   opacity: 0.6;
   @media screen and (min-width: 768px) {
+    margin: 0 10px;
     &:hover {
       transform: scale(1.16);
       opacity: 1 !important;

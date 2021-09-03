@@ -80,7 +80,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
       <Dropdown
         overlay={menu}
         trigger={[ isBrowser ? 'hover' : isMobile ? 'click' : 'hover' ]}
-        placement={ 'bottomCenter' }
+        placement={ isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter' }
         overlayClassName="custom-dropdown-more">
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>

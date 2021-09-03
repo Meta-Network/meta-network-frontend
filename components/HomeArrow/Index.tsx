@@ -105,8 +105,8 @@ const StyledArrow = styled.section`
   position: fixed;
   right: 44px;
   bottom: 124px;
-  width: 80px;
-  height: 60px;
+  width: 64px;
+  height: 48px;
   user-select: none;
   cursor: pointer;
   /* transition: .02s all; */
@@ -120,6 +120,14 @@ const StyledArrow = styled.section`
     width: 120px;
     height: 120px;
     object-fit: cover;
+  }
+
+  @media screen and (max-width: 768px) {
+    right: 10px;
+    img {
+      width: 80px;
+      height: 80px;
+    }
   }
 `
 

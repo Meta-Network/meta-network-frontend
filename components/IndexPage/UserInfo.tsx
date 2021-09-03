@@ -68,7 +68,8 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
               refMore!.current.style.transform = `translate(${width + 20}px, ${(height - moreHeight) / 2}px)`
             }
             if (isMobile) {
-              refMore!.current.style.transform = `translate(${(width - moreWidth) / 2}px, ${height + 20}px)`
+              // refMore!.current.style.transform = `translate(${(width - moreWidth) / 2}px, ${height + 20}px)`
+              refMore!.current.style.transform = `translate(${(width - moreWidth) / 2}px, ${height + 64}px)`
             }
 
             refMore!.current.style.opacity = '1'
