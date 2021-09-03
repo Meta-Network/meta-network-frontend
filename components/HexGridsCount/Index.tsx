@@ -6,7 +6,7 @@ import AnimatedNumber from "animated-number-react";
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 
 import { PointScopeState } from '../../typings/metaNetwork'
-import { fetchHexGridsCountByFilter } from '../../helpers/index'
+import { fetchHexGridsCountByFilterAPI } from '../../helpers/index'
 
 interface Props {
   readonly range: PointScopeState
@@ -30,7 +30,7 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
 
   // 获取所有坐标点统计
   const fetchHexGridsCountByFilterFn = useCallback(async () => {
-    const res = await fetchHexGridsCountByFilter(range)
+    const res = await fetchHexGridsCountByFilterAPI(range)
     if (res === hexGridsCountData) {
       return
     }

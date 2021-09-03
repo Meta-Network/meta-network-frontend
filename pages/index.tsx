@@ -40,9 +40,8 @@ import {
   hexGridsMine
 } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadius } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
-import useMetaNetwork from '../hooks/useMetaNetwork'
 
 let d3: any = null
 let zoom: any = null
@@ -56,7 +55,6 @@ let ID: number
 
 const Home = () => {
   const { Toast } = useToast()
-  const { fetchHexGridsMineHook } = useMetaNetwork()
 
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([]);
@@ -312,7 +310,7 @@ const Home = () => {
   const fetchHexGridsMine = useCallback(
     async () => {
       setHexGridsMineTag(false)
-      const data = await fetchHexGridsMineHook()
+      const data = await fetchHexGridsMineAPI()
       if (data) {
         setHexGridsMineData(data)
         translateMap({ x: data.x, y: data.y, z: data.z }, false)
@@ -321,7 +319,7 @@ const Home = () => {
       }
 
       setHexGridsMineTag(true)
-    }, [defaultPoint, translateMap, fetchHexGridsMineHook])
+    }, [defaultPoint, translateMap])
 
   /**
    * 渲染坐标地图
@@ -343,33 +341,26 @@ const Home = () => {
    */
   const fetchHexGriids = useCallback(
     async () => {
-      try {
-        const res = await hexGridsByFilter(defaultHexGridsRange)
+      const data = await fetchHexGriidsAPI(defaultHexGridsRange)
 
-        // 获取禁用坐标
-        const forbiddenZoneRadiusResult = await fetchForbiddenZoneRadius(forbiddenZoneRadius)
-        if (forbiddenZoneRadiusResult !== forbiddenZoneRadius) {
-          setforbiiddenZoneRadius(forbiddenZoneRadiusResult)
-        }
+      // 获取禁用坐标
+      const forbiddenZoneRadiusResult = await fetchForbiddenZoneRadiusAPI(forbiddenZoneRadius)
+      if (forbiddenZoneRadiusResult !== forbiddenZoneRadius) {
+        setforbiiddenZoneRadius(forbiddenZoneRadiusResult)
+      }
 
-        if (res.statusCode === 200) {
+      if (data) {
+        let _map: Map<string, hexGridsByFilterState> = new Map()
+        data.forEach(i => {
+          const { x, y, z } = i
+          _map.set(`${x}${y}${z}`, i)
+        })
 
-          let _map: Map<string, hexGridsByFilterState> = new Map()
-          res.data.forEach(i => {
-            const { x, y, z } = i
-            _map.set(`${x}${y}${z}`, i)
-          })
+        setAllNode(data)
+        setAllNodeMap(_map)
 
-          setAllNode(res.data)
-          setAllNodeMap(_map)
-
-          render(res.data, forbiddenZoneRadiusResult)
-        } else {
-          // console.log('获取失败')
-          throw new Error('获取失败')
-        }
-      } catch (e) {
-        console.log('e', e)
+        render(data, forbiddenZoneRadiusResult)
+      } else {
         render([], 0)
       }
     }, [defaultHexGridsRange, forbiddenZoneRadius, render])

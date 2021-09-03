@@ -10,7 +10,7 @@ import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 import { PointState } from '../../typings/node.d'
-import { fetchInviteCode } from '../../helpers/index'
+import { fetchInviteCodeAPI } from '../../helpers/index'
 import {
   StyledSlider, StyledSliderContent
 } from './Style'
@@ -94,7 +94,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
    */
   const fetchInviteCodeFn = useCallback(
     async () => {
-      const res = await fetchInviteCode()
+      const res = await fetchInviteCodeAPI()
       if (!res.length) {
         return
       }
