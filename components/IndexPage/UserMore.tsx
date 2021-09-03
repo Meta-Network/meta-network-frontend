@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { isArray } from 'lodash';
 import { isBrowser, isMobile } from "react-device-detect"
+import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node';
@@ -16,10 +17,12 @@ interface Props {
   readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
+  focus$: EventEmitter<string>
 }
 
-const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) => {
+const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$ }) => {
   const { Toast } = useToast()
+  const [ visible, setVisible ] = useState<boolean>(false)
 
   // 是否收藏
   const isBookmark = useMemo(() => {
@@ -48,7 +51,17 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
     if (key === 'bookmark') {
       HandleBookmark(currentNode)
     }
-  };
+  }
+
+  /**
+   * 事件订阅
+   */
+  focus$.useSubscription((val: string): void => {
+    // console.log('val', val)
+    if (val === 'zoom') {
+      setVisible(false)
+    }
+  })
 
   const menu = (
     <Menu onClick={handleMenuClick}>
@@ -67,7 +80,15 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
         </Menu.Item>
       </CopyToClipboard>
     </Menu>
-  );
+  )
+
+  const handleVisible = useCallback(
+    (val: boolean) => {
+      // console.log('val', val)
+      setVisible(val)
+    },
+    [],
+  )
 
   return (
     <>
@@ -78,6 +99,8 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark }) =>
         <ArrowTopLeftIcon />{' '}进入主页
       </StyledUserMoreButton>
       <Dropdown
+        onVisibleChange={ handleVisible }
+        visible={visible}
         overlay={menu}
         trigger={[ isBrowser ? 'hover' : isMobile ? 'click' : 'hover' ]}
         placement={ isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter' }

@@ -7,7 +7,8 @@ import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-h
 // import styled from 'styled-components'
 // import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
-import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+import { useMount, useUnmount, useThrottleFn, useInViewport, useEventEmitter, useDebounceFn } from 'ahooks'
+import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 // import { isBrowser } from "react-device-detect"
 
 import { Hex } from '../utils/lib'
@@ -104,7 +105,7 @@ const Home = () => {
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
 
   const { isLoggin } = useUser()
-
+  const focus$ = useEventEmitter<string>()
   /**
    * resize event
    */
@@ -201,6 +202,18 @@ const Home = () => {
   }, [])
 
   /**
+   * 发送事件
+   */
+  const { run: emitEvent } = useDebounceFn(
+    () => {
+      focus$.emit('zoom')
+    },
+    {
+      wait: 300,
+    },
+  )
+
+  /**
    * 设置内容拖动 缩放
    */
   const setContainerDrag = useCallback(() => {
@@ -251,11 +264,13 @@ const Home = () => {
       if (transform.y <= numberFloor(-(svgContentHeight), transform.k)) {
         tran = assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
       }
-      svg.attr("transform", tran);
+      svg.attr('transform', tran);
+
+      emitEvent()
     }
 
     svg.node();
-  }, [width, height])
+  }, [width, height, emitEvent])
 
   /**
    * 偏移地图坐标
@@ -567,6 +582,7 @@ const Home = () => {
         currentNode={currentNode}
         HandleBookmark={HandleBookmark}
         url={currentNode.userAvatar}
+        focus$={focus$}
       ></UserInfo>
       <UserInfoMouse
         currentNode={currentNode}

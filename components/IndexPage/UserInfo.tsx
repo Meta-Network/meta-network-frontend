@@ -5,6 +5,7 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork';
 import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash';
 import { isBrowser, isMobile } from "react-device-detect";
+import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
 import { PointState } from '../../typings/node';
 
@@ -21,9 +22,10 @@ interface Props {
   readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
+  focus$: EventEmitter<string>
 }
 
-const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmark, currentNode, HandleBookmark }) {
+const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmark, currentNode, HandleBookmark, focus$ }) {
   const refAvatar = useRef<HTMLDivElement>(null)
   const refMore = useRef<HTMLDivElement>(null)
 
@@ -109,7 +111,7 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
       </StyledUserAvatar>
 
       <StyledUserMore ref={refMore}>
-        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark}></UserMore>
+        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark} focus$={focus$}></UserMore>
       </StyledUserMore>
     </>
   )
