@@ -7,6 +7,7 @@ import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { PointState } from '../../typings/node'
+import { keyFormat } from '../../utils'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -31,7 +32,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     for (let i = 0; i < _historyView.length; i++) {
       const ele = _historyView[i];
       const { x, y, z } = ele
-      const _node = allNodeMap.get(`${x}${y}${z}`)
+      const _node = allNodeMap.get(keyFormat({ x, y, z }))
       if (_node) {
         assign(ele, _node)
       }

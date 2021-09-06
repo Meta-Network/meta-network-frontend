@@ -213,11 +213,13 @@ export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], dis
     const ele = hexGrids[i];
     let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
     if (distanceResult) {
+      const { q: x, s: y, r: z } = ele
+
       // qsr xyz
       if (data) {
-        data.set(`${ele.q}${ele.s}${ele.r}`, ele)
+        data.set(keyFormat({ x, y, z }), ele)
       } else {
-        points.set(`${ele.q}${ele.s}${ele.r}`, ele)
+        points.set(keyFormat({ x, y, z }), ele)
       }
     }
   }
@@ -326,3 +328,10 @@ export const amountSplit = (amount: string, decimal: number) => {
   }
   return amount;
 };
+
+/**
+ * 返回统一 Key 格式
+ * @param point
+ * @returns
+ */
+export const keyFormat = (point: PointState) => `x${point.x}_y${point.y}_z${point.z}`

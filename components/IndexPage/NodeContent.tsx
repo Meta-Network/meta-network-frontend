@@ -5,6 +5,7 @@ import { PointState, HexagonsState } from '../../typings/node';
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import NodeChoose from '../../components/IndexPage/NodeChoose'
 import NodeUser from '../../components/IndexPage/NodeUser'
+import { keyFormat } from '../../utils';
 
 interface Props {
   readonly coordinate: PointState
@@ -32,7 +33,7 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent({
   const { x, y, z } = coordinate
 
   // 禁止选择节点
-  const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
+  const nodeDisabledHas = allNodeDisabled.has(keyFormat(coordinate))
   if (nodeDisabledHas) {
     return null
   }
@@ -48,7 +49,7 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent({
     }
   }
 
-  const node = allNodeMap.get(`${x}${y}${z}`)
+  const node = allNodeMap.get(keyFormat(coordinate))
   if (node) {
     // 是否收藏
     const isBookmark = (i: PointState) =>
@@ -67,7 +68,7 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent({
     )
   }
 
-  const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
+  const nodeChooseHas = allNodeChoose.has(keyFormat(coordinate))
   if (nodeChooseHas) {
     return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0 }} />
   }

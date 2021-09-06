@@ -33,6 +33,7 @@ interface Props {
 }
 import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
+import { keyFormat } from '../../utils'
 
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
@@ -86,7 +87,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     // console.log('calcNodeMode')
 
     // 禁止选择节点
-    const nodeDisabledHas = allNodeDisabled.has(`${x}${y}${z}`)
+    const nodeDisabledHas = allNodeDisabled.has(keyFormat({ x, y, z }))
     if (nodeDisabledHas) {
       return 'disabled'
     }
@@ -100,13 +101,13 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       }
     }
 
-    const nodeHas = allNodeMap.has(`${x}${y}${z}`)
+    const nodeHas = allNodeMap.has(keyFormat({ x, y, z }))
     if (nodeHas) {
       // return node[0]!.user.role || 'exist'
       return 'exist'
     }
 
-    const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
+    const nodeChooseHas = allNodeChoose.has(keyFormat({ x, y, z }))
     if (nodeChooseHas) {
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
@@ -137,7 +138,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     if (isBrowser && mode === 'exist') {
       // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
-      let node = allNodeMap.get(`${x}${y}${z}`)
+      let node = allNodeMap.get(keyFormat({ x, y, z }))
       if (node) {
         setCurrentNodeMouse(node)
       }

@@ -21,6 +21,7 @@ import SliderContentUser from './SliderContentUser'
 import SliderToggle from './SliderToggle'
 
 import useToast from '../../hooks/useToast'
+import { keyFormat } from '../../utils';
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -59,7 +60,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
     for (let i = 0; i < _bookmark.length; i++) {
       const ele = _bookmark[i];
       const { x, y, z } = ele
-      const _node = allNodeMap.get(`${x}${y}${z}`)
+      const _node = allNodeMap.get(keyFormat({ x, y, z }))
       if (_node) {
         assign(ele, _node)
       }

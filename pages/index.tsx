@@ -12,7 +12,8 @@ import { StoreGet, StoreSet } from '../utils/store'
 import {
   cubeToAxial, calcTranslate, calcMaxDistance,
   calcCenterRangeAsMap, angle,
-  isInViewPort, HandleHexagonStyle, strEllipsis
+  isInViewPort, HandleHexagonStyle, strEllipsis,
+  keyFormat
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
@@ -279,7 +280,7 @@ const Home = () => {
       if (!showUserInfo) {
         return
       }
-      const node = allNodeMap.get(`${x}${y}${z}`)
+      const node = allNodeMap.get(keyFormat({ x, y, z }))
       if (!node) {
         Toast({ content: '没有坐标数据' })
         return
@@ -355,7 +356,7 @@ const Home = () => {
         let _map: Map<string, hexGridsByFilterState> = new Map()
         data.forEach(i => {
           const { x, y, z } = i
-          _map.set(`${x}${y}${z}`, i)
+          _map.set(keyFormat({x, y, z}), i)
         })
 
         setAllNode(data)
