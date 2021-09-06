@@ -31,12 +31,19 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
   /**
+   * 是否显示
+   */
+  const isShow = useMemo(() => {
+    return (!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData))
+  }, [ inViewPortHexagonOwner, hexGridsMineData ])
+
+  /**
    * 箭头样式
    */
   const style = useMemo(() => ({
     transform: `rotate(${homeAngle}deg)`,
-    opacity: (!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData)) ? 1 : 0
-  }), [ homeAngle, inViewPortHexagonOwner, hexGridsMineData ])
+    opacity: isShow ? 1 : 0
+  }), [ homeAngle, isShow ])
 
   /**
    * 计算箭头角度
@@ -93,9 +100,9 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   }, [ hexGridsMineData, calcAngle ])
 
   return (
-    <Tooltip title="自己坐标方位">
+    <Tooltip title={ isShow ? '自己坐标方位' : '' }>
       <StyledArrow style={style}>
-          <img src="/images/arrow.png" alt="arrow" />
+          <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>
     </Tooltip>
   )
@@ -116,10 +123,13 @@ const StyledArrow = styled.section`
   z-index: 8;
   will-change: transform;
   user-select: none;
+  -webkit-user-drag: none;
   img {
     width: 120px;
     height: 120px;
     object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   @media screen and (max-width: 768px) {
