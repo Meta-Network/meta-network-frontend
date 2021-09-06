@@ -591,7 +591,11 @@ const Home = () => {
       <NodeHistory
         allNodeMap={allNodeMap}
         historyView={historyView}
-        HandleHistoryViewClick={HandleHistoryViewClick}></NodeHistory>
+        currentNode={currentNode}
+        setCurrentNode={setCurrentNode}
+        translateMap={translateMap}
+        HandleHistoryView={HandleHistoryView}
+        ></NodeHistory>
       <PointDEV></PointDEV>
     </>
   )

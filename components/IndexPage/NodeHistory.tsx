@@ -1,20 +1,26 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Avatar, Tooltip } from 'antd'
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons'
 import { useSpring, animated } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 
-import { hexGridsByFilterState } from '../../typings/metaNetwork';
-import { PointState } from '../../typings/node';
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
+import { PointState } from '../../typings/node'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
   readonly historyView: PointState[]
-  HandleHistoryViewClick: (value: PointState) => void
+  readonly currentNode: PointState
+  setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
+  translateMap: (point: PointState, showUserInfo?: boolean) => void
+  HandleHistoryView: (point: PointState) => void
 }
 
-const NodeHistory: React.FC<Props> = ({ allNodeMap, historyView, HandleHistoryViewClick }) => {
+const NodeHistory: React.FC<Props> = ({
+  allNodeMap, historyView, currentNode,
+  setCurrentNode, translateMap, HandleHistoryView
+}) => {
 
   /**
    * 历史预览列表
@@ -46,9 +52,17 @@ const NodeHistory: React.FC<Props> = ({ allNodeMap, historyView, HandleHistoryVi
   const handleClick = useCallback(
     (e: Event, point: PointState) => {
       e.stopPropagation()
-      HandleHistoryViewClick(point)
+      const { x, y, z } = point
+
+      // 重复点击垱前块
+      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+        setCurrentNode({} as hexGridsByFilterState)
+      }
+
+      translateMap({ x, y, z })
+      HandleHistoryView(point)
     },
-    [HandleHistoryViewClick],
+    [HandleHistoryView, currentNode, setCurrentNode, translateMap],
   )
 
   return (
