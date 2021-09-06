@@ -89,9 +89,13 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
     if (isEmpty(currentNode)) {
       if (refAvatar.current) {
         refAvatar!.current.style.opacity = '0'
+        refAvatar!.current.style.left = '-100%'
+        refAvatar!.current.style.top = '-100%'
       }
       if (refMore.current) {
         refMore!.current.style.opacity = '0'
+        refMore!.current.style.left = '-100%'
+        refMore!.current.style.top = '-100%'
       }
       cancelAnimationFrame(ID)
     } else {

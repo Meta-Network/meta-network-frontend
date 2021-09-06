@@ -63,6 +63,8 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
     if (isEmpty(currentNodeMouse)) {
       if (refAvatar.current) {
         refAvatar!.current.style.opacity = '0'
+        refAvatar!.current.style.left = '-100%'
+        refAvatar!.current.style.top = '-100%'
       }
       cancelAnimationFrame(ID)
     } else {
