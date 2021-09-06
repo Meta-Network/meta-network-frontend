@@ -22,7 +22,7 @@ interface Props {
 
 const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$ }) => {
   const { Toast } = useToast()
-  const [ visible, setVisible ] = useState<boolean>(false)
+  const [visible, setVisible] = useState<boolean>(false)
 
   // 是否收藏
   const isBookmark = useMemo(() => {
@@ -30,13 +30,17 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
       return false
     }
     // console.log('bookmark', bookmark)
-    const res = bookmark.findIndex(i =>
+
+    // 是否收藏
+    const _isBookmark = (i: PointState) =>
       i.x === currentNode.x &&
       i.y === currentNode.y &&
       i.z === currentNode.z
-    )
-    return ~res
-  }, [ bookmark, currentNode])
+
+    const isBookmarkResult = bookmark.some(_isBookmark)
+
+    return isBookmarkResult
+  }, [bookmark, currentNode])
 
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
@@ -65,9 +69,9 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="bookmark" icon={ isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
+      <Menu.Item key="bookmark" icon={isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
         {
-          isBookmark ? '取消收藏': '收藏'
+          isBookmark ? '取消收藏' : '收藏'
         }
       </Menu.Item>
       {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
@@ -99,11 +103,11 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
         <ArrowTopLeftIcon />{' '}进入主页
       </StyledUserMoreButton>
       <Dropdown
-        onVisibleChange={ handleVisible }
+        onVisibleChange={handleVisible}
         visible={visible}
         overlay={menu}
-        trigger={[ isBrowser ? 'hover' : isMobile ? 'click' : 'hover' ]}
-        placement={ isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter' }
+        trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
+        placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
         overlayClassName="custom-dropdown-more">
         <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
       </Dropdown>

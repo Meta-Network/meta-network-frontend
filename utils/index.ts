@@ -315,9 +315,9 @@ export const strEllipsis = (value: string, length: number = 12) => {
 
 /**
  * 数字截取
- * @param amount 
- * @param decimal 
- * @returns 
+ * @param amount
+ * @param decimal
+ * @returns
  */
 export const amountSplit = (amount: string, decimal: number) => {
   let point = amount.indexOf('.');

@@ -17,7 +17,7 @@ interface Props {
   readonly isNodeOwner: (value: PointState) => boolean
 }
 
-const NodeContent: React.FC<Props> = React.memo(function NodeContent ({
+const NodeContent: React.FC<Props> = React.memo(function NodeContent({
   coordinate, allNodeDisabled, allNodeMap,
   allNodeChoose, defaultPoint, bookmark,
   noticeBardOccupiedState, isNodeOwner
@@ -51,16 +51,17 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent ({
   const node = allNodeMap.get(`${x}${y}${z}`)
   if (node) {
     // 是否收藏
-    const isBookmark = bookmark.findIndex(i =>
+    const isBookmark = (i: PointState) =>
       i.x === node.x &&
       i.y === node.y &&
       i.z === node.z
-    )
+
+    const isBookmarkResult = bookmark.some(isBookmark)
 
     return (
       <NodeUser
         node={node}
-        isBookmark={Boolean(~isBookmark)}
+        isBookmark={isBookmarkResult}
         isOwner={isNodeOwner(node)}
       ></NodeUser>
     )
@@ -68,9 +69,9 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent ({
 
   const nodeChooseHas = allNodeChoose.has(`${x}${y}${z}`)
   if (nodeChooseHas) {
-    return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0  }} />
+    return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0 }} />
   }
-    return null
+  return null
 })
 
 export default NodeContent
