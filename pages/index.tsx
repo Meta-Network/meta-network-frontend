@@ -217,10 +217,15 @@ const Home = () => {
     const svg = d3.select('#container svg')
     let oldTransform: { k: number, x: number, y: number } | null = null
 
+    // const svgG = d3.select('#container svg > g')
+    // const svgBox = svgG.node().getBBox()
+    // const { width: boxWidth, height: boxHeight } = svgBox
+
     svg.call(
       zoom
         .extent([[0, 0], [width, height]])
         .scaleExtent([0.4, 4])
+        // .translateExtent([[-(boxWidth / 2), -(boxHeight / 2)], [(boxWidth / 2) + width, (boxHeight / 2) + height]])
         .on("zoom", zoomed)
     )
 
@@ -237,36 +242,18 @@ const Home = () => {
       oldTransform = cloneDeep(transform)
 
       const svg = d3.select('#container svg > g')
-      let svgBox = svg.node().getBBox()
-      let svgContentWidth = svgBox.width
-      let svgContentHeight = svgBox.height
+      svg.attr('transform', tran)
 
-      // console.log('svgContentWidth', svgContentWidth)
-      // console.log('svgContentHeight', svgContentHeight)
+      const svgG = d3.select('#container svg > g')
+      const svgBox1 = svgG.node().getBBox()
+      const { width: boxWidth, height: boxHeight } = svgBox1
 
-      const numberFloor = (n: number, k: number) => {
-        return Math.floor((n / 2) * k)
-      }
-
-      if (transform.x >= numberFloor(svgContentWidth, transform.k)) {
-        tran = assign(transform, { x: numberFloor(svgContentWidth, transform.k) })
-      }
-      if (transform.y >= numberFloor(svgContentHeight, transform.k)) {
-        tran = assign(transform, { y: numberFloor(svgContentHeight, transform.k) })
-      }
-
-      if (transform.x <= numberFloor(-(svgContentWidth), transform.k)) {
-        tran = assign(transform, { x: numberFloor(-(svgContentWidth), transform.k) })
-      }
-      if (transform.y <= numberFloor(-(svgContentHeight), transform.k)) {
-        tran = assign(transform, { y: numberFloor(-(svgContentHeight), transform.k) })
-      }
-      svg.attr('transform', tran);
+      // TODO: 缩放 计算有问题 暂时还不知道为什么
+      // zoom.translateExtent([[-(boxWidth / 2) - width, -(boxHeight / 2) - height], [(boxWidth / 2) + width, (boxHeight / 2) + height]])
+      zoom.translateExtent([[-(boxWidth / 2) - width, -(boxHeight / 2) - height], [(boxWidth), (boxHeight)]])
 
       emitEvent()
     }
-
-    svg.node();
   }, [width, height, emitEvent])
 
   /**
@@ -356,7 +343,7 @@ const Home = () => {
         let _map: Map<string, hexGridsByFilterState> = new Map()
         data.forEach(i => {
           const { x, y, z } = i
-          _map.set(keyFormat({x, y, z}), i)
+          _map.set(keyFormat({ x, y, z }), i)
         })
 
         setAllNode(data)
@@ -578,7 +565,7 @@ const Home = () => {
         setCurrentNode={setCurrentNode}
         translateMap={translateMap}
         HandleHistoryView={HandleHistoryView}
-        ></NodeHistory>
+      ></NodeHistory>
       <PointDEV></PointDEV>
     </>
   )
