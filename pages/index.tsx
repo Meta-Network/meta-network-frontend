@@ -4,12 +4,8 @@ import dynamic from 'next/dynamic'
 // import * as d3 from 'd3';
 // import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
-// import styled from 'styled-components'
-// import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
-import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
-import { useMount, useUnmount, useThrottleFn, useInViewport, useEventEmitter, useDebounceFn } from 'ahooks'
-import { EventEmitter } from 'ahooks/lib/useEventEmitter'
-// import { isBrowser } from "react-device-detect"
+import { assign, cloneDeep, isEmpty } from 'lodash'
+import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
 
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
@@ -510,20 +506,6 @@ const Home = () => {
 
     fetchHistoryView()
   }, [fetchHistoryView])
-
-  // 处理历史记录点击
-  const HandleHistoryViewClick = useCallback((point: PointState) => {
-    const { x, y, z } = point
-
-    // 重复点击垱前块
-    if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-      setCurrentNode({} as hexGridsByFilterState)
-    }
-
-    translateMap({ x, y, z })
-
-    HandleHistoryView(point)
-  }, [currentNode, translateMap, HandleHistoryView])
 
   return (
     <>

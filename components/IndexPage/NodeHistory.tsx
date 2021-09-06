@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, FC, memo } from 'react'
 import styled from 'styled-components'
 import { Avatar, Tooltip } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
@@ -17,10 +17,10 @@ interface Props {
   HandleHistoryView: (point: PointState) => void
 }
 
-const NodeHistory: React.FC<Props> = ({
+const NodeHistory: FC<Props> = memo(function NodeHistory({
   allNodeMap, historyView, currentNode,
   setCurrentNode, translateMap, HandleHistoryView
-}) => {
+}) {
 
   /**
    * 历史预览列表
@@ -80,7 +80,7 @@ const NodeHistory: React.FC<Props> = ({
     </StyledHistory>
   )
 }
-
+)
 const StyledHistory = styled.div`
   position: fixed;
   left: 50%;
