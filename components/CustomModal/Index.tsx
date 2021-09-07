@@ -30,6 +30,7 @@ const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsMod
       footer={null}
       closable={false}
       centered={true}
+      transitionName={ isBrowser ? undefined : isMobile ? '' : undefined}
     >
       {children}
       {
