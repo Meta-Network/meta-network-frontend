@@ -66,9 +66,7 @@ export const accountsTokenDelete = (): Promise<axiosResult<void>> => uCenterAPI.
  * 当前用户信息
  * @returns
  */
-export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me', {
-  cache: true
-})
+export const usersMe = (): Promise<axiosResult<UsersMeProps>> => uCenterAPI.get('/users/me')
 
 /**
  * 更新当前用户信息
