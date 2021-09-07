@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message, Avatar, Upload } from 'antd'
+import { Form, Input, Button, message, Avatar, Upload, notification } from 'antd'
 import { ExclamationCircleOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
@@ -24,6 +24,8 @@ interface UploadAvatar {
   file: FileData,
   fileList: File[]
 }
+
+const keyUploadAvatar = 'keyUploadAvatar';
 
 const Update: React.FC<Props> = () => {
   const [form] = Form.useForm()
@@ -127,7 +129,18 @@ const Update: React.FC<Props> = () => {
         Toast({ content: '图片必须小于6MB！', type: 'warning' })
       }
 
-      return isJpgOrPng && isLtMB;
+      const res = isJpgOrPng && isLtMB
+
+      if (res) {
+        notification.open({
+          key: keyUploadAvatar,
+          className: 'custom-notification',
+          message: '图片上传',
+          description: '正在上传....',
+        })
+      }
+
+      return res
     },
     onChange(info: UploadAvatar) {
       if (info.file.status !== 'uploading') {
@@ -139,9 +152,11 @@ const Update: React.FC<Props> = () => {
           Toast({ content: '上传成功' })
           setAvatarUrl(info.file.response.data.publicUrl)
         }
+        notification.close(keyUploadAvatar)
         // (`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         // (`${info.file.name} file upload failed.`);
+        notification.close(keyUploadAvatar)
       }
     }
   }), [token, Toast])

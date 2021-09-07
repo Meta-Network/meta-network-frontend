@@ -160,7 +160,7 @@
   }
   &.ant-input-affix-wrapper > input.ant-input {
     background-color: transparent;
-    color: #F5F5F5; 
+    color: #F5F5F5;
   }
   &.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
     box-shadow: none;
@@ -220,5 +220,14 @@
     .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover {
       background-color: #e8e8e8;
     }
+  }
+}
+
+.custom-notification {
+  background: #2C2B2A;
+  color: #F5F5F5;
+  .ant-notification-notice-message,
+  .ant-notification-notice-close {
+    color: inherit;
   }
 }
