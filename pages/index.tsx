@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 // import rd3 from 'react-d3-library'
 // import * as d3 from 'd3';
 // import { G, Point, SVG } from '@svgdotjs/svg.js'
-import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid';
+import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { assign, cloneDeep, isEmpty } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
 
@@ -51,14 +51,14 @@ const Home = () => {
   const { Toast } = useToast()
 
   // hex all 坐标点
-  const [hex, setHex] = useState<HexagonsState[]>([]);
+  const [hex, setHex] = useState<HexagonsState[]>([])
   const [map, setMap] = useState<string>('hexagon')
   const [mapProps, setMapProps] = useState<number[]>([15])
   const [layout, setLayout] = useState<LayoutState>({ width: 66, height: 66, flat: false, spacing: 1.1 })
   const [size, setSize] = useState<AxialState>({ x: layout.width, y: layout.height })
-  const [width, setWidth] = useState<number>(1000);
-  const [height, setHeight] = useState<number>(800);
-  const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 });
+  const [width, setWidth] = useState<number>(1000)
+  const [height, setHeight] = useState<number>(800)
+  const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
   // 默认坐标点
   const [defaultPoint] = useState<PointState>({ x: 0, y: 11, z: -11 })
   // 默认坐标范围
@@ -73,21 +73,21 @@ const Home = () => {
   })
 
   // 所有节点
-  const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([]);
-  const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map());
+  const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
+  const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map())
   // 所有可以选择的节点
-  const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map());
+  const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map())
   // 所有禁止选择的节点
-  const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map());
+  const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map())
   // 当前选择节点
-  const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
-  const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState);
+  const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
+  const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
   // 当前占领节点
-  const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState);
+  const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState)
   // 部署网站 Modal
-  const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false);
+  const [isModalVisibleDeploySite, setIsModalVisibleDeploySite] = useState<boolean>(false)
   // 占领 Modal
-  const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false);
+  const [isModalVisibleOccupied, setIsModalVisibleOccupied] = useState<boolean>(false)
   // 占领通知状态
   const [noticeBardOccupiedState, setNoticeBardOccupiedState] = useState<boolean>(false)
   // 自己的占领坐标
@@ -122,7 +122,7 @@ const Home = () => {
       }
     },
     { wait: 300 },
-  );
+  )
 
   // 计算所有可选择坐标范围
   useEffect(() => {
@@ -137,7 +137,7 @@ const Home = () => {
       let distance = 1
 
       for (let i = 0; i < allNode.length; i++) {
-        const eleAllNode = allNode[i];
+        const eleAllNode = allNode[i]
         // 捕获 new hex 错误
         try {
           let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
@@ -163,7 +163,7 @@ const Home = () => {
       fetchBookmark()
       fetchHistoryView()
     }
-  );
+  )
 
   useUnmount(() => {
     window.removeEventListener('resize', resizeFn)
@@ -315,16 +315,16 @@ const Home = () => {
    * 渲染坐标地图
    */
   const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
-    const generator = GridGenerator.getGenerator(map);
+    const generator = GridGenerator.getGenerator(map)
     const _mapProps = list.length ? calcMaxDistance(list) : mapProps
-    const hexagons = generator.apply(null, _mapProps);
+    const hexagons = generator.apply(null, _mapProps)
 
     console.log('hexagons', hexagons)
     setHex(hexagons)
     setContainerDrag()
     calcForbiddenZoneRadius(hexagons, forbiddenZoneRadius)
     fetchHexGridsMine()
-  }, [mapProps, map, setContainerDrag, fetchHexGridsMine]);
+  }, [mapProps, map, setContainerDrag, fetchHexGridsMine])
 
   /**
    * 获取范围坐标点
@@ -398,7 +398,7 @@ const Home = () => {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
 
       for (let i = 0; i < bookmarkNodeList.length; i++) {
-        const ele = bookmarkNodeList[i];
+        const ele = bookmarkNodeList[i]
         const idx = bookmarkList.findIndex(j =>
           j.x === ele.x &&
           j.y === ele.y &&

@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Menu, Dropdown, message } from 'antd';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Menu, Dropdown, message } from 'antd'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash';
+import { isArray } from 'lodash'
 import { isBrowser, isMobile } from "react-device-detect"
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
-import { PointState } from '../../typings/node';
+import { PointState } from '../../typings/node'
 import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, CircleSuccessIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 

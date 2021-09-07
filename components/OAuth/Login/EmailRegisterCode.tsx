@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd'
 import { trim } from 'lodash'
 
 import { EmailModeProps } from '../../../typings/oauth'
@@ -18,15 +18,15 @@ interface Props {
 }
 
 const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailModeFn }) => {
-  const [formResister] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [formResister] = Form.useForm()
+  const [loading, setLoading] = useState(false)
   const { Toast } = useToast()
 
 
   // 注册
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
-      console.log('Success:', values);
+      console.log('Success:', values)
 
       setLoading(true)
       let { inviteCode } = values
@@ -49,8 +49,8 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
     }, [ Toast, setStep, setInviteCode ])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
 
   return (

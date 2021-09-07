@@ -1,7 +1,7 @@
-import React from 'react';
-import { Text } from 'react-hexgrid';
+import React from 'react'
+import { Text } from 'react-hexgrid'
 
-import { hexGridsByFilterState } from '../../typings/metaNetwork';
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { strEllipsis } from '../../utils/index'
 
 

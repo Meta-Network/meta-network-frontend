@@ -1,5 +1,5 @@
-import React from 'react';
-import { Avatar, Menu, Dropdown } from 'antd';
+import React from 'react'
+import { Avatar, Menu, Dropdown } from 'antd'
 import {
   UserOutlined,
   LeftOutlined,
@@ -32,7 +32,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
     } else if (key === 'account') {
       window.open('https://meta-cms.vercel.app', '_blank')
     }
-  };
+  }
 
   const menu = (
     <Menu onClick={handleClick}>
@@ -46,7 +46,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
         登出
       </Menu.Item>
     </Menu>
-  );
+  )
 
   return (
     <StyledSliderCUser visible={visible}>

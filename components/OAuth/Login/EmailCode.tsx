@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 import styled from 'styled-components'
-import { useCountDown } from 'ahooks';
+import { useCountDown } from 'ahooks'
 import { accountsEmailVerificationCode } from '../../../services/ucenter'
-import { message } from 'antd';
+import { message } from 'antd'
 import { trim } from 'lodash'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
@@ -14,9 +14,9 @@ interface Props {
 
 const EmailCode: React.FC<Props> = ({ form }) => {
   const onEnd = () => {
-    console.log('onEnd of the time');
-  };
-  const [count, setTargetDate] = useCountDown({ onEnd: onEnd });
+    console.log('onEnd of the time')
+  }
+  const [count, setTargetDate] = useCountDown({ onEnd: onEnd })
   const { Toast } = useToast()
 
   /**

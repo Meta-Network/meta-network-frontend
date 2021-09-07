@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 import styled from 'styled-components'
 import {
   CopyOutlined
 } from '@ant-design/icons'
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { message } from 'antd';
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { message } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { CircleSuccessIcon } from '../Icon/Index'

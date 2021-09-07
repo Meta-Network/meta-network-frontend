@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Tooltip } from 'antd';
+import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
 
 import {
   angle, isInViewPort
 } from '../../utils/index'
-import { hexGridsByFilterState } from '../../typings/metaNetwork';
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
 window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame

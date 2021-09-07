@@ -25,11 +25,11 @@ interface UploadAvatar {
   fileList: File[]
 }
 
-const keyUploadAvatar = 'keyUploadAvatar';
+const keyUploadAvatar = 'keyUploadAvatar'
 
 const Update: React.FC<Props> = () => {
   const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false)
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
   const [token, setToken] = useState<string>('')
   const router = useRouter()
@@ -83,7 +83,7 @@ const Update: React.FC<Props> = () => {
 
       setLoading(true)
 
-      console.log('Success:', values);
+      console.log('Success:', values)
       let { nickname, bio } = values
       try {
         const res = await usersMePatch({
@@ -108,8 +108,8 @@ const Update: React.FC<Props> = () => {
   )
 
   const onFinishFailedEmail = (errorInfo: any): void => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   // upload props
   const props: any = useMemo(() => ({
@@ -120,11 +120,11 @@ const Update: React.FC<Props> = () => {
       authorization: `Bearer ${token}`,
     },
     beforeUpload(file: File) {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {
         Toast({ content: '您只能上传 JPG/PNG 文件！', type: 'warning' })
       }
-      const isLtMB = file.size / 1024 / 1024 < 6;
+      const isLtMB = file.size / 1024 / 1024 < 6
       if (!isLtMB) {
         Toast({ content: '图片必须小于6MB！', type: 'warning' })
       }
@@ -144,7 +144,7 @@ const Update: React.FC<Props> = () => {
     },
     onChange(info: UploadAvatar) {
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
         console.log('info', info)
@@ -162,12 +162,12 @@ const Update: React.FC<Props> = () => {
   }), [token, Toast])
 
   const normFile = (e: { file: File, fileList: File[] }) => {
-    console.log('Upload event:', e);
+    console.log('Upload event:', e)
     if (Array.isArray(e)) {
-      return e;
+      return e
     }
-    return e && e.fileList;
-  };
+    return e && e.fileList
+  }
 
   return (
     <>

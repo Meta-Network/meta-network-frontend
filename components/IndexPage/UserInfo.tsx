@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { hexGridsByFilterState } from '../../typings/metaNetwork';
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { useMount } from 'ahooks'
-import { isEmpty } from 'lodash';
-import { isBrowser, isMobile } from "react-device-detect";
+import { isEmpty } from 'lodash'
+import { isBrowser, isMobile } from "react-device-detect"
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
-import { PointState } from '../../typings/node';
+import { PointState } from '../../typings/node'
 
 import UserAvatar from './UserAvatar'
 import UserMore from './UserMore'

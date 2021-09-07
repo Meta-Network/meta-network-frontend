@@ -30,7 +30,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     let _historyView = cloneDeep(historyView)
 
     for (let i = 0; i < _historyView.length; i++) {
-      const ele = _historyView[i];
+      const ele = _historyView[i]
       const { x, y, z } = ele
       const _node = allNodeMap.get(keyFormat({ x, y, z }))
       if (_node) {

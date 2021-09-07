@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal } from 'antd';
+import React, { useState } from 'react'
+import { Modal } from 'antd'
 import styled from 'styled-components'
 import { isBrowser, isMobile } from "react-device-detect"
 import { CloseModalIcon } from '../Icon/Index'
@@ -13,12 +13,12 @@ interface Props {
 const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsModalVisible }) => {
 
   const handleOk = (): void => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   const handleCancel = (): void => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   return (
     <Modal

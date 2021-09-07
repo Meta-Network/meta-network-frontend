@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 
 import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'

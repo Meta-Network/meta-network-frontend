@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Tooltip } from 'antd';
+import { Tooltip } from 'antd'
 import { WechatOutlined, GithubOutlined, TwitterOutlined } from '@ant-design/icons'
 import { EmailIcon } from '../../Icon/Index'
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message } from 'antd'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 

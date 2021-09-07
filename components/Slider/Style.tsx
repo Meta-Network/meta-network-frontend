@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
-import { Avatar, Drawer } from 'antd';
+import { Avatar, Drawer } from 'antd'
 
 export const StyledSliderCAccount = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '0 18px 0 0;' : '0 8px 0 0;'};

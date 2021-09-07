@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Avatar, Radio, Button, Empty } from 'antd';
-import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
-import { cloneDeep } from 'lodash';
+import { Avatar, Radio, Button, Empty } from 'antd'
+import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons'
+import { cloneDeep } from 'lodash'
 import { isBrowser, isMobile } from "react-device-detect"
 
 import CustomModal from '../CustomModal/Index'

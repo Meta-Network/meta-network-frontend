@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { HexUtils, Hex } from 'react-hexgrid';
-import { assign } from 'lodash';
-import { animated } from 'react-spring';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { HexUtils, Hex } from 'react-hexgrid'
+import { assign } from 'lodash'
+import { animated } from 'react-spring'
 
 class HexagonRoound extends Component {
   static propTypes = {
@@ -35,12 +35,12 @@ class HexagonRoound extends Component {
   };
 
   constructor(props: any, context: any) {
-    super(props, context);
-    const { q, r, s } = props;
-    const { layout } = context;
-    const hex = new Hex(q, r, s);
-    const pixel = HexUtils.hexToPixel(hex, layout);
-    this.state = { hex, pixel };
+    super(props, context)
+    const { q, r, s } = props
+    const { layout } = context
+    const hex = new Hex(q, r, s)
+    const pixel = HexUtils.hexToPixel(hex, layout)
+    this.state = { hex, pixel }
 
     // console.log('HexagonRoound')
   }
@@ -48,30 +48,30 @@ class HexagonRoound extends Component {
   // TODO Refactor to reduce duplicate
   // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps: any) {
-    const { q, r, s } = nextProps;
-    const { layout } = this.context;
-    const hex = new Hex(q, r, s);
-    const pixel = HexUtils.hexToPixel(hex, layout);
-    this.setState({ hex, pixel });
+    const { q, r, s } = nextProps
+    const { layout } = this.context
+    const hex = new Hex(q, r, s)
+    const pixel = HexUtils.hexToPixel(hex, layout)
+    this.setState({ hex, pixel })
   }
   onMouseEnter(e: any) {
     if ((this.props as any).onMouseEnter) {
-      (this.props as any).onMouseEnter(e, this);
+      (this.props as any).onMouseEnter(e, this)
     }
   }
   onMouseOver(e: any) {
     if ((this.props as any).onMouseOver) {
-      (this.props as any).onMouseOver(e, this);
+      (this.props as any).onMouseOver(e, this)
     }
   }
   onMouseLeave(e: any) {
     if ((this.props as any).onMouseLeave) {
-      (this.props as any).onMouseLeave(e, this);
+      (this.props as any).onMouseLeave(e, this)
     }
   }
   onClick(e: any) {
     if ((this.props as any).onClick) {
-      (this.props as any).onClick(e, this);
+      (this.props as any).onClick(e, this)
     }
   }
   onDragStart(e: any) {
@@ -81,35 +81,35 @@ class HexagonRoound extends Component {
         data: (this.props as any).data,
         fill: (this.props as any).fill,
         className: (this.props as any).className
-      };
+      }
       e.dataTransfer.setData('hexagon', JSON.stringify(targetProps));
-      (this.props as any).onDragStart(e, this);
+      (this.props as any).onDragStart(e, this)
     }
   }
   onDragEnd(e: any) {
     if ((this.props as any).onDragEnd) {
-      e.preventDefault();
+      e.preventDefault()
       const success = (e.dataTransfer.dropEffect !== 'none');
-      (this.props as any).onDragEnd(e, this, success);
+      (this.props as any).onDragEnd(e, this, success)
     }
   }
   onDragOver(e: any) {
     if ((this.props as any).onDragOver) {
-      (this.props as any).onDragOver(e, this);
+      (this.props as any).onDragOver(e, this)
     }
   }
   onDrop(e: any) {
     if ((this.props as any).onDrop) {
-      e.preventDefault();
+      e.preventDefault()
       const target = JSON.parse(e.dataTransfer.getData('hexagon'));
-      (this.props as any).onDrop(e, this, target);
+      (this.props as any).onDrop(e, this, target)
     }
   }
   render() {
-    const { fill, cellStyle, className } = (this.props as any);
-    const { points } = this.context;
-    const { hex, pixel } = (this.state as any);
-    const fillId = (fill) ? `url(#${fill})` : null;
+    const { fill, cellStyle, className } = (this.props as any)
+    const { points } = this.context
+    const { hex, pixel } = (this.state as any)
+    const fillId = (fill) ? `url(#${fill})` : null
 
     const styles = assign(cellStyle, {
       // 因为 path 有偏差，用 transform 复位
@@ -135,8 +135,8 @@ class HexagonRoound extends Component {
           {this.props.children}
         </animated.g>
       </g>
-    );
+    )
   }
 }
 
-export default HexagonRoound;
+export default HexagonRoound

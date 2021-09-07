@@ -3,7 +3,7 @@ import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { useMount } from 'ahooks'
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash'
 import { PointState } from '../../typings/node'
 import { isBrowser, isMobile } from "react-device-detect"
 

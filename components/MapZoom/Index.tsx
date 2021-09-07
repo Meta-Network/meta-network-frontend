@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Tooltip } from 'antd';
+import React, { useCallback, useState } from 'react'
+import { Tooltip } from 'antd'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useMount, useUnmount } from 'ahooks'
@@ -24,7 +24,7 @@ interface Props {}
  */
 const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
 
-  const [value, setValue] = useState<Number>(0);
+  const [value, setValue] = useState<Number>(0)
 
   const [ styles, api ] = useSpring(() => ({
     x: 40,

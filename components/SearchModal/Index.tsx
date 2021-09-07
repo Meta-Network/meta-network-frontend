@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
-import { SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { SearchOutlined, UserOutlined } from '@ant-design/icons'
 import { useDebounceFn } from 'ahooks'
 import { isBrowser, isMobile } from "react-device-detect"
 
@@ -9,8 +9,8 @@ import CustomModal from '../CustomModal/Index'
 import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
 import { SearchHistory } from '../../typings/node.d'
 import { hexGridsByFilter } from '../../services/metaNetwork'
-import { PointScopeState, hexGridsByFilterState } from '../../typings/metaNetwork.d';
-import { assign, uniqBy, trim } from 'lodash';
+import { PointScopeState, hexGridsByFilterState } from '../../typings/metaNetwork.d'
+import { assign, uniqBy, trim } from 'lodash'
 import { compose } from '../../utils/index'
 import CustomEmpty from '../CustomEmpty/Index'
 
@@ -28,7 +28,7 @@ interface Props {
  * @returns
  */
 const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, setIsModalVisible, setVisibleSlider, translateMap }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
   // 是否显示历史记录内容
   const [showSearch, setShowSearch] = useState<boolean>(false)
   // 搜索历史
@@ -53,12 +53,12 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
   }, [isModalVisible, form])
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
+    console.log('Success:', values)
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
 
   /**
@@ -76,7 +76,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
     {
       wait: 300,
     },
-  );
+  )
   // tag
   const handleTagClick = (value: string) => {
     form.setFieldsValue({ searchValue: value })

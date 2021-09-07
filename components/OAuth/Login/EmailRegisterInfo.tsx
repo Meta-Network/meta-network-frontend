@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message } from 'antd'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 
@@ -19,8 +19,8 @@ interface Props {
 }
 
 const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
-  const [formResister] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [formResister] = Form.useForm()
+  const [loading, setLoading] = useState(false)
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
   const { Toast } = useToast()
@@ -45,7 +45,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   // 注册
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
-      console.log('Success:', values);
+      console.log('Success:', values)
       let { email, code, username } = values
       try {
         const resEmailSignup = await accountsEmailSignup(inviteCode, {
@@ -68,8 +68,8 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     }, [ updateUsername, inviteCode, Toast ])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   // 校验邮箱是否存在
   const verifyEmailRule = async (): Promise<void> => {
@@ -89,7 +89,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           }
           resolve()
         } catch (e) {
-          console.log('Failed:', e);
+          console.log('Failed:', e)
           reject(`验证失败 ${e.toString()}`)
         } finally {
         }
@@ -97,7 +97,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 
       setTimer(_timer)
     })
-  };
+  }
 
   return (
     <StyledEmailForm

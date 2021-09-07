@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { EmailModeProps } from '../../../typings/oauth'
 import EmailLogin from './EmailLogin'

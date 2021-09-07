@@ -1,5 +1,5 @@
 <Spin />
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import {
   LeftOutlined, CopyOutlined
@@ -15,8 +15,8 @@ interface Props {
 
 const DeploySite: React.FC<Props> = React.memo(function DeploySite ({ isModalVisible, setIsModalVisible }) {
 
-  const [steps, setSteps] = useState<number>(0);
-  const [formSiteName] = Form.useForm();
+  const [steps, setSteps] = useState<number>(0)
+  const [formSiteName] = Form.useForm()
 
   // 步骤 0 信息提示
   const StepInfo: React.FC = () => {
@@ -35,13 +35,13 @@ const DeploySite: React.FC<Props> = React.memo(function DeploySite ({ isModalVis
   }
 
   const onFinishSiteName = (values: any) => {
-    console.log('Success:', values);
+    console.log('Success:', values)
     setSteps(2)
-  };
+  }
 
   const onFinishFailedSiteName = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   // 步骤 1 设置站点名
   const StepSite: React.FC = () => {
@@ -100,7 +100,7 @@ const DeploySite: React.FC<Props> = React.memo(function DeploySite ({ isModalVis
           <Copy text="https://www.matataki.io/user967"></Copy>
         </StyledContentCopyUrl>
         <StyledContentFooter>
-          <Button className="custom-primary" onClick={() => { setIsModalVisible(false); setSteps(0); }}>完成并回到主页</Button>
+          <Button className="custom-primary" onClick={() => { setIsModalVisible(false); setSteps(0) }}>完成并回到主页</Button>
           <Button className="custom-default" onClick={() => message.info('即刻分享')}>即刻分享</Button>
         </StyledContentFooter>
       </div>

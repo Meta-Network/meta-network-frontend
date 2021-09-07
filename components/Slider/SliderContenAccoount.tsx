@@ -1,7 +1,7 @@
-import React from 'react';
-import { Popconfirm } from 'antd';
+import React from 'react'
+import { Popconfirm } from 'antd'
 import Link from 'next/link'
-import { Tooltip } from 'antd';
+import { Tooltip } from 'antd'
 
 import { StyledSliderCAccount, StyledSliderCAccountButton, StyledCount } from './Style'
 import { ArrowTopLeftIcon, LogoutIcon } from '../Icon/Index'

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { assign, cloneDeep } from 'lodash'
 
@@ -21,7 +21,7 @@ import SliderContentUser from './SliderContentUser'
 import SliderToggle from './SliderToggle'
 
 import useToast from '../../hooks/useToast'
-import { keyFormat } from '../../utils';
+import { keyFormat } from '../../utils'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -37,19 +37,19 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
   translateMap, defaultHexGridsRange, HandleRemoveBookmark
 }) {
   // 显示侧边栏
-  const [visibleSlider, setVisibleSlider] = useState(false);
+  const [visibleSlider, setVisibleSlider] = useState(false)
   const { user, isLoggin } = useUser()
   const router = useRouter()
   const { Toast } = useToast()
 
   // 收藏
-  const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false);
+  const [isModalVisibleBookmark, setIsModalVisibleBookmark] = useState<boolean>(false)
   // 邀请码
-  const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false);
+  const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false)
   // 邀请码
   const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
   // 搜索
-  const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false);
+  const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false)
 
   /**
    * 收藏坐标点 合并数据后
@@ -58,7 +58,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
     let _bookmark = cloneDeep(bookmark)
 
     for (let i = 0; i < _bookmark.length; i++) {
-      const ele = _bookmark[i];
+      const ele = _bookmark[i]
       const { x, y, z } = ele
       const _node = allNodeMap.get(keyFormat({ x, y, z }))
       if (_node) {

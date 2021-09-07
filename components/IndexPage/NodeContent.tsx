@@ -1,11 +1,11 @@
-import React from 'react';
-import { useWhyDidYouUpdate } from 'ahooks';
+import React from 'react'
+import { useWhyDidYouUpdate } from 'ahooks'
 
-import { PointState, HexagonsState } from '../../typings/node';
+import { PointState, HexagonsState } from '../../typings/node'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import NodeChoose from '../../components/IndexPage/NodeChoose'
 import NodeUser from '../../components/IndexPage/NodeUser'
-import { keyFormat } from '../../utils';
+import { keyFormat } from '../../utils'
 
 interface Props {
   readonly coordinate: PointState

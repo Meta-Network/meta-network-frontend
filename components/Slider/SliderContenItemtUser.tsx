@@ -1,5 +1,5 @@
-import React from 'react';
-import { Tooltip } from 'antd';
+import React from 'react'
+import { Tooltip } from 'antd'
 import { isMobile } from "react-device-detect"
 
 import { StyledCount, StyledSliderCItem } from './Style'

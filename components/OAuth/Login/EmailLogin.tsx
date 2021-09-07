@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message } from 'antd'
 import { EmailModeProps } from '../../../typings/oauth'
 import EmailCode from './EmailCode'
 import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { CircleSuccessIcon, CircleWarningIcon } from "../../Icon/Index";
+import { CircleSuccessIcon, CircleWarningIcon } from "../../Icon/Index"
 import useToast from '../../../hooks/useToast'
 
 interface Props {
@@ -15,8 +15,8 @@ interface Props {
 }
 
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
-  const [formLogin] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [formLogin] = Form.useForm()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { Toast } = useToast()
 
@@ -25,7 +25,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
    * @param values
    */
   const onFinishEmail = async (values: any): Promise<void> => {
-    console.log('Success:', values);
+    console.log('Success:', values)
     let { email, code } = values
     try {
       setLoading(true)
@@ -46,11 +46,11 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     } finally {
       setLoading(false)
     }
-  };
+  }
 
   const onFinishFailedEmail = (errorInfo: any): void => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
       <StyledEmailForm
