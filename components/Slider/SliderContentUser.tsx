@@ -24,18 +24,21 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
 }) {
   const router = useRouter()
 
-  console.log('SliderContentUser')
-
   const handleClick = ({ key }: { key: string }) => {
     if (key === 'signOut') {
       signOut()
     } else if (key === 'edit') {
       router.push('/update')
+    } else if (key === 'account') {
+      window.open('https://meta-cms.vercel.app', '_blank')
     }
   };
 
   const menu = (
     <Menu onClick={handleClick}>
+      <Menu.Item key="account">
+        主页
+      </Menu.Item>
       <Menu.Item key="edit">
         编辑
       </Menu.Item>
