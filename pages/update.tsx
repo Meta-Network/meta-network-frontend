@@ -171,7 +171,7 @@ const Update: React.FC<Props> = () => {
 
   return (
     <>
-      <StyledTitle>更新用户资料</StyledTitle>
+      <StyledTitle>个人信息设置</StyledTitle>
       <StyledEmailForm
         form={form}
         name="email-register"
@@ -222,7 +222,7 @@ const Update: React.FC<Props> = () => {
             更新
           </StyledFormBtn>
 
-          <StyledFormBtnBack onClick={() => router.back()}>
+          <StyledFormBtnBack onClick={() => router.push('/')}>
             返回
           </StyledFormBtnBack>
         </StyledFormItem>

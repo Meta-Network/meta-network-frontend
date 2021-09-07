@@ -2,7 +2,8 @@ import { uCenterAPI } from "./client";
 import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
-  InviitationsMineState, UsersMePatchProps, UsersMeUsernameState
+  InviitationsMineState, UsersMePatchProps, UsersMeUsernameState,
+  InvitationsValidateProps, InvitationsValidateState
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -87,4 +88,12 @@ export const storageToken = (): Promise<axiosResult<string>> => uCenterAPI.post(
  * @returns
  */
 export const usersMeUsername = (data: UsersMeUsernameState): Promise<axiosResult<string>> => uCenterAPI.put('/users/me/username', data)
+
+/**
+ * 验证邀请码的可用性
+ * @param data
+ * @returns
+ */
+export const invitationsValidate = (data: InvitationsValidateProps): Promise<axiosResult<InvitationsValidateState>> => uCenterAPI.post('/invitations/validate', data)
+
 

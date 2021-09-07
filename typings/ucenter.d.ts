@@ -68,3 +68,12 @@ export interface InviitationsMineState {
 export interface UsersMeUsernameState {
   username: string
 }
+
+export interface InvitationsValidateProps {
+  invitation: string
+}
+
+export interface InvitationsValidateState {
+  available: boolean
+  exists: boolean
+}
