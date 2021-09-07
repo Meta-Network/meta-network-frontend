@@ -7,7 +7,7 @@ import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { CircleSuccessIcon, CircleWarningIcon } from "../../Icon/Index"
+import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 import useToast from '../../../hooks/useToast'
 
 interface Props {
@@ -42,7 +42,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       }
     } catch (e) {
       console.error(e)
-      Toast({ content: '登录失败', type: "warning" })
+      Toast({ content: '登录失败', type: 'warning' })
     } finally {
       setLoading(false)
     }

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
 import { PointState } from '../../typings/node'

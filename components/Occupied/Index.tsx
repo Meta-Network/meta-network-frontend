@@ -4,7 +4,7 @@ import {
   LeftOutlined
 } from '@ant-design/icons'
 import { Button } from 'antd'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 
 import CustomModal from '../CustomModal/Index'
 

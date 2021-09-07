@@ -5,7 +5,7 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash'
 import { PointState } from '../../typings/node'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 
 import UserAvatar from './UserAvatar'
 

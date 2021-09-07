@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tooltip } from 'antd'
-import { isMobile } from "react-device-detect"
+import { isMobile } from 'react-device-detect'
 
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'

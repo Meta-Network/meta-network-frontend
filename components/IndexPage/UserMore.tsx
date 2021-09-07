@@ -5,7 +5,7 @@ import { Menu, Dropdown, message } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { isArray } from 'lodash'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'

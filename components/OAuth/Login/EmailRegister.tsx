@@ -11,8 +11,8 @@ import EmailCode from './EmailCode'
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 import useToast from '../../../hooks/useToast'
 
-import EmailRegisterCode from "./EmailRegisterCode"
-import EmailRegisterInfo from "./EmailRegisterInfo"
+import EmailRegisterCode from './EmailRegisterCode'
+import EmailRegisterInfo from './EmailRegisterInfo'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'

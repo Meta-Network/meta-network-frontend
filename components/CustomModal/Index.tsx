@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Modal } from 'antd'
 import styled from 'styled-components'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 import { CloseModalIcon } from '../Icon/Index'
 
 interface Props {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tooltip } from 'antd'
-import { isMobile } from "react-device-detect"
+import { isMobile } from 'react-device-detect'
 
 import { StyledCount, StyledSliderCItem } from './Style'
 import { ArrowTopLeftIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'

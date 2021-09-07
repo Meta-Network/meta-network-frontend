@@ -226,7 +226,7 @@ const Home = () => {
         .extent([[0, 0], [width, height]])
         .scaleExtent([0.4, 4])
         // .translateExtent([[-(boxWidth / 2), -(boxHeight / 2)], [(boxWidth / 2) + width, (boxHeight / 2) + height]])
-        .on("zoom", zoomed)
+        .on('zoom', zoomed)
     )
 
     function zoomed({ transform }: { transform: { k: number, x: number, y: number } }) {

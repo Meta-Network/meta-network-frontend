@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Tooltip } from 'antd'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import AnimatedNumber from "animated-number-react"
+import AnimatedNumber from 'animated-number-react'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 
 import { PointScopeState } from '../../typings/metaNetwork'

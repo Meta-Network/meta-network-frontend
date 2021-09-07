@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
 import { SearchOutlined, UserOutlined } from '@ant-design/icons'
 import { useDebounceFn } from 'ahooks'
-import { isBrowser, isMobile } from "react-device-detect"
+import { isBrowser, isMobile } from 'react-device-detect'
 
 import CustomModal from '../CustomModal/Index'
 import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
