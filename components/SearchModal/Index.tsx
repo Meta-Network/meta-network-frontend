@@ -12,6 +12,7 @@ import { hexGridsByFilter } from '../../services/metaNetwork'
 import { PointScopeState, hexGridsByFilterState } from '../../typings/metaNetwork.d';
 import { assign, uniqBy, trim } from 'lodash';
 import { compose } from '../../utils/index'
+import CustomEmpty from '../CustomEmpty/Index'
 
 interface Props {
   readonly isModalVisible: boolean,
@@ -252,7 +253,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
                     ))
                   }
                   {
-                    searchList.length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
+                    searchList.length <= 0 ? <CustomEmpty description="暂无内容"></CustomEmpty> : null
                   }
                   {
                     loading ? <StyledEmpty>
@@ -280,7 +281,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
                     ))
                   }
                   {
-                    searchHistoryList.length <= 0 ? <StyledEmpty>暂无内容</StyledEmpty> : null
+                    searchHistoryList.length <= 0 ? <CustomEmpty description="暂无内容"></CustomEmpty> : null
                   }
                 </StyledContentHiitory>
               </StyledContentItem>

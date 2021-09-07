@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components'
-import { Avatar, Radio, Button } from 'antd';
+import { Avatar, Radio, Button, Empty } from 'antd';
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons';
 import { cloneDeep } from 'lodash';
 import { isBrowser, isMobile } from "react-device-detect"
@@ -8,6 +8,7 @@ import { isBrowser, isMobile } from "react-device-detect"
 import CustomModal from '../CustomModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { SortTopIcon, SortDoneIcon } from '../Icon/Index'
+import CustomEmpty from '../CustomEmpty/Index'
 interface Props {
   readonly isModalVisible: boolean,
   readonly bookmarkNode: hexGridsByFilterState[]
@@ -112,32 +113,35 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
             }
           </div>
         </StyledItemHead>
-        <StyledItem >
-          {
-            bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
-              <StyledItemLi key={idx}>
-                <Avatar size={40} src={i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
-                <StyledItemLiUser>
-                  <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
-                  <p>{i.userBio || '暂无简介'}</p>
-                </StyledItemLiUser>
-                {
-                  selected ?
-                    <StyledItemHeadIconRadio
-                      onClick={() => toggleRadio(idx)}
-                      className="custom-radio"
-                      checked={bookmarkNodeChecked[idx]}></StyledItemHeadIconRadio> :
-                    <StyledItemLiButton
-                      onClick={() => ToggleFn({
-                        x: i.x,
-                        y: i.y,
-                        z: i.z,
-                      })}>查看</StyledItemLiButton>
-                }
-              </StyledItemLi>
-            ))
-          }
-        </StyledItem>
+        {
+          bookmarkNode.length ?
+            <StyledItem >
+              {
+                bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
+                  <StyledItemLi key={idx}>
+                    <Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
+                    <StyledItemLiUser>
+                      <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
+                      <p>{i.userBio || '暂无简介'}</p>
+                    </StyledItemLiUser>
+                    {
+                      selected ?
+                        <StyledItemHeadIconRadio
+                          onClick={() => toggleRadio(idx)}
+                          className="custom-radio"
+                          checked={bookmarkNodeChecked[idx]}></StyledItemHeadIconRadio> :
+                        <StyledItemLiButton
+                          onClick={() => ToggleFn({
+                            x: i.x,
+                            y: i.y,
+                            z: i.z,
+                          })}>查看</StyledItemLiButton>
+                    }
+                  </StyledItemLi>
+                ))
+              }
+            </StyledItem> : <CustomEmpty description="暂无收藏"></CustomEmpty>
+        }
         {
           selected ?
             <StyledContentFooter>
