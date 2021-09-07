@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import type { AppProps } from 'next/app'
 import { useMount } from 'ahooks'
-
+import { appWithTranslation } from 'next-i18next'
 import HeadInfo from '../components/HeadInfo/Index'
 import { StoreGet } from '../utils/store'
 
@@ -50,4 +50,4 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   )
 }
-export default MyApp
+export default appWithTranslation(MyApp)

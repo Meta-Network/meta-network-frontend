@@ -12,6 +12,8 @@ import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import { CircleSuccessIcon, CircleWarningIcon } from '../components/Icon/Index'
 import useToast from '../hooks/useToast'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 interface Props { }
 
@@ -28,6 +30,8 @@ interface UploadAvatar {
 const keyUploadAvatar = 'keyUploadAvatar'
 
 const Update: React.FC<Props> = () => {
+  const { t } = useTranslation('common')
+  // console.log('update', t('h1'))
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
@@ -320,5 +324,15 @@ const StyledFormBtnBack = styled(Button)`
   margin: 20px 0 0 0;
 `
 // ----------------- form -----------------
+
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}
 
 export default Update

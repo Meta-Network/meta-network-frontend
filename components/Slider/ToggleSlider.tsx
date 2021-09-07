@@ -22,6 +22,7 @@ import SliderToggle from './SliderToggle'
 
 import useToast from '../../hooks/useToast'
 import { keyFormat } from '../../utils'
+import { useTranslation } from 'next-i18next'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -36,6 +37,9 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
   allNodeMap, bookmark,
   translateMap, defaultHexGridsRange, HandleRemoveBookmark
 }) {
+  const { t } = useTranslation('common')
+  // console.log('slider', t('h1'))
+
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false)
   const { user, isLoggin } = useUser()
