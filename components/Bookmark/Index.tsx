@@ -66,10 +66,13 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
   // 移除选中项
   const removeChecked = useCallback(
     () => {
+      if (countCheck <= 0) {
+        return
+      }
       const list = bookmarkNode.filter((_, idx) => bookmarkNodeChecked[idx])
       HandleRemoveBookmark(list)
     },
-    [bookmarkNode, bookmarkNodeChecked, HandleRemoveBookmark],
+    [bookmarkNode, bookmarkNodeChecked, HandleRemoveBookmark, countCheck],
   )
 
   /**
@@ -100,61 +103,61 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
           <div>
             {
               selected ?
-              <StyledItemHeadSelected onClick={ () => setSelected(false) }>完成</StyledItemHeadSelected> :
-              (
-                // 没有数据不展示多选按钮
-                bookmarkNode.length > 0 ?
-                <StyledItemHeadIconSelected onClick={ () => setSelected(true) } /> : null
-              )
+                <StyledItemHeadSelected onClick={() => setSelected(false)}>完成</StyledItemHeadSelected> :
+                (
+                  // 没有数据不展示多选按钮
+                  bookmarkNode.length > 0 ?
+                    <StyledItemHeadIconSelected onClick={() => setSelected(true)} /> : null
+                )
             }
           </div>
         </StyledItemHead>
-          <StyledItem >
-            {
-              bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
-                <StyledItemLi key={idx}>
-                  <Avatar size={40} src={ i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
-                  <StyledItemLiUser>
-                    <h3>{ i.userNickname || i.username || '暂无昵称' }</h3>
-                    <p>{ i.userBio || '暂无简介' }</p>
-                  </StyledItemLiUser>
-                  {
-                    selected ?
+        <StyledItem >
+          {
+            bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
+              <StyledItemLi key={idx}>
+                <Avatar size={40} src={i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
+                <StyledItemLiUser>
+                  <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
+                  <p>{i.userBio || '暂无简介'}</p>
+                </StyledItemLiUser>
+                {
+                  selected ?
                     <StyledItemHeadIconRadio
                       onClick={() => toggleRadio(idx)}
                       className="custom-radio"
-                      checked={ bookmarkNodeChecked[idx] }></StyledItemHeadIconRadio>:
+                      checked={bookmarkNodeChecked[idx]}></StyledItemHeadIconRadio> :
                     <StyledItemLiButton
-                      onClick={ () => ToggleFn({
+                      onClick={() => ToggleFn({
                         x: i.x,
                         y: i.y,
                         z: i.z,
-                      }) }>查看</StyledItemLiButton>
-                  }
-                </StyledItemLi>
-              ))
-            }
-            {
-              selected ?
-              <StyledContentFooter>
-                <Button
-                  className="custom-default"
-                  onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
-                >
-                  {
-                    countCheck >= bookmarkNodeChecked.length ? '取消全选' : '全部选中'
-                  }
-                </Button>
-                <Button className="custom-primary" onClick={removeChecked}>移除{countCheck}项</Button>
-              </StyledContentFooter>: null
-            }
-          </StyledItem>
+                      })}>查看</StyledItemLiButton>
+                }
+              </StyledItemLi>
+            ))
+          }
+        </StyledItem>
+        {
+          selected ?
+            <StyledContentFooter>
+              <Button
+                className="custom-default"
+                onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
+              >
+                {
+                  countCheck >= bookmarkNodeChecked.length ? '取消全选' : '全部选中'
+                }
+              </Button>
+              <Button className="custom-primary" onClick={removeChecked}>移除{countCheck}项</Button>
+            </StyledContentFooter> : null
+        }
       </>
     )
   }
 
   return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'full' : ''}>
       <StyledContainer>
         <StyledContentHead>
           <StyledContentHeadTitle>我的收藏</StyledContentHeadTitle>
@@ -248,6 +251,9 @@ const StyledItemLiUser = styled.section`
     line-height: 18px;
     text-align: left;
     color: #F5F5F5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   p {
     padding: 0;
