@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LoginAuth from '../../../assets/svg/login_auth.svg'
 import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
@@ -112,5 +113,13 @@ const StyledDecoration = styled(animated.img)`
     display: none;
   }
 `
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}
 
 export default OAuthLogin
