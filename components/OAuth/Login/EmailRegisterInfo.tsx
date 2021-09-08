@@ -65,7 +65,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         }
       } catch (e) {
         console.error(e)
-        Toast({ content: e.toString(), type: 'warning' })
+        Toast({ content: (e.message).toString(), type: 'warning' })
       }
     }, [ updateUsername, inviteCode, Toast, t ])
 
@@ -92,7 +92,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           resolve()
         } catch (e) {
           console.log('Failed:', e)
-          reject(`${t('verification-failed')} ${e.toString()}`)
+          reject(`${t('verification-failed')} ${(e.message).toString()}`)
         } finally {
         }
       }, 500)

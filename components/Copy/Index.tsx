@@ -11,28 +11,31 @@ import { useTranslation } from 'next-i18next'
 import { CircleSuccessIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 interface Props {
-  text: string
+  text: string,
+  disabled?: boolean
 }
 
-const Copy: React.FC<Props> = ({ text }) => {
+const Copy: React.FC<Props> = ({ text, disabled = false }) => {
   const { Toast } = useToast()
   const { t } = useTranslation('common')
 
   const handleCopy = () => {
-    Toast({ content: t('copy-successfully') })
+    if (!disabled) {
+      Toast({ content: t('copy-successfully') })
+    }
   }
 
   return (
-    <CopyText>
+    <CopyText disabled={disabled}>
       <p>{text}</p>
       <CopyToClipboard text={text}
         onCopy={() => handleCopy()}>
-        <CopyOutlined className="g-green" />
+        <CopyOutlined className="copy-btn" />
       </CopyToClipboard>
     </CopyText>
   )
 }
-const CopyText = styled.section`
+const CopyText = styled.section<{ disabled: boolean }>`
   background: #2C2B2A;
   border-radius: 40px;
   display: flex;
@@ -47,10 +50,14 @@ const CopyText = styled.section`
     font-size: 12px;
     line-height: 18px;
     text-align: center;
-    color: #F5F5F5;
+    color: ${props => props.disabled ? '#626262' : '#F5F5F5'};
+    text-decoration: ${props => props.disabled ? 'line-through' : 'inherit'};;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+  .copy-btn {
+    color: ${props => props.disabled ? '#626262' : props.theme.colorGreen};
   }
 `
 

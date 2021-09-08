@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
@@ -16,6 +16,10 @@ interface Props {
 
 const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, inviteCodeData }) => {
   const { t } = useTranslation('common')
+
+  // 使用过的放后面
+  const inviteCodeDataList = useMemo(() => inviteCodeData.sort((a, b) => (Number(a.invitee_user_id) - Number(b.invitee_user_id))), [inviteCodeData])
+
   // 内容
   const Content: React.FC = () => {
     return (
@@ -24,13 +28,13 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, invite
         {
           inviteCodeData.length ? <StyledItem>
             {
-              inviteCodeData.map((i, idx) => (
+              inviteCodeDataList.map((i, idx) => (
                 <StyledContentCopy key={idx}>
-                  <Copy text={i.signature}></Copy>
+                  <Copy text={i.signature} disabled={Number(i.invitee_user_id) > 0}></Copy>
                 </StyledContentCopy>
               ))
             }
-          </StyledItem> : <CustomEmpty description={ t('no-invitation-code') } />
+          </StyledItem> : <CustomEmpty description={t('no-invitation-code')} />
         }
       </section>
     )
