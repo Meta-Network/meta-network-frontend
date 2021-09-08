@@ -31,7 +31,6 @@ const keyUploadAvatar = 'keyUploadAvatar'
 
 const Update: React.FC<Props> = () => {
   const { t } = useTranslation('common')
-  // console.log('update', t('h1'))
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
@@ -96,19 +95,19 @@ const Update: React.FC<Props> = () => {
           bio: trim(bio),
         })
         if (res.statusCode === 200) {
-          Toast({ content: '更新成功' })
+          Toast({ content: t('update-successfully') })
           router.push('/')
         } else {
           throw new Error(res.message)
         }
       } catch (e) {
         console.log(e)
-        Toast({ content: '更新失败', type: 'warning' })
+        Toast({ content: t('update-failed'), type: 'warning' })
       } finally {
         setLoading(false)
       }
     },
-    [router, avatarUrl, Toast],
+    [router, avatarUrl, Toast, t],
   )
 
   const onFinishFailedEmail = (errorInfo: any): void => {
@@ -126,11 +125,11 @@ const Update: React.FC<Props> = () => {
     beforeUpload(file: File) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {
-        Toast({ content: '您只能上传 JPG/PNG 文件！', type: 'warning' })
+        Toast({ content: t('upload-images-format', { type: 'JPG/PNG' }), type: 'warning' })
       }
       const isLtMB = file.size / 1024 / 1024 < 6
       if (!isLtMB) {
-        Toast({ content: '图片必须小于6MB！', type: 'warning' })
+        Toast({ content: t('message-upload-images-size', { size: 6 }), type: 'warning' })
       }
 
       const res = isJpgOrPng && isLtMB
@@ -139,8 +138,8 @@ const Update: React.FC<Props> = () => {
         notification.open({
           key: keyUploadAvatar,
           className: 'custom-notification',
-          message: '图片上传',
-          description: '正在上传....',
+          message: t('upload-picture'),
+          description: `${t('uploading')}...`,
         })
       }
 
@@ -153,17 +152,18 @@ const Update: React.FC<Props> = () => {
       if (info.file.status === 'done') {
         console.log('info', info)
         if (info.file.response.statusCode === 201) {
-          Toast({ content: '上传成功' })
+          Toast({ content: t('upload-successfully') })
           setAvatarUrl(info.file.response.data.publicUrl)
         }
         notification.close(keyUploadAvatar)
         // (`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         // (`${info.file.name} file upload failed.`);
+        Toast({ content: t('upload-failed') })
         notification.close(keyUploadAvatar)
       }
     }
-  }), [token, Toast])
+  }), [token, Toast, t])
 
   const normFile = (e: { file: File, fileList: File[] }) => {
     console.log('Upload event:', e)
@@ -175,7 +175,7 @@ const Update: React.FC<Props> = () => {
 
   return (
     <>
-      <StyledTitle>个人信息设置</StyledTitle>
+      <StyledTitle>{t('user-info-settings')}</StyledTitle>
       <StyledEmailForm
         form={form}
         name="email-register"
@@ -190,7 +190,7 @@ const Update: React.FC<Props> = () => {
           name="avatar"
           getValueFromEvent={normFile}
           rules={[
-            { required: false, message: '请上传头像' },
+            { required: false, message: t('message-upload-avatar') },
           ]}
           className="upload-avatar-form"
         >
@@ -203,31 +203,31 @@ const Update: React.FC<Props> = () => {
           label=""
           name="nickname"
           rules={[
-            { required: true, message: '请输入昵称' },
-            { min: 1, max: 32, message: '长度 1-32' },
+            { required: true, message: t('message-enter-nickname') },
+            { min: 1, max: 32, message: t('message-length', { min: 1, max:  32 }) },
           ]}
         >
-          <Input className="form-input" placeholder="请输入昵称" autoComplete="new-text" />
+          <Input className="form-input" placeholder={t('message-enter-nickname')} autoComplete="new-text" />
         </StyledFormItem>
 
         <StyledFormItem
           label=""
           name="bio"
           rules={[
-            { required: true, message: '请输入简介' },
-            { min: 1, max: 300, message: '长度 1-300' },
+            { required: true, message: t('message-enter-bio') },
+            { min: 1, max: 300, message: t('message-length', { min: 1, max: 300 }) },
           ]}
         >
-          <Input className="form-input" placeholder="请输入简介" autoComplete="new-text" />
+          <Input className="form-input" placeholder={t('message-enter-bio')} autoComplete="new-text" />
         </StyledFormItem>
 
         <StyledFormItem>
           <StyledFormBtn htmlType="submit" loading={loading}>
-            更新
+            {t('update')}
           </StyledFormBtn>
 
           <StyledFormBtnBack onClick={() => router.push('/')}>
-            返回
+            {t('back')}
           </StyledFormBtnBack>
         </StyledFormItem>
       </StyledEmailForm>

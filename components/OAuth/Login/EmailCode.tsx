@@ -4,7 +4,9 @@ import { useCountDown } from 'ahooks'
 import { accountsEmailVerificationCode } from '../../../services/ucenter'
 import { message } from 'antd'
 import { trim } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+
 import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 import useToast from '../../../hooks/useToast'
 
@@ -13,6 +15,8 @@ interface Props {
 }
 
 const EmailCode: React.FC<Props> = ({ form }) => {
+  const { t } = useTranslation('common')
+
   const onEnd = () => {
     console.log('onEnd of the time')
   }
@@ -27,23 +31,23 @@ const EmailCode: React.FC<Props> = ({ form }) => {
     try {
       let { email } = await form.getFieldsValue()
       if (!(email ? trim(email) : email)) {
-        Toast({ content: '请输入邮箱', type: 'warning' })
+        Toast({ content: t('message-enter-email'), type: 'warning' })
         return
       }
       // 开始倒计时
       setTargetDate(Date.now() + 60 * 1000)
-      Toast({ content: '发送验证码...' })
+      Toast({ content: `${t('send-verification-code')}...`})
       const res = await accountsEmailVerificationCode({
         key: trim(email)
       })
       if (res.statusCode === 201) {
-        Toast({ content: '发送成功' })
+        Toast({ content: t('send-successfully') })
       } else {
         throw new Error(res.message)
       }
     } catch (e) {
       console.log(e)
-      Toast({ content: '发送失败', type: 'warning' })
+      Toast({ content: t('send-faild'), type: 'warning' })
     }
   }
 
@@ -54,7 +58,7 @@ const EmailCode: React.FC<Props> = ({ form }) => {
         type="button"
         disabled={count !== 0}
         onClick={handleSendEmailCode}>
-        {count === 0 ? '获取验证码' : `${Math.round(count / 1000)}s`}
+        {count === 0 ? t('get-verification-code') : `${Math.round(count / 1000)}s`}
       </StyledButton>
     </>
   )

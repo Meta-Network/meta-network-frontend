@@ -1,23 +1,25 @@
 import React, { useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
+import { useTranslation } from 'next-i18next'
 
 import LoginAuth from '../../../assets/svg/login_auth.svg'
 import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
 import Email from '../../../components/OAuth/Login/Email'
 
 const OAuthLogin: React.FC = () => {
+  const { t } = useTranslation('common')
   // 登录方式
   const [mode, setMode] = useState<'email'>('email') // email ...
 
   // tips 根据 mode 显示
   const tips = useMemo(() => {
     let list = {
-      email: '使用邮箱登录',
-      wechat: '关注「Andoromeda仙女座」公众号，即可登录。'
+      email: t('login-with-email'),
+      wechat: t('login-with-wechat')
     }
     return list[mode]
-  }, [mode])
+  }, [mode, t])
 
   // animated start
   const animatedDecoration = useSpring({
@@ -42,7 +44,7 @@ const OAuthLogin: React.FC = () => {
           </StyledWrapperContent>
           <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount>
         </StyledWrapperMain>
-        <StyledDecoration src={ LoginAuth } alt="书桌" style={{ ...animatedDecoration }} />
+        <StyledDecoration src={ LoginAuth } alt="Meta Network" style={{ ...animatedDecoration }} />
       </StyledWrapperInner>
     </StyledWrapper>
   )

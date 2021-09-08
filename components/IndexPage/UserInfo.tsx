@@ -11,6 +11,7 @@ import { PointState } from '../../typings/node'
 
 import UserAvatar from './UserAvatar'
 import UserMore from './UserMore'
+import { keyFormat } from '../../utils'
 
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
@@ -25,7 +26,9 @@ interface Props {
   focus$: EventEmitter<string>
 }
 
-const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmark, currentNode, HandleBookmark, focus$ }) {
+const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
+  url, bookmark, currentNode, HandleBookmark, focus$
+}) {
   const refAvatar = useRef<HTMLDivElement>(null)
   const refMore = useRef<HTMLDivElement>(null)
 
@@ -34,7 +37,7 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ( { url, bookmar
 
       const { x, y, z } = currentNode
       if (!isEmpty(currentNode)) {
-        const key = `x${x}_y${y}_z${z}`
+        const key = keyFormat({ x, y, z })
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
         if (dom) {

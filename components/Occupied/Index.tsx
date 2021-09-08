@@ -5,6 +5,7 @@ import {
 } from '@ant-design/icons'
 import { Button } from 'antd'
 import { isBrowser, isMobile } from 'react-device-detect'
+import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible, setIsModalVisible, handleOccupied }) {
+  const { t } = useTranslation('common')
   // loading button
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -35,17 +37,17 @@ const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible
   const Content: React.FC = () => {
     return (
       <div>
-        <StyledContentTitle>什么是 Meta Space？</StyledContentTitle>
-        <StyledContentText>1. Meta Space 是专属你的个人数字空间，你有全部控制权。</StyledContentText>
-        <StyledContentText>2. 你创建的 Meta Space 会在 Meta Network 的六边形网络中占据一格地块。</StyledContentText>
-        <StyledContentTitle>一个ID只能占有一格地块，且暂不支持迁移。 </StyledContentTitle>
-        <StyledContentText>请占领喜欢的位置开始创建吧！</StyledContentText>
+        <StyledContentTitle>{t('occupied-modal-help-title')}</StyledContentTitle>
+        <StyledContentText>{t('occupied-modal-help-rules-1')}</StyledContentText>
+        <StyledContentText>{t('occupied-modal-help-rules-2')}</StyledContentText>
+        <StyledContentTitle>{t('occupied-modal-help-description-1')} </StyledContentTitle>
+        <StyledContentText>{t('occupied-modal-help-description-2')}</StyledContentText>
 
-        <StyledContentTextTips>确定在这个地块建立个人站点吗？</StyledContentTextTips>
+        <StyledContentTextTips>{t('occupied-modal-help-confirm')}</StyledContentTextTips>
 
         <StyledContentFooter>
-          <Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>确认</Button>
-          <Button className="custom-default" onClick={() => setIsModalVisible(false)}>再看看</Button>
+        <Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>{t('confirm')}</Button>
+          <Button className="custom-default" onClick={() => setIsModalVisible(false)}>{t('occupied-modal-close')}</Button>
         </StyledContentFooter>
       </div>
     )
@@ -55,7 +57,7 @@ const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible
     <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'half-occupied' : '' }>
       <StyledContent>
         <StyledContentHead>
-          <StyledContentHeadTitle>创建 META SPACE</StyledContentHeadTitle>
+          <StyledContentHeadTitle>{t('create')} META SPACE</StyledContentHeadTitle>
         </StyledContentHead>
         <Content></Content>
       </StyledContent>

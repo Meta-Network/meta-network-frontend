@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { isBrowser, isMobile } from 'react-device-detect'
+import { useTranslation } from 'next-i18next'
 
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
@@ -14,11 +15,12 @@ interface Props {
 }
 
 const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, inviteCodeData }) => {
+  const { t } = useTranslation('common')
   // 内容
   const Content: React.FC = () => {
     return (
       <section>
-        <p>使用邀请码招呼朋友们加入元宇宙吧！一个邀请码仅能给一个ID使用。</p>
+        <p>{t('invitation-code-introduction')}</p>
         {
           inviteCodeData.length ? <StyledItem>
             {
@@ -28,7 +30,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, invite
                 </StyledContentCopy>
               ))
             }
-          </StyledItem> : <CustomEmpty description="暂无邀请码" />
+          </StyledItem> : <CustomEmpty description={ t('no-invitation-code') } />
         }
       </section>
     )
@@ -38,7 +40,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, invite
     <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'half-code' : ''}>
       <StyledContent>
         <StyledContentHead>
-          <StyledContentHeadTitle>你的专属邀请码</StyledContentHeadTitle>
+          <StyledContentHeadTitle>{t('your-invitation-code')}</StyledContentHeadTitle>
         </StyledContentHead>
         <Content></Content>
       </StyledContent>

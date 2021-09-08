@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
@@ -23,6 +24,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
   signOut
 }) {
   const router = useRouter()
+  const { t } = useTranslation('common')
 
   const handleClick = ({ key }: { key: string }) => {
     if (key === 'signOut') {
@@ -37,13 +39,13 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
   const menu = (
     <Menu onClick={handleClick}>
       <Menu.Item key="account">
-        主页
+        {t('home-page')}
       </Menu.Item>
       <Menu.Item key="edit">
-        编辑
+        {t('edit')}
       </Menu.Item>
       <Menu.Item key="signOut">
-        登出
+        {t('sign-out')}
       </Menu.Item>
     </Menu>
   )
@@ -60,7 +62,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
               visible
                 ? <>
                   <StyledSliderCUserInfo>
-                    {user.nickname || user.username || '暂无昵称'}
+                    {user.nickname || user.username || t('no-nickname')}
                   </StyledSliderCUserInfo>
                   <LeftOutlined className="arrow" />
                 </>
@@ -70,7 +72,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
           : <Link href="/oauth/login">
             <a style={{ width: '100%', padding: '0 8px 0 0', textAlign: 'center' }}>
               <StyledSliderCUserInfo style={{ marginLeft: 0 }}>
-                登录
+                {t('log-in')}
               </StyledSliderCUserInfo>
             </a>
           </Link>

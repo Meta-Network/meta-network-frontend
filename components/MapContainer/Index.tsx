@@ -3,6 +3,7 @@ import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-h
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { isBrowser } from 'react-device-detect'
+import { useTranslation } from 'next-i18next'
 
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
@@ -57,6 +58,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   HandleHistoryView,
   translateMap
 }) {
+  const { t } = useTranslation('common')
   const { Toast } = useToast()
   const { isLoggin } = useUser()
 
@@ -180,7 +182,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       if (!isLoggin || !noticeBardOccupiedState) {
         return
       }
-      Toast({ content: '请选择紧挨已注册用户的地块' })
+      Toast({ content: t('message-click-default-node') })
       return
     } else if (mode === 'disabled') {
       return

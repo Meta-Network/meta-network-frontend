@@ -1,4 +1,4 @@
-import { trim } from 'lodash';
+import { trim } from 'lodash'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
@@ -25,14 +25,14 @@ interface generatePointsProps {
  * @returns
  */
 export const computeHexagonPoints = (width: number, height: number, edge: number): number[][] => {
-  let centerX = width /2 ;
-  let centerY = height / 2;
+  let centerX = width /2 
+  let centerY = height / 2
   let x = edge * Math.sqrt(3) / 2
   let y = edge / 2
   let left = centerX - x
   let top = centerY - 2 * y
-  let x1, x2, x3, x4, x5, x6;
-  let y1, y2, y3, y4, y5, y6;
+  let x1, x2, x3, x4, x5, x6
+  let y1, y2, y3, y4, y5, y6
 
   x5 = x6 = left
   x2 = x3 = left + 2 * x
@@ -76,15 +76,15 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
 
     // first row
     if (i < x) {
-      let _x, _y;
-      _x = i * width + i * padding;
+      let _x, _y
+      _x = i * width + i * padding
       _y = 0
       points[i] = [_x, _y]
     }
 
     // other row
     if (i >= x) {
-      let _x, _y;
+      let _x, _y
       let row = Math.ceil((i + 1) / x)
       let col = i % x
 
@@ -93,7 +93,7 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
         // 默认距离 + x width and padding
         _x = ( (width / 2) + ( 44 / 2 ) ) + ( width * col ) + ( padding * col )
       } else {
-        _x = col * width + col * padding;
+        _x = col * width + col * padding
       }
       // 默认距离 x 倍
       _y = ( height - (edge / 10) ) * ( row - 1)
@@ -108,7 +108,7 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
 /**
  * 范围随机数
  */
-export const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
+export const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min)
 
 /**
  * 立方体坐标转轴坐标
@@ -163,7 +163,7 @@ export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) =
 export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 6) => {
   let max = 0
   for (let i = 0; i < node.length; i++) {
-    const ele = node[i];
+    const ele = node[i]
     if (Math.abs(ele.x) > max) {
       max = Math.abs(ele.x)
     }
@@ -189,7 +189,7 @@ export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 
 export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance: number) => {
   let points: HexagonsState[] = []
   for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i];
+    const ele = hexGrids[i]
     let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
     if (distanceResult) {
       points.push(ele)
@@ -210,7 +210,7 @@ export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance
 export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], distance: number, data?: Map<string, HexagonsState>) => {
   let points: Map<string, HexagonsState> = new Map()
   for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i];
+    const ele = hexGrids[i]
     let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
     if (distanceResult) {
       const { q: x, s: y, r: z } = ele
@@ -246,21 +246,21 @@ export const angle = (start: CoordinateState, end: CoordinateState) => {
  */
 export function isInViewPort(el: HTMLElement): boolean | undefined  {
   if (!el) {
-    return undefined;
+    return undefined
   }
 
   const viewPortWidth =
-    window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
   const viewPortHeight =
-    window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-  const rect = el.getBoundingClientRect();
+    window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+  const rect = el.getBoundingClientRect()
 
   if (rect) {
-    const { top, bottom, left, right } = rect;
-    return bottom > 0 && top <= viewPortHeight && left <= viewPortWidth && right > 0;
+    const { top, bottom, left, right } = rect
+    return bottom > 0 && top <= viewPortHeight && left <= viewPortWidth && right > 0
   }
 
-  return false;
+  return false
 }
 
 // compose
@@ -283,9 +283,9 @@ export const compose = (...fn: Function[]) => {
  */
 export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
   // 只需要处理已有的块
-  const hexagonListExist: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-exist`)
-  const hexagonListActive: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-active`)
-  const hexagonListV: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(`.hexagon-v`)
+  const hexagonListExist: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-exist')
+  const hexagonListActive: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-active')
+  const hexagonListV: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-v')
 
   const list = [...hexagonListExist, ...hexagonListActive, ...hexagonListV]
   list.map(i => {
@@ -322,12 +322,12 @@ export const strEllipsis = (value: string, length: number = 12) => {
  * @returns
  */
 export const amountSplit = (amount: string, decimal: number) => {
-  let point = amount.indexOf('.');
+  let point = amount.indexOf('.')
   if (~point) {
-    return amount.slice(0, point + 1 + decimal);
+    return amount.slice(0, point + 1 + decimal)
   }
-  return amount;
-};
+  return amount
+}
 
 /**
  * 返回统一 Key 格式

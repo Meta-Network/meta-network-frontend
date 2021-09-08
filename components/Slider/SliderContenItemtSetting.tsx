@@ -24,7 +24,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   return (
     <StyledSliderCItem visible={visible}>
       <li>
-        <h4>设置</h4>
+        <h4>{t('settings')}</h4>
       </li>
       <Link
         href='/'
@@ -32,7 +32,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         locale={language}
       >
         <li>
-          <Tooltip title={(visible || isMobile) ? '' : '切换语言'} placement="right">
+          <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
             <a href="javascript:;">
               <GlobalOutlined />
               {visible ? t(language) : ''}

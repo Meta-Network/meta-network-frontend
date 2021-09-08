@@ -6,13 +6,14 @@ import {
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useMount, useUnmount } from 'ahooks'
+import { useTranslation } from 'next-i18next'
 
 /**
  * requestAnimationFrame
  * cancelAnimationFrame
  */
- const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
- window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePosition }) {
+  const { t } = useTranslation('common')
 
   const [styles, api] = useSpring(() => ({
     x: 60,
@@ -44,7 +46,7 @@ const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePos
   })
 
   return (
-    <Tooltip title="定位" placement="left">
+    <Tooltip title={t('position')} placement="left">
       <StyledButtonMap onClick={HandlePosition} style={{ ...styles }}>
         <EnvironmentOutlined />
       </StyledButtonMap>

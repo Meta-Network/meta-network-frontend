@@ -2,37 +2,41 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { WechatOutlined, GithubOutlined, TwitterOutlined } from '@ant-design/icons'
+import { useTranslation } from 'next-i18next'
+
 import { EmailIcon } from '../../Icon/Index'
 
 // Toggle 登录方式
 const ToggleMode: React.FC = () => {
+  const { t } = useTranslation('common')
+
   return (
     <>
-      <StyledTitle>其他方式登录</StyledTitle>
+      <StyledTitle>{t('other-login')}</StyledTitle>
       <StyledList>
         <StyledItem>
-          <Tooltip placement="bottom" title={'Email登录'}>
+          <Tooltip placement="bottom" title={`Email${t('log-in')}`}>
             <StyledItemBtn>
               <EmailIcon />
             </StyledItemBtn>
           </Tooltip>
         </StyledItem>
         <StyledItem>
-          <Tooltip placement="bottom" title={'微信扫码登录'}>
+          <Tooltip placement="bottom" title={t('wechat-scan-code-login')}>
             <StyledItemBtn>
               <WechatOutlined className="icon" />
             </StyledItemBtn>
           </Tooltip>
         </StyledItem>
         <StyledItem>
-          <Tooltip placement="bottom" title={'GitHub登录'}>
+          <Tooltip placement="bottom" title={`GitHub${t('log-in')}`}>
             <StyledItemBtn>
               <GithubOutlined className="icon" />
             </StyledItemBtn>
           </Tooltip>
         </StyledItem>
         <StyledItem>
-          <Tooltip placement="bottom" title={'Twitter登录'}>
+          <Tooltip placement="bottom" title={`Twitter${t('log-in')}`}>
             <StyledItemBtn>
               <TwitterOutlined className="icon" />
             </StyledItemBtn>

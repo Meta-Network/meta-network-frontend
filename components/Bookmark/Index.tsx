@@ -4,6 +4,7 @@ import { Avatar, Radio, Button, Empty } from 'antd'
 import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons'
 import { cloneDeep } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
+import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
@@ -23,7 +24,11 @@ interface Props {
  * @param param0
  * @returns
  */
-const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, translateMap, bookmarkNode, setVisibleSlider, HandleRemoveBookmark }) => {
+const DeploySite: React.FC<Props> = ({
+  isModalVisible, setIsModalVisible, translateMap,
+  bookmarkNode, setVisibleSlider, HandleRemoveBookmark
+}) => {
+  const { t } = useTranslation('common')
   const [selected, setSelected] = useState<boolean>(false)
   const [bookmarkNodeChecked, setBookmarkNodeChecked] = useState<boolean[]>([])
 
@@ -97,14 +102,14 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
       <>
         <StyledItemHead>
           <StyledItemHeadLeft>
-            <StyledItemHeadTitle>按收藏时间</StyledItemHeadTitle>
+            <StyledItemHeadTitle>{t('bookmark-time')}</StyledItemHeadTitle>
             <SortTopIcon />
           </StyledItemHeadLeft>
 
           <div>
             {
               selected ?
-                <StyledItemHeadSelected onClick={() => setSelected(false)}>完成</StyledItemHeadSelected> :
+                <StyledItemHeadSelected onClick={() => setSelected(false)}>{t('finish')}</StyledItemHeadSelected> :
                 (
                   // 没有数据不展示多选按钮
                   bookmarkNode.length > 0 ?
@@ -121,8 +126,8 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
                   <StyledItemLi key={idx}>
                     <Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
                     <StyledItemLiUser>
-                      <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
-                      <p>{i.userBio || '暂无简介'}</p>
+                      <h3>{i.userNickname || i.username || t('no-nickname')}</h3>
+                      <p>{i.userBio || t('no-introduction')}</p>
                     </StyledItemLiUser>
                     {
                       selected ?
@@ -135,12 +140,12 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
                             x: i.x,
                             y: i.y,
                             z: i.z,
-                          })}>查看</StyledItemLiButton>
+                          })}>{t('check')}</StyledItemLiButton>
                     }
                   </StyledItemLi>
                 ))
               }
-            </StyledItem> : <CustomEmpty description="暂无收藏"></CustomEmpty>
+          </StyledItem> : <CustomEmpty description={t('not-bookmark')}></CustomEmpty>
         }
         {
           selected ?
@@ -150,10 +155,10 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
                 onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
               >
                 {
-                  countCheck >= bookmarkNodeChecked.length ? '取消全选' : '全部选中'
+                  countCheck >= bookmarkNodeChecked.length ? t('unselect-all') : t('select-all')
                 }
               </Button>
-              <Button className="custom-primary" onClick={removeChecked}>移除{countCheck}项</Button>
+              <Button className="custom-primary" onClick={removeChecked}>{t('remove-items', { count: countCheck })}</Button>
             </StyledContentFooter> : null
         }
       </>
@@ -164,7 +169,7 @@ const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, transl
     <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'full' : ''}>
       <StyledContainer>
         <StyledContentHead>
-          <StyledContentHeadTitle>我的收藏</StyledContentHeadTitle>
+          <StyledContentHeadTitle>{t('my-bookmark')}</StyledContentHeadTitle>
         </StyledContentHead>
         <Content></Content>
       </StyledContainer>

@@ -3,6 +3,7 @@ import { Text } from 'react-hexgrid'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { strEllipsis } from '../../utils/index'
+import { useTranslation } from 'next-i18next'
 
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, node, isOwner }) {
+  const { t } = useTranslation('common')
 
   // console.log('NodeUser components')
 
@@ -30,9 +32,9 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
         : null
     }
     <Text>
-      <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || '暂无昵称'}</tspan>
-      <tspan x="0" y="8" style={{ fontSize: 8}}>{ node?.siteName || '默认站点名'}</tspan>
-      <tspan x="0" y="26" style={{ fontSize: 12, lineHeight: 24 }}>{strEllipsis(node?.userBio) || '暂无简介'}</tspan>
+      <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
+      <tspan x="0" y="8" style={{ fontSize: 8}}>{ node?.siteName || t('default-site-name')}</tspan>
+      <tspan x="0" y="26" style={{ fontSize: 12, lineHeight: 24 }}>{strEllipsis(node?.userBio) || t('no-introduction')}</tspan>
     </Text>
     {/* 收藏的坐标点 */}
     {

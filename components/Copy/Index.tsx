@@ -6,6 +6,7 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { message } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useTranslation } from 'next-i18next'
 
 import { CircleSuccessIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
@@ -15,9 +16,10 @@ interface Props {
 
 const Copy: React.FC<Props> = ({ text }) => {
   const { Toast } = useToast()
+  const { t } = useTranslation('common')
 
   const handleCopy = () => {
-    Toast({ content: '复制成功' })
+    Toast({ content: t('copy-successfully') })
   }
 
   return (

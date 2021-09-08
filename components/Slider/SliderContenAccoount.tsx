@@ -2,6 +2,7 @@ import React from 'react'
 import { Popconfirm } from 'antd'
 import Link from 'next/link'
 import { Tooltip } from 'antd'
+import { useTranslation } from 'next-i18next'
 
 import { StyledSliderCAccount, StyledSliderCAccountButton, StyledCount } from './Style'
 import { ArrowTopLeftIcon, LogoutIcon } from '../Icon/Index'
@@ -13,7 +14,11 @@ interface SliderContenAccoountProps {
 }
 
 // 侧边栏 内容 账户操作
-const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(function SliderContenAccoount({ isLoggin, signOut, visible }) {
+const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(function SliderContenAccoount({
+  isLoggin, signOut, visible
+}) {
+  const { t } = useTranslation('common')
+
   console.log('SliderContenAccoount')
 
   return (
@@ -21,21 +26,21 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
       {
         isLoggin
           ?
-          <Tooltip title={ visible ? '' : '登出' }>
-            <Popconfirm placement="top" title={'确认登出账户？'} onConfirm={signOut} okText="Yes" cancelText="No">
+          <Tooltip title={ visible ? '' : t('sign-out') }>
+            <Popconfirm placement="top" title={t('confirm-logout')} onConfirm={signOut} okText="Yes" cancelText="No">
               <StyledSliderCAccountButton className="g-red" visible={visible}>
                 <LogoutIcon />
-                {visible ? '登出账户' : ''}
+                {visible ? t('logout-account') : ''}
               </StyledSliderCAccountButton>
             </Popconfirm>
           </Tooltip>
           :
-          <Tooltip title={ visible ? '' : '登录' }>
+          <Tooltip title={ visible ? '' : t('log-in') }>
             <Link href="/oauth/login">
               <a>
                 <StyledSliderCAccountButton className="g-green" visible={visible}>
                   <ArrowTopLeftIcon />
-                  {visible ? '前往注册/登录' : ''}
+                  {visible ? t('go-to-register-or-login') : ''}
                 </StyledSliderCAccountButton>
               </a>
             </Link>

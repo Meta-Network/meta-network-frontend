@@ -4,6 +4,7 @@ import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
 import { SearchOutlined, UserOutlined } from '@ant-design/icons'
 import { useDebounceFn } from 'ahooks'
 import { isBrowser, isMobile } from 'react-device-detect'
+import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
 import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
@@ -28,6 +29,7 @@ interface Props {
  * @returns
  */
 const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, setIsModalVisible, setVisibleSlider, translateMap }) => {
+  const { t } = useTranslation('common')
   const [form] = Form.useForm()
   // 是否显示历史记录内容
   const [showSearch, setShowSearch] = useState<boolean>(false)
@@ -118,7 +120,8 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
         if (res.statusCode === 200) {
           setSearchList(res.data)
         } else {
-          console.log('获取失败')
+          // console.log('获取失败')
+          throw new Error(res.message)
         }
       } catch (e) {
         console.log('e', e)
@@ -206,7 +209,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
     <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
       <StyledContent>
         <StyledContentHead>
-          <StyledContentHeadTitle>搜索</StyledContentHeadTitle>
+          <StyledContentHeadTitle>{t('search')}</StyledContentHeadTitle>
         </StyledContentHead>
         <div>
           <Form
@@ -222,7 +225,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
               rules={[{ required: true, message: 'Please search!' }]}
             >
               <Input
-                placeholder="搜索"
+                placeholder={t('search')}
                 prefix={<SearchOutlined />}
                 className="custom-search"
                 maxLength={40}
@@ -237,23 +240,23 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
             showSearch ?
               <StyledContentItem>
                 <StyledContentItemHead>
-                  <StyledContentItemHeadTitle>ID层</StyledContentItemHeadTitle>
+                  <StyledContentItemHeadTitle>ID{t('layer')}</StyledContentItemHeadTitle>
                 </StyledContentItemHead>
                 <StyledItem >
                   {
                     searchList.map((i) => (
                       <StyledItemLi key={i.userId}>
-                        <Avatar size={40} src={i.userAvatar || 'https://ci.xiaohongshu.com/34249aac-c781-38cb-8de2-97199467b200?imageView2/2/w/1080/format/jpg/q/75'} icon={<UserOutlined />} />
+                        <Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
                         <StyledItemLiUser>
-                          <h3>{i.userNickname || i.username || '暂无昵称'}</h3>
-                          <p>{i.userBio || '暂无简介'}</p>
+                          <h3>{i.userNickname || i.username || t('no-nickname')}</h3>
+                          <p>{i.userBio || t('no-introduction')}</p>
                         </StyledItemLiUser>
-                        <StyledItemLiButton onClick={() => handleViewNode(i)}>查看</StyledItemLiButton>
+                        <StyledItemLiButton onClick={() => handleViewNode(i)}>{t('check')}</StyledItemLiButton>
                       </StyledItemLi>
                     ))
                   }
                   {
-                    searchList.length <= 0 ? <CustomEmpty description="暂无内容"></CustomEmpty> : null
+                    searchList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
                   }
                   {
                     loading ? <StyledEmpty>
@@ -264,11 +267,11 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
               </StyledContentItem> :
               <StyledContentItem>
                 <StyledContentItemHead>
-                  <StyledContentItemHeadTitle>搜索历史</StyledContentItemHeadTitle>
+                  <StyledContentItemHeadTitle>{t('search-history')}</StyledContentItemHeadTitle>
                   {
                     searchHistoryList.length <= 0 ? null :
-                      <Popconfirm placement="top" title={'确认删除历史记录'} onConfirm={() => removeAllHistory()} okText="Yes" cancelText="No">
-                        <StyledContentItemHeadDelete>删除</StyledContentItemHeadDelete>
+                      <Popconfirm placement="top" title={t('confirm-delete-history')} onConfirm={() => removeAllHistory()} okText="Yes" cancelText="No">
+                        <StyledContentItemHeadDelete>{t('delete')}</StyledContentItemHeadDelete>
                       </Popconfirm>
                   }
                 </StyledContentItemHead>
@@ -281,7 +284,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
                     ))
                   }
                   {
-                    searchHistoryList.length <= 0 ? <CustomEmpty description="暂无内容"></CustomEmpty> : null
+                    searchHistoryList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
                   }
                 </StyledContentHiitory>
               </StyledContentItem>

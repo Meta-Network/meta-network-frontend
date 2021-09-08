@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import AnimatedNumber from 'animated-number-react'
 import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
+import { useTranslation } from 'next-i18next'
 
 import { PointScopeState } from '../../typings/metaNetwork'
 import { fetchHexGridsCountByFilterAPI } from '../../helpers/index'
@@ -30,6 +31,7 @@ interface Props {
 const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ range }) {
   // 统计所有坐标点
   const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+  const { t } = useTranslation('common')
 
   const [ styles, api ] = useSpring(() => ({
     x: 40,
@@ -70,7 +72,7 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
   })
 
   return (
-    <Tooltip title="坐标点统计" placement="left">
+    <Tooltip title={t('coordinate-count')} placement="left">
       <StyledText style={styles}>
         <AnimatedNumber
           value={hexGridsCountData}

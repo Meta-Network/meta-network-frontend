@@ -8,6 +8,7 @@ import { PointState } from '../../typings/node'
 import { isBrowser, isMobile } from 'react-device-detect'
 
 import UserAvatar from './UserAvatar'
+import { keyFormat } from '../../utils'
 
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
@@ -28,7 +29,7 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
     () => {
       const { x, y, z } = currentNodeMouse
       if (!isEmpty(currentNodeMouse)) {
-        const key = `x${x}_y${y}_z${z}`
+        const key = keyFormat({ x, y, z })
         const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
         if (dom) {

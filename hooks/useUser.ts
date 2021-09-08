@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useCookieState, useInterval } from 'ahooks';
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import { useCookieState, useInterval } from 'ahooks'
 import { usersMe } from '../services/ucenter'
 import { UsersMeProps } from '../typings/ucenter'
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash'
 
 // interface Result {
 //   user: UsersMeProps

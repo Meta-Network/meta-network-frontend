@@ -1,15 +1,17 @@
 import React from 'react'
 import { Button } from 'antd'
-import { StoreSet, StoreRemove } from '../utils/store'
-
+import { StoreRemove } from '../utils/store'
+import { useRouter } from 'next/router'
 
 const key = 'MetaNetworkDEV'
 
 const DEV =  React.memo( function DEV () {
+  const router = useRouter()
 
   return (
     <div>
-      <Button onClick={ () => StoreSet(key, String(Date.now())) }>开启</Button>
+      <Button onClick={ () => router.push('/') }>Home</Button>
+      <Button onClick={ () => StoreRemove(key) }>关闭</Button>
       <Button onClick={ () => StoreRemove(key) }>关闭</Button>
     </div>
   )

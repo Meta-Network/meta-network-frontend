@@ -7,6 +7,7 @@ import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, A
 import { isArray } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
+import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node'
@@ -23,6 +24,7 @@ interface Props {
 const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$ }) => {
   const { Toast } = useToast()
   const [visible, setVisible] = useState<boolean>(false)
+  const { t } = useTranslation('common')
 
   // 是否收藏
   const isBookmark = useMemo(() => {
@@ -45,7 +47,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
-    Toast({ content: '进入主页' })
+    Toast({ content: t('go-to-homepage') })
     window.open('https://meta-cms.vercel.app/', '_blank')
   }
 
@@ -71,16 +73,16 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="bookmark" icon={isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
         {
-          isBookmark ? '取消收藏' : '收藏'
+          isBookmark ? t('delete-bookmark') : t('bookmark')
         }
       </Menu.Item>
       {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
         拍一拍
       </Menu.Item> */}
       <CopyToClipboard text={'https://meta-cms.vercel.app/'}
-        onCopy={() => Toast({ content: '复制成功' })}>
+        onCopy={() => Toast({ content: t('copy-successfully') })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
-          复制地址
+          {t('copy-address')}
         </Menu.Item>
       </CopyToClipboard>
     </Menu>
@@ -100,7 +102,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
         onClick={(e: any) => handleJumpHome(e)}
         style={{ marginBottom: 16 }}
       >
-        <ArrowTopLeftIcon />{' '}进入主页
+        <ArrowTopLeftIcon />{' '}{t('go-to-homepage')}
       </StyledUserMoreButton>
       <Dropdown
         onVisibleChange={handleVisible}

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { isEmpty } from 'lodash'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
+import { useTranslation } from 'next-i18next'
 
 import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'
 import { useUser } from '../../hooks/useUser'
@@ -16,6 +17,7 @@ interface Props {
 const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState }) => {
   const { user } = useUser()
   const { Toast } = useToast()
+  const { t } = useTranslation('common')
 
   const noticeBardOccupiedAnimatedStyles = useSpring({
     from: { x: '-50%', y: -40, opacity: 0 },
@@ -31,11 +33,11 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
     e.stopPropagation()
 
     if (isEmpty(user)) {
-      Toast({ content: '请登录', type: 'warning' })
+      Toast({ content: t('please-sign-in'), type: 'warning' })
       return
     }
     setNoticeBardOccupiedState(!status)
-  }, [user, status, setNoticeBardOccupiedState, Toast])
+  }, [user, status, setNoticeBardOccupiedState, Toast, t])
 
   return (
     <StyledMessageRelative style={noticeBardOccupiedAnimatedStyles}>
@@ -47,13 +49,13 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
       {/* 140 - 12 + 40 */}
       <StyledText>
         {
-          status ? '首先，请认领一块空白的地块' : '现在就开始建立你在元宇宙网络的个人站点吧！'
+          status ? t('occupy-open-prompt') : t('occupy-close-prompt')
         }
       </StyledText>
       <StyledMessageButton
         status={status}
         onClick={(e: any) => ToggleState(e)}>
-        {status ? '放弃创建' : '开始创建'}
+        {status ? t('abandon-creation') : t('start-creating')}
       </StyledMessageButton>
     </StyledMessageRelative>
   )

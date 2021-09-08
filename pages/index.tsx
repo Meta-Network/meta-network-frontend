@@ -51,7 +51,6 @@ const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
 
 const Home = () => {
   const { t } = useTranslation('common')
-  // console.log('111', t('h1'))
   const { Toast } = useToast()
 
   // hex all 坐标点
@@ -273,7 +272,7 @@ const Home = () => {
       }
       const node = allNodeMap.get(keyFormat({ x, y, z }))
       if (!node) {
-        Toast({ content: '没有坐标数据' })
+        Toast({ content: t('no-coordinate-data') })
         return
       }
       // 重复点击垱前块 Toggle
@@ -296,7 +295,7 @@ const Home = () => {
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
       .on('end', showUserMore)
-  }, [allNodeMap, currentNode, layout, Toast])
+  }, [allNodeMap, currentNode, layout, Toast, t])
 
   /**
    * 获取自己的坐标点
@@ -370,7 +369,7 @@ const Home = () => {
     // 没有收藏记录
     if (isEmpty(bookmark)) {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
-      Toast({ content: '收藏成功' })
+      Toast({ content: t('add-bookmark') })
     } else {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
@@ -381,17 +380,17 @@ const Home = () => {
       // 取消收藏
       if (~bookmarkListIdx) {
         bookmarkList.splice(bookmarkListIdx, 1)
-        Toast({ content: '取消收藏' })
+        Toast({ content: t('delete-bookmark') })
       } else {
         bookmarkList.push(point)
-        Toast({ content: '收藏成功' })
+        Toast({ content: t('add-bookmark') })
       }
 
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
     }
 
     fetchBookmark()
-  }, [fetchBookmark, Toast])
+  }, [fetchBookmark, Toast, t])
 
   /**
    * 处理移除收藏
@@ -416,9 +415,9 @@ const Home = () => {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
       fetchBookmark()
 
-      Toast({ content: '移除收藏成功' })
+      Toast({ content: t('success') })
     },
-    [fetchBookmark, Toast]
+    [fetchBookmark, Toast, t]
   )
 
   // 处理占领
@@ -440,7 +439,7 @@ const Home = () => {
     try {
       const res = await hexGrids(currentNodeChoose)
       if (res.statusCode === 201) {
-        Toast({ content: '占领成功' })
+        Toast({ content: t('successful-occupation') })
 
         fetchHexGriids()
         setIsModalVisibleOccupied(false)
@@ -451,7 +450,7 @@ const Home = () => {
       console.log(e)
       Toast({ content: e.message, type: 'warning' })
     }
-  }, [currentNodeChoose, fetchHexGriids, Toast])
+  }, [currentNodeChoose, fetchHexGriids, Toast, t])
 
   // 重置定位
   const HandlePosition = useCallback(() => {

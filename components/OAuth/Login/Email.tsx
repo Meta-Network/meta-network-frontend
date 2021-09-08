@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'next-i18next'
+
 import { EmailModeProps } from '../../../typings/oauth'
 import EmailLogin from './EmailLogin'
 import EmailRegister from './EmailRegister'
@@ -8,6 +10,7 @@ interface Props {
 }
 
 const Email: React.FC<Props> = () => {
+  const { t } = useTranslation('common')
   // email 登录模式
   const [emailMode, setEmailMode] = useState<EmailModeProps>('login')
 
@@ -18,7 +21,7 @@ const Email: React.FC<Props> = () => {
 
   return (
     <>
-      <StyledMethod>{emailMode === 'login' ? '邮箱登录' : '邮箱注册'}</StyledMethod>
+      <StyledMethod>{emailMode === 'login' ? t('email-login') : t('email-registration')}</StyledMethod>
       {
         emailMode === 'login' ?
         <EmailLogin setEmailModeFn={setEmailModeFn}></EmailLogin> :

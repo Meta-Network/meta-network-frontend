@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { Form, Input, Button } from 'antd'
 import { trim } from 'lodash'
+import { useTranslation } from 'next-i18next'
 
 import { EmailModeProps } from '../../../typings/oauth'
 import { invitationsValidate } from '../../../services/ucenter'
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailModeFn }) => {
+  const { t } = useTranslation('common')
   const [formResister] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const { Toast } = useToast()
@@ -38,7 +40,7 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
           setStep(1)
           setInviteCode(inviteCode)
         } else {
-          throw new Error('邀请码错误')
+          throw new Error(t('message-invitation-code-error'))
         }
       } catch (e) {
         console.log(e)
@@ -46,7 +48,7 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
       } finally {
         setLoading(false)
       }
-    }, [ Toast, setStep, setInviteCode ])
+    }, [ Toast, setStep, setInviteCode, t ])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo)
@@ -66,24 +68,24 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
         label=""
         name="inviteCode"
         rules={[
-          { required: true, message: '请输入邀请码' },
+          { required: true, message: t('message-enter-invitation-code') },
         ]}
       >
-        <Input className="form-input" placeholder="请输入邀请码" autoComplete="new-text" />
+        <Input className="form-input" placeholder={ t('message-enter-invitation-code') } autoComplete="new-text" />
       </StyledFormItem>
       <StyledCodeDescription>
-        <StyledCodeDescriptionTitle>如何获取邀请码?</StyledCodeDescriptionTitle>
-        <StyledCodeDescriptionText>1.如果您是 Matataki 用户请在官网中登录后查看 消息通知，我们已经向您发送了邀请码</StyledCodeDescriptionText>
-        <StyledCodeDescriptionText>2.如果您是新用户请向已经登入的用户请求获得邀请码（每个新用户完成建站后可获得3个邀请码）</StyledCodeDescriptionText>
+        <StyledCodeDescriptionTitle>{t('invitation-code-help-title')}</StyledCodeDescriptionTitle>
+        <StyledCodeDescriptionText>{t('invitation-code-help-rule-1')}</StyledCodeDescriptionText>
+        <StyledCodeDescriptionText>2.{t('invitation-code-help-rule-2')}</StyledCodeDescriptionText>
       </StyledCodeDescription>
 
 
       <StyledFormItem>
         <StyledFormFlexSpaceBetween>
           <StyledFormBtn htmlType="submit" loading={loading}>
-            下一步
+            {t('next')}
           </StyledFormBtn>
-          <StyledFormBtnText type="button" onClick={() => setEmailModeFn('login')}>登录</StyledFormBtnText>
+          <StyledFormBtnText type="button" onClick={() => setEmailModeFn('login')}>{t('log-in')}</StyledFormBtnText>
         </StyledFormFlexSpaceBetween>
       </StyledFormItem>
     </StyledEmailForm>

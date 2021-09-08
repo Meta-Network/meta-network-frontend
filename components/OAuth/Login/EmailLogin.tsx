@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd'
+import { useTranslation } from 'next-i18next'
+
 import { EmailModeProps } from '../../../typings/oauth'
 import EmailCode from './EmailCode'
 import { accountsEmailLogin } from '../../../services/ucenter'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 import useToast from '../../../hooks/useToast'
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
 }
 
 const Email: React.FC<Props> = ({ setEmailModeFn }) => {
+  const { t } = useTranslation('common')
   const [formLogin] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -35,14 +36,14 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         hcaptchaToken: 'hcaptcha_token_here'
       })
       if (res.statusCode === 200) {
-        Toast({ content: '登录成功' })
+        Toast({ content: t('login-successful') })
         router.push('/')
       } else {
         throw new Error(res.message)
       }
     } catch (e) {
       console.error(e)
-      Toast({ content: '登录失败', type: 'warning' })
+      Toast({ content: t('login-failed'), type: 'warning' })
     } finally {
       setLoading(false)
     }
@@ -64,20 +65,20 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
           label=""
           name="email"
           rules={[
-            { required: true, message: '请输入邮箱' },
-            { required: true, type: 'email', message: '请输入有效邮箱' },
+            { required: true, message: t('message-enter-email') },
+            { required: true, type: 'email', message: t('message-enter-valid-email ') },
           ]}
         >
-          <Input className="form-input" placeholder="请输入邮箱" autoComplete="on" />
+          <Input className="form-input" placeholder={t('message-enter-email')} autoComplete="on" />
         </StyledFormItem>
 
         <StyledFormCode>
           <StyledFormItem
             label=""
             name="code"
-            rules={[{ required: true, message: '请输入验证码' }]}
+            rules={[{ required: true, message: t('message-enter-verification-code') }]}
           >
-            <Input className="form-input" placeholder="请输入验证码" autoComplete="off" />
+            <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" />
           </StyledFormItem>
           <EmailCode form={formLogin}></EmailCode>
         </StyledFormCode>
@@ -85,9 +86,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         <StyledFormItem>
           <StyledFormFlexSpaceBetween>
             <StyledFormBtn htmlType="submit" loading={loading}>
-              登录
+              {t('log-in')}
             </StyledFormBtn>
-            <StyledFormBtnText type="button" onClick={() => setEmailModeFn('register')}>注册</StyledFormBtnText>
+            <StyledFormBtnText type="button" onClick={() => setEmailModeFn('register')}>{t('register')}</StyledFormBtnText>
           </StyledFormFlexSpaceBetween>
         </StyledFormItem>
       </StyledEmailForm>

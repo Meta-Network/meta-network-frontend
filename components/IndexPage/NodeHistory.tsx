@@ -4,7 +4,7 @@ import { Avatar, Tooltip } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { useSpring, animated } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
-
+import { useTranslation } from 'next-i18next'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { PointState } from '../../typings/node'
 import { keyFormat } from '../../utils'
@@ -22,6 +22,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
   allNodeMap, historyView, currentNode,
   setCurrentNode, translateMap, HandleHistoryView
 }) {
+  const { t } = useTranslation('common')
 
   /**
    * 历史预览列表
@@ -70,7 +71,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     <StyledHistory>
       {
         historyViewList.map((i, idx) => (
-          <Tooltip title={i.userNickname || i.username || '暂无昵称'} placement="bottom" key={`${i.x}${i.y}${i.z}`}>
+          <Tooltip title={i.userNickname || i.username || t('no-nickname')} placement="bottom" key={`${i.x}${i.y}${i.z}`}>
             <StyledHistoryNode
               style={styles} onClick={(e: any) => handleClick(e, { x: i.x, y: i.y, z: i.z })}>
               <Avatar size={22 + (idx * 2)} icon={<UserOutlined />} src={i.userAvatar} />

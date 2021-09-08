@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
+import { useTranslation } from 'next-i18next'
 
 import {
   angle, isInViewPort
@@ -24,6 +25,7 @@ interface Props {
  * @returns
  */
 const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMineData }) {
+  const { t } = useTranslation('common')
   // 箭头角度
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
@@ -100,7 +102,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   }, [ hexGridsMineData, calcAngle ])
 
   return (
-    <Tooltip title={ isShow ? '自己坐标方位' : '' }>
+    <Tooltip title={ isShow ? t('coordinate-bearing') : '' }>
       <StyledArrow style={style}>
           <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>

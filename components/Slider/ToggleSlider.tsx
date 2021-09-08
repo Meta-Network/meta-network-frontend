@@ -20,10 +20,10 @@ import SliderContenItemtNav from './SliderContenItemtNav'
 import SliderContentUser from './SliderContentUser'
 import SliderContenItemtSetting from './SliderContenItemtSetting'
 import SliderToggle from './SliderToggle'
+import { useTranslation } from 'next-i18next'
 
 import useToast from '../../hooks/useToast'
 import { keyFormat } from '../../utils'
-import { useTranslation } from 'next-i18next'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -83,7 +83,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
       try {
         const res = await accountsTokenDelete()
         if (res.statusCode === 200) {
-          Toast({ content: '登出成功' })
+          Toast({ content: t('sign-out-successfully') })
           router.reload()
         } else {
           throw new Error(res.message)
@@ -92,7 +92,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
         console.log(e)
         Toast({ content: e.toString(), type: 'warning' })
       }
-    }, [router, Toast]
+    }, [router, Toast, t]
   )
 
   /**

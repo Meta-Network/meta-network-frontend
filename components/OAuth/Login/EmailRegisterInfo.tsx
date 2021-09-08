@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 import { EmailModeProps } from '../../../typings/oauth'
 import { UsersMeUsernameState } from '../../../typings/ucenter.d'
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
+  const { t } = useTranslation('common')
   const [formResister] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
@@ -54,7 +56,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           hcaptchaToken: 'hcaptcha_token_here'
         })
         if (resEmailSignup.statusCode === 201) {
-          Toast({ content: '注册成功' })
+          Toast({ content: t('registration-success') })
           await updateUsername({
             username: username
           })
@@ -65,7 +67,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         console.error(e)
         Toast({ content: e.toString(), type: 'warning' })
       }
-    }, [ updateUsername, inviteCode, Toast ])
+    }, [ updateUsername, inviteCode, Toast, t ])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo)
@@ -82,15 +84,15 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           const res = await accountsEmailVerify({ account: trim(values.email) })
           if (res.statusCode === 200) {
             if (res.data.isExists) {
-              reject('邮箱已注册')
+              reject(t('email-has-been-registered'))
             }
           } else {
-            reject('验证失败')
+            reject(t('verification-failed'))
           }
           resolve()
         } catch (e) {
           console.log('Failed:', e)
-          reject(`验证失败 ${e.toString()}`)
+          reject(`${t('verification-failed')} ${e.toString()}`)
         } finally {
         }
       }, 500)
@@ -112,31 +114,31 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         label=""
         name="username"
         rules={[
-          { required: true, message: '请输入用户名' },
+          { required: true, message: t('message-enter-username') },
         ]}
       >
-        <Input className="form-input" placeholder="请输入用户名(不可修改)" autoComplete="new-text" />
+        <Input className="form-input" placeholder= {`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
       </StyledFormItem>
 
       <StyledFormItem
         label=""
         name="email"
         rules={[
-          { required: true, message: '请输入邮箱' },
-          { required: true, type: 'email', message: '请输入有效邮箱' },
+          { required: true, message: t('message-enter-email') },
+          { required: true, type: 'email', message: t('message-enter-valid-email ') },
           { validator: verifyEmailRule },
         ]}
       >
-        <Input className="form-input" placeholder="请输入邮箱" autoComplete="new-text" />
+        <Input className="form-input" placeholder={t('message-enter-email')} autoComplete="new-text" />
       </StyledFormItem>
 
       <StyledFormCode>
         <StyledFormItem
           label=""
           name="code"
-          rules={[{ required: true, message: '请输入验证码' }]}
+          rules={[{ required: true, message: t('message-enter-verification-code') }]}
         >
-          <Input className="form-input" placeholder="请输入验证码" autoComplete="off" />
+          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" />
         </StyledFormItem>
         <EmailCode form={formResister}></EmailCode>
       </StyledFormCode>
@@ -144,9 +146,9 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       <StyledFormItem>
         <StyledFormFlexSpaceBetween>
           <StyledFormBtn htmlType="submit" loading={loading}>
-            注册
+            {t('register')}
           </StyledFormBtn>
-          <StyledFormBtnText type="button" onClick={() => setEmailModeFn('login')}>登录</StyledFormBtnText>
+          <StyledFormBtnText type="button" onClick={() => setEmailModeFn('login')}>{t('log-in')}</StyledFormBtnText>
         </StyledFormFlexSpaceBetween>
       </StyledFormItem>
     </StyledEmailForm>

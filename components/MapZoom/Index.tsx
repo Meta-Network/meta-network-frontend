@@ -3,6 +3,7 @@ import { Tooltip } from 'antd'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useMount, useUnmount } from 'ahooks'
+import { useTranslation } from 'next-i18next'
 
 import { amountSplit } from '../../utils/index'
 
@@ -11,7 +12,7 @@ import { amountSplit } from '../../utils/index'
  * cancelAnimationFrame
  */
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
- window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 let IDAnimation: number
@@ -23,7 +24,7 @@ interface Props {}
  * @returns
  */
 const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
-
+  const { t } = useTranslation('common')
   const [value, setValue] = useState<Number>(0)
 
   const [ styles, api ] = useSpring(() => ({
@@ -75,7 +76,7 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
   })
 
   return (
-    <Tooltip title="缩放百分比" placement="left">
+    <Tooltip title={t('zoom-percentage')} placement="left">
       <StyledText style={styles}>
         {value}%
       </StyledText>

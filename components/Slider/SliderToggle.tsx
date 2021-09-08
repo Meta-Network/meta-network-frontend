@@ -8,7 +8,9 @@ interface SliderContenAccoountProps {
   Toggle: () => void
 }
 
-const SliderToggle: React.FC<SliderContenAccoountProps> = React.memo(function SliderToggle({ Toggle, visible }) {
+const SliderToggle: React.FC<SliderContenAccoountProps> = React.memo(function SliderToggle({
+  Toggle, visible
+}) {
   // console.log('SliderToggle')
 
   return (
