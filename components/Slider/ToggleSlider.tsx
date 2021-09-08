@@ -18,6 +18,7 @@ import SliderContenAccoount from './SliderContenAccoount'
 import SliderContenItemtUser from './SliderContenItemtUser'
 import SliderContenItemtNav from './SliderContenItemtNav'
 import SliderContentUser from './SliderContentUser'
+import SliderContenItemtSetting from './SliderContenItemtSetting'
 import SliderToggle from './SliderToggle'
 
 import useToast from '../../hooks/useToast'
@@ -129,6 +130,10 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
             inviteCodeData={inviteCodeData}
             setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}
             setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtUser>
+
+          <SliderContenItemtSetting
+            visible={visibleSlider}
+          ></SliderContenItemtSetting>
           {/* <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount> */}
           <SliderToggle visible={visibleSlider} Toggle={() => setVisibleSlider(!visibleSlider)}></SliderToggle>
         </StyledSliderContent>
