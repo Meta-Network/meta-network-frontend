@@ -21,9 +21,11 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
 
   return (
     <StyledSliderCItem visible={visible}>
-      <li>
-        <h4>{t('navigation')}</h4>
-      </li>
+      {
+        visible ? <li>
+          <h4>{t('slider-navigation')}</h4>
+        </li> : null
+      }
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('search')} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>

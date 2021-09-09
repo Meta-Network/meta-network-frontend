@@ -15,7 +15,7 @@ const ToggleMode: React.FC = () => {
       <StyledTitle>{t('other-login')}</StyledTitle>
       <StyledList>
         <StyledItem>
-          <Tooltip placement="bottom" title={`Email${t('log-in')}`}>
+          <Tooltip placement="bottom" title={`Email ${t('log-in')}`}>
             <StyledItemBtn>
               <EmailIcon />
             </StyledItemBtn>
@@ -29,14 +29,14 @@ const ToggleMode: React.FC = () => {
           </Tooltip>
         </StyledItem>
         <StyledItem>
-          <Tooltip placement="bottom" title={`GitHub${t('log-in')}`}>
+          <Tooltip placement="bottom" title={`GitHub ${t('log-in')}`}>
             <StyledItemBtn>
               <GithubOutlined className="icon" />
             </StyledItemBtn>
           </Tooltip>
         </StyledItem>
         <StyledItem>
-          <Tooltip placement="bottom" title={`Twitter${t('log-in')}`}>
+          <Tooltip placement="bottom" title={`Twitter ${t('log-in')}`}>
             <StyledItemBtn>
               <TwitterOutlined className="icon" />
             </StyledItemBtn>

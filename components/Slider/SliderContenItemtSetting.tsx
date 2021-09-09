@@ -19,13 +19,15 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   const router = useRouter()
   const language = useMemo(() => {
     return router.locale === 'zh-CN' ? 'en-US' : 'zh-CN'
-  }, [ router.locale ])
+  }, [router.locale])
 
   return (
     <StyledSliderCItem visible={visible}>
-      <li>
-        <h4>{t('settings')}</h4>
-      </li>
+      {
+        visible ? <li>
+          <h4>{t('settings')}</h4>
+        </li> : null
+      }
       <Link
         href='/'
         passHref
@@ -34,7 +36,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <li>
           <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
             <a href="javascript:;">
-              <GlobalOutlined />
+              <GlobalOutlined style={{ fontSize: 22 }} />
               {visible ? t(language) : ''}
             </a>
           </Tooltip>

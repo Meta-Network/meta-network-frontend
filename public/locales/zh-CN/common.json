@@ -14,7 +14,6 @@
   "logout-account": "登出账户",
   "confirm-logout": "确认登出账户？",
   "go-to-register-or-login": "前往注册/登录",
-  "navigation": "导航",
   "search": "搜索",
   "switch-ID-layer": "切换 ID层",
   "settings": "设置",
@@ -105,5 +104,6 @@
   "delete": "删除",
   "confirm-delete-history": "确认删除历史记录",
   "search-history": "搜索历史",
-  "personal": "个人"
+  "personal": "个人",
+  "slider-navigation": "导航"
 }

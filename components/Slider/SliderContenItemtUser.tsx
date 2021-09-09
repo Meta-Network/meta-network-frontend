@@ -26,9 +26,11 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
 
   return (
     <StyledSliderCItem visible={visible}>
-      <li>
-        <h4>{t('personal')}</h4>
-      </li>
+      {
+        visible ? <li>
+          <h4>{t('personal')}</h4>
+        </li> : null
+      }
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('my-bookmark')} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
