@@ -262,7 +262,7 @@ const Home = () => {
   /**
    * 偏移地图坐标
    */
-  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true) => {
+  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true, nodeActive: boolean = true) => {
     const svg = d3.select('#container svg')
 
     const showUserMore = () => {
@@ -283,7 +283,7 @@ const Home = () => {
       }
     }
 
-    HandleHexagonStyle({ x, y, z })
+    HandleHexagonStyle({ x, y, z }, nodeActive)
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
@@ -308,7 +308,7 @@ const Home = () => {
         setHexGridsMineData(data)
         translateMap({ x: data.x, y: data.y, z: data.z }, false)
       } else {
-        translateMap(defaultPoint, false)
+        translateMap(defaultPoint, false, false)
       }
 
       setHexGridsMineTag(true)
@@ -455,7 +455,7 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
-      translateMap(defaultPoint, false)
+      translateMap(defaultPoint, false, false)
     } else {
       translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
     }

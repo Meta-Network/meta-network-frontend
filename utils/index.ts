@@ -281,7 +281,7 @@ export const compose = (...fn: Function[]) => {
  * 处理节点样式
  * @param param0
  */
-export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
+export const HandleHexagonStyle = ({ x, y, z }: PointState, nodeActive: boolean)=> {
   // 只需要处理已有的块
   const hexagonListExist: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-exist')
   const hexagonListActive: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-active')
@@ -296,7 +296,7 @@ export const HandleHexagonStyle = ({ x, y, z }: PointState)=> {
 
   const hexagon = document.querySelector<HTMLElement>(`.hexagon-x${x}_y${y}_z${z}`)
   // console.log('hexagon', hexagon)
-  if (hexagon) {
+  if (hexagon && nodeActive) {
     hexagon.classList.add('active')
   }
 }
