@@ -105,5 +105,7 @@
   "your-invitation-code": "Your exclusive invitation code",
   "zoom-percentage": "Zoom percentage",
   "personal": "Personal",
-  "slider-navigation": "Nav"
+  "slider-navigation": "Nav",
+  "message-invitation-code-used": "Invitation code has been used",
+  "username-already-exists": "Username already exists"
 }

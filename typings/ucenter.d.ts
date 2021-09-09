@@ -77,3 +77,7 @@ export interface InvitationsValidateState {
   available: boolean
   exists: boolean
 }
+
+export interface usersUsernameValidateProps {
+  isExists: string
+}

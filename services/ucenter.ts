@@ -1,9 +1,9 @@
-import { uCenterAPI } from "./client";
+import { uCenterAPI } from './client'
 import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
   InviitationsMineState, UsersMePatchProps, UsersMeUsernameState,
-  InvitationsValidateProps, InvitationsValidateState
+  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -95,5 +95,13 @@ export const usersMeUsername = (data: UsersMeUsernameState): Promise<axiosResult
  * @returns
  */
 export const invitationsValidate = (data: InvitationsValidateProps): Promise<axiosResult<InvitationsValidateState>> => uCenterAPI.post('/invitations/validate', data)
+
+/**
+ * 验证用户名是否存在
+ * @param data 
+ * @returns 
+ */
+export const usersUsernameValidate = (data: UsersMeUsernameState): Promise<axiosResult<usersUsernameValidateProps>> => uCenterAPI.post('/users/username/validate', data)
+
 
 

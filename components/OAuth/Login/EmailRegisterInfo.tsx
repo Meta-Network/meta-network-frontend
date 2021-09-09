@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import { EmailModeProps } from '../../../typings/oauth'
 import { UsersMeUsernameState } from '../../../typings/ucenter.d'
-import { accountsEmailVerify, accountsEmailSignup, usersMeUsername } from '../../../services/ucenter'
+import { accountsEmailVerify, accountsEmailSignup, usersMeUsername, usersUsernameValidate } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import useToast from '../../../hooks/useToast'
 
@@ -24,6 +24,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   const [formResister] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
+  const [timerUsername, setTimerUsername] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
   const { Toast } = useToast()
 
@@ -73,7 +74,11 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     console.log('Failed:', errorInfo)
   }
 
-  // 校验邮箱是否存在
+  /**
+   *校验邮箱是否存在
+   *
+   * @return {*}  {Promise<void>}
+   */
   const verifyEmailRule = async (): Promise<void> => {
     // https://github.com/ant-design/ant-design/issues/23077
     return new Promise((resolve, reject) => {
@@ -101,6 +106,38 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     })
   }
 
+  /**
+   * 验证用户名是否存在
+   *
+   * @return {*}  {Promise<void>}
+   */
+  const verifyUsernameRule = async (): Promise<void> => {
+    // https://github.com/ant-design/ant-design/issues/23077
+    return new Promise((resolve, reject) => {
+      clearTimeout(timerUsername)
+      let _timer = setTimeout(async () => {
+        try {
+          const values = await formResister.getFieldsValue()
+          const res = await usersUsernameValidate({ username: trim(values.username) })
+          if (res.statusCode === 200) {
+            if (res.data.isExists) {
+              reject(t('username-already-exists'))
+            }
+          } else {
+            reject(t('verification-failed'))
+          }
+          resolve()
+        } catch (e) {
+          console.log('Failed:', e)
+          reject(`${t('verification-failed')} ${(e.message).toString()}`)
+        } finally {
+        }
+      }, 500)
+
+      setTimerUsername(_timer)
+    })
+  }
+
   return (
     <StyledEmailForm
       form={formResister}
@@ -116,6 +153,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         rules={[
           { required: true, message: t('message-enter-username') },
           { min: 1, max: 32, message: t('message-length', { min: 1, max:  32 }) },
+          { validator: verifyUsernameRule },
         ]}
       >
         <Input className="form-input" placeholder= {`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
