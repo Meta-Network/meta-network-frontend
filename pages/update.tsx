@@ -217,7 +217,7 @@ const Update: React.FC<Props> = () => {
           name="bio"
           rules={[
             { required: true, message: t('message-enter-bio') },
-            { min: 1, max: 300, message: t('message-length', { min: 1, max: 300 }) },
+            { min: 1, max: 300, message: t('message-length', { min: 1, max: 200 }) },
           ]}
         >
           <Input className="form-input" placeholder={t('message-enter-bio')} autoComplete="new-text" />

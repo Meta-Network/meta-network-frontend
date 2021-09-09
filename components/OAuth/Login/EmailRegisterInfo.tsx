@@ -115,6 +115,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         name="username"
         rules={[
           { required: true, message: t('message-enter-username') },
+          { min: 1, max: 32, message: t('message-length', { min: 1, max:  32 }) },
         ]}
       >
         <Input className="form-input" placeholder= {`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
