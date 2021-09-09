@@ -41,9 +41,9 @@ const OAuthLogin: React.FC = () => {
             {
               mode === 'email' ? <Email></Email> : null
             }
-            <ToggleMode></ToggleMode>
+            {/* <ToggleMode></ToggleMode> */}
           </StyledWrapperContent>
-          <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount>
+          {/* <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount> */}
         </StyledWrapperMain>
         <StyledDecoration src={ LoginAuth } alt="Meta Network" style={{ ...animatedDecoration }} />
       </StyledWrapperInner>
@@ -90,8 +90,11 @@ const StyledWrapperInner = styled.section`
 `
 
 const StyledWrapperMain = styled(animated.section)`
-  width: 346px;
+  width: 400;
   overflow: hidden;
+  @media screen and (max-width: 900px) {
+    width: 346px;
+  }
 `
 
 const StyledWrapperContent = styled.section``
@@ -103,7 +106,7 @@ const StyledFollowPublishAccount = styled.section`
 `
 
 const StyledDecoration = styled(animated.img)`
-  margin-left: 200px;
+  margin-left: 154px;
   @media screen and (max-width: 1440px) {
     margin-left: 50px;
     width: 500px;

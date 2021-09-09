@@ -107,5 +107,11 @@
   "personal": "Personal",
   "slider-navigation": "Nav",
   "message-invitation-code-used": "Invitation code has been used",
-  "username-already-exists": "Username already exists"
+  "username-already-exists": "Username already exists",
+  "create-account": "Create an account",
+  "account-hosted": "Account is hosted on",
+  "account-hosted-tips": "Join the largest public server for free and become one of millions of users",
+  "ignore": "neglect",
+  "server-options": "Server options",
+  "server-options-description": "Through custom server options, you can specify and log in to other META NETWORK main servers. \nThis allows you to use existing META NETWORK accounts on other main servers."
 }

@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { EmailModeProps } from '../../../typings/oauth'
 import EmailLogin from './EmailLogin'
 import EmailRegister from './EmailRegister'
+import ToggleServers from './ToggleServers'
 
 interface Props {
 }
@@ -21,7 +22,8 @@ const Email: React.FC<Props> = () => {
 
   return (
     <>
-      <StyledMethod>{emailMode === 'login' ? t('email-login') : t('email-registration')}</StyledMethod>
+      <StyledMethod>{emailMode === 'login' ? t('log-in') : t('create-account')}</StyledMethod>
+      <ToggleServers/>
       {
         emailMode === 'login' ?
         <EmailLogin setEmailModeFn={setEmailModeFn}></EmailLogin> :

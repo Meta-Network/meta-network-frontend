@@ -1,16 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd'
-import { trim } from 'lodash'
-import { useRouter } from 'next/router'
-
+import React, { useState } from 'react'
 import { EmailModeProps } from '../../../typings/oauth'
-import { UsersMeUsernameState } from '../../../typings/ucenter.d'
-import { accountsEmailVerify, accountsEmailSignup, usersMeUsername } from '../../../services/ucenter'
-import EmailCode from './EmailCode'
-import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
-import useToast from '../../../hooks/useToast'
-
 import EmailRegisterCode from './EmailRegisterCode'
 import EmailRegisterInfo from './EmailRegisterInfo'
 

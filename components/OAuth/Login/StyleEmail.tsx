@@ -6,7 +6,7 @@ import { Form, Input, Button } from 'antd'
 // ----------------- Email form -----------------
 export const StyledEmailForm = styled(Form)`
   width: 346px;
-  margin-top: 50px;
+  margin-top: 40px;
   .ant-form-item-explain.ant-form-item-explain-error {
     text-align: left;
   }

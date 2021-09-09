@@ -107,5 +107,11 @@
   "personal": "个人",
   "slider-navigation": "导航",
   "message-invitation-code-used": "邀请码已使用",
-  "username-already-exists": "用户名已存在"
+  "username-already-exists": "用户名已存在",
+  "create-account": "创建账号",
+  "account-hosted": "账号托管于",
+  "account-hosted-tips": "免费加入最大的公共服务器，成为数百万用户中的一员",
+  "server-options": "服务器选项",
+  "ignore": "忽略",
+  "server-options-description": "通过自定义服务器选项，你可以自行指定并登录其他 META NETWORK 主服务器。这允许你使用其他主服务器上现有的 META NETWORK 账号。"
 }
