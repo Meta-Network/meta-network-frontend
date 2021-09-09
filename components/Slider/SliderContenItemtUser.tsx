@@ -42,7 +42,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a
-            href={isLoggin ? 'https://meta-cms.vercel.app' : 'javascript:;'}
+            href={isLoggin ? process.env.NEXT_PUBLIC_META_CMS_URL : 'javascript:;'}
             className={isLoggin ? '' : 'disabled'}
             target="_blank"
             rel="noopener noreferrer">

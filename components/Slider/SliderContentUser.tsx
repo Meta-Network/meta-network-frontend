@@ -32,7 +32,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
     } else if (key === 'edit') {
       router.push('/update')
     } else if (key === 'account') {
-      window.open('https://meta-cms.vercel.app', '_blank')
+      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
     }
   }
 

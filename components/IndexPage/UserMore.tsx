@@ -48,7 +48,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
     Toast({ content: t('go-to-homepage') })
-    window.open('https://meta-cms.vercel.app/', '_blank')
+    window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
   }
 
   // 菜单点击
@@ -79,7 +79,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
       {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
         拍一拍
       </Menu.Item> */}
-      <CopyToClipboard text={'https://meta-cms.vercel.app/'}
+      <CopyToClipboard text={process.env.NEXT_PUBLIC_META_CMS_URL}
         onCopy={() => Toast({ content: t('copy-successfully') })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
           {t('copy-address')}
