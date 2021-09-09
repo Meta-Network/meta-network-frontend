@@ -32,7 +32,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       setLoading(true)
       const res = await accountsEmailLogin({
         account: trim(email),
-        verifyCode: code,
+        verifyCode: trim(code),
         hcaptchaToken: 'hcaptcha_token_here'
       })
       if (res.statusCode === 200) {
@@ -78,7 +78,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
             name="code"
             rules={[{ required: true, message: t('message-enter-verification-code') }]}
           >
-            <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" />
+            <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
           </StyledFormItem>
           <EmailCode form={formLogin}></EmailCode>
         </StyledFormCode>

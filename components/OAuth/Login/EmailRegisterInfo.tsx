@@ -52,7 +52,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       try {
         const resEmailSignup = await accountsEmailSignup(inviteCode, {
           account: trim(email),
-          verifyCode: code,
+          verifyCode: trim(code),
           hcaptchaToken: 'hcaptcha_token_here'
         })
         if (resEmailSignup.statusCode === 201) {
@@ -138,7 +138,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           name="code"
           rules={[{ required: true, message: t('message-enter-verification-code') }]}
         >
-          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" max="6" />
+          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
         </StyledFormItem>
         <EmailCode form={formResister}></EmailCode>
       </StyledFormCode>
