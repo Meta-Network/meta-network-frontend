@@ -5,6 +5,9 @@ import { ExclamationCircleOutlined, UserOutlined, ArrowLeftOutlined } from '@ant
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useMount } from 'ahooks'
+import { useUser } from '../hooks/useUser'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { axiosResult } from '../typings/request.d'
 import { Storage } from '../typings/storage.d'
@@ -12,8 +15,6 @@ import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import { CircleSuccessIcon, CircleWarningIcon } from '../components/Icon/Index'
 import useToast from '../hooks/useToast'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 interface Props { }
 
@@ -72,8 +73,9 @@ const Update: React.FC<Props> = () => {
         }
       } catch (e) {
         console.log(e)
+        router.push('/')
       }
-    }, [setAvatarUrl, form])
+    }, [setAvatarUrl, form, router])
 
   useMount(() => {
     fetchToken()
