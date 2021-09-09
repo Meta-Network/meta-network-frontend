@@ -36,11 +36,20 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
         const res = await invitationsValidate({
           invitation: trim(inviteCode),
         })
-        if (res.statusCode === 200 && res.data.available) {
-          setStep(1)
-          setInviteCode(inviteCode)
+        if (res.statusCode === 200) {
+
+          if (!res.data.exists) {
+            throw new Error(t('message-invitation-code-error'))
+          }
+
+          if (res.data.available) {
+            setStep(1)
+            setInviteCode(inviteCode)
+          } else {
+            throw new Error(t('message-invitation-code-used'))
+          }
         } else {
-          throw new Error(t('message-invitation-code-error'))
+          throw new Error(res.message)
         }
       } catch (e) {
         console.log(e)

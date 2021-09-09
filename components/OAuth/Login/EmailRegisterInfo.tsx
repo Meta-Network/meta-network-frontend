@@ -64,7 +64,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           throw new Error(resEmailSignup.message)
         }
       } catch (e) {
-        console.error(e)
+        console.log(e)
         Toast({ content: (e.message).toString(), type: 'warning' })
       }
     }, [ updateUsername, inviteCode, Toast, t ])
@@ -138,7 +138,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           name="code"
           rules={[{ required: true, message: t('message-enter-verification-code') }]}
         >
-          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" />
+          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" max="6" />
         </StyledFormItem>
         <EmailCode form={formResister}></EmailCode>
       </StyledFormCode>

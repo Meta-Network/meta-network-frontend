@@ -105,5 +105,6 @@
   "confirm-delete-history": "确认删除历史记录",
   "search-history": "搜索历史",
   "personal": "个人",
-  "slider-navigation": "导航"
+  "slider-navigation": "导航",
+  "message-invitation-code-used": "邀请码已使用"
 }
