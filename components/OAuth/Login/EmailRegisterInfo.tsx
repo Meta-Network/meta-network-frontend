@@ -10,9 +10,12 @@ import { UsersMeUsernameState } from '../../../typings/ucenter.d'
 import { accountsEmailVerify, accountsEmailSignup, usersMeUsername, usersUsernameValidate } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import useToast from '../../../hooks/useToast'
+import { rules } from '../../../common/config/index'
 
-import { StyledEmailForm, StyledFormItem,  StyledFormBtn,
-  StyledFormFlexSpaceBetween, StyledFormBtnText,  StyledFormCode } from './StyleEmail'
+import {
+  StyledEmailForm, StyledFormItem, StyledFormBtn,
+  StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
+} from './StyleEmail'
 
 interface Props {
   readonly inviteCode: string
@@ -43,7 +46,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       } finally {
         router.push('/update')
       }
-  }, [ router ])
+    }, [router])
 
   // 注册
   const onFinishEmail = useCallback(
@@ -64,11 +67,11 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         } else {
           throw new Error(resEmailSignup.message)
         }
-      } catch (e) {
+      } catch (e: any) {
         console.log(e)
         Toast({ content: (e.message).toString(), type: 'warning' })
       }
-    }, [ updateUsername, inviteCode, Toast, t ])
+    }, [updateUsername, inviteCode, Toast, t])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo)
@@ -95,7 +98,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
             reject(t('verification-failed'))
           }
           resolve()
-        } catch (e) {
+        } catch (e: any) {
           console.log('Failed:', e)
           reject(`${t('verification-failed')} ${(e.message).toString()}`)
         } finally {
@@ -127,7 +130,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
             reject(t('verification-failed'))
           }
           resolve()
-        } catch (e) {
+        } catch (e: any) {
           console.log('Failed:', e)
           reject(`${t('verification-failed')} ${(e.message).toString()}`)
         } finally {
@@ -152,11 +155,11 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         name="username"
         rules={[
           { required: true, message: t('message-enter-username') },
-          { min: 1, max: 32, message: t('message-length', { min: 1, max:  32 }) },
+          { min: rules.username.min, max: rules.username.max, message: t('message-length', { min: rules.username.min, max: rules.username.max }) },
           { validator: verifyUsernameRule },
         ]}
       >
-        <Input className="form-input" placeholder= {`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
+        <Input className="form-input" placeholder={`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
       </StyledFormItem>
 
       <StyledFormItem

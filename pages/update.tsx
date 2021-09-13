@@ -15,6 +15,7 @@ import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import { CircleSuccessIcon, CircleWarningIcon } from '../components/Icon/Index'
 import useToast from '../hooks/useToast'
+import { rules, uploadImageSize } from '../common/config/index'
 
 interface Props { }
 
@@ -129,9 +130,9 @@ const Update: React.FC<Props> = () => {
       if (!isJpgOrPng) {
         Toast({ content: t('upload-images-format', { type: 'JPG/PNG' }), type: 'warning' })
       }
-      const isLtMB = file.size / 1024 / 1024 < 6
+      const isLtMB = file.size / 1024 / 1024 < uploadImageSize
       if (!isLtMB) {
-        Toast({ content: t('message-upload-images-size', { size: 6 }), type: 'warning' })
+        Toast({ content: t('message-upload-images-size', { size: uploadImageSize }), type: 'warning' })
       }
 
       const res = isJpgOrPng && isLtMB
@@ -206,7 +207,7 @@ const Update: React.FC<Props> = () => {
           name="nickname"
           rules={[
             { required: true, message: t('message-enter-nickname') },
-            { min: 1, max: 32, message: t('message-length', { min: 1, max:  32 }) },
+            { min: rules.nickname.min, max: rules.nickname.max, message: t('message-length', { min: rules.nickname.min, max: rules.nickname.max }) },
           ]}
         >
           <Input className="form-input" placeholder={t('message-enter-nickname')} autoComplete="new-text" />
@@ -217,7 +218,7 @@ const Update: React.FC<Props> = () => {
           name="bio"
           rules={[
             { required: true, message: t('message-enter-bio') },
-            { min: 1, max: 300, message: t('message-length', { min: 1, max: 200 }) },
+            { min: rules.bio.min, max: rules.bio.max, message: t('message-length', { min: rules.bio.min, max: rules.bio.max }) },
           ]}
         >
           <Input className="form-input" placeholder={t('message-enter-bio')} autoComplete="new-text" />
