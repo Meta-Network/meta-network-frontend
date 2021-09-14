@@ -12,13 +12,12 @@ interface SliderContenItemtUserProps {
   readonly inviteCodeData: InviitationsMineState[]
   readonly visible: boolean
   setIsModalVisibleInviteCode: (val: boolean) => void
-  setIsModalVisibleBookmark: (val: boolean) => void
 }
 
 // 侧边栏 菜单 用户
 const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
   isLoggin, inviteCodeData, setIsModalVisibleInviteCode,
-  visible, setIsModalVisibleBookmark
+  visible
 }) {
   const { t } = useTranslation('common')
 
@@ -37,14 +36,6 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
           <h4>{t('personal')}</h4>
         </li> : null
       }
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('my-bookmark')} placement="right">
-          <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
-            <BookmarkIcon />
-            {visible ? t('my-bookmark') : ''}
-          </a>
-        </Tooltip>
-      </li>
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a

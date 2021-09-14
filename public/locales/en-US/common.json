@@ -83,7 +83,7 @@
   "settings": "Settings",
   "sign-out": "Sign Out",
   "sign-out-successfully": "Sign out successfully",
-  "site-management": "Site Management",
+  "site-management": "Manage Meta Space",
   "start-creating": "Start creating",
   "success": "Success",
   "successful-occupation": "Successful occupation",
@@ -114,5 +114,6 @@
   "ignore": "neglect",
   "server-options": "Server options",
   "server-options-description": "Through custom server options, you can specify and log in to other META NETWORK main servers.\n\nThis feature is not yet open to the public.",
-  "used": "Used"
+  "used": "Used",
+  "favorites": "Favorites"
 }

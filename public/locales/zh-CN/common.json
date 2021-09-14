@@ -19,7 +19,7 @@
   "settings": "设置",
   "switch-language": "切换语言",
   "my-bookmark": "我的收藏",
-  "site-management": "站点管理",
+  "site-management": "管理 Meta Space",
   "invitation-code": "邀请码",
   "home-page": "主页",
   "edit": "编辑",
@@ -114,5 +114,6 @@
   "server-options": "服务器选项",
   "ignore": "忽略",
   "server-options-description": "通过自定义服务器选项，你可以自行指定并登录其他 META NETWORK 主服务器。\n此功能暂未对外开放。",
-  "used": "已使用"
+  "used": "已使用",
+  "favorites": "收藏夹"
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
+import { ArrowTopLeftIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
 
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
@@ -9,11 +10,12 @@ import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
 interface SliderContenItemtNavProps {
   readonly visible: boolean
   setIsModalVisibleSearch: (val: boolean) => void
+  setIsModalVisibleBookmark: (val: boolean) => void
 }
 
 // 侧边栏 菜单 导航
 const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(function SliderContenItemtNav({
-  setIsModalVisibleSearch, visible
+  setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
 }) {
   const { t } = useTranslation('common')
 
@@ -31,6 +33,14 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
             <SearchIcon />
             {visible ? t('search') : ''}
+          </a>
+        </Tooltip>
+      </li>
+      <li>
+        <Tooltip title={(visible || isMobile) ? '' : t('favorites')} placement="right">
+          <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
+            <BookmarkIcon />
+            {visible ? t('favorites') : ''}
           </a>
         </Tooltip>
       </li>
