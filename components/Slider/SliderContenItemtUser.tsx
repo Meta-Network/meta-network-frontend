@@ -4,7 +4,7 @@ import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import { StyledCount, StyledSliderCItem } from './Style'
-import { ArrowTopLeftIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
+import { ArrowTopLeftIcon, InviteIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface SliderContenItemtUserProps {
@@ -43,7 +43,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
             className={isLoggin ? '' : 'disabled'}
             target="_blank"
             rel="noopener noreferrer">
-            <ArrowTopLeftIcon />
+            <SliderSpaceIcon />
             {visible ? t('site-management') : ''}
           </a>
         </Tooltip>
@@ -54,7 +54,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
             href="javascript:;"
             onClick={() => isLoggin && setIsModalVisibleInviteCode(true)}
             className={isLoggin ? '' : 'disabled'}>
-            <InviteIcon />
+            <SliderInviteIcon />
             {visible ? t('invitation-code') : ''}
             {
               isLoggin && visible ?
