@@ -54,7 +54,7 @@
   "remove-items": "移除{{ count }}项",
   "coordinate-count": "坐标点统计",
   "coordinate-bearing": "自己坐标方位",
-  "invitation-code-introduction": "使用邀请码招呼朋友们加入元宇宙吧！一个邀请码仅能给一个ID使用。",
+  "invitation-code-introduction": "使用邀请码招呼朋友们加入 Meta Network 吧！一个邀请码仅能给一个ID使用。",
   "no-invitation-code": "暂无邀请码",
   "your-invitation-code": "你的专属邀请码",
   "message-click-default-node": "请选择紧挨已注册用户的地块",
