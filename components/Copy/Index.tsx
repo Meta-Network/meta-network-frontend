@@ -28,10 +28,14 @@ const Copy: React.FC<Props> = ({ text, disabled = false }) => {
   return (
     <CopyText disabled={disabled}>
       <p>{text}</p>
-      <CopyToClipboard text={text}
-        onCopy={() => handleCopy()}>
-        <CopyOutlined className="copy-btn" />
-      </CopyToClipboard>
+      {
+        disabled
+          ? <CopyUsed>{t('used')}</CopyUsed>
+          : <CopyToClipboard text={text}
+            onCopy={() => handleCopy()}>
+            <CopyOutlined className="copy-btn" />
+          </CopyToClipboard>
+      }
     </CopyText>
   )
 }
@@ -60,5 +64,9 @@ const CopyText = styled.section<{ disabled: boolean }>`
     color: ${props => props.disabled ? '#626262' : props.theme.colorGreen};
   }
 `
-
+const CopyUsed = styled.span`
+  font-size: 12px;
+  white-space: nowrap;
+  color: #626262;
+`
 export default Copy

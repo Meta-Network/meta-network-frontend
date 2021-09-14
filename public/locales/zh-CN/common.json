@@ -113,5 +113,6 @@
   "account-hosted-tips": "免费加入最大的公共服务器，得到最新的服务",
   "server-options": "服务器选项",
   "ignore": "忽略",
-  "server-options-description": "通过自定义服务器选项，你可以自行指定并登录其他 META NETWORK 主服务器。\n此功能暂未对外开放。"
+  "server-options-description": "通过自定义服务器选项，你可以自行指定并登录其他 META NETWORK 主服务器。\n此功能暂未对外开放。",
+  "used": "已使用"
 }

@@ -113,5 +113,6 @@
   "account-hosted-tips": "Join the largest public server for free and get the latest services",
   "ignore": "neglect",
   "server-options": "Server options",
-  "server-options-description": "Through custom server options, you can specify and log in to other META NETWORK main servers.\n\nThis feature is not yet open to the public."
+  "server-options-description": "Through custom server options, you can specify and log in to other META NETWORK main servers.\n\nThis feature is not yet open to the public.",
+  "used": "Used"
 }
