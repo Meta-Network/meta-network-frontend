@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
@@ -23,6 +23,12 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   const { t } = useTranslation('common')
 
   console.log('SliderContenItemtUser', isLoggin, inviteCodeData)
+
+  // 有效邀请码
+  const validCodeCount = useMemo(() => {
+    let list = inviteCodeData.filter(i => Number(i.invitee_user_id) <= 0)
+    return list.length
+  }, [inviteCodeData])
 
   return (
     <StyledSliderCItem visible={visible}>
@@ -61,7 +67,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
             {visible ? t('invitation-code') : ''}
             {
               isLoggin && visible ?
-                <StyledCount>{inviteCodeData.length}</StyledCount> : null
+                <StyledCount>{validCodeCount}</StyledCount> : null
             }
           </a>
         </Tooltip>

@@ -39,7 +39,6 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
   translateMap, defaultHexGridsRange, HandleRemoveBookmark
 }) {
   const { t } = useTranslation('common')
-  // console.log('slider', t('h1'))
 
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false)
@@ -88,9 +87,9 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
         } else {
           throw new Error(res.message)
         }
-      } catch (e) {
+      } catch (e: any) {
         console.log(e)
-        Toast({ content: e.toString(), type: 'warning' })
+        Toast({ content: (e.message).toString(), type: 'warning' })
       }
     }, [router, Toast, t]
   )
