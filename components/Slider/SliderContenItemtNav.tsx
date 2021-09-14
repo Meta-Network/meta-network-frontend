@@ -2,24 +2,29 @@ import React from 'react'
 import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
-import { ArrowTopLeftIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
+import { SliderHomeIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
 
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
 
 interface SliderContenItemtNavProps {
   readonly visible: boolean
+  readonly isLoggin: boolean
   setIsModalVisibleSearch: (val: boolean) => void
   setIsModalVisibleBookmark: (val: boolean) => void
 }
 
 // 侧边栏 菜单 导航
 const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(function SliderContenItemtNav({
-  setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
+  isLoggin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
 }) {
   const { t } = useTranslation('common')
 
-  console.log('SliderContenItemtNav')
+  const openUrl = () => {
+    if (isLoggin) {
+      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
+    }
+  }
 
   return (
     <StyledSliderCItem visible={visible}>
@@ -28,6 +33,16 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
           <h4>{t('slider-navigation')}</h4>
         </li> : null
       }
+      <li>
+        <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
+          <a
+            className={ isLoggin ? '' : 'disabled'}
+            href="javascript:;" onClick={() => openUrl()}>
+            <SliderHomeIcon />
+            {visible ? t('my-meta-space') : ''}
+          </a>
+        </Tooltip>
+      </li>
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('search')} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>

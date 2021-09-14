@@ -115,5 +115,6 @@
   "server-options": "Server options",
   "server-options-description": "Through custom server options, you can specify and log in to other META NETWORK main servers.\n\nThis feature is not yet open to the public.",
   "used": "Used",
-  "favorites": "Favorites"
+  "favorites": "Favorites",
+  "my-meta-space": "My Meta Space"
 }

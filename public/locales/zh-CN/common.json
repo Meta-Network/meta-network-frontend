@@ -115,5 +115,6 @@
   "ignore": "忽略",
   "server-options-description": "通过自定义服务器选项，你可以自行指定并登录其他 META NETWORK 主服务器。\n此功能暂未对外开放。",
   "used": "已使用",
-  "favorites": "收藏夹"
+  "favorites": "收藏夹",
+  "my-meta-space": "我的 Meta Space"
 }

@@ -31,16 +31,11 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
       signOut()
     } else if (key === 'edit') {
       router.push('/update')
-    } else if (key === 'account') {
-      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
     }
   }
 
   const menu = (
     <Menu onClick={handleClick}>
-      <Menu.Item key="account">
-        {t('home-page')}
-      </Menu.Item>
       <Menu.Item key="edit">
         {t('edit')}
       </Menu.Item>
