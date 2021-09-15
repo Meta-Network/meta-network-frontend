@@ -18,7 +18,10 @@ import SliderContenAccoount from './SliderContenAccoount'
 import SliderContenItemtUser from './SliderContenItemtUser'
 import SliderContenItemtNav from './SliderContenItemtNav'
 import SliderContentUser from './SliderContentUser'
+import SliderLogo from './SliderLogo'
+import SliderSpace from './SliderSpace'
 import SliderContenItemtSetting from './SliderContenItemtSetting'
+import SliderContenItemtLink from './SliderContenItemtLink'
 import SliderToggle from './SliderToggle'
 import { useTranslation } from 'next-i18next'
 
@@ -121,6 +124,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
         className="slider"
       >
         <StyledSliderContent visible={visibleSlider}>
+          <SliderLogo visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderLogo>
           <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderContentUser>
           <SliderContenItemtNav
             visible={visibleSlider}
@@ -136,7 +140,11 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
           <SliderContenItemtSetting
             visible={visibleSlider}
           ></SliderContenItemtSetting>
+          <SliderContenItemtLink
+            visible={visibleSlider}
+          ></SliderContenItemtLink>
           {/* <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount> */}
+          <SliderSpace visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderSpace>
           <SliderToggle visible={visibleSlider} Toggle={() => setVisibleSlider(!visibleSlider)}></SliderToggle>
         </StyledSliderContent>
       </StyledSlider>

@@ -86,7 +86,7 @@ export const StyledSlider = styled.section<{ visible: boolean }>`
   user-select: none;
 `
 export const StyledSliderContent = styled.section<{ visible: boolean }>`
-  padding: ${props => props.visible ? '76px 0 16px 18px;' : '76px 0 16px 8px'};
+  padding: ${props => props.visible ? '0 0 16px 18px;' : '0 0 16px 8px'};
   transition: all .2s;
   height: 100%;
   display: flex;
@@ -211,6 +211,49 @@ export const StyledSliderSpace = styled.a`
   &:hover {
     .space-icon {
       opacity: 1;
+    }
+  }
+`
+
+export const StyledSliderLogo = styled.section<{ visible: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${props => props.visible ? '16px 18px 16px 0' : '16px 8px 16px 0'};
+  box-sizing: border-box;
+`
+
+export const StyledSliderLink = styled.a`
+  display: flex;
+  align-items: center;
+`
+export const StyledSliderLinkLogo = styled.section`
+  position: relative;
+  width: 32px;
+  height: 32px;
+`
+
+export const StyledSliderLinkText = styled.span`
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 0 12px;
+  white-space: nowrap;
+  animation: pro-layout-title-hide .3s;
+  @keyframes pro-layout-title-hide {
+    0% {
+        display: none;
+        opacity: 0
+    }
+
+    80% {
+        display: none;
+        opacity: 0
+    }
+
+    to {
+        display: unset;
+        opacity: 1
     }
   }
 `
