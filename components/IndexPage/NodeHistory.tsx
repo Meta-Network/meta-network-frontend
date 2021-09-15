@@ -40,7 +40,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     }
     // console.log('_historyView', _historyView)
 
-    return _historyView as hexGridsByFilterState[]
+    return _historyView.reverse() as hexGridsByFilterState[]
   }, [allNodeMap, historyView])
 
   const styles = useSpring({
@@ -74,7 +74,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
           <Tooltip title={i.userNickname || i.username || t('no-nickname')} placement="bottom" key={`${i.x}${i.y}${i.z}`}>
             <StyledHistoryNode
               style={styles} onClick={(e: any) => handleClick(e, { x: i.x, y: i.y, z: i.z })}>
-              <Avatar size={22 + (idx * 2)} icon={<UserOutlined />} src={i.userAvatar} />
+              <Avatar size={ idx ? 24 : 28 } icon={<UserOutlined />} src={i.userAvatar} />
             </StyledHistoryNode>
           </Tooltip>
         ))

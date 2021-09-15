@@ -98,13 +98,17 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
 
   return (
     <>
-      <StyledUserMoreButton
-        onClick={(e: any) => handleJumpHome(e)}
-        style={{ marginBottom: 16 }}
-      >
-        <SliderSpaceIcon />{' '}访问 Meta Space
-        <SliderShareIcon className="view-icon" />
-      </StyledUserMoreButton>
+      {
+        currentNode.subdomain
+          ? <StyledUserMoreButton
+            onClick={(e: any) => handleJumpHome(e)}
+            style={{ marginBottom: 16 }}
+          >
+            <SliderSpaceIcon />{' '}访问 Meta Space
+            <SliderShareIcon className="view-icon" />
+          </StyledUserMoreButton>
+          : null
+      }
       <Dropdown
         onVisibleChange={handleVisible}
         visible={visible}

@@ -10,8 +10,7 @@ import {
 } from '../../utils/index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 
@@ -102,7 +101,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   }, [ hexGridsMineData, calcAngle ])
 
   return (
-    <Tooltip title={ isShow ? t('coordinate-bearing') : '' }>
+    <Tooltip title={ isShow ? '我的位置' : '' }>
       <StyledArrow style={style}>
           <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>

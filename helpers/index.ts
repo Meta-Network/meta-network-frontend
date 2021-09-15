@@ -5,6 +5,7 @@ import {
 import { invitationsMine } from '../services/ucenter'
 import { PointScopeState } from '../typings/metaNetwork'
 import { InviitationsMineState } from '../typings/ucenter.d'
+import { amountSplit } from '../utils/index'
 
 /**
  * pages index
@@ -100,4 +101,28 @@ export const fetchHexGriidsAPI = async (defaultHexGridsRange: PointScopeState) =
     console.log('e', e)
     return null
   }
+}
+
+/**
+ * 获取缩放百分比
+ * @returns
+ */
+export const getZoomPercentage = () => {
+  const dom = document.querySelector<HTMLElement>('#container svg g')
+
+  if (dom) {
+    const transformScale = dom.getAttribute('transform')
+    const transformScaleMatch =  transformScale?.match('scale\(.*\)')
+    const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
+    // console.log('transformScaleValue', transformScaleValue)
+
+    // 0 - 4 min 0.4 max 4
+    const scale = 4 / 100
+    let percentage = transformScaleValue / scale
+
+    // console.log('percentage', percentage)
+    return Number(amountSplit(String(percentage), 2))
+  }
+
+  return 0
 }

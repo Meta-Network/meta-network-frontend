@@ -289,7 +289,7 @@ const Home = () => {
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
     svg.transition()
-      .duration(1000)
+      .duration(800)
       .call(
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
@@ -369,7 +369,7 @@ const Home = () => {
     // 没有收藏记录
     if (isEmpty(bookmark)) {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
-      Toast({ content: t('add-bookmark') })
+      Toast({ content: '已收藏到本地，可在侧边栏查看' })
     } else {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
@@ -383,7 +383,7 @@ const Home = () => {
         Toast({ content: t('delete-bookmark') })
       } else {
         bookmarkList.push(point)
-        Toast({ content: t('add-bookmark') })
+        Toast({ content: '已收藏到本地，可在侧边栏查看' })
       }
 
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))
@@ -430,7 +430,7 @@ const Home = () => {
       } else {
         throw new Error(resPointValidation.message)
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e)
       Toast({ content: e.message, type: 'warning' })
       return

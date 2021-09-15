@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
  * cancelAnimationFrame
  */
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+(window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 

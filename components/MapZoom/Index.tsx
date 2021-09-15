@@ -6,13 +6,14 @@ import { useMount, useUnmount } from 'ahooks'
 import { useTranslation } from 'next-i18next'
 
 import { amountSplit } from '../../utils/index'
+import { getZoomPercentage } from '../../helpers/index'
 
 /**
  * requestAnimationFrame
  * cancelAnimationFrame
  */
 const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+(window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 let IDAnimation: number
@@ -35,27 +36,13 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
     }
   }))
 
+  /**
+   * 处理缩放
+   */
   const handleScale = useCallback(() => {
-    const dom = document.querySelector<HTMLElement>('#container svg g')
+    let percentage = getZoomPercentage()
+    setValue( percentage )
 
-    if (dom) {
-      const transformScale = dom.getAttribute('transform')
-      const transformScaleMatch =  transformScale?.match('scale\(.*\)')
-      const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
-      // console.log('transformScaleValue', transformScaleValue)
-
-      // (4 - 1)     3
-      const scale = 3 / 100
-      let percentage = 0
-      if (transformScaleValue > 1) {
-        percentage = (transformScaleValue - 1) / scale
-      } else if (transformScaleValue < 1) {
-        percentage = - (transformScaleValue / scale)
-      } else {
-      }
-      // console.log('percentage', percentage)
-      setValue( Number(amountSplit(String(percentage), 2)) )
-    }
     cancelAnimationFrame(ID)
     ID = requestAnimationFrame( handleScale )
   }, [])

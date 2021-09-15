@@ -13,8 +13,7 @@ import { fetchHexGridsCountByFilterAPI } from '../../helpers/index'
  * requestAnimationFrame
  * cancelAnimationFrame
  */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
- window.webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 
 let ID: number

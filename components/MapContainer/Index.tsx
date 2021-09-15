@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { isBrowser } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
+import { getZoomPercentage } from '../../helpers/index'
+import { useMount, useUnmount } from 'ahooks'
 
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
@@ -36,6 +38,15 @@ import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
 import { keyFormat } from '../../utils'
 
+/**
+ * requestAnimationFrame
+ * cancelAnimationFrame
+ */
+ const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+ (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
+let ID: number
+
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
   height,
@@ -61,6 +72,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   const { t } = useTranslation('common')
   const { Toast } = useToast()
   const { isLoggin } = useUser()
+  const [value, setValue] = useState<number>(0)
 
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex),
@@ -197,6 +209,28 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     HandleHistoryView(point)
   }
 
+  /**
+ * 获取缩放
+ */
+   const fetchZoomValue = useCallback(() => {
+    let percentage = getZoomPercentage()
+    setValue(percentage)
+
+    cancelAnimationFrame(ID)
+    ID = requestAnimationFrame(fetchZoomValue)
+  }, [])
+
+  useMount(() => {
+    if (process.browser) {
+      ID = requestAnimationFrame(fetchZoomValue)
+    }
+  })
+
+  useUnmount(() => {
+    cancelAnimationFrame(ID)
+  })
+
+
   return (
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
@@ -231,6 +265,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                     bookmark={bookmark}
                     noticeBardOccupiedState={noticeBardOccupiedState}
                     isNodeOwner={isNodeOwner}
+                    percentage={value}
                   ></NodeContent>
                 </HexagonRound>
               )
