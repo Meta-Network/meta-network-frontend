@@ -113,9 +113,13 @@ export const StyledSliderCUser = styled.section<{ visible: boolean }>`
     flex: 0 0 40px;
   }
 `
-
-export const StyledSliderCUserAvatar = styled(Avatar)`
+export const StyledSliderCUserBox = styled.section`
+  width: 100%;
+  display: flex;
+  align-items: center;
   cursor: pointer;
+`
+export const StyledSliderCUserAvatar = styled(Avatar)`
 `
 
 export const StyledSliderCUserInfo = styled.span`

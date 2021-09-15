@@ -3,12 +3,14 @@ import { Avatar, Menu, Dropdown } from 'antd'
 import {
   UserOutlined,
   LeftOutlined,
+  DownOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { isMobile } from 'react-device-detect'
 
-import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar } from './Style'
+import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar, StyledSliderCUserBox } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
 
 interface SliderContentUserProps {
@@ -49,21 +51,21 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
     <StyledSliderCUser visible={visible}>
       {
         isLoggin
-          ? <>
-            <Dropdown overlay={menu}>
-              <StyledSliderCUserAvatar size={40} icon={<UserOutlined />} src={user?.avatar} />
+          ? <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
+              <StyledSliderCUserBox>
+                <StyledSliderCUserAvatar size={40} icon={<UserOutlined />} src={user?.avatar} />
+                {
+                  visible
+                    ? <>
+                      <StyledSliderCUserInfo>
+                        {user.nickname || user.username || t('no-nickname')}
+                      </StyledSliderCUserInfo>
+                      <DownOutlined className="arrow" />
+                    </>
+                    : null
+                }
+              </StyledSliderCUserBox>
             </Dropdown>
-            {
-              visible
-                ? <>
-                  <StyledSliderCUserInfo>
-                    {user.nickname || user.username || t('no-nickname')}
-                  </StyledSliderCUserInfo>
-                  <LeftOutlined className="arrow" />
-                </>
-                : null
-            }
-          </>
           : <Link href="/oauth/login">
             <a style={{ width: '100%', padding: '0 8px 0 0', textAlign: 'center' }}>
               <StyledSliderCUserInfo style={{ marginLeft: 0 }}>
