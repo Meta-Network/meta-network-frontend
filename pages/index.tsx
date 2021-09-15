@@ -204,7 +204,7 @@ const Home = () => {
   /**
    * 发送事件
    */
-  const { run: emitEvent } = useDebounceFn(
+  const { run: emitEvent } = useThrottleFn(
     () => {
       focus$.emit('zoom')
     },
@@ -446,7 +446,7 @@ const Home = () => {
       } else {
         throw new Error(res.message)
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e)
       Toast({ content: e.message, type: 'warning' })
     }
