@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node'
-import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, CircleSuccessIcon } from '../Icon/Index'
+import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderSpaceIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 
 interface Props {
@@ -102,7 +102,8 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
         onClick={(e: any) => handleJumpHome(e)}
         style={{ marginBottom: 16 }}
       >
-        <ArrowTopLeftIcon />{' '}{t('go-to-homepage')}
+        <SliderSpaceIcon />{' '}访问 Meta Space
+        <SliderShareIcon className="view-icon" />
       </StyledUserMoreButton>
       <Dropdown
         onVisibleChange={handleVisible}
@@ -141,6 +142,16 @@ const StyledUserMoreButton = styled.button`
   }
   & > span {
     margin-right: 6px;
+  }
+  .view-icon {
+    opacity: 0;
+    margin-left: 10px;
+    transition: all .2s;
+  }
+  &:hover {
+    .view-icon {
+      opacity: 1;
+    }
   }
 `
 
