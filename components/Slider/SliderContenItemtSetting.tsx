@@ -1,15 +1,18 @@
 import React, { useCallback, useMemo } from 'react'
-import { Tooltip } from 'antd'
+import { Tooltip, Menu, Dropdown } from 'antd'
 import { isMobile } from 'react-device-detect'
-import { GlobalOutlined } from '@ant-design/icons'
+import { GlobalOutlined, DownOutlined } from '@ant-design/icons'
 import { StyledSliderCItem } from './Style'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { LanguageProps } from '../../typings/i18n.d'
 
 interface SliderContenItemtUserProps {
   readonly visible: boolean
 }
+
+const languageList = ['zh-CN', 'en-US']
 
 // 侧边栏 菜单 用户
 const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
@@ -17,9 +20,27 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
 }) {
   const { t } = useTranslation('common')
   const router = useRouter()
-  const language = useMemo(() => {
-    return router.locale === 'zh-CN' ? 'en-US' : 'zh-CN'
+  const language = useMemo((): LanguageProps => {
+    return router.locale as LanguageProps
   }, [router.locale])
+
+  const menu = (
+    <Menu>
+      {
+        languageList.map((i, idx) => (
+          <Menu.Item key={idx}>
+            <Link
+              href='/'
+              passHref
+              locale={i}
+            >
+              {t(i)}
+            </Link>
+          </Menu.Item>
+        ))
+      }
+    </Menu>
+  )
 
   return (
     <StyledSliderCItem visible={visible}>
@@ -28,20 +49,16 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
           <h4>{t('settings')}</h4>
         </li> : null
       }
-      <Link
-        href='/'
-        passHref
-        locale={language}
-      >
-        <li>
-          <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
+      <li>
+        <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
+          <Dropdown overlay={menu} trigger={ isMobile ? ['click'] : ['hover'] }>
             <a href="javascript:;">
               <GlobalOutlined style={{ fontSize: 22 }} />
               {visible ? t(language) : ''}
             </a>
-          </Tooltip>
-        </li>
-      </Link>
+          </Dropdown>
+        </Tooltip>
+      </li>
     </StyledSliderCItem>
   )
 })

@@ -1,0 +1,1 @@
+export type LanguageProps = 'zh-CN' | 'en-US'
