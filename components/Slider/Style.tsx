@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
 import { Avatar, Drawer } from 'antd'
+import { SearchIcon, SwitchVerticalIcon, SliderShareIcon } from '../Icon/Index'
 
 export const StyledSliderCAccount = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '0 18px 0 0;' : '0 8px 0 0;'};
@@ -71,7 +72,7 @@ export const StyledButton = styled(animated.button)`
   }
 `
 export const StyledSlider = styled.section<{ visible: boolean }>`
-  width: ${ props => props.visible ? '256px' : '60px' };
+  width: ${props => props.visible ? '256px' : '60px'};
   transition: all .2s;
   position: fixed;
   z-index: 10;
@@ -99,7 +100,7 @@ export const StyledSliderCUser = styled.section<{ visible: boolean }>`
   border-color: ${props => props.theme.colorGreen};
   border-style: solid;
   border-width: 0;
-  border-right-width: ${ props => props.visible ? '4px' : '0px' };
+  border-right-width: ${props => props.visible ? '4px' : '0px'};
   padding: 8px 0;
   box-sizing: border-box;
   .arrow {
@@ -197,5 +198,19 @@ export const StyledSliderToggle = styled.section<{ visible: boolean }>`
   cursor: pointer;
   span {
     font-size: 16px;
+  }
+`
+
+export const StyledSliderSpace = styled.a`
+  display: flex;
+  align-items: center;
+  .space-icon {
+    margin-left: auto;
+    opacity: 0;
+  }
+  &:hover {
+    .space-icon {
+      opacity: 1;
+    }
   }
 `

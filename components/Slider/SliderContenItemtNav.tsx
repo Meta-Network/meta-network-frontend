@@ -4,8 +4,8 @@ import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 import { SliderHomeIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
 
-import { StyledSliderCItem } from './Style'
-import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
+import { StyledSliderCItem, StyledSliderSpace } from './Style'
+import { SearchIcon, SwitchVerticalIcon, SliderShareIcon } from '../Icon/Index'
 
 interface SliderContenItemtNavProps {
   readonly visible: boolean
@@ -35,12 +35,13 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
       }
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
-          <a
+          <StyledSliderSpace
             className={ isLoggin ? '' : 'disabled'}
             href="javascript:;" onClick={() => openUrl()}>
             <SliderHomeIcon />
             {visible ? t('my-meta-space') : ''}
-          </a>
+            <SliderShareIcon className="space-icon" />
+          </StyledSliderSpace>
         </Tooltip>
       </li>
       <li>
