@@ -158,16 +158,9 @@ const Home = () => {
     }
   }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
 
-  useEffect(() => {
-    console.log(111, router)
-  }, [ router ])
-
-
   // init
   useMount(
     () => {
-
-
       fetchHexGriids()
 
       resizeFn()
