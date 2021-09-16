@@ -31,6 +31,18 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   const router = useRouter()
   const { Toast } = useToast()
 
+  /**
+   * 重定向 url
+   */
+  const redirectUrl = useCallback(() => {
+    const { redirect } = router.query
+    if (redirect) {
+      (window as any).location = decodeURIComponent(redirect as string)
+    } else {
+      router.push('/update')
+    }
+  }, [router])
+
   // 更新用户名
   const updateUsername = useCallback(
     async (data: UsersMeUsernameState) => {
@@ -44,9 +56,9 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       } catch (e) {
         console.log(e)
       } finally {
-        router.push('/update')
+        redirectUrl()
       }
-    }, [router])
+    }, [])
 
   // 注册
   const onFinishEmail = useCallback(

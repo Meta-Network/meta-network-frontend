@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Image from 'next/image'
 
 import LoginAuth from '../../../assets/svg/login_auth.svg'
 import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
@@ -45,7 +46,9 @@ const OAuthLogin: React.FC = () => {
           </StyledWrapperContent>
           {/* <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount> */}
         </StyledWrapperMain>
-        <StyledDecoration src={ LoginAuth } alt="Meta Network" style={{ ...animatedDecoration }} />
+        <StyledDecoration style={{ ...animatedDecoration }}>
+          <Image src={LoginAuth} alt={'Meta Network'} layout="fill" objectFit="contain" />
+        </StyledDecoration>
       </StyledWrapperInner>
     </StyledWrapper>
   )
@@ -105,11 +108,13 @@ const StyledFollowPublishAccount = styled.section`
   color: #9b9b9f;
 `
 
-const StyledDecoration = styled(animated.img)`
+const StyledDecoration = styled(animated.section)`
+  position: relative;
   margin-left: 154px;
+  width: 500px;
+  height: 500px;
   @media screen and (max-width: 1440px) {
     margin-left: 50px;
-    width: 500px;
   }
 
   @media screen and (max-width: 900px) {

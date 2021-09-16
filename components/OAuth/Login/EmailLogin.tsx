@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { Form, Input, Button, message } from 'antd'
 import { useTranslation } from 'next-i18next'
@@ -10,8 +10,11 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import useToast from '../../../hooks/useToast'
 
-import { StyledEmailForm, StyledFormItem,  StyledFormBtn,
-  StyledFormFlexSpaceBetween, StyledFormBtnText,  StyledFormCode } from './StyleEmail'
+import {
+  StyledEmailForm, StyledFormItem, StyledFormBtn,
+  StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
+} from './StyleEmail'
+
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -40,7 +43,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (res.statusCode === 200) {
         Toast({ content: t('login-successful') })
-        router.push('/')
+        redirectUrl()
       } else {
         throw new Error(res.message)
       }
@@ -56,45 +59,57 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
     console.log('Failed:', errorInfo)
   }
 
+  /**
+   * 重定向 url
+   */
+  const redirectUrl = useCallback(() => {
+    const { redirect } = router.query
+    if (redirect) {
+      (window as any).location = decodeURIComponent(redirect as string)
+    } else {
+      router.push('/')
+    }
+  }, [router])
+
   return (
-      <StyledEmailForm
-        form={formLogin}
-        name="email-login"
-        layout="vertical"
-        onFinish={onFinishEmail}
-        onFinishFailed={onFinishFailedEmail}
+    <StyledEmailForm
+      form={formLogin}
+      name="email-login"
+      layout="vertical"
+      onFinish={onFinishEmail}
+      onFinishFailed={onFinishFailedEmail}
+    >
+      <StyledFormItem
+        label=""
+        name="email"
+        rules={[
+          { required: true, message: t('message-enter-email') },
+          { required: true, type: 'email', message: t('message-enter-valid-email ') },
+        ]}
       >
+        <Input className="form-input" placeholder={t('message-enter-email')} autoComplete="on" />
+      </StyledFormItem>
+
+      <StyledFormCode>
         <StyledFormItem
           label=""
-          name="email"
-          rules={[
-            { required: true, message: t('message-enter-email') },
-            { required: true, type: 'email', message: t('message-enter-valid-email ') },
-          ]}
+          name="code"
+          rules={[{ required: true, message: t('message-enter-verification-code') }]}
         >
-          <Input className="form-input" placeholder={t('message-enter-email')} autoComplete="on" />
+          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
         </StyledFormItem>
+        <EmailCode form={formLogin}></EmailCode>
+      </StyledFormCode>
 
-        <StyledFormCode>
-          <StyledFormItem
-            label=""
-            name="code"
-            rules={[{ required: true, message: t('message-enter-verification-code') }]}
-          >
-            <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
-          </StyledFormItem>
-          <EmailCode form={formLogin}></EmailCode>
-        </StyledFormCode>
-
-        <StyledFormItem>
-          <StyledFormFlexSpaceBetween>
-            <StyledFormBtn htmlType="submit" loading={loading}>
-              {t('log-in')}
-            </StyledFormBtn>
-            <StyledFormBtnText type="button" onClick={() => setEmailModeFn('register')}>{t('register')}</StyledFormBtnText>
-          </StyledFormFlexSpaceBetween>
-        </StyledFormItem>
-      </StyledEmailForm>
+      <StyledFormItem>
+        <StyledFormFlexSpaceBetween>
+          <StyledFormBtn htmlType="submit" loading={loading}>
+            {t('log-in')}
+          </StyledFormBtn>
+          <StyledFormBtnText type="button" onClick={() => setEmailModeFn('register')}>{t('register')}</StyledFormBtnText>
+        </StyledFormFlexSpaceBetween>
+      </StyledFormItem>
+    </StyledEmailForm>
   )
 }
 

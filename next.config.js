@@ -12,4 +12,5 @@ const nextConfig = {
   },
 }
 
-module.exports = withPlugins([], nextConfig)
+module.exports = withPlugins([
+], nextConfig)
