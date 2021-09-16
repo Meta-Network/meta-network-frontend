@@ -16,3 +16,9 @@ export const rules = {
 
 // 上传图片大小
 export const uploadImageSize = 5
+
+// Oauth 白名单
+export const OAuthWhiteList = [
+  'https://meta-cms.mttk.net',
+  'https://meta-cms.vercel.mttk.net',
+]

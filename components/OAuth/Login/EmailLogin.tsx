@@ -14,7 +14,7 @@ import {
   StyledEmailForm, StyledFormItem, StyledFormBtn,
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
 } from './StyleEmail'
-
+import { OauthUrlVerify } from '../../../helpers/index'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -65,7 +65,12 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const redirectUrl = useCallback(() => {
     const { redirect } = router.query
     if (redirect) {
-      (window as any).location = decodeURIComponent(redirect as string)
+      const url = decodeURIComponent(redirect as string)
+      if (OauthUrlVerify(url)) {
+        (window as any).location = url
+      } else {
+        router.push('/')
+      }
     } else {
       router.push('/')
     }

@@ -16,6 +16,8 @@ import {
   StyledEmailForm, StyledFormItem, StyledFormBtn,
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
 } from './StyleEmail'
+import { OauthUrlVerify } from '../../../helpers/index'
+
 
 interface Props {
   readonly inviteCode: string
@@ -37,7 +39,12 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   const redirectUrl = useCallback(() => {
     const { redirect } = router.query
     if (redirect) {
-      (window as any).location = decodeURIComponent(redirect as string)
+      const url = decodeURIComponent(redirect as string)
+      if (OauthUrlVerify(url)) {
+        (window as any).location = url
+      } else {
+        router.push('/update')
+      }
     } else {
       router.push('/update')
     }

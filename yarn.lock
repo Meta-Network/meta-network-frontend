@@ -1032,6 +1032,11 @@
     "@typescript-eslint/types" "4.29.3"
     eslint-visitor-keys "^2.0.0"
 
+"@websanova/url@^2.6.3":
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/@websanova/url/-/url-2.6.3.tgz#4da0c686e78b3612be48dcb9c0c60274360a1075"
+  integrity sha512-+gLI+9nIVPg3X4VcC30MUrGd9/DmYPla2ryzl7qKzIbH07wgsgy99H2WRsSFweVgV4FLkTHEpClj1//t0u+FLw==
+
 acorn-jsx@^5.3.1:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
@@ -5237,7 +5242,7 @@ next-react-svg@^1.1.3:
   dependencies:
     svg-react-loader "0.4.6"
 
-next@^11.1.2:
+next@11.1.2:
   version "11.1.2"
   resolved "https://registry.yarnpkg.com/next/-/next-11.1.2.tgz#527475787a9a362f1bc916962b0c0655cc05bc91"
   integrity sha512-azEYL0L+wFjv8lstLru3bgvrzPvK0P7/bz6B/4EJ9sYkXeW8r5Bjh78D/Ol7VOg0EIPz0CXoe72hzAlSAXo9hw==

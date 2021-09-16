@@ -6,6 +6,7 @@ import { invitationsMine } from '../services/ucenter'
 import { PointScopeState } from '../typings/metaNetwork'
 import { InviitationsMineState } from '../typings/ucenter.d'
 import { amountSplit } from '../utils/index'
+import { OAuthWhiteList } from '../common/config/index'
 
 /**
  * pages index
@@ -112,7 +113,7 @@ export const getZoomPercentage = () => {
 
   if (dom) {
     const transformScale = dom.getAttribute('transform')
-    const transformScaleMatch =  transformScale?.match('scale\(.*\)')
+    const transformScaleMatch = transformScale?.match('scale\(.*\)')
     const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
     // console.log('transformScaleValue', transformScaleValue)
 
@@ -125,4 +126,19 @@ export const getZoomPercentage = () => {
   }
 
   return 0
+}
+
+/**
+ * Oauth url 校验
+ * @param url
+ * @returns
+ */
+export const OauthUrlVerify = (url: string) => {
+  try {
+    const { origin } = new URL(url)
+    return OAuthWhiteList.includes(origin)
+  } catch (e) {
+    console.log(e)
+    return false
+  }
 }
