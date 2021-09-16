@@ -40,15 +40,21 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
           </g>
           : null
       }
-      <Text className={ percentage < 25 ? 'hide' : '' }>
-        <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
-        {
-          node.subdomain
-            ? <tspan x="0" y="8" style={{ fontSize: 8 }}>{node?.subdomain || t('default-site-name')}</tspan>
-            : null
-        }
-        <tspan x="0" y="26" style={{ fontSize: 12, lineHeight: 24 }}>{strEllipsis(node?.userBio) || t('no-introduction')}</tspan>
-      </Text>
+      <g className={ percentage < 20 ? 'hide' : '' }>
+        <Text className="node-user">
+          <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
+          {
+            node.subdomain
+              ? <tspan x="0" y="8" style={{ fontSize: 8 }}>{node?.subdomain || t('default-site-name')}</tspan>
+              : null
+          }
+          <tspan x="0" y="26" style={{ fontSize: 12, lineHeight: 24 }}>{strEllipsis(node?.userBio) || t('no-introduction')}</tspan>
+        </Text>
+        <Text className="node-user-default">
+          <tspan x="0" y="8" style={{ fontSize: 18, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
+        </Text>
+      </g>
+
       {/* 收藏的坐标点 */}
       {
         isBookmark ?

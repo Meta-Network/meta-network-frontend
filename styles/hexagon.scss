@@ -72,3 +72,20 @@
   transition: stroke .2s;
   cursor:not-allowed !important;
 }
+
+.hexagon-group {
+  .node-user {
+    opacity: 0;
+  }
+  .node-user-default {
+    opacity: 1;
+  }
+  &.active {
+    .node-user {
+      opacity: 1;
+    }
+    .node-user-default {
+      opacity: 0;
+    }
+  }
+}
