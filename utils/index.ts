@@ -25,7 +25,7 @@ interface generatePointsProps {
  * @returns
  */
 export const computeHexagonPoints = (width: number, height: number, edge: number): number[][] => {
-  let centerX = width /2 
+  let centerX = width / 2
   let centerY = height / 2
   let x = edge * Math.sqrt(3) / 2
   let y = edge / 2
@@ -91,12 +91,12 @@ export const generatePoints = ({ x, y, width, height, padding, edge }: generateP
       // 偶数行
       if (row % 2 === 0) {
         // 默认距离 + x width and padding
-        _x = ( (width / 2) + ( 44 / 2 ) ) + ( width * col ) + ( padding * col )
+        _x = ((width / 2) + (44 / 2)) + (width * col) + (padding * col)
       } else {
         _x = col * width + col * padding
       }
       // 默认距离 x 倍
-      _y = ( height - (edge / 10) ) * ( row - 1)
+      _y = (height - (edge / 10)) * (row - 1)
       points[i] = [_x, _y]
     }
   }
@@ -131,7 +131,7 @@ export const cubeToAxial = (x: number, y: number, z: number) => ({
  */
 export const axialToCube = (x: number, y: number) => ({
   x: x,
-  y: -x-y,
+  y: -x - y,
   z: y,
 })
 
@@ -235,7 +235,7 @@ export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], dis
 export const angle = (start: CoordinateState, end: CoordinateState) => {
   let diff_x = end.x - start.x
   let diff_y = end.y - start.y
-  return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI)
+  return 360 * Math.atan2(diff_y, diff_x) / (2 * Math.PI)
 }
 
 /**
@@ -244,7 +244,7 @@ export const angle = (start: CoordinateState, end: CoordinateState) => {
  * @param el
  * @returns
  */
-export function isInViewPort(el: HTMLElement): boolean | undefined  {
+export function isInViewPort(el: HTMLElement): boolean | undefined {
   if (!el) {
     return undefined
   }
@@ -281,7 +281,7 @@ export const compose = (...fn: Function[]) => {
  * 处理节点样式
  * @param param0
  */
-export const HandleHexagonStyle = ({ x, y, z }: PointState, nodeActive: boolean)=> {
+export const HandleHexagonStyle = ({ x, y, z }: PointState, nodeActive: boolean) => {
   // 只需要处理已有的块
   const hexagonListExist: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-exist')
   const hexagonListActive: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.hexagon-active')
@@ -335,3 +335,27 @@ export const amountSplit = (amount: string, decimal: number) => {
  * @returns
  */
 export const keyFormat = (point: PointState) => `x${point.x}_y${point.y}_z${point.z}`
+
+/**
+ * 解析 Key 为对象
+ * @param val 
+ * @returns 
+ */
+export const keyFormatParse = (val: string) => {
+  try {
+    const point = val.split('_')
+
+    const x = Number(point[0].slice(1))
+    const y = Number(point[1].slice(1))
+    const z = Number(point[2].slice(1))
+
+    if ((x + y + z) !== 0) {
+      return
+    }
+
+    return { x, y, z }
+  } catch (e) {
+    console.log(e)
+    return
+  }
+}

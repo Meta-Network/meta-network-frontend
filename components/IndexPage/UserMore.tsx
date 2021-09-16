@@ -13,6 +13,7 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node'
 import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderSpaceIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
+import { keyFormat } from '../../utils/index'
 
 interface Props {
   readonly bookmark: PointState[]
@@ -79,6 +80,13 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
       {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
         拍一拍
       </Menu.Item> */}
+      <CopyToClipboard
+        text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
+        onCopy={() => Toast({ content: t('copy-successfully') })}>
+        <Menu.Item key="copy" icon={<CopyIcon />}>
+          复制位置
+        </Menu.Item>
+      </CopyToClipboard>
       <CopyToClipboard text={process.env.NEXT_PUBLIC_META_CMS_URL}
         onCopy={() => Toast({ content: t('copy-successfully') })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>

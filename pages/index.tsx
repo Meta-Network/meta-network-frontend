@@ -13,7 +13,7 @@ import {
   cubeToAxial, calcTranslate, calcMaxDistance,
   calcCenterRangeAsMap, angle,
   isInViewPort, HandleHexagonStyle, strEllipsis,
-  keyFormat
+  keyFormat, keyFormatParse
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
@@ -23,6 +23,8 @@ import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } 
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+import qs from 'qs'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -52,6 +54,7 @@ const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
 const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
+  const router = useRouter()
 
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([])
@@ -155,10 +158,16 @@ const Home = () => {
     }
   }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
 
+  useEffect(() => {
+    console.log(111, router)
+  }, [ router ])
+
 
   // init
   useMount(
     () => {
+
+
       fetchHexGriids()
 
       resizeFn()
@@ -303,12 +312,33 @@ const Home = () => {
   const fetchHexGridsMine = useCallback(
     async () => {
       setHexGridsMineTag(false)
+
       const data = await fetchHexGridsMineAPI()
+
       if (data) {
         setHexGridsMineData(data)
-        translateMap({ x: data.x, y: data.y, z: data.z }, false)
+      }
+
+      // 默认地图偏移
+      const defaultTranslateMap = () => {
+        if (data) {
+          translateMap({ x: data.x, y: data.y, z: data.z }, false)
+        } else {
+          translateMap(defaultPoint, false, false)
+        }
+      }
+
+      const { cube } = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+
+      if (cube) {
+        const _cubeData = keyFormatParse(cube as string)
+        if (_cubeData) {
+          translateMap({ x: _cubeData.x, y: _cubeData.y, z: _cubeData.z }, false)
+        } else {
+          defaultTranslateMap()
+        }
       } else {
-        translateMap(defaultPoint, false, false)
+        defaultTranslateMap()
       }
 
       setHexGridsMineTag(true)

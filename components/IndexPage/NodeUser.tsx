@@ -40,7 +40,7 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
           </g>
           : null
       }
-      <g className={ percentage < 20 ? 'hide' : '' }>
+      <g className={ percentage < 16 ? 'hide' : '' }>
         <Text className="node-user">
           <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
           {
