@@ -47,6 +47,14 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
     return isBookmarkResult
   }, [bookmark, currentNode])
 
+  // 复制信息
+  const userInfoText = useMemo(() => `昵称：${currentNode.userNickname || currentNode.username || '暂无'}
+简介：${currentNode.userBio}
+位置：${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}
+MetaSpace名称：${currentNode.siteName || '暂无'}
+MetaSpace主页：${currentNode.subdomain || '暂无'}
+`, [ currentNode ])
+
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
@@ -107,6 +115,12 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
               }
             </Menu.Item>
       }
+      <CopyToClipboard text={userInfoText}
+        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
+        <Menu.Item key="copy" icon={<CopyIcon />}>
+          复制信息
+        </Menu.Item>
+      </CopyToClipboard>
     </Menu>
   )
 
