@@ -119,7 +119,12 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
       </StyledUserAvatar>
 
       <StyledUserMore ref={refMore}>
-        <UserMore bookmark={bookmark} currentNode={currentNode} HandleBookmark={HandleBookmark} focus$={focus$} translateMap={translateMap}></UserMore>
+        <UserMore 
+          bookmark={bookmark}
+          currentNode={currentNode}
+          HandleBookmark={HandleBookmark}
+          focus$={focus$}
+          translateMap={translateMap}></UserMore>
       </StyledUserMore>
     </>
   )
