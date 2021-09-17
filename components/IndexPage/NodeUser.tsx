@@ -9,7 +9,6 @@ interface Props {
   readonly node: hexGridsByFilterState
   readonly isBookmark: boolean
   readonly isOwner: boolean
-  readonly percentage: number
 }
 
 /**
@@ -21,7 +20,7 @@ const requestAnimationFrame = window.requestAnimationFrame || (window as any).mo
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 
-const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, node, isOwner, percentage }) {
+const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, node, isOwner }) {
   const { t } = useTranslation('common')
 
   // console.log('NodeUser components')
@@ -40,7 +39,7 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
           </g>
           : null
       }
-      <g className={ percentage < 16 ? 'hide' : '' }>
+      <g className="node-user-wrapper">
         <Text className="node-user">
           <tspan x="0" y="-14" style={{ fontSize: 14, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>
           {

@@ -16,13 +16,12 @@ interface Props {
   readonly bookmark: PointState[]
   readonly noticeBardOccupiedState: boolean
   readonly isNodeOwner: (value: PointState) => boolean
-  readonly percentage: number
 }
 
 const NodeContent: React.FC<Props> = React.memo(function NodeContent({
   coordinate, allNodeDisabled, allNodeMap,
   allNodeChoose, defaultPoint, bookmark,
-  noticeBardOccupiedState, isNodeOwner, percentage
+  noticeBardOccupiedState, isNodeOwner
 }) {
   // useWhyDidYouUpdate('NodeContent useWhyDidYouUpdateComponent', {
   //   coordinate, allNodeDisabled, allNodeMap,
@@ -65,7 +64,6 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent({
         node={node}
         isBookmark={isBookmarkResult}
         isOwner={isNodeOwner(node)}
-        percentage={percentage}
       ></NodeUser>
     )
   }

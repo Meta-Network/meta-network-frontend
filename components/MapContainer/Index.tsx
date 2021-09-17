@@ -72,7 +72,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   const { t } = useTranslation('common')
   const { Toast } = useToast()
   const { isLoggin } = useUser()
-  const [value, setValue] = useState<number>(0)
+  const [percentageVal, setPercentageVal] = useState<number>(0)
 
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex),
@@ -214,7 +214,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
  */
    const fetchZoomValue = useCallback(() => {
     let percentage = getZoomPercentage()
-    setValue(percentage)
+    setPercentageVal(percentage)
 
     cancelAnimationFrame(ID)
     ID = requestAnimationFrame(fetchZoomValue)
@@ -234,7 +234,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   return (
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
-        <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
+        <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin} className={ percentageVal < 20 ? 'hide-node' : '' }>
           {
             // note: key must be unique between re-renders.
             // using config.mapProps+i makes a new key when the goal template chnages.
@@ -265,7 +265,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                     bookmark={bookmark}
                     noticeBardOccupiedState={noticeBardOccupiedState}
                     isNodeOwner={isNodeOwner}
-                    percentage={value}
                   ></NodeContent>
                 </HexagonRound>
               )

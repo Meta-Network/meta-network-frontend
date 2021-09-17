@@ -76,16 +76,25 @@
 .hexagon-group {
   .node-user {
     opacity: 0;
+    will-change: opacity;
   }
   .node-user-default {
     opacity: 1;
+    will-change: opacity;
   }
   &.active {
     .node-user {
       opacity: 1;
+      will-change: opacity;
     }
     .node-user-default {
       opacity: 0;
+      will-change: opacity;
     }
   }
+}
+
+.hide-node .node-user-wrapper {
+  opacity: 0;
+  will-change: opacity;
 }
