@@ -132,6 +132,8 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
   useEffect(() => {
     if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
       fetchhexGridsLoctionByUserId()
+    } else {
+      setInviteUserNode({} as hexGridsByFilterState)
     }
   }, [currentNode, fetchhexGridsLoctionByUserId])
 
