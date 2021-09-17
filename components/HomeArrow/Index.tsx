@@ -67,7 +67,6 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
       ) {
         //
       } else {
-
         // 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
         // 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
 
