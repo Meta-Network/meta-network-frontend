@@ -95,13 +95,13 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
       </Menu.Item> */}
       <CopyToClipboard
         text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
-        onCopy={() => Toast({ content: t('copy-successfully') })}>
+        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
           复制位置
         </Menu.Item>
       </CopyToClipboard>
       <CopyToClipboard text={process.env.NEXT_PUBLIC_META_CMS_URL}
-        onCopy={() => Toast({ content: t('copy-successfully') })}>
+        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
           {t('copy-address')}
         </Menu.Item>

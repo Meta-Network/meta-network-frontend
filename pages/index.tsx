@@ -296,7 +296,7 @@ const Home = () => {
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
-      .on('end', showUserMore)
+      .on('start', showUserMore)
   }, [allNodeMap, currentNode, layout, Toast, t])
 
   /**
