@@ -43,6 +43,10 @@ export const StyledFormItem = styled(Form.Item)`
       display: none;
     }
   }
+  .ant-input {
+    padding-left: 0;
+    padding-right: 0;
+  }
 `
 export const StyledFormCode = styled.div`
   position: relative;
