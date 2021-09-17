@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useMemo, useState, useEffect } from 'react'
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
@@ -25,6 +25,7 @@ interface Props {
  */
 const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMineData }) {
   const { t } = useTranslation('common')
+  const homeArrow = useRef<HTMLDivElement>(null)
   // 箭头角度
   const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
@@ -73,12 +74,24 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
         const { x, y, width: domWidth, height: domHeight } = tag!.getBoundingClientRect()
         const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
         const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+
+        let CoordinateStart = {
+          x: _width,
+          y: _height
+        }
+        const CoordinateEnd = {
+          x: x + (domWidth / 2),
+          y: y + (domHeight / 2)
+        }
+
+        if (homeArrow.current) {
+          const { x: homeArrowX, y: homeArrowY, width: homeArrowW, height: homeArrowH } = homeArrow!.current.getBoundingClientRect()
+          CoordinateStart = { x: homeArrowX + homeArrowW / 2, y: homeArrowY + homeArrowH / 2 }
+        }
+
         const angleResult = angle(
-          { x: 0, y: 0 },
-          {
-            x: x - _width / 2 + (domWidth / 2),
-            y: y - _height / 2 + (domHeight / 2)
-          }
+          CoordinateStart,
+          CoordinateEnd
         )
 
         // console.log('angle', angleResult)
@@ -102,7 +115,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
 
   return (
     <Tooltip title={ isShow ? '我的位置' : '' }>
-      <StyledArrow style={style}>
+      <StyledArrow style={style} ref={homeArrow}>
           <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>
     </Tooltip>
