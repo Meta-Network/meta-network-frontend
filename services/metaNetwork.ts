@@ -1,6 +1,6 @@
-import { API } from "./client";
+import { API } from './client'
 import { axiosResult } from '../typings/request'
-import { PointScopeState, hexGridsByFilterState } from "../typings/metaNetwork.d";
+import { PointScopeState, hexGridsByFilterState, HexGridsLoctionByUserIdState } from '../typings/metaNetwork.d'
 import { PointState } from '../typings/node.d'
 
 // ---------------- META NETWORK ----------------
@@ -48,3 +48,10 @@ export const hexGridsMine = (): Promise<axiosResult<hexGridsByFilterState>> =>
  */
 export const hexGridsForbiddenZoneRadius = (): Promise<axiosResult<number>> =>
   API.get('/hex-grids/forbidden-zone/radius', { cache: true })
+
+/**
+ * 通过 user id 查询位置
+ * @returns
+ */
+export const hexGridsLoctionByUserId = (data: HexGridsLoctionByUserIdState): Promise<axiosResult<hexGridsByFilterState>> =>
+  API.get(`/hex-grids/location/by-user-id/${data.userId}`, { cache: true })

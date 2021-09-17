@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash'
+import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
+import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useTranslation } from 'next-i18next'
@@ -13,19 +12,22 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node'
 import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderSpaceIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
-import { keyFormat } from '../../utils/index'
+import { keyFormat, strEllipsis } from '../../utils/index'
+import { fetchhexGridsLoctionByUserIdAPI } from '../../helpers/index'
 
 interface Props {
   readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
+  translateMap: (point: PointState, showUserInfo?: boolean) => void
   focus$: EventEmitter<string>
 }
 
-const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$ }) => {
+const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$, translateMap }) => {
   const { Toast } = useToast()
   const [visible, setVisible] = useState<boolean>(false)
   const { t } = useTranslation('common')
+  const [inviteUserNode, setInviteUserNode] = useState({} as hexGridsByFilterState)
 
   // 是否收藏
   const isBookmark = useMemo(() => {
@@ -57,6 +59,9 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
     domEvent.stopPropagation()
     if (key === 'bookmark') {
       HandleBookmark(currentNode)
+    } else if (key === 'invite') {
+      const { x, y, z } = inviteUserNode
+      translateMap({x, y, z})
     }
   }
 
@@ -93,6 +98,15 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
           {t('copy-address')}
         </Menu.Item>
       </CopyToClipboard>
+      {
+        isEmpty(inviteUserNode)
+          ? null
+          : <Menu.Item key="invite" icon={<UserOutlined style={{ fontSize: 20 }} />}>
+              {
+                strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || '暂无昵称'
+              }
+            </Menu.Item>
+      }
     </Menu>
   )
 
@@ -103,6 +117,23 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
     },
     [],
   )
+
+  /**
+   * 获取位置 通过 user id
+   */
+  const fetchhexGridsLoctionByUserId = useCallback(
+    async () => {
+      const data = await fetchhexGridsLoctionByUserIdAPI({ userId: currentNode.inviterUserId })
+      if (data) {
+        setInviteUserNode(data)
+      }
+    }, [currentNode.inviterUserId])
+
+  useEffect(() => {
+    if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
+      fetchhexGridsLoctionByUserId()
+    }
+  }, [currentNode, fetchhexGridsLoctionByUserId])
 
   return (
     <>

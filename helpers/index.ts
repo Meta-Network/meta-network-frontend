@@ -1,9 +1,10 @@
 import {
   hexGridsForbiddenZoneRadius, hexGridsCountByFilter, hexGridsMine,
-  hexGridsByFilter
+  hexGridsByFilter,
+  hexGridsLoctionByUserId
 } from '../services/metaNetwork'
 import { invitationsMine } from '../services/ucenter'
-import { PointScopeState } from '../typings/metaNetwork'
+import { HexGridsLoctionByUserIdState, PointScopeState } from '../typings/metaNetwork'
 import { InviitationsMineState } from '../typings/ucenter.d'
 import { amountSplit } from '../utils/index'
 import { OAuthWhiteList } from '../common/config/index'
@@ -140,5 +141,25 @@ export const OauthUrlVerify = (url: string) => {
   } catch (e) {
     console.log(e)
     return false
+  }
+}
+
+/**
+ * 通过 user id 查询位置 API
+ * @param data 
+ * @returns 
+ */
+export const fetchhexGridsLoctionByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
+  try {
+    const res = await hexGridsLoctionByUserId(data)
+    if (res.statusCode === 200 && res.data) {
+      return res.data
+    } else {
+      // console.log('获取失败')
+      throw new Error(res.message)
+    }
+  } catch (e) {
+    console.log('e', e)
+    return null
   }
 }

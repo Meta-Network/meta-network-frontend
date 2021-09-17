@@ -579,6 +579,7 @@ const Home = () => {
         HandleBookmark={HandleBookmark}
         url={currentNode.userAvatar}
         focus$={focus$}
+        translateMap={translateMap}
       ></UserInfo>
       <UserInfoMouse
         currentNode={currentNode}

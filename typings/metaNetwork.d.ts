@@ -17,6 +17,7 @@ export interface hexGridsByFilterState {
   y: number
   z: number
   subdomain: string
+  inviterUserId: number
   metaSpaceSiteId: number
   metaSpaceSiteUrl: string
   metaSpaceSiteProofUrl: string
@@ -26,4 +27,8 @@ export interface hexGridsByFilterState {
   userId: number
   userNickname: string
   username: string
+}
+
+export interface HexGridsLoctionByUserIdState {
+  userId: number
 }
