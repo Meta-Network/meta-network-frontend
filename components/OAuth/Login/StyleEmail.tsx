@@ -106,4 +106,7 @@ export const StyledCodeDescriptionText = styled.section`
   color: #9b9b9f;
   line-height: 1.4;
   margin: 4px 0;
+  a {
+    color: #40a9ff;
+  }
 `

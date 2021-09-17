@@ -8,9 +8,11 @@ import { EmailModeProps } from '../../../typings/oauth'
 import { invitationsValidate } from '../../../services/ucenter'
 import useToast from '../../../hooks/useToast'
 
-import { StyledEmailForm, StyledFormItem,  StyledFormBtn,
+import {
+  StyledEmailForm, StyledFormItem, StyledFormBtn,
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledCodeDescription,
-  StyledCodeDescriptionTitle, StyledCodeDescriptionText} from './StyleEmail'
+  StyledCodeDescriptionTitle, StyledCodeDescriptionText
+} from './StyleEmail'
 
 interface Props {
   setStep: React.Dispatch<React.SetStateAction<number>>
@@ -46,18 +48,18 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
             setStep(1)
             setInviteCode(inviteCode)
           } else {
-            throw new Error(t('message-invitation-code-used'))
+            throw new Error('邀请码已失效')
           }
         } else {
           throw new Error(res.message)
         }
-      } catch (e) {
+      } catch (e: any) {
         console.log(e)
         Toast({ content: (e.message).toString(), type: 'warning' })
       } finally {
         setLoading(false)
       }
-    }, [ Toast, setStep, setInviteCode, t ])
+    }, [Toast, setStep, setInviteCode, t])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo)
@@ -80,11 +82,14 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
           { required: true, message: t('message-enter-invitation-code') },
         ]}
       >
-        <Input className="form-input" placeholder={ t('message-enter-invitation-code') } autoComplete="new-text" />
+        <Input className="form-input" placeholder={t('message-enter-invitation-code')} autoComplete="new-text" />
       </StyledFormItem>
       <StyledCodeDescription>
         <StyledCodeDescriptionTitle>{t('invitation-code-help-title')}</StyledCodeDescriptionTitle>
-        <StyledCodeDescriptionText>{t('invitation-code-help-rule-1')}</StyledCodeDescriptionText>
+        <StyledCodeDescriptionText
+          dangerouslySetInnerHTML={{
+            __html: t('invitation-code-help-rule-1', { escapeValue: false })
+          }}></StyledCodeDescriptionText>
         <StyledCodeDescriptionText>2.{t('invitation-code-help-rule-2')}</StyledCodeDescriptionText>
       </StyledCodeDescription>
 
