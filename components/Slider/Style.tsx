@@ -152,6 +152,7 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
       color: rgba(196, 196, 196, 0.4);
       padding: 4px 18px;
       margin: 0;
+      animation: pro-layout-title-hide .3s;
     }
     a {
       font-family: ${props => props.theme.fontFamilyZH};
@@ -170,6 +171,7 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
       text-overflow: ellipsis;
       overflow: hidden;
       transition: all .2s;
+      animation: pro-layout-title-hide .3s;
       &:hover {
         color: ${props => props.theme.colorGreen};
         background: rgba(245, 245, 245, 0.1);
@@ -261,20 +263,4 @@ export const StyledSliderLinkText = styled.span`
   margin: 0 0 0 12px;
   white-space: nowrap;
   animation: pro-layout-title-hide .3s;
-  @keyframes pro-layout-title-hide {
-    0% {
-        display: none;
-        opacity: 0
-    }
-
-    80% {
-        display: none;
-        opacity: 0
-    }
-
-    to {
-        display: unset;
-        opacity: 1
-    }
-  }
 `

@@ -11,6 +11,7 @@ import 'tippy.js/dist/tippy.css' // optional for styling
 
 import '../styles/hexagon.scss'
 import '../styles/custom.scss'
+import '../styles/animation.scss'
 import '../styles/globals.scss'
 
 import { useToken } from '../hooks/useToken'
