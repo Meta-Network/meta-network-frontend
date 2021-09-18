@@ -14,8 +14,8 @@ const SliderToggle: React.FC<SliderContenAccoountProps> = React.memo(function Sl
   // console.log('SliderToggle')
 
   return (
-    <StyledSliderToggle onClick={() => Toggle()} visible={visible}>
-      <StyledSliderBtn>
+    <StyledSliderToggle visible={visible}>
+      <StyledSliderBtn onClick={() => Toggle()}>
         {
           visible
           ? <MenuFoldOutlined />
