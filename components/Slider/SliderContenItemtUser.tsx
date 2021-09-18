@@ -45,6 +45,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
           <StyledSliderSpace
+            visible={visible}
             className={ isLoggin ? '' : 'disabled'}
             href="javascript:;" onClick={() => openUrl()}>
             <SliderHomeIcon />

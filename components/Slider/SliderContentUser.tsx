@@ -53,7 +53,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
         isLoggin
           ? <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
               <StyledSliderCUserBox>
-                <StyledSliderCUserAvatar size={40} icon={<UserOutlined />} src={user?.avatar} />
+                <StyledSliderCUserAvatar size={30} icon={<UserOutlined />} src={user?.avatar} />
                 {
                   visible
                     ? <>

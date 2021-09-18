@@ -4,7 +4,7 @@ import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 import { SliderHomeIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
 
-import { StyledSliderCItem, StyledSliderSpace } from './Style'
+import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon, SliderShareIcon } from '../Icon/Index'
 
 interface SliderContenItemtNavProps {

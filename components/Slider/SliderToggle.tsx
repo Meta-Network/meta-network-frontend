@@ -1,7 +1,7 @@
 import React from 'react'
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
 
-import { StyledSliderToggle } from './Style'
+import { StyledSliderToggle, StyledSliderBtn } from './Style'
 
 interface SliderContenAccoountProps {
   readonly visible: boolean
@@ -15,11 +15,13 @@ const SliderToggle: React.FC<SliderContenAccoountProps> = React.memo(function Sl
 
   return (
     <StyledSliderToggle onClick={() => Toggle()} visible={visible}>
-      {
-        visible
-        ? <MenuFoldOutlined />
-        : <MenuUnfoldOutlined />
-      }
+      <StyledSliderBtn>
+        {
+          visible
+          ? <MenuFoldOutlined />
+          : <MenuUnfoldOutlined />
+        }
+      </StyledSliderBtn>
     </StyledSliderToggle>
   )
 })

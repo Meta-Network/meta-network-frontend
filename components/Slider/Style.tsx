@@ -86,8 +86,8 @@ export const StyledSlider = styled.section<{ visible: boolean }>`
   user-select: none;
   box-sizing: border-box;
 `
-export const StyledSliderContent = styled.section<{ visible: boolean }>`
-  padding: ${props => props.visible ? '0 0 16px 18px;' : '0 0 16px 8px'};
+export const StyledSliderContent = styled.section`
+  padding: 16px 0;
   transition: all .2s;
   height: 100%;
   display: flex;
@@ -98,21 +98,20 @@ export const StyledSliderContent = styled.section<{ visible: boolean }>`
 export const StyledSliderCUser = styled.section<{ visible: boolean }>`
   display: flex;
   align-items: center;
-  border-color: ${props => props.theme.colorGreen};
+  border-color: ${props => props.visible ? props.theme.colorGreen : 'transparent'};
   border-style: solid;
   border-width: 0;
-  border-right-width: ${props => props.visible ? '4px' : '0px'};
-  padding: 8px 0;
+  border-right-width: 4px;
+  padding: ${props => props.visible ? '8px 18px' : '8px 0'};
   box-sizing: border-box;
   .arrow {
     opacity: ${props => props.visible ? 1 : 0};
     margin-left: auto;
-    margin-right: 20px;
     color: ${props => props.theme.colorGreen};
     transition: all .2s;
   }
   .ant-avatar {
-    flex: 0 0 40px;
+    flex: 0 0 30px;
   }
 `
 export const StyledSliderCUserBox = styled.section`
@@ -120,6 +119,7 @@ export const StyledSliderCUserBox = styled.section`
   display: flex;
   align-items: center;
   cursor: pointer;
+  justify-content: center;
 `
 export const StyledSliderCUserAvatar = styled(Avatar)`
 `
@@ -140,7 +140,7 @@ export const StyledSliderCUserInfo = styled.span`
 export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
   list-style: none;
   padding: 0;
-  margin: ${props => props.visible ? '24px 18px 0 0;' : '24px 0 0 0;'};
+  margin: 24px 0 0 0;
 
   li {
     h4 {
@@ -150,12 +150,12 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
       font-size: 12px;
       line-height: 18px;
       color: rgba(196, 196, 196, 0.4);
-      padding: 0 0 8px 0;
+      padding: 4px 18px;
       margin: 0;
     }
     a {
       font-family: ${props => props.theme.fontFamilyZH};
-      padding: 8px 0 8px 12px;
+      padding: 8px 18px;
       display: flex;
       align-items: center;
       font-style: normal;
@@ -192,17 +192,37 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
   }
 `
 
+export const StyledSliderBtn = styled.section`
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  /* &:hover { */
+    /* background-color: #505050; */
+  /* } */
+`
 export const StyledSliderToggle = styled.section<{ visible: boolean }>`
   margin-top: 20px;
   /* margin-top: auto; */
-  padding: ${props => props.visible ? '0 0 0 4px;' : '0 0 0 14px'};
-  cursor: pointer;
+  padding: 0 18px;
   span {
     font-size: 16px;
   }
 `
 
-export const StyledSliderSpace = styled.a`
+export const StyledSliderMore = styled.section<{ visible: boolean }>`
+  /* margin-top: 20px; */
+  margin-top: auto;
+  padding: 0 18px;
+  span {
+    font-size: 16px;
+  }
+`
+
+export const StyledSliderSpace = styled.a<{ visible: boolean }>`
   display: flex;
   align-items: center;
   .space-icon {
@@ -211,7 +231,7 @@ export const StyledSliderSpace = styled.a`
   }
   &:hover {
     .space-icon {
-      opacity: 1;
+      opacity: ${props => props.visible ? 1 : 0};
     }
   }
 `
@@ -220,7 +240,7 @@ export const StyledSliderLogo = styled.section<{ visible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.visible ? '16px 18px 16px 0' : '16px 8px 16px 0'};
+  padding: 4px 18px 20px;
   box-sizing: border-box;
 `
 
@@ -256,15 +276,5 @@ export const StyledSliderLinkText = styled.span`
         display: unset;
         opacity: 1
     }
-  }
-`
-
-export const StyledSliderMore = styled.section<{ visible: boolean }>`
-  /* margin-top: 20px; */
-  margin-top: auto;
-  padding: ${props => props.visible ? '0 0 0 4px;' : '0 0 0 14px'};
-  cursor: pointer;
-  span {
-    font-size: 16px;
   }
 `

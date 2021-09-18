@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
-import { StyledSliderMore, StyledSliderCUserInfo, StyledSliderCUserAvatar, StyledSliderCUserBox } from './Style'
+import { StyledSliderMore, StyledSliderCUserInfo, StyledSliderCUserAvatar, StyledSliderBtn } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
 import { QuestionOutlined } from '@ant-design/icons'
 
@@ -102,7 +102,9 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
   return (
     <StyledSliderMore visible={visible}>
       <Dropdown overlay={menu} placement="topLeft" overlayClassName='custom-slider-more' trigger={ isMobile ? ['click'] : ['hover'] }>
-        <QuestionOutlined />
+        <StyledSliderBtn>
+          <QuestionOutlined />
+        </StyledSliderBtn>
       </Dropdown>
     </StyledSliderMore>
   )
