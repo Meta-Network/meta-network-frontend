@@ -3,8 +3,8 @@ import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
-import { StyledCount, StyledSliderCItem } from './Style'
-import { ArrowTopLeftIcon, InviteIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
+import { StyledCount, StyledSliderCItem, StyledSliderSpace } from './Style'
+import { SliderShareIcon, SliderHomeIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface SliderContenItemtUserProps {
@@ -29,6 +29,12 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
     return list.length
   }, [inviteCodeData])
 
+  const openUrl = () => {
+    if (isLoggin) {
+      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
+    }
+  }
+
   return (
     <StyledSliderCItem visible={visible}>
       {
@@ -36,6 +42,17 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
           <h4>{t('personal')}</h4>
         </li> : null
       }
+      <li>
+        <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
+          <StyledSliderSpace
+            className={ isLoggin ? '' : 'disabled'}
+            href="javascript:;" onClick={() => openUrl()}>
+            <SliderHomeIcon />
+            {visible ? t('my-meta-space') : ''}
+            <SliderShareIcon className="space-icon" />
+          </StyledSliderSpace>
+        </Tooltip>
+      </li>
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a

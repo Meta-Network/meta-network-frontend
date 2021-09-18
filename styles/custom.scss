@@ -231,3 +231,23 @@
     color: inherit;
   }
 }
+
+.custom-slider-more {
+  .ant-dropdown-menu {
+    padding: 10px 0;
+  }
+  .slider-title {
+    font-size: 12px;
+    color: #414141;
+    padding: 0 20px;
+    width: 100%;
+    display: inline-block;
+  }
+  .ant-dropdown-menu-item {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .ant-dropdown-menu-item-divider {
+    margin: 10px 0;
+  }
+}

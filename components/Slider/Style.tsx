@@ -193,8 +193,8 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
 `
 
 export const StyledSliderToggle = styled.section<{ visible: boolean }>`
-  /* margin-top: 60px; */
-  margin-top: auto;
+  margin-top: 20px;
+  /* margin-top: auto; */
   padding: ${props => props.visible ? '0 0 0 4px;' : '0 0 0 14px'};
   cursor: pointer;
   span {
@@ -256,5 +256,15 @@ export const StyledSliderLinkText = styled.span`
         display: unset;
         opacity: 1
     }
+  }
+`
+
+export const StyledSliderMore = styled.section<{ visible: boolean }>`
+  /* margin-top: 20px; */
+  margin-top: auto;
+  padding: ${props => props.visible ? '0 0 0 4px;' : '0 0 0 14px'};
+  cursor: pointer;
+  span {
+    font-size: 16px;
   }
 `

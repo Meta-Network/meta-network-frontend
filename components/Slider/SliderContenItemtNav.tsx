@@ -20,12 +20,6 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
 }) {
   const { t } = useTranslation('common')
 
-  const openUrl = () => {
-    if (isLoggin) {
-      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
-    }
-  }
-
   return (
     <StyledSliderCItem visible={visible}>
       {
@@ -33,17 +27,6 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
           <h4>{t('slider-navigation')}</h4>
         </li> : null
       }
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
-          <StyledSliderSpace
-            className={ isLoggin ? '' : 'disabled'}
-            href="javascript:;" onClick={() => openUrl()}>
-            <SliderHomeIcon />
-            {visible ? t('my-meta-space') : ''}
-            <SliderShareIcon className="space-icon" />
-          </StyledSliderSpace>
-        </Tooltip>
-      </li>
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('search')} placement="right">
           <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>

@@ -27,6 +27,7 @@ import { useTranslation } from 'next-i18next'
 
 import useToast from '../../hooks/useToast'
 import { keyFormat } from '../../utils'
+import SliderMore from './SliderMore'
 
 interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
@@ -140,11 +141,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
           <SliderContenItemtSetting
             visible={visibleSlider}
           ></SliderContenItemtSetting>
-          <SliderContenItemtLink
-            visible={visibleSlider}
-          ></SliderContenItemtLink>
-          {/* <SliderContenAccoount visible={visibleSlider} isLoggin={isLoggin} signOut={signOut}></SliderContenAccoount> */}
-          <SliderSpace visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderSpace>
+          <SliderMore visible={visibleSlider} />
           <SliderToggle visible={visibleSlider} Toggle={() => setVisibleSlider(!visibleSlider)}></SliderToggle>
         </StyledSliderContent>
       </StyledSlider>
