@@ -46,6 +46,8 @@ import { keyFormat } from '../../utils'
  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
+// 可操作的节点模式
+const OperableNodeMode = [ 'exist', 'active' ]
 
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
@@ -115,9 +117,11 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       }
     }
 
-    const nodeHas = allNodeMap.has(keyFormat({ x, y, z }))
-    if (nodeHas) {
-      // return node[0]!.user.role || 'exist'
+    const node = allNodeMap.get(keyFormat({ x, y, z }))
+    if (node) {
+      if (node.subdomain) {
+        return 'active'
+      }
       return 'exist'
     }
 
@@ -149,7 +153,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    */
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
     e.stopPropagation()
-    if (isBrowser && mode === 'exist') {
+    if (isBrowser && OperableNodeMode.includes(mode) ) {
       // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
       let node = allNodeMap.get(keyFormat({ x, y, z }))
@@ -167,7 +171,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    */
   const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
     e.stopPropagation()
-    if (isBrowser && mode === 'exist') {
+    if (isBrowser && OperableNodeMode.includes(mode)) {
       // console.log('handleHexagonEventMouseLeave', point)
       setCurrentNodeMouse({} as hexGridsByFilterState)
     }
