@@ -300,6 +300,25 @@ const Home = () => {
   }, [allNodeMap, currentNode, layout, Toast, t])
 
   /**
+   * 偏移地图坐标 默认取消动画使用
+   */
+  const translateMapDefault = useCallback(({ x, y, z }: PointState, nodeActive: boolean = true) => {
+    const svg = d3.select('#container svg')
+
+    HandleHexagonStyle({ x, y, z }, nodeActive)
+
+    // 坐标转换，这么写方便后续能阅读懂
+    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+    svg.transition()
+      .duration(0)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(_x, _y).scale(1),
+      )
+  }, [ layout ])
+
+  /**
    * 获取自己的坐标点
    */
   const fetchHexGridsMine = useCallback(
@@ -315,9 +334,9 @@ const Home = () => {
       // 默认地图偏移
       const defaultTranslateMap = () => {
         if (data) {
-          translateMap({ x: data.x, y: data.y, z: data.z }, false)
+          translateMapDefault({ x: data.x, y: data.y, z: data.z }, true)
         } else {
-          translateMap(defaultPoint, false, false)
+          translateMapDefault(defaultPoint, false)
         }
       }
 
@@ -326,7 +345,7 @@ const Home = () => {
       if (cube) {
         const _cubeData = keyFormatParse(cube as string)
         if (_cubeData) {
-          translateMap({ x: _cubeData.x, y: _cubeData.y, z: _cubeData.z }, false)
+          translateMapDefault({ x: _cubeData.x, y: _cubeData.y, z: _cubeData.z }, true)
         } else {
           defaultTranslateMap()
         }
@@ -335,7 +354,7 @@ const Home = () => {
       }
 
       setHexGridsMineTag(true)
-    }, [defaultPoint, translateMap])
+    }, [defaultPoint, translateMapDefault])
 
   /**
    * 渲染坐标地图
