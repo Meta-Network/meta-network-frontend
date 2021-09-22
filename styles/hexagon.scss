@@ -4,7 +4,7 @@
   stroke-width: 1;
   opacity: 0.6;
   transition: fill, stroke, opacity .2s;
-  &:hover {
+  &:not(.nohover):hover {
     opacity: 1;
     fill: #2A1056;
     stroke: rgba(245, 245, 245, 0.8);
@@ -16,7 +16,7 @@
   stroke-width: 1;
   transition: fill, stroke, opacity .2s;
   opacity: 0.6;
-  &:hover {
+  &:not(.nohover):hover {
     opacity: 1;
     fill: #2a1156;
     stroke: rgba(245, 245, 245, 0.8);
@@ -31,7 +31,7 @@
   stroke-width: 1;
   transition: fill, stroke, opacity .2s;
   opacity: 0.6;
-  &:hover, &.active {
+  &:not(.nohover):hover, &.active {
     opacity: 1;
     stroke-width: 2;
     fill: #46156A;
@@ -44,7 +44,7 @@
   stroke-width: 1;
   opacity: 0.6;
   transition: fill, stroke, opacity .2s;
-  &:hover, &.active {
+  &:not(.nohover):hover, &.active {
     opacity: 1;
     stroke-width: 2;
     fill: #7D4DA0;
@@ -57,7 +57,7 @@
   stroke-width: 1;
   opacity: 0.6;
   transition: fill, stroke, opacity .2s;
-  &:hover, &.active {
+  &:not(.nohover):hover, &.active {
     opacity: 1;
     stroke-width: 2;
     fill: #CAA2E7;

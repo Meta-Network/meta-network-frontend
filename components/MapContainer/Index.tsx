@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
-import { isBrowser } from 'react-device-detect'
+import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 import { getZoomPercentage } from '../../helpers/index'
 import { useMount, useUnmount } from 'ahooks'
@@ -258,7 +258,8 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                   onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
                   onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
                   onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
-                  className={`${`hexagon-${nodeMode}`} hexagon-${key}`}>
+                  // need space
+                  className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}>
                   {/* <Text>{HexUtils.getID(hex)}</Text> */}
                   <NodeContent
                     coordinate={{ x, y, z }}
