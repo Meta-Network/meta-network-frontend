@@ -25,6 +25,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import qs from 'qs'
+import { isBrowser, isMobile } from 'react-device-detect'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -296,7 +297,7 @@ const Home = () => {
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    const _scale = 2
+    const _scale = isBrowser ? 1.4 : isMobile ? 1.2 : 1
     const { x: xVal, y: yVal } = calcTranslateValue({
       x: _x,
       y: _y,
