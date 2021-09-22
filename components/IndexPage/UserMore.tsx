@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState } from '../../typings/node'
-import { ArrowTopLeftIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderSpaceIcon } from '../Icon/Index'
+import { SliderSpaceIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
 import { fetchhexGridsLoctionByUserIdAPI } from '../../helpers/index'
@@ -28,6 +28,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
   const [visible, setVisible] = useState<boolean>(false)
   const { t } = useTranslation('common')
   const [inviteUserNode, setInviteUserNode] = useState({} as hexGridsByFilterState)
+  const [state, setState] = useState<boolean>(false)
 
   // 是否收藏
   const isBookmark = useMemo(() => {
@@ -53,7 +54,7 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
 位置：${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}
 MetaSpace名称：${currentNode.siteName || '暂无'}
 MetaSpace主页：${currentNode.subdomain || '暂无'}
-`, [ currentNode ])
+`, [currentNode])
 
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
@@ -63,13 +64,13 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
   }
 
   // 菜单点击
-  const handleMenuClick = ({ key, domEvent }: { key: string, domEvent: any }) => {
+  const handleMenuClick = ({ key, domEvent }: { key: string, domEvent: any } | any): void => {
     domEvent.stopPropagation()
     if (key === 'bookmark') {
       HandleBookmark(currentNode)
     } else if (key === 'invite') {
       const { x, y, z } = inviteUserNode
-      translateMap({x, y, z})
+      translateMap({ x, y, z })
     }
   }
 
@@ -83,16 +84,13 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
     }
   })
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
+  const MenuComponent = () => (
+    <Menu onClick={handleMenuClick} className="custom-user-more">
       <Menu.Item key="bookmark" icon={isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
         {
           isBookmark ? t('delete-bookmark') : t('bookmark')
         }
       </Menu.Item>
-      {/* <Menu.Item disabled key="beat" icon={<SmileOutlined />}>
-        拍一拍
-      </Menu.Item> */}
       <CopyToClipboard
         text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
         onCopy={() => Toast({ content: '已复制到剪贴板' })}>
@@ -100,27 +98,21 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
           复制位置
         </Menu.Item>
       </CopyToClipboard>
-      <CopyToClipboard text={process.env.NEXT_PUBLIC_META_CMS_URL}
-        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
-        <Menu.Item key="copy" icon={<CopyIcon />}>
-          {t('copy-address')}
-        </Menu.Item>
-      </CopyToClipboard>
-      {
-        isEmpty(inviteUserNode)
-          ? null
-          : <Menu.Item key="invite" icon={<UserOutlined style={{ fontSize: 20 }} />}>
-              {
-                strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || '暂无昵称'
-              }
-            </Menu.Item>
-      }
       <CopyToClipboard text={userInfoText}
         onCopy={() => Toast({ content: '已复制到剪贴板' })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
           复制信息
         </Menu.Item>
       </CopyToClipboard>
+      {
+        isEmpty(inviteUserNode)
+          ? null
+          : <Menu.Item key="invite" icon={<SliderInviteIcon style={{ fontSize: 20 }} />}>
+            {
+              strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || '暂无昵称'
+            }
+          </Menu.Item>
+      }
     </Menu>
   )
 
@@ -164,15 +156,28 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
           </StyledUserMoreButton>
           : null
       }
-      <Dropdown
-        onVisibleChange={handleVisible}
-        visible={visible}
-        overlay={menu}
-        trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
-        placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
-        overlayClassName="custom-dropdown-more">
-        <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
-      </Dropdown>
+      {/* mobile pc 两套 */}
+      {
+        isMobile
+          ? <Dropdown
+            onVisibleChange={handleVisible}
+            visible={visible}
+            overlay={MenuComponent}
+            trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
+            placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
+          >
+            <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
+          </Dropdown>
+          : isBrowser
+            ? <StyledUserMoreBtn show={state} onMouseEnter={() => setState(true)} onMouseLeave={() => setState(false)}>
+              {
+                state
+                  ? <MenuComponent />
+                  : <StyledMenuMore>...</StyledMenuMore>
+              }
+            </StyledUserMoreBtn>
+            : null
+      }
     </>
   )
 }
@@ -212,6 +217,57 @@ const StyledUserMoreButton = styled.button`
       opacity: 1;
     }
   }
+`
+
+const StyledUserMoreBtn = styled.section<{ show: boolean }>`
+  background: #F5F5F5;
+  border: none;
+  border-radius: ${props => props.show ? '16px' : '40px'};
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: #2C2B2A;
+  margin: 0;
+  display: block;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  user-select: none;
+  overflow: hidden;
+  transition: all .3s;
+`
+const StyledMenu = styled.ul`
+  outline: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  list-style-type: none;
+  li {
+    margin: 0;
+    padding: 12px 12px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: #e8e8e8;
+    }
+  }
+`
+const StyledMenuMore = styled.span`
+  padding: 12px 20px;
+`
+const StyledMenuText = styled.span`
+  margin-left: 8px;
 `
 
 export default UserMore
