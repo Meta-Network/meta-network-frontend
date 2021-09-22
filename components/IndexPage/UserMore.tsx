@@ -81,6 +81,7 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
     // console.log('val', val)
     if (val === 'zoom') {
       setVisible(false)
+      setState(false)
     }
   })
 
