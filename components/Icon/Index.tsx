@@ -96,7 +96,6 @@ const ToastWarningSvg = () => (
 )
 export const ToastWarningIcon: React.FC = props => <Icon component={ToastWarningSvg} {...props} />
 
-
 const ToastSuccessSvg = () => (
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M6.86 1H15.14L21 6.86V15.14L15.14 21H6.86L1 15.14V6.86L6.86 1Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -105,26 +104,27 @@ const ToastSuccessSvg = () => (
 )
 export const ToastSuccessIcon: React.FC = props => <Icon component={ToastSuccessSvg} {...props} />
 
-
 const SliderHomeSvg = () => (
   <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M9.995.08.08 7.56v12.32l19.86.05V7.56L9.996.08h-.001ZM1.577 18.387V8.307l8.42-6.353 8.446 6.353V18.43l-16.866-.043Z" fill="currentColor" fillRule="nonzero"/></svg>
 )
 export const SliderHomeIcon: React.FC = props => <Icon component={SliderHomeSvg} {...props} />
-
 
 const SliderSpaceSvg = () => (
   <svg width="20" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M18.344 0H1.654C.772 0 .058.714.058 1.598v13.85c0 .883.714 1.597 1.598 1.597h16.69c.884 0 1.598-.714 1.598-1.598V1.598C19.943.714 19.23 0 18.345 0h-.001ZM5.75 15.63H1.48V6.393h4.27v9.239Zm12.753 0H7.162V6.393h11.364c-.006 6.16-.015 9.239-.023 9.239Zm.023-10.44H1.48V1.423h17.046V5.19Z" fill="currentColor" fillRule="nonzero"/></svg>
 )
 export const SliderSpaceIcon: React.FC<any> = props => <Icon component={SliderSpaceSvg} {...props} />
 
-
 const SliderInviteSvg = () => (
   <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor" fillRule="nonzero"><path d="M14.48.008a1.996 1.996 0 0 1 1.995 1.996v2.994h1.496a1.996 1.996 0 0 1 1.997 1.996V17.97a1.996 1.996 0 0 1-1.997 1.997H2.004A1.995 1.995 0 0 1 .008 17.97V6.994a1.996 1.996 0 0 1 1.996-1.996H3.5V2.004A1.996 1.996 0 0 1 5.497.008h8.982Zm3.991 9.227-7.402 5.842a1.746 1.746 0 0 1-2.164 0l-7.4-5.843v8.737a.501.501 0 0 0 .498.5h15.968a.499.499 0 0 0 .5-.5V9.235Zm-3.992-7.73H5.497a.5.5 0 0 0-.5.499v8.08l4.836 3.818a.25.25 0 0 0 .31 0l4.835-3.817V2.004a.5.5 0 0 0-.499-.5ZM3.5 6.495H2.004a.5.5 0 0 0-.5.499v.333l1.997 1.576V6.495H3.5Zm14.47 0h-1.496v2.407l1.996-1.575v-.333a.5.5 0 0 0-.5-.5Z"/><path d="M7.742 4.998a.748.748 0 1 1 0 1.497.748.748 0 0 1 0-1.497Zm2.496 0a.748.748 0 1 1 0 1.496.748.748 0 0 1 0-1.496Zm2.494 0a.749.749 0 1 1 0 1.497.749.749 0 0 1 0-1.497Z"/></g></svg>
 )
 export const SliderInviteIcon: React.FC<any> = props => <Icon component={SliderInviteSvg} {...props} />
 
-
 const SliderShareSvg = () => (
   <svg className="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M755.84 915.2H271.36c-74.24 0-134.4-60.16-134.4-134.4V295.68c0-74.24 60.16-134.4 134.4-134.4h236.8c17.92 0 32 14.08 32 32s-14.08 32-32 32h-236.8c-39.04 0-70.4 31.36-70.4 70.4V780.8c0 39.04 31.36 70.4 70.4 70.4h485.12c39.04 0 70.4-31.36 70.4-70.4V535.04c0-17.92 14.08-32 32-32s32 14.08 32 32V780.8c0 74.24-60.8 134.4-135.04 134.4zm103.04-553.6c-17.92 0-32-14.08-32-32V225.28H720c-17.92 0-32-14.08-32-32s14.08-32 32-32h138.88c17.92 0 32 14.08 32 32V329.6c0 17.92-14.72 32-32 32z" fill="currentColor"/><path d="M503.04 581.12c-8.32 0-16.64-3.2-22.4-9.6-12.8-12.8-12.8-32.64 0-45.44L814.72 192c12.8-12.8 32.64-12.8 45.44 0s12.8 32.64 0 45.44L525.44 572.16c-6.4 5.76-14.08 8.96-22.4 8.96z" fill="currentColor"/></svg>
 )
 export const SliderShareIcon: React.FC<any> = props => <Icon component={SliderShareSvg} {...props} />
+
+const SliderHexagonSvg = () => (
+  <svg className="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M512 981.333a130.56 130.56 0 0 1-64-17.066L149.333 793.6a128 128 0 0 1-64-110.933V341.333a128 128 0 0 1 64-110.933L448 59.733a128 128 0 0 1 128 0L874.667 230.4a128 128 0 0 1 64 110.933v341.334a128 128 0 0 1-64 110.933L576 964.267a130.56 130.56 0 0 1-64 17.066zM512 128a42.667 42.667 0 0 0-21.333 5.973L192 304.64a42.667 42.667 0 0 0-21.333 36.693v341.334A42.667 42.667 0 0 0 192 719.36l298.667 170.667a42.667 42.667 0 0 0 42.666 0L832 719.36a42.667 42.667 0 0 0 21.333-36.693V341.333A42.667 42.667 0 0 0 832 304.64L533.333 133.973A42.667 42.667 0 0 0 512 128zm384 554.667z"/></svg>
+)
+export const SliderHexagonIcon: React.FC<any> = props => <Icon component={SliderHexagonSvg} {...props} />

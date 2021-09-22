@@ -228,11 +228,17 @@ export const StyledSliderSpace = styled.a<{ visible: boolean }>`
   display: flex;
   align-items: center;
   .space-icon {
+    .icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  .space-link-icon {
     margin-left: auto;
     opacity: 0;
   }
   &:hover {
-    .space-icon {
+    .space-link-icon {
       opacity: ${props => props.visible ? 1 : 0};
     }
   }
@@ -242,7 +248,7 @@ export const StyledSliderLogo = styled.section<{ visible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 18px 20px;
+  padding: 14px 18px 20px;
   box-sizing: border-box;
 `
 
@@ -252,14 +258,14 @@ export const StyledSliderLink = styled.a`
 `
 export const StyledSliderLinkLogo = styled.section`
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
 `
 
 export const StyledSliderLinkText = styled.span`
   color: #fff;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 22px;
   margin: 0 0 0 12px;
   white-space: nowrap;
   animation: pro-layout-title-hide .3s;

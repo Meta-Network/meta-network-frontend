@@ -4,7 +4,7 @@ import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import { StyledCount, StyledSliderCItem, StyledSliderSpace } from './Style'
-import { SliderShareIcon, SliderHomeIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
+import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
 import { InviitationsMineState } from '../../typings/ucenter.d'
 
 interface SliderContenItemtUserProps {
@@ -48,9 +48,9 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
             visible={visible}
             className={ isLoggin ? '' : 'disabled'}
             href="javascript:;" onClick={() => openUrl()}>
-            <SliderHomeIcon />
+            <SliderHexagonIcon className="space-icon" />
             {visible ? t('my-meta-space') : ''}
-            <SliderShareIcon className="space-icon" />
+            <SliderShareIcon className="space-link-icon" />
           </StyledSliderSpace>
         </Tooltip>
       </li>
