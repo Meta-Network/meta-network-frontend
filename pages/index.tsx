@@ -13,7 +13,7 @@ import {
   cubeToAxial, calcTranslate, calcMaxDistance,
   calcCenterRangeAsMap, angle,
   isInViewPort, HandleHexagonStyle, strEllipsis,
-  keyFormat, keyFormatParse
+  keyFormat, keyFormatParse, calcTranslateValue
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
@@ -269,6 +269,12 @@ const Home = () => {
 
     const showUserMore = () => {
 
+      // svg.transition()
+      // .duration(100)
+      // .call(
+      //   d3.zoomIdentity.scale(1.2),
+      // )
+
       if (!showUserInfo) {
         return
       }
@@ -290,14 +296,24 @@ const Home = () => {
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+    const _scale = 2
+    const { x: xVal, y: yVal } = calcTranslateValue({
+      x: _x,
+      y: _y,
+      width: width,
+      height: height,
+      scale: _scale
+    })
+
     svg.transition()
-      .duration(800)
+      .duration(600)
       .call(
         zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1),
+        d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
       )
       .on('start', showUserMore)
-  }, [allNodeMap, currentNode, layout, Toast, t])
+      svg.node()
+  }, [allNodeMap, currentNode, layout, Toast, t, width, height])
 
   /**
    * 偏移地图坐标 默认取消动画使用

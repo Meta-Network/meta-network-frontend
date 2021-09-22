@@ -17,6 +17,14 @@ interface generatePointsProps {
   edge: number
 }
 
+interface calcTranslateValueState {
+  x: number
+  y: number
+  width: number
+  height: number
+  scale: number
+}
+
 /**
  * 计算正六边形
  * @param width : ;
@@ -141,7 +149,7 @@ export const axialToCube = (x: number, y: number) => ({
  * @param param1
  * @returns
  */
-export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) => {
+export const calcTranslate = (layout: any, { x, y }: CoordinateState) => {
   // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
   // 方向不同 算法有细微差别
 
@@ -151,6 +159,24 @@ export const calcTranslate = (layout: any, { x, y }: { x: number, y: number }) =
   _y = _y * layout.spacing
   return {
     x: _x, y: _y
+  }
+}
+
+/**
+ * 计算偏移数据
+ * @param param0
+ * @returns
+ */
+export const calcTranslateValue = ({ x, y, width, height, scale }: calcTranslateValueState) => {
+  let _x = x
+  let _y = y
+
+  _x = (x * scale) - ((width / 2) * (scale - 1))
+  _y = (y * scale) - ((height / 2) * (scale - 1))
+
+  return {
+    x: _x,
+    y: _y
   }
 }
 
