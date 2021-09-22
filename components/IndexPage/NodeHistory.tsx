@@ -85,7 +85,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
 )
 const StyledHistory = styled.div`
   position: fixed;
-  left: 50%;
+  left: calc(50% + 30px);
   transform: translate(-50%, 0);
   top: 20px;
   z-index: 8;
