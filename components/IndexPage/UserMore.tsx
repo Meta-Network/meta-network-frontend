@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { ExclamationCircleOutlined, CopyOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
+import { CloseOutlined, EllipsisOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
 import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -151,7 +151,7 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
             onClick={(e: any) => handleJumpHome(e)}
             style={{ marginBottom: 16 }}
           >
-            <SliderSpaceIcon />{' '}访问 Meta Space
+            <SliderSpaceIcon className="btn-icon" />{' '}访问 Meta Space
             <SliderShareIcon className="view-icon" />
           </StyledUserMoreButton>
           : null
@@ -166,14 +166,18 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
             trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
             placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
           >
-            <StyledUserMoreButton onClick={(e: any) => e.stopPropagation()}>...</StyledUserMoreButton>
+            <StyledUserMoreButton onClick={(e: any) => { e.stopPropagation();setState(!state) }}>
+              {state ? <CloseOutlined /> : <EllipsisOutlined />}
+            </StyledUserMoreButton>
           </Dropdown>
           : isBrowser
             ? <StyledUserMoreBtn show={state} onMouseEnter={() => setState(true)} onMouseLeave={() => setState(false)}>
               {
                 state
                   ? <MenuComponent />
-                  : <StyledMenuMore>...</StyledMenuMore>
+                  : <StyledMenuMore>
+                    <EllipsisOutlined />
+                  </StyledMenuMore>
               }
             </StyledUserMoreBtn>
             : null
@@ -204,7 +208,7 @@ const StyledUserMoreButton = styled.button`
   @media screen and (max-width: 768px) {
     margin: 0 auto;
   }
-  & > span {
+  & > .btn-icon {
     margin-right: 6px;
   }
   .view-icon {
@@ -217,6 +221,8 @@ const StyledUserMoreButton = styled.button`
       opacity: 1;
     }
   }
+`
+const StyledUserMoreBtnContent = styled.span`
 `
 
 const StyledUserMoreBtn = styled.section<{ show: boolean }>`
