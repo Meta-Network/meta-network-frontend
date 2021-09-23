@@ -46,6 +46,6 @@ export interface translateMapState {
   scale?: number
   showUserInfo?: boolean
   nodeActive?: boolean
-  fn?: undefined | Function
+  callback?: undefined | Function
   duration?: number
 }

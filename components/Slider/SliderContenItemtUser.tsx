@@ -52,7 +52,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         z: hexGridsMineData.z
       },
       scale: 2.8,
-      fn: openUrl,
+      callback: openUrl,
       duration: 800
     })
   }
@@ -69,7 +69,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         z: hexGridsMineData.z
       },
       scale: 2.8,
-      fn: openUrl,
+      callback: openUrl,
       duration: 800
     })
   }

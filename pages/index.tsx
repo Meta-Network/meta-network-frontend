@@ -270,7 +270,7 @@ const Home = () => {
         scale,
         showUserInfo = true,
         nodeActive = true,
-        fn,
+        callback,
         duration = 600
       }: translateMapState
     ) => {
@@ -278,13 +278,6 @@ const Home = () => {
     const { x, y, z } = point
 
     const showUserMore = () => {
-
-      // svg.transition()
-      // .duration(100)
-      // .call(
-      //   d3.zoomIdentity.scale(1.2),
-      // )
-
       if (!showUserInfo) {
         return
       }
@@ -306,7 +299,7 @@ const Home = () => {
       (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 
       requestAnimationFrame(() => {
-        fn && fn()
+        callback && callback()
       })
     }
 
@@ -314,8 +307,11 @@ const Home = () => {
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+    // 计算坐标位置
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+    // 计算缩放值
     const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
+    // 计算坐标位置数据
     const { x: xVal, y: yVal } = calcTranslateValue({
       x: _x,
       y: _y,
