@@ -9,7 +9,7 @@ import { useMount, useUnmount } from 'ahooks'
 
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
-import { HexagonsState, PointState, AxialState, LayoutState } from '../../typings/node.d'
+import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 
 interface Props {
@@ -32,7 +32,7 @@ interface Props {
   setCurrentNodeChoose: React.Dispatch<React.SetStateAction<PointState>>
   setIsModalVisibleOccupied: React.Dispatch<React.SetStateAction<boolean>>
   HandleHistoryView: (point: PointState) => void
-  translateMap: (point: PointState, showUserInfo?: boolean) => void
+  translateMap: (value: translateMapState) => void
 }
 import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
@@ -204,11 +204,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       return
     }
 
-    translateMap({
-      x: point.x,
-      y: point.y,
-      z: point.z
-    })
+    translateMap({ point })
 
     HandleHistoryView(point)
   }

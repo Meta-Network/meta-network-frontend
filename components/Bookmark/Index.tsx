@@ -10,11 +10,12 @@ import CustomModal from '../CustomModal/Index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { SortTopIcon, SortDoneIcon } from '../Icon/Index'
 import CustomEmpty from '../CustomEmpty/Index'
+import { translateMapState } from '../../typings/node'
 interface Props {
   readonly isModalVisible: boolean,
   readonly bookmarkNode: hexGridsByFilterState[]
   setIsModalVisible: (value: boolean) => void
-  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  translateMap: (value: translateMapState) => void
   setVisibleSlider: (value: boolean) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
@@ -90,9 +91,11 @@ const DeploySite: React.FC<Props> = ({
     setVisibleSlider(false)
 
     translateMap({
-      x: x,
-      y: y,
-      z: z,
+      point: {
+        x: x,
+        y: y,
+        z: z
+      }
     })
   }
 

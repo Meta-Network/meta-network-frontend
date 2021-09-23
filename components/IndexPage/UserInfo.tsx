@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 
-import { PointState } from '../../typings/node'
+import { PointState, translateMapState } from '../../typings/node'
 
 import UserAvatar from './UserAvatar'
 import UserMore from './UserMore'
@@ -23,7 +23,7 @@ interface Props {
   readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
-  translateMap: (point: PointState, showUserInfo?: boolean) => void
+  translateMap: (value: translateMapState) => void
   focus$: EventEmitter<string>
 }
 

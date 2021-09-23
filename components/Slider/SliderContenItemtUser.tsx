@@ -6,18 +6,23 @@ import { useTranslation } from 'next-i18next'
 import { StyledCount, StyledSliderCItem, StyledSliderSpace } from './Style'
 import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
 import { InviitationsMineState } from '../../typings/ucenter.d'
+import { translateMapState } from '../../typings/node'
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
+import { isEmpty } from 'lodash'
 
 interface SliderContenItemtUserProps {
   readonly isLoggin: boolean
   readonly inviteCodeData: InviitationsMineState[]
   readonly visible: boolean
+  readonly hexGridsMineData: hexGridsByFilterState
   setIsModalVisibleInviteCode: (val: boolean) => void
+  translateMap: (value: translateMapState) => void
 }
 
 // 侧边栏 菜单 用户
 const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
-  isLoggin, inviteCodeData, setIsModalVisibleInviteCode,
-  visible
+  isLoggin, inviteCodeData, hexGridsMineData, setIsModalVisibleInviteCode,
+  visible, translateMap
 }) {
   const { t } = useTranslation('common')
 
@@ -35,6 +40,40 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
     }
   }
 
+  const handleMySpace = () => {
+    if (isEmpty(hexGridsMineData)) {
+      return
+    }
+
+    translateMap({
+      point: {
+        x: hexGridsMineData.x,
+        y: hexGridsMineData.y,
+        z: hexGridsMineData.z
+      },
+      scale: 2.8,
+      fn: openUrl,
+      duration: 800
+    })
+  }
+
+  const handleManagementSpace = () => {
+    if (isEmpty(hexGridsMineData)) {
+      return
+    }
+
+    translateMap({
+      point: {
+        x: hexGridsMineData.x,
+        y: hexGridsMineData.y,
+        z: hexGridsMineData.z
+      },
+      scale: 2.8,
+      fn: openUrl,
+      duration: 800
+    })
+  }
+
   return (
     <StyledSliderCItem visible={visible}>
       {
@@ -47,7 +86,8 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
           <StyledSliderSpace
             visible={visible}
             className={ isLoggin ? '' : 'disabled'}
-            href="javascript:;" onClick={() => openUrl()}>
+            href="javascript:;"
+            onClick={() => handleMySpace()}>
             <SliderHexagonIcon className="space-icon" />
             {visible ? t('my-meta-space') : ''}
             <SliderShareIcon className="space-link-icon" />
@@ -57,10 +97,9 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a
-            href={isLoggin ? process.env.NEXT_PUBLIC_META_CMS_URL : 'javascript:;'}
             className={isLoggin ? '' : 'disabled'}
-            target="_blank"
-            rel="noopener noreferrer">
+            href="javascript:;"
+            onClick={() => handleManagementSpace()}>
             <SliderSpaceIcon />
             {visible ? t('site-management') : ''}
           </a>

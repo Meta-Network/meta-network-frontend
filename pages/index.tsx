@@ -15,7 +15,7 @@ import {
   isInViewPort, HandleHexagonStyle, strEllipsis,
   keyFormat, keyFormatParse, calcTranslateValue
 } from '../utils/index'
-import { PointState, HexagonsState, AxialState, LayoutState } from '../typings/node.d'
+import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
@@ -41,7 +41,6 @@ const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMous
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
 const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
-
 
 let d3: any = null
 let zoom: any = null
@@ -265,8 +264,18 @@ const Home = () => {
   /**
    * 偏移地图坐标
    */
-  const translateMap = useCallback(({ x, y, z }: PointState, showUserInfo: boolean = true, nodeActive: boolean = true) => {
+  const translateMap = useCallback(
+    ({
+        point,
+        scale,
+        showUserInfo = true,
+        nodeActive = true,
+        fn,
+        duration = 600
+      }: translateMapState
+    ) => {
     const svg = d3.select('#container svg')
+    const { x, y, z } = point
 
     const showUserMore = () => {
 
@@ -292,12 +301,21 @@ const Home = () => {
       }
     }
 
+    const eventEnd = () => {
+      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+      (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+
+      requestAnimationFrame(() => {
+        fn && fn()
+      })
+    }
+
     HandleHexagonStyle({ x, y, z }, nodeActive)
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    const _scale = isBrowser ? 1.4 : isMobile ? 1.2 : 1
+    const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
     const { x: xVal, y: yVal } = calcTranslateValue({
       x: _x,
       y: _y,
@@ -307,12 +325,13 @@ const Home = () => {
     })
 
     svg.transition()
-      .duration(600)
+      .duration(duration)
       .call(
         zoom.transform,
         d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
       )
       .on('start', showUserMore)
+      .on('end', eventEnd)
       svg.node()
   }, [allNodeMap, currentNode, layout, Toast, t, width, height])
 
@@ -514,9 +533,16 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
-      translateMap(defaultPoint, false, false)
+      translateMap({
+        point: defaultPoint,
+        showUserInfo: false,
+        nodeActive: false
+      })
     } else {
-      translateMap({ x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z }, false)
+      translateMap({
+        point: { x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z },
+        showUserInfo: false
+      })
     }
     setCurrentNode({} as hexGridsByFilterState)
   }, [hexGridsMineData, defaultPoint, translateMap])
@@ -564,6 +590,7 @@ const Home = () => {
         allNodeMap={allNodeMap}
         bookmark={bookmark}
         defaultHexGridsRange={defaultHexGridsRange}
+        hexGridsMineData={hexGridsMineData}
         HandleRemoveBookmark={HandleRemoveBookmark}
       >
       </ToggleSlider>

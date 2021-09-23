@@ -40,3 +40,12 @@ export interface LayoutState {
   flat: boolean
   spacing: number
 }
+
+export interface translateMapState {
+  point: PointState
+  scale?: number
+  showUserInfo?: boolean
+  nodeActive?: boolean
+  fn?: undefined | Function
+  duration?: number
+}

@@ -9,7 +9,7 @@ import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
-import { PointState } from '../../typings/node'
+import { PointState, translateMapState } from '../../typings/node'
 import { SliderSpaceIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
@@ -19,7 +19,7 @@ interface Props {
   readonly bookmark: PointState[]
   readonly currentNode: hexGridsByFilterState
   HandleBookmark: (value: hexGridsByFilterState) => void
-  translateMap: (point: PointState, showUserInfo?: boolean) => void
+  translateMap: (value: translateMapState) => void
   focus$: EventEmitter<string>
 }
 
@@ -70,7 +70,7 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
       HandleBookmark(currentNode)
     } else if (key === 'invite') {
       const { x, y, z } = inviteUserNode
-      translateMap({ x, y, z })
+      translateMap({ point: { x, y, z } })
     }
   }
 

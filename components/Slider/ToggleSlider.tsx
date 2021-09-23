@@ -9,7 +9,7 @@ import InviteCode from '../InviteCode/Index'
 import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
 import { InviitationsMineState } from '../../typings/ucenter.d'
-import { PointState } from '../../typings/node.d'
+import { PointState, translateMapState } from '../../typings/node.d'
 import { fetchInviteCodeAPI } from '../../helpers/index'
 import {
   StyledSlider, StyledSliderContent
@@ -33,13 +33,14 @@ interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
   readonly bookmark: PointState[]
   readonly defaultHexGridsRange: PointScopeState
-  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  readonly hexGridsMineData: hexGridsByFilterState
+  translateMap: (value: translateMapState) => void
   HandleRemoveBookmark: (value: hexGridsByFilterState[]) => void
 }
 
 
 const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
-  allNodeMap, bookmark,
+  allNodeMap, bookmark, hexGridsMineData,
   translateMap, defaultHexGridsRange, HandleRemoveBookmark
 }) {
   const { t } = useTranslation('common')
@@ -125,8 +126,15 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
         className="slider"
       >
         <StyledSliderContent>
-          <SliderLogo visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderLogo>
-          <SliderContentUser visible={visibleSlider} isLoggin={isLoggin} user={user} signOut={signOut}></SliderContentUser>
+          <SliderLogo
+            visible={visibleSlider}
+            isLoggin={isLoggin} user={user}
+            signOut={signOut}></SliderLogo>
+          <SliderContentUser
+            visible={visibleSlider}
+            isLoggin={isLoggin}
+            user={user}
+            signOut={signOut}></SliderContentUser>
           <SliderContenItemtNav
             visible={visibleSlider}
             isLoggin={isLoggin}
@@ -136,7 +144,9 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
             visible={visibleSlider}
             isLoggin={isLoggin}
             inviteCodeData={inviteCodeData}
+            hexGridsMineData={hexGridsMineData}
             setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}
+            translateMap={translateMap}
           ></SliderContenItemtUser>
           <SliderContenItemtSetting
             visible={visibleSlider}

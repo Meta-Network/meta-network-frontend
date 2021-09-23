@@ -6,7 +6,7 @@ import { useSpring, animated } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { PointState } from '../../typings/node'
+import { PointState, translateMapState } from '../../typings/node'
 import { keyFormat } from '../../utils'
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   readonly historyView: PointState[]
   readonly currentNode: PointState
   setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
-  translateMap: (point: PointState, showUserInfo?: boolean) => void
+  translateMap: (value: translateMapState) => void
   HandleHistoryView: (point: PointState) => void
 }
 
@@ -61,7 +61,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
         setCurrentNode({} as hexGridsByFilterState)
       }
 
-      translateMap({ x, y, z })
+      translateMap({ point: { x, y, z } })
       HandleHistoryView(point)
     },
     [HandleHistoryView, currentNode, setCurrentNode, translateMap],

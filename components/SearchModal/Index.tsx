@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
 import { StoreSet, StoreGet, StoreRemove } from '../../utils/store'
-import { SearchHistory } from '../../typings/node.d'
+import { SearchHistory, translateMapState } from '../../typings/node.d'
 import { hexGridsByFilter } from '../../services/metaNetwork'
 import { PointScopeState, hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { assign, uniqBy, trim } from 'lodash'
@@ -20,7 +20,7 @@ interface Props {
   readonly defaultHexGridsRange: PointScopeState
   setIsModalVisible: (value: boolean) => void
   setVisibleSlider: (value: boolean) => void
-  translateMap: ({ x, y, z }: { x: number, y: number, z: number }) => void
+  translateMap: (value: translateMapState) => void
 }
 
 /**
@@ -202,7 +202,7 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
     setIsModalVisible(false)
     setVisibleSlider(false)
 
-    translateMap({ x: i.x, y: i.y, z: i.z })
+    translateMap({ point: { x: i.x, y: i.y, z: i.z } })
   }
 
   return (
