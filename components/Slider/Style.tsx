@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
 import { Avatar, Drawer } from 'antd'
-import { SearchIcon, SwitchVerticalIcon, SliderShareIcon } from '../Icon/Index'
+import { SliderShareIcon } from '../Icon/Index'
 
 export const StyledSliderCAccount = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '0 18px 0 0;' : '0 8px 0 0;'};
@@ -30,6 +30,11 @@ export const StyledSliderCAccountButton = styled.button<{ visible: boolean }>`
   overflow: hidden;
   span {
     margin-right: ${props => props.visible ? '24px' : '0;'};
+  }
+  .icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
   }
 `
 
@@ -191,6 +196,11 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
         }
       }
     }
+  }
+  .icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
   }
 `
 

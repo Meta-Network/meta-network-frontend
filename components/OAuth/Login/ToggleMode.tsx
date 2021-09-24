@@ -94,9 +94,6 @@ const StyledItemBtn = styled.button`
   }
   .icon {
     font-size: 16px;
-  }
-  .icon-svg {
-    /* svg use */
     width: 16px;
     height: 16px;
     fill: #fff;

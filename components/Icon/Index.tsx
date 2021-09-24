@@ -1,48 +1,50 @@
 import Icon from '@ant-design/icons'
-import { DSVRowAny } from 'd3-dsv'
+import { svg } from 'd3-fetch'
 
 const EmailSvg = () => (
-  <svg className="icon-svg" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1715" width="200" height="200"><path d="M513 583.8l448.5-448.5c-11.6-4.7-24.3-7.3-37.5-7.3H100c-12.7 0-24.9 2.4-36.1 6.7L513 583.8z" fill="" p-id="1716"></path><path d="M513 674.3L14.6 175.9C5.3 191.1 0 208.9 0 228v568c0 55.2 44.8 100 100 100h824c55.2 0 100-44.8 100-100V228c0-18.5-5.1-35.9-13.9-50.8L513 674.3z" fill="" p-id="1717"></path></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1715"><path d="M513 583.8l448.5-448.5c-11.6-4.7-24.3-7.3-37.5-7.3H100c-12.7 0-24.9 2.4-36.1 6.7L513 583.8z" fill="" p-id="1716"></path><path d="M513 674.3L14.6 175.9C5.3 191.1 0 208.9 0 228v568c0 55.2 44.8 100 100 100h824c55.2 0 100-44.8 100-100V228c0-18.5-5.1-35.9-13.9-50.8L513 674.3z" fill="" p-id="1717"></path></svg>
 )
 export const EmailIcon: React.FC = props => <Icon component={EmailSvg} {...props} />
 
 const USvg = () => (
-  <svg className="icon-svg" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10411" width="200" height="200"><path d="M870.515838 62.986543l0 565.154617c0 111.332644-31.92613 194.434318-95.733365 249.309112-60.59303 51.635007-147.84728 77.449953-261.761726 77.449953-50.895157 0-96.941889-6.460132-138.14736-19.371186-56.559157-17.742083-102.605889-46.37419-138.149407-85.913718-45.249577-50.823526-67.858504-121.005958-67.858504-210.568786L168.865477 62.986543l185.411827 0 0 563.791573c0 57.271378 14.538111 100.631932 43.62252 130.062218 29.084409 29.443589 66.231447 44.155662 111.48921 44.155662 60.59303 0 105.011682-14.112416 133.299959-42.341341 28.27088-28.230971 42.412972-69.37709 42.412972-123.412774L685.101965 62.986543 870.515838 62.986543z" p-id="10412"></path></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10411"><path d="M870.515838 62.986543l0 565.154617c0 111.332644-31.92613 194.434318-95.733365 249.309112-60.59303 51.635007-147.84728 77.449953-261.761726 77.449953-50.895157 0-96.941889-6.460132-138.14736-19.371186-56.559157-17.742083-102.605889-46.37419-138.149407-85.913718-45.249577-50.823526-67.858504-121.005958-67.858504-210.568786L168.865477 62.986543l185.411827 0 0 563.791573c0 57.271378 14.538111 100.631932 43.62252 130.062218 29.084409 29.443589 66.231447 44.155662 111.48921 44.155662 60.59303 0 105.011682-14.112416 133.299959-42.341341 28.27088-28.230971 42.412972-69.37709 42.412972-123.412774L685.101965 62.986543 870.515838 62.986543z" p-id="10412"></path></svg>
 )
 export const UIcon: React.FC = props => <Icon component={USvg} {...props} />
 
 const SearchSvg = () => (
-  <svg width="18" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="m12.71 13.877 3.268 3.836-.567.487-3.278-3.835a6.14 6.14 0 0 1-3.809 1.284 6.204 6.204 0 0 1-2.458-.5 6.337 6.337 0 0 1-2.02-1.347 6.335 6.335 0 0 1-1.346-2.02A6.204 6.204 0 0 1 2 9.325c0-.856.167-1.675.5-2.458a6.335 6.335 0 0 1 1.347-2.02A6.334 6.334 0 0 1 5.867 3.5 6.203 6.203 0 0 1 8.323 3c.857 0 1.676.167 2.459.5a6.333 6.333 0 0 1 2.02 1.347 6.336 6.336 0 0 1 1.345 2.02c.334.782.5 1.601.5 2.457 0 .88-.17 1.713-.513 2.498a6.33 6.33 0 0 1-1.426 2.055zm-4.385 1.028c1.01 0 1.942-.25 2.799-.749a5.548 5.548 0 0 0 2.032-2.033c.5-.856.749-1.789.749-2.799s-.25-1.942-.748-2.799a5.549 5.549 0 0 0-2.033-2.033 5.461 5.461 0 0 0-2.8-.748c-1.01 0-1.942.25-2.799.748a5.548 5.548 0 0 0-2.032 2.033 5.461 5.461 0 0 0-.749 2.8c0 1.01.25 1.942.749 2.799a5.547 5.547 0 0 0 2.032 2.032c.857.5 1.79.749 2.8.749z" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" /></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M192 480a256 256 0 1 1 512 0 256 256 0 0 1-512 0m631.776 362.496-143.2-143.168A318.464 318.464 0 0 0 768 480c0-176.736-143.264-320-320-320S128 303.264 128 480s143.264 320 320 320a318.016 318.016 0 0 0 184.16-58.592l146.336 146.368c12.512 12.48 32.768 12.48 45.28 0 12.48-12.512 12.48-32.768 0-45.28"/></svg>
 )
 export const SearchIcon: React.FC = props => <Icon component={SearchSvg} {...props} />
 
 const SwitchVerticalSvg = () => (
-  <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.25 12V3m0 0-3 3m3-3 3 3m4.5 0v9m0 0 3-3m-3 3-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M469.333 384c-12.8 0-21.333-4.267-29.866-12.8l-140.8-140.8-140.8 140.8c-17.067 17.067-42.667 17.067-59.734 0s-17.066-42.667 0-59.733L268.8 140.8c17.067-17.067 42.667-17.067 59.733 0L499.2 311.467c17.067 17.066 17.067 42.666 0 59.733-8.533 8.533-17.067 12.8-29.867 12.8z"/><path d="M298.667 597.333c-25.6 0-42.667-17.066-42.667-42.666v-384c0-25.6 17.067-42.667 42.667-42.667s42.666 17.067 42.666 42.667v384c0 25.6-17.066 42.666-42.666 42.666zM725.333 896c-12.8 0-21.333-4.267-29.866-12.8L524.8 712.533c-17.067-17.066-17.067-42.666 0-59.733s42.667-17.067 59.733 0l140.8 140.8 140.8-140.8c17.067-17.067 42.667-17.067 59.734 0s17.066 42.667 0 59.733L755.2 883.2c-8.533 8.533-17.067 12.8-29.867 12.8z"/><path d="M725.333 896c-25.6 0-42.666-17.067-42.666-42.667V426.667c0-25.6 17.066-42.667 42.666-42.667S768 401.067 768 426.667v426.666c0 25.6-17.067 42.667-42.667 42.667z"/></svg>
 )
 export const SwitchVerticalIcon: React.FC = props => <Icon component={SwitchVerticalSvg} {...props} />
 
 const BookmarkSvg = () => (
-  <svg width="18" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.556C4 4.696 4.696 4 5.556 4h7.777c.86 0 1.556.696 1.556 1.556V18l-5.445-2.722L4 18V5.556z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M804.907 981.333c-12.886 0-25.814-4.693-33.878-14.08L512.811 715.392 254.592 967.253c-14.507 14.08-35.499 18.774-53.248 10.966-19.37-7.851-30.677-25.046-30.677-43.819V180.352c0-76.672 62.933-137.685 142.037-137.685h398.592c77.483 0 142.037 61.013 142.037 137.685V934.4c0 18.773-11.306 35.968-30.677 43.819-4.821 3.114-11.264 3.114-17.75 3.114zM511.189 604.288c12.928 0 25.814 4.693 33.878 14.08L754.9 821.76V180.352c1.579-25.045-19.37-43.819-43.648-43.819H312.747c-25.856 0-45.227 18.774-45.227 43.819V821.76l209.835-203.392c9.685-9.387 20.992-14.08 33.877-14.08z"/></svg>
 )
 export const BookmarkIcon: React.FC = props => <Icon component={BookmarkSvg} {...props} />
 
 const BookmarkFillSvg = () => (
-  <svg width="18" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.556C4 4.696 4.696 4 5.556 4h7.777c.86 0 1.556.696 1.556 1.556V18l-5.445-2.722L4 18V5.556z" stroke="none" fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8814"><path d="M853.333333 896a42.666667 42.666667 0 0 1-65.28 36.266667l-253.44-158.72a42.666667 42.666667 0 0 0-45.226666 0l-253.44 158.72A42.666667 42.666667 0 0 1 170.666667 896V170.666667a85.333333 85.333333 0 0 1 85.333333-85.333334h512a85.333333 85.333333 0 0 1 85.333333 85.333334z" p-id="8815"></path></svg>
 )
 export const BookmarkFillIcon: React.FC = props => <Icon component={BookmarkFillSvg} {...props} />
 
 const ArrowTopLeftSvg = () => (
-  <svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 17L4 7" stroke="currentColor" strokeWidth="2.13983" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 17V7H14" stroke="currentColor" strokeWidth="2.13983" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9756"><path d="M512 714.666667c-8.533333 0-17.066667-2.133333-23.466667-8.533334l-341.333333-341.333333c-12.8-12.8-12.8-32 0-44.8 12.8-12.8 32-12.8 44.8 0l320 317.866667 317.866667-320c12.8-12.8 32-12.8 44.8 0 12.8 12.8 12.8 32 0 44.8L533.333333 704c-4.266667 8.533333-12.8 10.666667-21.333333 10.666667z" p-id="9757"></path></svg>
 )
 export const ArrowTopLeftIcon: React.FC = props => <Icon component={ArrowTopLeftSvg} {...props} />
 
 const InviteSvg = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2V6M2 4H6M5 16V20M3 18H7M12 2L14.2857 8.85714L20 11L14.2857 13.1429L12 20L9.71429 13.1429L4 11L9.71429 8.85714L12 2Z" stroke="currentColor" strokeWidth="2.14" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  // <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2V6M2 4H6M5 16V20M3 18H7M12 2L14.2857 8.85714L20 11L14.2857 13.1429L12 20L9.71429 13.1429L4 11L9.71429 8.85714L12 2Z" stroke="currentColor" strokeWidth="2.14" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg />
 )
 export const InviteIcon: React.FC = props => <Icon component={InviteSvg} {...props} />
 
 const LogoutSvg = () => (
-  <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.11111 15.6667L4.55556 12.1111M4.55556 12.1111L8.11111 8.55556M4.55556 12.1111L17 12.1111M12.5556 15.6667V16.5556C12.5556 18.0283 11.3616 19.2222 9.88889 19.2222H3.66667C2.19391 19.2222 1 18.0283 1 16.5556V7.66667C1 6.19391 2.19391 5 3.66667 5H9.88889C11.3616 5 12.5556 6.19391 12.5556 7.66667V8.55556" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  // <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.11111 15.6667L4.55556 12.1111M4.55556 12.1111L8.11111 8.55556M4.55556 12.1111L17 12.1111M12.5556 15.6667V16.5556C12.5556 18.0283 11.3616 19.2222 9.88889 19.2222H3.66667C2.19391 19.2222 1 18.0283 1 16.5556V7.66667C1 6.19391 2.19391 5 3.66667 5H9.88889C11.3616 5 12.5556 6.19391 12.5556 7.66667V8.55556" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg />
 )
 export const LogoutIcon: React.FC = props => <Icon component={LogoutSvg} {...props} />
 

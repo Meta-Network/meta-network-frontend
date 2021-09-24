@@ -2,7 +2,7 @@ import React from 'react'
 import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
-import { SliderHomeIcon, InviteIcon, BookmarkIcon } from '../Icon/Index'
+import { SliderHomeIcon, BookmarkIcon } from '../Icon/Index'
 
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon, SliderShareIcon } from '../Icon/Index'
