@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { Tooltip } from 'antd'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
@@ -34,11 +34,12 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
     return list.length
   }, [inviteCodeData])
 
-  const openUrl = () => {
-    if (isLoggin) {
-      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
-    }
-  }
+  const openUrl = useCallback(
+    () => {
+      if (isLoggin) {
+        window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
+      }
+    }, [ isLoggin ])
 
   const handleMySpace = () => {
     if (isEmpty(hexGridsMineData)) {
