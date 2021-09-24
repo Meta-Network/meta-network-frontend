@@ -29,79 +29,111 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
   const router = useRouter()
   const { t } = useTranslation('common')
 
+  const MenuJson = [
+    {
+      title: '联络我们',
+      item: [
+        {
+          url: 'https://twitter.com/realMetaNetwork',
+          icon: TwitterOutlined,
+          name: 'Twitter'
+        },
+        {
+          url: 'https://t.me/metanetwork',
+          icon: LinkOutlined,
+          name: 'Telegram'
+        },
+        {
+          url: 'https://discord.com/invite/59cXXWCWUT',
+          icon: LinkOutlined,
+          name: 'Discord'
+        },
+        {
+          url: 'https://medium.com/meta-network',
+          icon: MediumOutlined,
+          name: 'Medium'
+        },
+        {
+          url: 'https://github.com/Meta-Network',
+          icon: GithubOutlined,
+          name: 'Github'
+        }
+      ]
+    },
+    {
+      title: '资源',
+      item: [
+        {
+          url: 'https://github.com/Meta-Network',
+          icon: null,
+          name: '版本记录'
+        }
+      ]
+    },
+    {
+      title: '友情链接',
+      item: [
+        {
+          url: 'https://www.meta.io',
+          icon: null,
+          name: 'Meta.io'
+        },
+        {
+          url: 'https://meta-space.vercel.app',
+          icon: null,
+          name: 'Meta Space'
+        },
+        {
+          url: process.env.NEXT_PUBLIC_META_CMS_URL,
+          icon: null,
+          name: 'Meta CMS'
+        },
+      ]
+    },
+    {
+      title: '政策',
+      item: [
+        {
+          url: 'https://meta-network.mttk.net',
+          icon: null,
+          name: '条款'
+        },
+        {
+          url: 'https://meta-network.mttk.net',
+          icon: null,
+          name: '隐私政策'
+        },
+      ]
+    }
+  ]
+
   const menu = (
     <Menu>
-      <span className="slider-title">联络我们</span>
-      <Menu.Item icon={<TwitterOutlined />}>
-        <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/realMetaNetwork">
-          Twitter
-        </a>
-      </Menu.Item>
-      <Menu.Item icon={<LinkOutlined />}>
-        <a target="_blank" rel="noopener noreferrer" href="https://t.me/metanetwork">
-          Telegram
-        </a>
-      </Menu.Item>
-      <Menu.Item icon={<LinkOutlined />}>
-        <a target="_blank" rel="noopener noreferrer" href="https://discord.com/invite/59cXXWCWUT">
-          Discord
-        </a>
-      </Menu.Item>
-      <Menu.Item icon={<MediumOutlined />}>
-        <a target="_blank" rel="noopener noreferrer" href="https://medium.com/meta-network">
-          Medium
-        </a>
-      </Menu.Item>
-      <Menu.Item icon={<GithubOutlined />}>
-        <a target="_blank" rel="noopener noreferrer" href="https://github.com/Meta-Network">
-          Github
-        </a>
-      </Menu.Item>
-      <Menu.Divider />
-      <span className="slider-title">资源</span>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://github.com/Meta-Network">
-          版本记录
-        </a>
-      </Menu.Item>
-      <Menu.Divider />
-      <span className="slider-title">友情链接</span>
-      <Menu.Item>
-        <a
-          href="https://www.meta.io"
-          target="_blank"
-          rel="noopener noreferrer">
-          Meta.io
-        </a>
-      </Menu.Item>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://meta-space.vercel.app">
-          Meta Space
-        </a>
-      </Menu.Item>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://meta-cms.vercel.mttk.net">
-          Meta CMS
-        </a>
-      </Menu.Item>
-      <Menu.Divider />
-      <span className="slider-title">政策</span>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://meta-network.mttk.net">
-          条款
-        </a>
-      </Menu.Item>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://meta-network.mttk.net">
-          隐私政策
-        </a>
-      </Menu.Item>
+      {
+        MenuJson.map((i, idx) => (
+          <React.Fragment key={idx}>
+            <span className="slider-title">{i.title}</span>
+            {
+              i.item.map((j, idxJ) => (
+                <Menu.Item icon={j.icon && <j.icon />} key={idxJ}>
+                  <a target="_blank" rel="noopener noreferrer" href={j.url}>
+                    {j.name}
+                  </a>
+                </Menu.Item>
+              ))
+            }
+            {
+              idx < MenuJson.length - 1 ? <Menu.Divider /> : null
+            }
+          </React.Fragment>
+        ))
+      }
     </Menu>
   )
 
   return (
     <StyledSliderMore visible={visible}>
-      <Dropdown overlay={menu} placement="topLeft" overlayClassName='custom-slider-more' trigger={ isMobile ? ['click'] : ['hover'] }>
+      <Dropdown overlay={menu} placement="topLeft" overlayClassName='custom-slider-more' trigger={isMobile ? ['click'] : ['hover']}>
         <StyledSliderBtn>
           <QuestionOutlined />
         </StyledSliderBtn>
