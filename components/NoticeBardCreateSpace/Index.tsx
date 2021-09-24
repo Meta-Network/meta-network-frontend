@@ -35,11 +35,11 @@ const NoticeBardOccupied: React.FC<Props> = ({ }) => {
       <StyledIconBox>
         <CircleSuccessIcon />
       </StyledIconBox>
-      <StyledText>恭喜您已经占领地块</StyledText>
+      <StyledText>{t('occupied-success-create-space-text')}</StyledText>
       <StyledMessageButton
         status={false}
         onClick={() => openUrl()}>
-        立即设置
+        {t('set-up-now')}
       </StyledMessageButton>
     </StyledMessageRelative>
   )

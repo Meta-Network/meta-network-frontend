@@ -444,7 +444,7 @@ const Home = () => {
     // 没有收藏记录
     if (isEmpty(bookmark)) {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
-      Toast({ content: '已收藏到本地，可在侧边栏查看' })
+      Toast({ content: t('collection-success-tips') })
     } else {
       let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
@@ -458,7 +458,7 @@ const Home = () => {
         Toast({ content: t('delete-bookmark') })
       } else {
         bookmarkList.push(point)
-        Toast({ content: '已收藏到本地，可在侧边栏查看' })
+        Toast({ content: t('collection-success-tips') })
       }
 
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify(bookmarkList))

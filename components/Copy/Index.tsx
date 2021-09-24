@@ -21,7 +21,7 @@ const Copy: React.FC<Props> = ({ text, disabled = false }) => {
 
   const handleCopy = () => {
     if (!disabled) {
-      Toast({ content: '已复制到剪贴板' })
+      Toast({ content: t('copy-successfully-tips') })
     }
   }
 

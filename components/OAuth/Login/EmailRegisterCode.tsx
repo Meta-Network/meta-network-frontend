@@ -48,7 +48,7 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
             setStep(1)
             setInviteCode(inviteCode)
           } else {
-            throw new Error('邀请码已失效')
+            throw new Error(t('invalid-invitation-code'))
           }
         } else {
           throw new Error(res.message)

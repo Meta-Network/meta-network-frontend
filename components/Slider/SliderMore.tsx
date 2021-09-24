@@ -31,7 +31,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
 
   const MenuJson = [
     {
-      title: '联络我们',
+      title: t('contact-us'),
       item: [
         {
           url: 'https://twitter.com/realMetaNetwork',
@@ -61,17 +61,17 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
       ]
     },
     {
-      title: '资源',
+      title: t('resource'),
       item: [
         {
           url: 'https://github.com/Meta-Network',
           icon: null,
-          name: '版本记录'
+          name: t('version-record')
         }
       ]
     },
     {
-      title: '友情链接',
+      title: t('links'),
       item: [
         {
           url: 'https://www.meta.io',
@@ -91,17 +91,17 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
       ]
     },
     {
-      title: '政策',
+      title: t('policy'),
       item: [
         {
           url: 'https://meta-network.mttk.net',
           icon: null,
-          name: '条款'
+          name: t('terms')
         },
         {
           url: 'https://meta-network.mttk.net',
           icon: null,
-          name: '隐私政策'
+          name: t('privacy-policy')
         },
       ]
     }

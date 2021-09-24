@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react'
 import { accountsTokenPatch } from '../services/ucenter'
 
 export const useToken = () => {

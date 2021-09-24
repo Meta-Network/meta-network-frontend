@@ -113,7 +113,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   }, [ hexGridsMineData, calcAngle ])
 
   return (
-    <Tooltip title={ isShow ? '我的位置' : '' }>
+    <Tooltip title={ isShow ? t('my-position') : '' }>
       <StyledArrow style={style} ref={homeArrow}>
           <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>

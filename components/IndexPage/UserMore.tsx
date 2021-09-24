@@ -49,12 +49,12 @@ const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focu
   }, [bookmark, currentNode])
 
   // 复制信息
-  const userInfoText = useMemo(() => `昵称：${currentNode.userNickname || currentNode.username || '暂无'}
-简介：${currentNode.userBio}
-位置：${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}
-MetaSpace名称：${currentNode.siteName || '暂无'}
-MetaSpace主页：${currentNode.subdomain || '暂无'}
-`, [currentNode])
+  const userInfoText = useMemo(() => `${t('nickname')}：${currentNode.userNickname || currentNode.username || t('no-nickname')}
+${t('meta-space-introduction')}：${currentNode.userBio}
+${t('meta-space-position')}：${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}
+${t('meta-space-name')}：${currentNode.siteName || t('no-content')}
+${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
+`, [currentNode, t])
 
   // 按钮点击
   const handleJumpHome = (e: Event): void => {
@@ -94,15 +94,15 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
       </Menu.Item>
       <CopyToClipboard
         text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
-        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
+        onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
-          复制位置
+          {t('copy-location')}
         </Menu.Item>
       </CopyToClipboard>
       <CopyToClipboard text={userInfoText}
-        onCopy={() => Toast({ content: '已复制到剪贴板' })}>
+        onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
         <Menu.Item key="copy" icon={<CopyIcon />}>
-          复制信息
+          {t('copy-information')}
         </Menu.Item>
       </CopyToClipboard>
       {
@@ -110,7 +110,7 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
           ? null
           : <Menu.Item key="invite" icon={<SliderInviteIcon style={{ fontSize: 20 }} />}>
             {
-              strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || '暂无昵称'
+              strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || t('no-nickname')
             }
           </Menu.Item>
       }
@@ -152,7 +152,7 @@ MetaSpace主页：${currentNode.subdomain || '暂无'}
             onClick={(e: any) => handleJumpHome(e)}
             style={{ marginBottom: 16 }}
           >
-            <SliderSpaceIcon className="btn-icon" />{' '}访问 Meta Space
+            <SliderSpaceIcon className="btn-icon" />{' '}{t('visit-meta-space')}
             <SliderShareIcon className="view-icon" />
           </StyledUserMoreButton>
           : null

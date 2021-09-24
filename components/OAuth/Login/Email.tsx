@@ -25,7 +25,7 @@ const Email: React.FC<Props> = () => {
 
   return (
     <>
-      <Tooltip title="返回首页">
+      <Tooltip title={t('back-to-homepage')}>
         <StyledBackBtn icon={ <ArrowLeftOutlined /> } onClick={() => { router.push('/') }}></StyledBackBtn>
       </Tooltip>
       <StyledMethod>{emailMode === 'login' ? t('log-in') : t('create-account')}</StyledMethod>
