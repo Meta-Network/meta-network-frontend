@@ -19,7 +19,7 @@ const ToggleServers: React.FC = () => {
       </StyledHead>
       <StyledLine>
         <div>
-          <Tooltip placement="right" title={'https://www.metanetwork.online'}>
+          <Tooltip placement="right" title={process.env.NEXT_PUBLIC_META_NETWORK_URL}>
             <StyledServer>metanetwork.online</StyledServer>
           </Tooltip>
           <StyledServerDescription>{t('account-hosted-tips')}</StyledServerDescription>

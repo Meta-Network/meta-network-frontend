@@ -15,7 +15,7 @@ export default function HeadInfo() {
       <meta property="og:title" content="Meta Network — Empowering creator with passion economy." />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="/android-chrome-512x512.png" />
-      <meta property="og:url" content="https://meta-network.mttk.net" />
+      <meta property="og:url" content={ process.env.NEXT_PUBLIC_META_NETWORK_URL } />
       <meta property="og:description" content="Empowering creator with passion economy." />
       <meta property="og:site_name" content="Meta Network" />
 
