@@ -86,7 +86,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
           <StyledSliderSpace
             visible={visible}
-            className={ isLoggin ? '' : 'disabled'}
+            className={ (isLoggin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleMySpace()}>
             <SliderHexagonIcon className="space-icon" />
@@ -98,7 +98,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a
-            className={isLoggin ? '' : 'disabled'}
+            className={(isLoggin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleManagementSpace()}>
             <SliderSpaceIcon />
