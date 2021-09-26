@@ -42,7 +42,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
     }, [ isLoggin ])
 
   const handleMySpace = () => {
-    if (isEmpty(hexGridsMineData)) {
+    if (!hexGridsMineData.subdomain) {
       return
     }
 
@@ -59,7 +59,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   }
 
   const handleManagementSpace = () => {
-    if (isEmpty(hexGridsMineData)) {
+    if (!hexGridsMineData.subdomain) {
       return
     }
 
