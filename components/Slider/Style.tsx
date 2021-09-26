@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
 import { Avatar, Drawer } from 'antd'
-import { SliderShareIcon } from '../Icon/Index'
 
 export const StyledSliderCAccount = styled.section<{ visible: boolean }>`
   padding: ${props => props.visible ? '0 18px 0 0;' : '0 8px 0 0;'};
@@ -198,9 +197,8 @@ export const StyledSliderCItem = styled.ul<{ visible: boolean }>`
     }
   }
   .icon {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
+    width: 22px;
+    height: 22px;
   }
 `
 
@@ -246,6 +244,8 @@ export const StyledSliderSpace = styled.a<{ visible: boolean }>`
   .space-link-icon {
     margin-left: auto;
     opacity: 0;
+    width: 20px;
+    height: 20px;
   }
   &:hover {
     .space-link-icon {

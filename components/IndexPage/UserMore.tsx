@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, message } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CloseOutlined, EllipsisOutlined, TagsOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
+import { CloseOutlined, EllipsisOutlined, CopyOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
 import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState, translateMapState } from '../../typings/node'
-import { SliderSpaceIcon, CopyIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
+import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
 import { fetchhexGridsLoctionByUserIdAPI } from '../../helpers/index'
@@ -95,20 +95,20 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
       <CopyToClipboard
         text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
         onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
-        <Menu.Item key="copy" icon={<CopyIcon />}>
+        <Menu.Item key="copy" icon={<CopyOutlined />}>
           {t('copy-location')}
         </Menu.Item>
       </CopyToClipboard>
       <CopyToClipboard text={userInfoText}
         onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
-        <Menu.Item key="copy" icon={<CopyIcon />}>
+        <Menu.Item key="copy" icon={<CopyOutlined />}>
           {t('copy-information')}
         </Menu.Item>
       </CopyToClipboard>
       {
         isEmpty(inviteUserNode)
           ? null
-          : <Menu.Item key="invite" icon={<SliderInviteIcon style={{ fontSize: 20 }} />}>
+          : <Menu.Item key="invite" icon={<SliderInviteIcon />}>
             {
               strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || t('no-nickname')
             }
@@ -216,6 +216,8 @@ const StyledUserMoreButton = styled.button`
     opacity: 0;
     margin-left: 10px;
     transition: all .2s;
+    width: 20px;
+    height: 20px;
   }
   &:hover {
     .view-icon {

@@ -83,6 +83,10 @@ const StyledMessageRelative = styled(animated.section)`
 const StyledIconBox = styled.section`
   display: flex;
   align-items: center;
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
 `
 
 const StyledText = styled.span`

@@ -209,6 +209,10 @@ const StyledItemHead = styled.section`
 const StyledItemHeadLeft = styled.section`
   display: flex;
   align-items: center;
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
 `
 
 const StyledItemHeadTitle = styled.section`
@@ -223,6 +227,8 @@ const StyledItemHeadTitle = styled.section`
 const StyledItemHeadIconSelected = styled(SortDoneIcon)`
   color: #fff;
   cursor: pointer;
+  width: 18px;
+  height: 18px;
 `
 const StyledItemHeadSelected = styled.span`
   font-style: normal;

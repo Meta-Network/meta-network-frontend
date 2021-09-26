@@ -15,6 +15,10 @@
     .message-content {
       display: flex;
       align-items: center;
+      .icon {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 
@@ -226,6 +230,13 @@
       background-color: #e8e8e8;
       color: rgba(0, 0, 0, 0.85);
     }
+  }
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+  .anticon-copy.ant-menu-item-icon {
+    font-size: 20px;
   }
 }
 

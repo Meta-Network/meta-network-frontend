@@ -8,7 +8,6 @@ import { message } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useTranslation } from 'next-i18next'
 
-import { CircleSuccessIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 interface Props {
   text: string,

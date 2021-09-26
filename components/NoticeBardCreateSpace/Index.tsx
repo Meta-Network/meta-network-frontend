@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { useTranslation } from 'next-i18next'
 
-import { CircleWarningIcon, CircleSuccessIcon } from '../Icon/Index'
+import { CircleSuccessIcon } from '../Icon/Index'
 import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
 
@@ -67,6 +67,10 @@ const StyledMessageRelative = styled(animated.section)`
 const StyledIconBox = styled.section`
   display: flex;
   align-items: center;
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
 `
 
 const StyledText = styled.span`

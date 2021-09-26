@@ -7,7 +7,6 @@ import { trim } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { CircleSuccessIcon, CircleWarningIcon } from '../../Icon/Index'
 import useToast from '../../../hooks/useToast'
 
 interface Props {

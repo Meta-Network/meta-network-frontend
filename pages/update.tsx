@@ -13,7 +13,6 @@ import { axiosResult } from '../typings/request.d'
 import { Storage } from '../typings/storage.d'
 import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
-import { CircleSuccessIcon, CircleWarningIcon } from '../components/Icon/Index'
 import useToast from '../hooks/useToast'
 import { rules, uploadImageSize } from '../common/config/index'
 
