@@ -17,6 +17,7 @@ import { isMobile } from 'react-device-detect'
 import { StyledSliderMore, StyledSliderCUserInfo, StyledSliderCUserAvatar, StyledSliderBtn } from './Style'
 import { UsersMeProps } from '../../typings/ucenter'
 import { QuestionOutlined } from '@ant-design/icons'
+import { TelegramIcon, DiscordIcon } from '../Icon/Index'
 
 interface Props {
   readonly visible: boolean
@@ -41,12 +42,12 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
           },
           {
             url: 'https://t.me/metanetwork',
-            icon: LinkOutlined,
+            icon: TelegramIcon,
             name: 'Telegram'
           },
           {
             url: 'https://discord.com/invite/59cXXWCWUT',
-            icon: LinkOutlined,
+            icon: DiscordIcon,
             name: 'Discord'
           },
           {
@@ -66,7 +67,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         item: [
           {
             url: 'https://github.com/Meta-Network',
-            icon: null,
+            icon: LinkOutlined,
             name: t('version-record')
           }
         ]
@@ -96,12 +97,12 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         item: [
           {
             url: 'https://meta-network.mttk.net',
-            icon: null,
+            icon: LinkOutlined,
             name: t('terms')
           },
           {
             url: 'https://meta-network.mttk.net',
-            icon: null,
+            icon: LinkOutlined,
             name: t('privacy-policy')
           },
         ]

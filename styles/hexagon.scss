@@ -85,11 +85,9 @@
   &.active {
     .node-user {
       opacity: 1;
-      will-change: opacity;
     }
     .node-user-default {
       opacity: 0;
-      will-change: opacity;
     }
   }
 }
