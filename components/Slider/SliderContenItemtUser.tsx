@@ -10,6 +10,7 @@ import { translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { isEmpty } from 'lodash'
 
+
 interface SliderContenItemtUserProps {
   readonly isLoggin: boolean
   readonly inviteCodeData: InviitationsMineState[]
@@ -41,6 +42,15 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       }
     }, [ isLoggin ])
 
+  const openUrlMySpace = useCallback(
+    () => {
+      if (isLoggin) {
+        if (hexGridsMineData.subdomain) {
+          window.open(`https://${hexGridsMineData.subdomain}`, '_blank')
+        }
+      }
+    }, [ isLoggin, hexGridsMineData ])
+
   const handleMySpace = () => {
     if (!hexGridsMineData.subdomain) {
       return
@@ -53,7 +63,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         z: hexGridsMineData.z
       },
       scale: 2.8,
-      callback: openUrl,
+      callback: openUrlMySpace,
       duration: 800
     })
   }

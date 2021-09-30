@@ -122,9 +122,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       if (node.subdomain) {
         return 'active'
       }
-      if (node.x === 2 && node.y === 11 && z === -13) {
-        return 'active'
-      }
       return 'exist'
     }
 

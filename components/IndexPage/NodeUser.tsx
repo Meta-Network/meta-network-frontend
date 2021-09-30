@@ -47,7 +47,7 @@ const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, nod
               ? <tspan x="0" y="8" style={{ fontSize: 8 }}>{node?.subdomain || t('default-site-name')}</tspan>
               : null
           }
-          <tspan x="0" y="26" style={{ fontSize: 12, lineHeight: 24 }}>{strEllipsis(node?.userBio) || t('no-introduction')}</tspan>
+          <tspan x="0" y="26" style={{ fontSize: 10, lineHeight: 24 }}>{strEllipsis(node?.userBio) || t('no-introduction')}</tspan>
         </Text>
         <Text className="node-user-default">
           <tspan x="0" y="8" style={{ fontSize: 18, fontWeight: 'bold' }}>{strEllipsis(node?.userNickname || node?.username) || t('no-nickname')}</tspan>

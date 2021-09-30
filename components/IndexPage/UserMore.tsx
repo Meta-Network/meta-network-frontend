@@ -60,7 +60,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
   const handleJumpHome = (e: Event): void => {
     e.stopPropagation()
     Toast({ content: t('go-to-homepage') })
-    window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
+    window.open(`https://${currentNode.subdomain}`, '_blank')
   }
 
   // 菜单点击
@@ -172,7 +172,11 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
             </StyledUserMoreButton>
           </Dropdown>
           : isBrowser
-            ? <StyledUserMoreBtn show={state} onMouseEnter={() => setState(true)} onMouseLeave={() => setState(false)}>
+            ? <StyledUserMoreBtn
+                style={{ width: state ? 'auto' : 60, justifyContent: 'center' }}
+                show={state} 
+                onMouseEnter={() => setState(true)}
+                onMouseLeave={() => setState(false)}>
               {
                 state
                   ? <MenuComponent />
