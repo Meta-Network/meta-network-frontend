@@ -106,7 +106,9 @@ export const StyledSliderCUser = styled.section<{ visible: boolean }>`
   border-style: solid;
   border-width: 0;
   border-right-width: 4px;
-  padding: ${props => props.visible ? '8px 18px' : '8px 0'};
+  border-left-width: 4px;
+  border-left-color: transparent;
+  padding: ${props => props.visible ? '8px 0' : '8px 0'};
   box-sizing: border-box;
   .arrow {
     opacity: ${props => props.visible ? 1 : 0};
