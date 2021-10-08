@@ -61,7 +61,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
     e.stopPropagation()
     Toast({ content: t('go-to-homepage') })
     window.open(`https://${currentNode.subdomain}`, '_blank')
-    throw new Error('test button click event')
+    throw new Error('test button click event!!!')
   }
 
   // 菜单点击
