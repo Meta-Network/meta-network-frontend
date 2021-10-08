@@ -65,7 +65,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       } finally {
         redirectUrl()
       }
-    }, [])
+    }, [ redirectUrl ])
 
   // 注册
   const onFinishEmail = useCallback(

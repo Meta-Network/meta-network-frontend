@@ -108,7 +108,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         ]
       }
     ]
-  }, [])
+  }, [ t ])
 
   const menu = (
     <Menu>
