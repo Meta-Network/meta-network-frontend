@@ -66,7 +66,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         title: t('resource'),
         item: [
           {
-            url: 'https://github.com/Meta-Network',
+            url: 'https://www.matataki.io/p/10582',
             icon: LinkOutlined,
             name: t('version-record')
           }
