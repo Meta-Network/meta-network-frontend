@@ -43,14 +43,14 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
           </a>
         </Tooltip>
       </li>
-      <li>
+      {/* <li>
         <Tooltip title={(visible || isMobile) ? '' : t('switch-ID-layer')} placement="right">
           <a href="javascript:;" className="disabled">
             <SwitchVerticalIcon />
             {visible ? t('switch-ID-layer') : ''}
           </a>
         </Tooltip>
-      </li>
+      </li> */}
     </StyledSliderCItem>
   )
 })
