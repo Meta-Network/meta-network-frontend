@@ -4,9 +4,9 @@ import { useSpring, animated, useSpringRef, useTransition, useChain } from 'reac
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
-import { getZoomPercentage } from '../../helpers/index'
 import { useMount, useUnmount } from 'ahooks'
 
+import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node.d'
@@ -42,12 +42,12 @@ import { keyFormat } from '../../utils'
  * requestAnimationFrame
  * cancelAnimationFrame
  */
- const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
- (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
 let ID: number
 // 可操作的节点模式
-const OperableNodeMode = [ 'exist', 'active' ]
+const OperableNodeMode = ['exist', 'active']
 
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
@@ -153,7 +153,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    */
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
     e.stopPropagation()
-    if (isBrowser && OperableNodeMode.includes(mode) ) {
+    if (isBrowser && OperableNodeMode.includes(mode)) {
       // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
       let node = allNodeMap.get(keyFormat({ x, y, z }))
@@ -212,7 +212,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   /**
  * 获取缩放
  */
-   const fetchZoomValue = useCallback(() => {
+  const fetchZoomValue = useCallback(() => {
     let percentage = getZoomPercentage()
     setPercentageVal(percentage)
 
@@ -234,7 +234,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   return (
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
-        <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin} className={ percentageVal < 20 ? 'hide-node' : '' }>
+        <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin} className={percentageVal < 20 ? 'hide-node' : ''}>
           {
             // note: key must be unique between re-renders.
             // using config.mapProps+i makes a new key when the goal template chnages.
