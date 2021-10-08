@@ -36,6 +36,6 @@ const SentryWebpackPluginOptions = {
 // ensure that your source maps include changes from all other Webpack plugins
 
 // TODO：temporary use vercel integration sentry plugins
-// module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions)
+module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions)
 
-module.exports = moduleExports
+// module.exports = moduleExports
