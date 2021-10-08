@@ -49,7 +49,7 @@ const StyledMessageRelative = styled(animated.section)`
   position: fixed;
   background-color: #2C2B2A;
   left: 50%;
-  top: 40px;
+  top: 50px;
   z-index: 11;
   transform: translate(-50%, 0);
   padding: 0 0 0 16px;
