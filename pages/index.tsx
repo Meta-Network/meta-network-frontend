@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-// import rd3 from 'react-d3-library'
-// import * as d3 from 'd3';
-// import { G, Point, SVG } from '@svgdotjs/svg.js'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { assign, cloneDeep, isEmpty } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'

@@ -146,8 +146,8 @@ export const OauthUrlVerify = (url: string) => {
 
 /**
  * 通过 user id 查询位置 API
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const fetchhexGridsLoctionByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
   try {
