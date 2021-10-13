@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 const key = 'MetaNetworkDEV'
 
 /**
- * dev
+ * dev page
  */
 const DEV =  React.memo( function DEV () {
   const router = useRouter()
