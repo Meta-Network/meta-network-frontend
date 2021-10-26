@@ -136,13 +136,25 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
       }
     }, [currentNode.inviterUserId])
 
+  /**
+   * hide dropdown more
+   */
+  const hideDropdown = useCallback(() => {
+    if (isMobile) {
+      setState(false)
+    }
+  }, [],)
+
   useEffect(() => {
     if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
       fetchhexGridsLoctionByUserId()
     } else {
       setInviteUserNode({} as hexGridsByFilterState)
     }
-  }, [currentNode, fetchhexGridsLoctionByUserId])
+
+    window.addEventListener('click', hideDropdown)
+    return () => window.removeEventListener('click', hideDropdown)
+  }, [currentNode, fetchhexGridsLoctionByUserId, hideDropdown])
 
   return (
     <>
