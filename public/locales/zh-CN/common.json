@@ -138,5 +138,6 @@
   "links": "友情链接",
   "policy": "政策",
   "terms": "条款",
-  "privacy-policy": "隐私政策"
+  "privacy-policy": "隐私政策",
+  "username-rules-reg": "用户名仅允许 小写, 数字, \"-\" 且长度为 {{ min }}-{{ max }}"
 }

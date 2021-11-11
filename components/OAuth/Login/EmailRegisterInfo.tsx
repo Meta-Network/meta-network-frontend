@@ -127,13 +127,25 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       setTimer(_timer)
     })
   }
+  /**
+   * verify username rules
+   * @return {*}  {Promise<void>}
+   */
+  const verifyUsernameRule = async (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      let reg = new RegExp(rules.usernameReg)
+      const values = formResister.getFieldsValue()
+      const result = reg.test(trim(values.username))
+      result ? resolve() : reject(t('username-rules-reg', { min: rules.username.min, max: rules.username.max }))
+    })
+  }
 
   /**
    * 验证用户名是否存在
    *
    * @return {*}  {Promise<void>}
    */
-  const verifyUsernameRule = async (): Promise<void> => {
+  const verifyUsernameValidate = async (): Promise<void> => {
     // https://github.com/ant-design/ant-design/issues/23077
     return new Promise((resolve, reject) => {
       clearTimeout(timerUsername)
@@ -174,8 +186,9 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         name="username"
         rules={[
           { required: true, message: t('message-enter-username') },
-          { min: rules.username.min, max: rules.username.max, message: t('message-length', { min: rules.username.min, max: rules.username.max }) },
+          // { min: rules.username.min, max: rules.username.max, message: t('message-length', { min: rules.username.min, max: rules.username.max }) },
           { validator: verifyUsernameRule },
+          { validator: verifyUsernameValidate },
         ]}
       >
         <Input className="form-input" placeholder={`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
