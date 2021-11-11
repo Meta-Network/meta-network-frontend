@@ -1,5 +1,6 @@
 // rules
 export const rules = {
+  usernameReg: '^[a-z0-9-]{3,15}$',
   username: {
     min: 3,
     max: 15

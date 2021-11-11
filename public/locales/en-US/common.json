@@ -138,5 +138,6 @@
   "set-up-now": "Set up now",
   "terms": "Terms",
   "version-record": "Version record",
-  "visit-meta-space": "Visit Meta Space"
+  "visit-meta-space": "Visit Meta Space",
+  "username-rules-reg": "Username only allows lowercase, numbers, \"-\" and the length is {{ min }}-{{ max }}"
 }
