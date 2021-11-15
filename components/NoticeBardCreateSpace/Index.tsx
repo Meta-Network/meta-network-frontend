@@ -1,19 +1,12 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { isEmpty } from 'lodash'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
-
 import { CircleSuccessIcon } from '../Icon/Index'
-import { useUser } from '../../hooks/useUser'
-import useToast from '../../hooks/useToast'
 
 interface Props {}
 
 const NoticeBardOccupied: React.FC<Props> = ({ }) => {
-  const { user } = useUser()
-  const { Toast } = useToast()
   const { t } = useTranslation('common')
 
   const noticeBardOccupiedAnimatedStyles = useSpring({

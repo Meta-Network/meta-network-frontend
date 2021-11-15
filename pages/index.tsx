@@ -28,7 +28,7 @@ const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), 
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
 const Occupied = dynamic(() => import('../components/Occupied/Index'), { ssr: false })
 const NoticeBardOccupied = dynamic(() => import('../components/NoticeBardOccupied/Index'), { ssr: false })
-const NoticeBardCreateSpace = dynamic(() => import('../components/NoticeBardCreateSpace/Index'), { ssr: false })
+const NoticeBardCreateSpace = dynamic(() => import('../components/NoticeBardCreateSpace'), { ssr: false })
 const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'), { ssr: false })
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
@@ -38,7 +38,8 @@ const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
-const MapContainer = dynamic(() => import('../components/MapContainer/Index'), { ssr: false })
+const MapContainer = dynamic(() => import('../components/MapContainer'), { ssr: false })
+const FullLoading = dynamic(() => import('../components/FullLoading'), { ssr: false })
 
 let d3: any = null
 let zoom: any = null
@@ -104,6 +105,8 @@ const Home = () => {
   const [historyView, setHistoryView] = useState<PointState[]>([])
   // 默认禁用区域半径
   const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
+  // FullLoading
+  const [fullLoading, setFullLoading] = useState<boolean>(false)
 
   const { isLoggin } = useUser()
   const focus$ = useEventEmitter<string>()
@@ -155,22 +158,6 @@ const Home = () => {
       setAllNodeChoose(points)
     }
   }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
-
-  // init
-  useMount(
-    () => {
-      fetchHexGriids()
-
-      resizeFn()
-      window.addEventListener('resize', resizeFn)
-      fetchBookmark()
-      fetchHistoryView()
-    }
-  )
-
-  useUnmount(() => {
-    window.removeEventListener('resize', resizeFn)
-  })
 
   /**
    * 计算半径为10不可选区域
@@ -394,7 +381,7 @@ const Home = () => {
     const _mapProps = list.length ? calcMaxDistance(list) : mapProps
     const hexagons = generator.apply(null, _mapProps)
 
-    console.log('hexagons', hexagons)
+    // console.log('hexagons', hexagons)
     setHex(hexagons)
     setContainerDrag()
     calcForbiddenZoneRadius(hexagons, forbiddenZoneRadius)
@@ -428,6 +415,8 @@ const Home = () => {
       } else {
         render([], 0)
       }
+
+      setFullLoading(false)
     }, [defaultHexGridsRange, forbiddenZoneRadius, render])
 
   /**
@@ -577,6 +566,25 @@ const Home = () => {
     fetchHistoryView()
   }, [fetchHistoryView])
 
+
+  // init
+  useMount(
+    () => {
+      setFullLoading(true)
+
+      fetchHexGriids()
+
+      resizeFn()
+      window.addEventListener('resize', resizeFn)
+      fetchBookmark()
+      fetchHistoryView()
+    }
+  )
+
+  useUnmount(() => {
+    window.removeEventListener('resize', resizeFn)
+  })
+
   return (
     <>
       <ToggleSlider
@@ -607,9 +615,11 @@ const Home = () => {
         setCurrentNode={setCurrentNode}
         setCurrentNodeChoose={setCurrentNodeChoose}
         setIsModalVisibleOccupied={setIsModalVisibleOccupied}
-        HandleHistoryView={HandleHistoryView}
+        handleHistoryView={HandleHistoryView}
         translateMap={translateMap}
-      ></MapContainer>
+      >
+
+      </MapContainer>
       <MarkContainer></MarkContainer>
       <DeploySite
         isModalVisible={isModalVisibleDeploySite}
@@ -655,6 +665,7 @@ const Home = () => {
         translateMap={translateMap}
         HandleHistoryView={HandleHistoryView}
       ></NodeHistory>
+      <FullLoading loading={fullLoading} setLoading={setFullLoading} />
       <PointDEV></PointDEV>
     </>
   )

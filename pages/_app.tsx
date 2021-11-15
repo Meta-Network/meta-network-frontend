@@ -7,7 +7,6 @@ import HeadInfo from '../components/HeadInfo/Index'
 import { StoreGet } from '../utils/store'
 
 import 'antd/dist/antd.css'
-import 'tippy.js/dist/tippy.css' // optional for styling
 
 import '../styles/hexagon.scss'
 import '../styles/custom.scss'

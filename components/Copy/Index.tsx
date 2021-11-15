@@ -38,6 +38,7 @@ const Copy: React.FC<Props> = ({ text, disabled = false }) => {
     </CopyText>
   )
 }
+
 const CopyText = styled.section<{ disabled: boolean }>`
   background: #2C2B2A;
   border-radius: 40px;
