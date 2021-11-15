@@ -107,7 +107,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
       </CopyToClipboard>
       {
         isEmpty(inviteUserNode)
-          ? null
+          ? <Menu.Item icon={<SliderInviteIcon />}>Meta Network</Menu.Item>
           : <Menu.Item key="invite" icon={<SliderInviteIcon />}>
             {
               strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || t('no-nickname')
