@@ -7,12 +7,15 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { LanguageProps } from '../../typings/i18n.d'
+import { setCookie } from '../../utils/cookie'
 
 interface SliderContenItemtUserProps {
   readonly visible: boolean
 }
 
-const languageList = ['zh-CN', 'en-US']
+const languageList = ['en-US', 'zh-CN']
+const COOKIE_NEXT_LOCALE = 'NEXT_LOCALE'
+const COOKIE_NEXT_LOCALE_EXPIRES = 365
 
 // 侧边栏 菜单 用户
 const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
@@ -28,7 +31,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
     <Menu>
       {
         languageList.map((i, idx) => (
-          <Menu.Item key={idx}>
+          <Menu.Item key={idx} onClick={() => setCookie(COOKIE_NEXT_LOCALE, i, COOKIE_NEXT_LOCALE_EXPIRES)}>
             <Link
               href='/'
               passHref

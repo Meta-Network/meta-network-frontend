@@ -2,11 +2,10 @@ module.exports = {
   i18n: {
     // These are all the locales you want to support in
     // your application
-    locales: ['zh-CN', 'en-US'],
+    locales: ['en-US', 'zh-CN'],
     // This is the default locale you want to be used when visiting
     // a non-locale prefixed path e.g. `/hello`
-    defaultLocale: 'zh-CN',
-    reloadOnPrerender: false
+    defaultLocale: 'en-US'
   }
 }
 
