@@ -1,23 +1,22 @@
 import React, { useMemo } from 'react'
-import { Avatar, Menu, Dropdown } from 'antd'
-import {
-  UserOutlined,
-  LeftOutlined,
-  DownOutlined,
-  TwitterOutlined,
-  GithubOutlined,
-  MediumOutlined,
-  LinkOutlined
-} from '@ant-design/icons'
+import { Menu, Dropdown } from 'antd'
+// import {
+//   UserOutlined,
+//   LeftOutlined,
+//   DownOutlined,
+//   TwitterOutlined,
+//   GithubOutlined,
+//   MediumOutlined,
+//   LinkOutlined
+// } from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
-import { StyledSliderMore, StyledSliderCUserInfo, StyledSliderCUserAvatar, StyledSliderBtn } from './Style'
-import { UsersMeProps } from '../../typings/ucenter'
+import { StyledSliderMore, StyledSliderBtn } from './Style'
 import { QuestionOutlined } from '@ant-design/icons'
-import { TelegramIcon, DiscordIcon } from '../Icon/Index'
+// import { TelegramIcon, DiscordIcon } from '../Icon/Index'
 
 interface Props {
   readonly visible: boolean
@@ -123,7 +122,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             <span className="slider-title">{i.title}</span>
             {
               i.item.map((j, idxJ) => (
-                <Menu.Item icon={j.icon && <j.icon />} key={idxJ}>
+                <Menu.Item key={idxJ}>
                   <a target="_blank" rel="noopener noreferrer" href={j.url}>
                     {j.name}
                   </a>
