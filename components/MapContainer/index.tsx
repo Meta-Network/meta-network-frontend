@@ -100,8 +100,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * 计算节点模式
    */
   const calcNodeMode = useCallback(({ x, y, z }: PointState) => {
-    // console.log('calcNodeMode')
-
     // 禁止选择节点
     const nodeDisabledHas = allNodeDisabled.has(keyFormat({ x, y, z }))
     if (nodeDisabledHas) {
