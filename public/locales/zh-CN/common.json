@@ -139,5 +139,6 @@
   "policy": "政策",
   "terms": "条款",
   "privacy-policy": "隐私政策",
-  "username-rules-reg": "用户名仅允许 小写, 数字, \"-\" 且长度为 {{ min }}-{{ max }}"
+  "username-rules-reg": "用户名仅允许 小写, 数字, \"-\" 且长度为 {{ min }}-{{ max }}",
+  "full-loading-close-tips": "如遇到页面失去反馈，可手动关闭！"
 }

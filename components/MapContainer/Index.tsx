@@ -9,8 +9,8 @@ import { useMount, useUnmount } from 'ahooks'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
-import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node.d'
-import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
+import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
+import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork'
 
 interface Props {
   readonly width: number
@@ -31,7 +31,7 @@ interface Props {
   setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
   setCurrentNodeChoose: React.Dispatch<React.SetStateAction<PointState>>
   setIsModalVisibleOccupied: React.Dispatch<React.SetStateAction<boolean>>
-  HandleHistoryView: (point: PointState) => void
+  handleHistoryView: (point: PointState) => void
   translateMap: (value: translateMapState) => void
 }
 import { useUser } from '../../hooks/useUser'
@@ -68,7 +68,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   setCurrentNode,
   setCurrentNodeChoose,
   setIsModalVisibleOccupied,
-  HandleHistoryView,
+  handleHistoryView,
   translateMap
 }) {
   const { t } = useTranslation('common')
@@ -206,7 +206,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
 
     translateMap({ point })
 
-    HandleHistoryView(point)
+    handleHistoryView(point)
   }
 
   /**
