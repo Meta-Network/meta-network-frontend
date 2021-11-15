@@ -18,7 +18,7 @@ const FullLoading: React.FC<Props> = ({ loading, setLoading }) => {
       {loading && <StyledWrapper>
         <Spin indicator={antIcon} tip="Loading..." />
         <Tooltip
-          title={t('full-loading-close-tips')}
+          title={t('fullLoading.closeTip')}
         >
           <StyledClose onClick={() => setLoading(false)} />
         </Tooltip>
