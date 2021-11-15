@@ -140,5 +140,5 @@
   "version-record": "Version record",
   "visit-meta-space": "Visit Meta Space",
   "username-rules-reg": "Username only allows lowercase, numbers, \"-\" and the length is {{ min }}-{{ max }}",
-  "full-loading-close-tips": "If you encounter a page that loses feedback, you can manually close it!"
+  "fullLoading.closeTip": "If you encounter a page that loses feedback, you can manually close it!"
 }

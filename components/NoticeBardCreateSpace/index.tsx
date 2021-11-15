@@ -105,7 +105,6 @@ const StyledMessageButton = styled.button<{ status: boolean }>`
   @media screen and (max-width: 768px) {
     padding: 0 16px;
   }
-
   @media screen and (min-width: 768px) {
     &:hover {
       background-color: #131313;

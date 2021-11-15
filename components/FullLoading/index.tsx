@@ -18,7 +18,7 @@ const FullLoading: React.FC<Props> = ({ loading, setLoading }) => {
       {loading && <StyledWrapper>
         <Spin indicator={antIcon} tip="Loading..." />
         <Tooltip
-          title={t('full-loading-close-tips')}
+          title={t('fullLoading.closeTip')}
         >
           <StyledClose onClick={() => setLoading(false)} />
         </Tooltip>
@@ -35,7 +35,7 @@ const StyledWrapper = styled.section`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: 9;
   display: flex;
   align-items: center;
   justify-content: center;
