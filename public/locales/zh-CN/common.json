@@ -74,7 +74,7 @@
   "get-verification-code": "获取验证码",
   "login-successful": "登录成功",
   "login-failed": "登录失败",
-  "message-enter-valid-email ": "请输入有效邮箱",
+  "message-enter-valid-email": "请输入有效邮箱",
   "register": "注册",
   "message-enter-verification-code": "请输入验证码",
   "message-invitation-code-error": "邀请码不正确",
