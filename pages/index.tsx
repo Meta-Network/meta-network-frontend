@@ -28,7 +28,7 @@ const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), 
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
 const Occupied = dynamic(() => import('../components/Occupied/Index'), { ssr: false })
 const NoticeBardOccupied = dynamic(() => import('../components/NoticeBardOccupied/Index'), { ssr: false })
-// const NoticeBardCreateSpace = dynamic(() => import('../components/NoticeBardCreateSpace'), { ssr: false })
+const NoticeBardCreateSpace = dynamic(() => import('../components/NoticeBardCreateSpace'), { ssr: false })
 const MarkContainer = dynamic(() => import('../components/MarkContainer/Index'), { ssr: false })
 const HexGridsCount = dynamic(() => import('../components/HexGridsCount/Index'), { ssr: false })
 const HomeArrow = dynamic(() => import('../components/HomeArrow/Index'), { ssr: false })
@@ -635,11 +635,11 @@ const Home = () => {
             setNoticeBardOccupiedState={setNoticeBardOccupiedState}
           ></NoticeBardOccupied> : null
       }
-      {/* {
+      {
         !isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin && !hexGridsMineData.subdomain
         ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
         : null
-      } */}
+      }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       <HomeArrow
         hexGridsMineData={hexGridsMineData} ></HomeArrow>
