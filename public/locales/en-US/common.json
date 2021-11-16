@@ -145,5 +145,6 @@
   "message.fetchToken.fail": "Token acquisition failed, please try again",
   "button.noticeBardCreateSpace.confirm.cancelText": "understood",
   "button.noticeBardCreateSpace.confirm.content": "Congratulations, you have locked the coordinates of the Meta Space metadata universe in advance. \nMeta Network will be officially released on November 22, 2022, so stay tuned.",
-  "button.noticeBardCreateSpace.confirm.okText": "View trailer"
+  "button.noticeBardCreateSpace.confirm.okText": "View trailer",
+  "inviteCode.shareText": "Hi, the aborigines of Meta Network are inviting you to be a neighbor, go to {{ url }}, and enter with your invitation code! \n{{ code }}"
 }
