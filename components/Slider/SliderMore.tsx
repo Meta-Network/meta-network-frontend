@@ -7,7 +7,7 @@ import {
   TwitterOutlined,
   // GithubOutlined,
   // MediumOutlined,
-  // LinkOutlined
+  LinkOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -96,21 +96,21 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
           // },
         ]
       },
-      // {
-      //   title: t('policy'),
-      //   item: [
-      //     {
-      //       url: 'https://meta-network.mttk.net',
-      //       icon: LinkOutlined,
-      //       name: t('terms')
-      //     },
-      //     {
-      //       url: 'https://meta-network.mttk.net',
-      //       icon: LinkOutlined,
-      //       name: t('privacy-policy')
-      //     },
-      //   ]
-      // }
+      {
+        title: t('policy'),
+        item: [
+          {
+            url: '/privacy',
+            icon: <LinkOutlined />,
+            name: t('terms')
+          },
+          {
+            url: '/terms',
+            icon: <LinkOutlined />,
+            name: t('privacy-policy')
+          },
+        ]
+      }
     ]
   }, [ t ])
 
