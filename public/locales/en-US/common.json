@@ -142,9 +142,9 @@
   "username-rules-reg": "User name only allows lowercase, numbers, \"-\" and the length is {{ min }}-{{ max }} and must be between  {{ min }} and {{ max }} characters.",
   "fullLoading.closeTip": "You can close this page if it is not responding.",
   "button.send": "Send",
-  "message.fetchToken.fail": "Token acquisition failed, please try again",
-  "button.noticeBardCreateSpace.confirm.cancelText": "understood",
-  "button.noticeBardCreateSpace.confirm.content": "Congratulations, you have locked the coordinates of the Meta Space metadata universe in advance. \nMeta Network will be officially released on November 22, 2022, so stay tuned.",
-  "button.noticeBardCreateSpace.confirm.okText": "View trailer",
-  "inviteCode.shareText": "Hi, the aborigines of Meta Network are inviting you to be a neighbor, go to {{ url }}, and enter with your invitation code! \n{{ code }}"
+  "message.fetchToken.fail": "Upload failed ，please try again.",
+  "button.noticeBardCreateSpace.confirm.cancelText": "Got it",
+  "button.noticeBardCreateSpace.confirm.content": "Congratulations, you have pre-locked the coordinates of the Meta Space !。Meta Network will be released on November 22, 2022, so stay tuned!。",
+  "button.noticeBardCreateSpace.confirm.okText": "View Preview",
+  "inviteCode.shareText": "Hi, Meta Network Natives are inviting you to be their neighbors!，visit {{ url }}，join us with your invitation code! {{ code }}"
 }
