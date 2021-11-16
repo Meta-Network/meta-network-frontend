@@ -15,6 +15,7 @@ import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import useToast from '../hooks/useToast'
 import { rules, uploadImageSize } from '../common/config/index'
+import { fetchTokenAPI } from '../helpers'
 
 interface Props { }
 
@@ -39,21 +40,6 @@ const Update: React.FC<Props> = () => {
   const router = useRouter()
   const { Toast } = useToast()
 
-  // 获取 Token
-  const fetchToken = useCallback(
-    async () => {
-      try {
-        const res = await storageToken()
-        if (res.statusCode === 201) {
-          setToken(res.data)
-        } else {
-          throw new Error(res.message)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }, [])
-
   // 获取用户信息
   const fetchUserMe = useCallback(
     async () => {
@@ -77,12 +63,6 @@ const Update: React.FC<Props> = () => {
       }
     }, [setAvatarUrl, form, router])
 
-  useMount(() => {
-    fetchToken()
-    fetchUserMe()
-  })
-
-  // 注册
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
 
@@ -119,12 +99,15 @@ const Update: React.FC<Props> = () => {
   // upload props
   const props: any = useMemo(() => ({
     name: 'file',
+    accept: '.jpg,.jpeg,.png',
     action: storageFleek,
     maxCount: 1,
     headers: {
       authorization: `Bearer ${token}`,
     },
-    beforeUpload(file: File) {
+    async beforeUpload(file: File) {
+      setLoading(true)
+
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {
         Toast({ content: t('upload-images-format', { type: 'JPG/PNG' }), type: 'warning' })
@@ -137,12 +120,22 @@ const Update: React.FC<Props> = () => {
       const res = isJpgOrPng && isLtMB
 
       if (res) {
+        const result = await fetchTokenAPI()
+        if (result) {
+          setToken(result)
+        } else {
+          Toast({ content: t('message.fetchToken.fail') })
+          return false
+        }
+        
         notification.open({
           key: keyUploadAvatar,
           className: 'custom-notification',
           message: t('upload-picture'),
           description: `${t('uploading')}...`,
         })
+      } else {
+        setLoading(false)
       }
 
       return res
@@ -159,10 +152,14 @@ const Update: React.FC<Props> = () => {
         }
         notification.close(keyUploadAvatar)
         // (`${info.file.name} file uploaded successfully`);
+
+      setLoading(false)
       } else if (info.file.status === 'error') {
         // (`${info.file.name} file upload failed.`);
         Toast({ content: t('upload-failed') })
         notification.close(keyUploadAvatar)
+
+        setLoading(false)
       }
     }
   }), [token, Toast, t])
@@ -174,6 +171,11 @@ const Update: React.FC<Props> = () => {
     }
     return e && e.fileList
   }
+
+
+  useMount(() => {
+    fetchUserMe()
+  })
 
   return (
     <>

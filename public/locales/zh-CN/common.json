@@ -140,5 +140,7 @@
   "terms": "条款",
   "privacy-policy": "隐私政策",
   "username-rules-reg": "用户名仅允许 小写, 数字, \"-\" 且长度为 {{ min }}-{{ max }}",
-  "fullLoading.closeTip": "如遇到页面失去反馈，可手动关闭！"
+  "fullLoading.closeTip": "如遇到页面失去反馈，可手动关闭！",
+  "button.send": "发送",
+  "message.fetchToken.fail": "令牌获取失败，请重试"
 }
