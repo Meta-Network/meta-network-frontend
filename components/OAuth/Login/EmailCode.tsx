@@ -27,25 +27,26 @@ const EmailCode: React.FC<Props> = ({ form }) => {
    * @returns
    */
   const handleSendEmailCode = async () => {
+    let { email } = await form.getFieldsValue()
+    if (!(email ? trim(email) : email)) {
+      Toast({ content: t('message-enter-email'), type: 'warning' })
+      return
+    }
+  
     try {
-      let { email } = await form.getFieldsValue()
-      if (!(email ? trim(email) : email)) {
-        Toast({ content: t('message-enter-email'), type: 'warning' })
-        return
-      }
       // 开始倒计时
-      setTargetDate(Date.now() + 60 * 1000)
       Toast({ content: `${t('send-verification-code')}...`})
       const res = await accountsEmailVerificationCode({
         key: trim(email)
       })
       if (res.statusCode === 201) {
+        setTargetDate(Date.now() + 60 * 1000)
         Toast({ content: t('send-successfully') })
       } else {
         throw new Error(res.message)
       }
     } catch (e) {
-      console.log(e)
+      console.error(e)
       Toast({ content: t('send-faild'), type: 'warning' })
     }
   }
@@ -57,7 +58,7 @@ const EmailCode: React.FC<Props> = ({ form }) => {
         type="button"
         disabled={count !== 0}
         onClick={handleSendEmailCode}>
-        {count === 0 ? t('get-verification-code') : `${Math.round(count / 1000)}s`}
+        {count === 0 ? t('button.send') : `${Math.round(count / 1000)}s`}
       </StyledButton>
     </>
   )

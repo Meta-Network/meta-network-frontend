@@ -23,3 +23,5 @@ export const OAuthWhiteList = [
   'https://meta-cms.mttk.net',
   'https://meta-cms.vercel.mttk.net',
 ]
+
+export const FeedbackLink = 'https://matrix.to/#/!RWJlSDkUlUNMHlXESQ:matrix.org?via=matrix.org'

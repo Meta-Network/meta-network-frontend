@@ -3,7 +3,7 @@ import {
   hexGridsByFilter,
   hexGridsLoctionByUserId
 } from '../services/metaNetwork'
-import { invitationsMine } from '../services/ucenter'
+import { invitationsMine, storageToken } from '../services/ucenter'
 import { HexGridsLoctionByUserIdState, PointScopeState } from '../typings/metaNetwork'
 import { InviitationsMineState } from '../typings/ucenter.d'
 import { amountSplit } from '../utils/index'
@@ -161,5 +161,18 @@ export const fetchhexGridsLoctionByUserIdAPI = async (data: HexGridsLoctionByUse
   } catch (e) {
     console.log('e', e)
     return null
+  }
+}
+
+/**
+ * 获取 Token
+ */
+ export const fetchTokenAPI = async (): Promise< string | false > => {
+  const res = await storageToken()
+  if (res.statusCode === 201) {
+    return res.data
+  } else {
+    console.error(res.message)
+    return false
   }
 }

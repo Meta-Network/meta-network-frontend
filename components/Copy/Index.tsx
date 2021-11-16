@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import {
   CopyOutlined
@@ -18,11 +18,21 @@ const Copy: React.FC<Props> = ({ text, disabled = false }) => {
   const { Toast } = useToast()
   const { t } = useTranslation('common')
 
-  const handleCopy = () => {
-    if (!disabled) {
-      Toast({ content: t('copy-successfully-tips') })
-    }
-  }
+  const handleCopy = useCallback(
+    () => {
+      if (!disabled) {
+        Toast({ content: t('copy-successfully-tips') })
+      }
+    },
+    [disabled, Toast, t])
+
+  const textInfo = useMemo(() => {
+    // TODO: 暂时写死
+    return t('inviteCode.shareText', {
+      url: 'https://home.metanetwork.online',
+      code: text
+    })
+  }, [text, t])
 
   return (
     <CopyText disabled={disabled}>
@@ -30,7 +40,7 @@ const Copy: React.FC<Props> = ({ text, disabled = false }) => {
       {
         disabled
           ? <CopyUsed>{t('used')}</CopyUsed>
-          : <CopyToClipboard text={text}
+          : <CopyToClipboard text={textInfo}
             onCopy={() => handleCopy()}>
             <CopyOutlined className="copy-btn" />
           </CopyToClipboard>
