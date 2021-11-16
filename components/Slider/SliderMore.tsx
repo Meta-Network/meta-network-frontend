@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
 import { Menu, Dropdown } from 'antd'
-// import {
-//   UserOutlined,
-//   LeftOutlined,
-//   DownOutlined,
-//   TwitterOutlined,
-//   GithubOutlined,
-//   MediumOutlined,
-//   LinkOutlined
-// } from '@ant-design/icons'
+import {
+  // UserOutlined,
+  // LeftOutlined,
+  // DownOutlined,
+  TwitterOutlined,
+  // GithubOutlined,
+  // MediumOutlined,
+  // LinkOutlined
+} from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -31,36 +31,36 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
 
   const MenuJson = useMemo(() => {
     return [
-      // {
-      //   title: t('contact-us'),
-      //   item: [
-      //     {
-      //       url: 'https://twitter.com/realMetaNetwork',
-      //       icon: TwitterOutlined,
-      //       name: 'Twitter'
-      //     },
-      //     {
-      //       url: 'https://t.me/metanetwork',
-      //       icon: TelegramIcon,
-      //       name: 'Telegram'
-      //     },
-      //     {
-      //       url: 'https://discord.com/invite/59cXXWCWUT',
-      //       icon: DiscordIcon,
-      //       name: 'Discord'
-      //     },
-      //     {
-      //       url: 'https://medium.com/meta-network',
-      //       icon: MediumOutlined,
-      //       name: 'Medium'
-      //     },
-      //     {
-      //       url: 'https://github.com/Meta-Network',
-      //       icon: GithubOutlined,
-      //       name: 'Github'
-      //     }
-      //   ]
-      // },
+      {
+        title: t('contact-us'),
+        item: [
+          {
+            url: 'https://twitter.com/realMetaNetwork',
+            icon: <TwitterOutlined />,
+            name: 'Twitter'
+          },
+          // {
+          //   url: 'https://t.me/metanetwork',
+          //   icon: TelegramIcon,
+          //   name: 'Telegram'
+          // },
+          // {
+          //   url: 'https://discord.com/invite/59cXXWCWUT',
+          //   icon: DiscordIcon,
+          //   name: 'Discord'
+          // },
+          // {
+          //   url: 'https://medium.com/meta-network',
+          //   icon: MediumOutlined,
+          //   name: 'Medium'
+          // },
+          // {
+          //   url: 'https://github.com/Meta-Network',
+          //   icon: GithubOutlined,
+          //   name: 'Github'
+          // }
+        ]
+      },
       // {
       //   title: t('resource'),
       //   item: [
@@ -122,7 +122,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             <span className="slider-title">{i.title}</span>
             {
               i.item.map((j, idxJ) => (
-                <Menu.Item key={idxJ}>
+                <Menu.Item key={idxJ} icon={ j.icon && j.icon }>
                   <a target="_blank" rel="noopener noreferrer" href={j.url}>
                     {j.name}
                   </a>
