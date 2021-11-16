@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import MarkdownIt from 'markdown-it'
 import ReactMarkdown from 'react-markdown'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
