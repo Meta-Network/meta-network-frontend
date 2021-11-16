@@ -216,6 +216,20 @@ export const StyledSliderBtn = styled.section`
     /* background-color: #505050; */
   /* } */
 `
+export const StyledSliderBottomLink = styled.a`
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  .icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+`
 export const StyledSliderToggle = styled.section<{ visible: boolean }>`
   margin-top: 20px;
   /* margin-top: auto; */
