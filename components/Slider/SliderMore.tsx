@@ -100,12 +100,12 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         title: t('policy'),
         item: [
           {
-            url: '/privacy',
+            url: '/terms',
             icon: <LinkOutlined />,
             name: t('terms')
           },
           {
-            url: '/terms',
+            url: '/privacy',
             icon: <LinkOutlined />,
             name: t('privacy-policy')
           },
@@ -123,9 +123,11 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             {
               i.item.map((j, idxJ) => (
                 <Menu.Item key={idxJ} icon={ j.icon && j.icon }>
-                  <a target="_blank" rel="noopener noreferrer" href={j.url}>
-                    {j.name}
-                  </a>
+                  <Link href={j.url}>
+                    <a target="_blank" rel="noopener noreferrer" >
+                      {j.name}
+                    </a>
+                  </Link>
                 </Menu.Item>
               ))
             }
