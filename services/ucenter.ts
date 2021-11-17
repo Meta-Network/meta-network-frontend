@@ -3,7 +3,7 @@ import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
   InviitationsMineState, UsersMePatchProps, UsersMeUsernameState,
-  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
+  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps, GtRegisterSlideState
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -20,7 +20,7 @@ export const accountsEmailVerify = (data: { account: string }): Promise<axiosRes
  * @param data
  * @returns
  */
-export const accountsEmailVerificationCode = (data: { key: string }): Promise<axiosResult<{ key: string }>> =>
+export const accountsEmailVerificationCode = (data: { key: string, hcaptchaToken: string }): Promise<axiosResult<void>> =>
   uCenterAPI.post('/accounts/email/verification-code', data)
 
 /**
@@ -102,6 +102,3 @@ export const invitationsValidate = (data: InvitationsValidateProps): Promise<axi
  * @returns 
  */
 export const usersUsernameValidate = (data: UsersMeUsernameState): Promise<axiosResult<usersUsernameValidateProps>> => uCenterAPI.post('/users/username/validate', data)
-
-
-
