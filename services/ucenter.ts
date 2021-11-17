@@ -3,7 +3,7 @@ import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
   InviitationsMineState, UsersMePatchProps, UsersMeUsernameState,
-  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps, GtRegisterSlideState
+  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
