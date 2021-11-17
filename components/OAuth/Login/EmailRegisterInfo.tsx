@@ -199,7 +199,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         name="email"
         rules={[
           { required: true, message: t('message-enter-email') },
-          { required: true, type: 'email', message: t('message-enter-valid-email ') },
+          { required: true, type: 'email', message: t('message-enter-valid-email') },
           { validator: verifyEmailRule },
         ]}
       >

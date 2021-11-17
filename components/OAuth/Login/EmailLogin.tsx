@@ -89,7 +89,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         name="email"
         rules={[
           { required: true, message: t('message-enter-email') },
-          { required: true, type: 'email', message: t('message-enter-valid-email ') },
+          { required: true, type: 'email', message: t('message-enter-valid-email') },
         ]}
       >
         <Input className="form-input" placeholder={t('message-enter-email')} autoComplete="on" />
