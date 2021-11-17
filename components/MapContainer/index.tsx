@@ -33,6 +33,8 @@ interface Props {
   setIsModalVisibleOccupied: React.Dispatch<React.SetStateAction<boolean>>
   handleHistoryView: (point: PointState) => void
   translateMap: (value: translateMapState) => void
+  setSwitchMapStatus: any,
+  switchMapStatus: boolean,
 }
 import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
@@ -69,7 +71,9 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   setCurrentNodeChoose,
   setIsModalVisibleOccupied,
   handleHistoryView,
-  translateMap
+  translateMap,
+  setSwitchMapStatus,
+  switchMapStatus
 }) {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
@@ -150,8 +154,9 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * @param mode 
    */
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
+
     e.stopPropagation()
-    if (isBrowser && OperableNodeMode.includes(mode)) {
+    if (isBrowser && OperableNodeMode.includes(mode) && (!switchMapStatus)) {
       // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
       let node = allNodeMap.get(keyFormat({ x, y, z }))
@@ -159,6 +164,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
         setCurrentNodeMouse(node)
       }
     }
+    setSwitchMapStatus(false);
   }
 
   /**

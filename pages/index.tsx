@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } f
 import dynamic from 'next/dynamic'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { assign, cloneDeep, isEmpty } from 'lodash'
-import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
+import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn, useToggle } from 'ahooks'
 
 import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
@@ -110,6 +110,8 @@ const Home = () => {
 
   const { isLoggin } = useUser()
   const focus$ = useEventEmitter<string>()
+
+  const [switchMapStatus, setSwitchMapStatus] = useState<boolean>(false);
   /**
    * resize event
    */
@@ -251,70 +253,74 @@ const Home = () => {
    */
   const translateMap = useCallback(
     ({
-        point,
-        scale,
-        showUserInfo = true,
-        nodeActive = true,
-        callback,
-        duration = 600
-      }: translateMapState
+      point,
+      scale,
+      showUserInfo = true,
+      nodeActive = true,
+      callback,
+      duration = 600
+    }: translateMapState
     ) => {
-    const svg = d3.select('#container svg')
-    const { x, y, z } = point
+      const svg = d3.select('#container svg')
+      const { x, y, z } = point
 
-    const showUserMore = () => {
-      if (!showUserInfo) {
-        return
+      const showUserMore = () => {
+        setSwitchMapStatus(true);
+        if (!showUserInfo) {
+          return
+        }
+        const node = allNodeMap.get(keyFormat({ x, y, z }))
+        if (!node) {
+          Toast({ content: t('no-coordinate-data') })
+          return
+        }
+        // 重复点击垱前块 Toggle
+        if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+          //
+        } else {
+          setCurrentNode(node)
+        }
       }
-      const node = allNodeMap.get(keyFormat({ x, y, z }))
-      if (!node) {
-        Toast({ content: t('no-coordinate-data') })
-        return
-      }
-      // 重复点击垱前块 Toggle
-      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-        //
-      } else {
-        setCurrentNode(node)
-      }
-    }
 
-    const eventEnd = () => {
-      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-      (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+      const eventEnd = () => {
 
-      requestAnimationFrame(() => {
-        callback && callback()
+        const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+          (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+
+        requestAnimationFrame(() => {
+          callback && callback()
+        })
+
+
+      }
+
+      HandleHexagonStyle({ x, y, z }, nodeActive)
+
+      // 坐标转换，这么写方便后续能阅读懂
+      const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+      // 计算坐标位置
+      let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+      // 计算缩放值
+      const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
+      // 计算坐标位置数据
+      const { x: xVal, y: yVal } = calcTranslateValue({
+        x: _x,
+        y: _y,
+        width: width,
+        height: height,
+        scale: _scale
       })
-    }
 
-    HandleHexagonStyle({ x, y, z }, nodeActive)
-
-    // 坐标转换，这么写方便后续能阅读懂
-    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    // 计算坐标位置
-    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    // 计算缩放值
-    const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
-    // 计算坐标位置数据
-    const { x: xVal, y: yVal } = calcTranslateValue({
-      x: _x,
-      y: _y,
-      width: width,
-      height: height,
-      scale: _scale
-    })
-
-    svg.transition()
-      .duration(duration)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
-      )
-      .on('start', showUserMore)
-      .on('end', eventEnd)
+      svg.transition()
+        .duration(duration)
+        .call(
+          zoom.transform,
+          d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
+        )
+        .on('start', showUserMore)
+        .on('end', eventEnd)
       svg.node()
-  }, [allNodeMap, currentNode, layout, Toast, t, width, height])
+    }, [allNodeMap, currentNode, layout, Toast, t, width, height])
 
   /**
    * 偏移地图坐标 默认取消动画使用
@@ -333,7 +339,7 @@ const Home = () => {
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
-  }, [ layout ])
+  }, [layout])
 
   /**
    * 获取自己的坐标点
@@ -617,6 +623,8 @@ const Home = () => {
         setIsModalVisibleOccupied={setIsModalVisibleOccupied}
         handleHistoryView={HandleHistoryView}
         translateMap={translateMap}
+        setSwitchMapStatus={setSwitchMapStatus}
+        switchMapStatus={switchMapStatus}
       >
 
       </MapContainer>
@@ -637,8 +645,8 @@ const Home = () => {
       }
       {
         !isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin && !hexGridsMineData.subdomain
-        ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
-        : null
+          ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
+          : null
       }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       <HomeArrow
@@ -652,11 +660,14 @@ const Home = () => {
         url={currentNode.userAvatar}
         focus$={focus$}
         translateMap={translateMap}
-      ></UserInfo>
-      <UserInfoMouse
-        currentNode={currentNode}
-        currentNodeMouse={currentNodeMouse}
-        url={currentNodeMouse.userAvatar}></UserInfoMouse>
+      />
+      {
+        !switchMapStatus ? <UserInfoMouse
+          currentNode={currentNode}
+          currentNodeMouse={currentNodeMouse}
+          url={currentNodeMouse.userAvatar} /> : <></>
+      }
+
       <NodeHistory
         allNodeMap={allNodeMap}
         historyView={historyView}
