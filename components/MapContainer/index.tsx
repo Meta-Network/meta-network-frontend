@@ -156,15 +156,18 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
 
     e.stopPropagation()
-    if (isBrowser && OperableNodeMode.includes(mode) && (!switchMapStatus)) {
+    if (isBrowser && OperableNodeMode.includes(mode)) {
       // console.log('handleHexagonEventMouseEnter', point)
       const { x, y, z } = point
       let node = allNodeMap.get(keyFormat({ x, y, z }))
-      if (node) {
+      if (node && (!switchMapStatus)) {
         setCurrentNodeMouse(node)
+      } else {
+        setCurrentNodeMouse({} as hexGridsByFilterState)
       }
+      setSwitchMapStatus(false);
     }
-    setSwitchMapStatus(false);
+
   }
 
   /**
