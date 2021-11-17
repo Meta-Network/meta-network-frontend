@@ -26,6 +26,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { Toast } = useToast()
+  const [token, setToken] = useState<string>()
 
   /**
    * 用户登录
@@ -33,13 +34,19 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
    */
   const onFinishEmail = async (values: any): Promise<void> => {
     console.log('Success:', values)
+
+    if (!token) {
+      Toast({ content: t('fail'), type: 'warning' })
+      return
+    }
+
     let { email, code } = values
     try {
       setLoading(true)
       const res = await accountsEmailLogin({
         account: trim(email),
         verifyCode: trim(code),
-        hcaptchaToken: 'hcaptcha_token_here'
+        hcaptchaToken: token
       })
       if (res.statusCode === 200) {
         Toast({ content: t('login-successful') })
@@ -103,7 +110,7 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
         >
           <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
         </StyledFormItem>
-        <EmailCode form={formLogin}></EmailCode>
+        <EmailCode setToken={setToken} form={formLogin}></EmailCode>
       </StyledFormCode>
 
       <StyledFormItem>

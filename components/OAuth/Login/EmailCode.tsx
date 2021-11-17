@@ -1,24 +1,26 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { useCountDown } from 'ahooks'
 import { accountsEmailVerificationCode } from '../../../services/ucenter'
-import { message } from 'antd'
+import { FormInstance, message } from 'antd'
 import { trim } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 import useToast from '../../../hooks/useToast'
+import { HCaptchaConfig } from '../../../common/config'
 
 interface Props {
-  form: any
+  form: FormInstance<any>
+  setToken: (val: string) => void
 }
 
-const EmailCode: React.FC<Props> = ({ form }) => {
+const EmailCode: React.FC<Props> = ({ form, setToken }) => {
   const { t } = useTranslation('common')
+  const captchaRef = useRef<any>(null)
 
-  const onEnd = () => {
-    console.log('onEnd of the time')
-  }
+  const onEnd = () => { console.log('onEnd of the time') }
   const [count, setTargetDate] = useCountDown({ onEnd: onEnd })
   const { Toast } = useToast()
 
@@ -28,16 +30,34 @@ const EmailCode: React.FC<Props> = ({ form }) => {
    */
   const handleSendEmailCode = async () => {
     let { email } = await form.getFieldsValue()
-    if (!(email ? trim(email) : email)) {
+    if (!trim(email)) {
       Toast({ content: t('message-enter-email'), type: 'warning' })
       return
     }
-  
+    if (captchaRef) {
+      captchaRef.current.execute()
+    } else {
+      return
+    }
+  }
+
+  /**
+ * send email code
+ * @param token 
+ */
+  const sendEmailCode = async (token: string) => {
     try {
-      // 开始倒计时
-      Toast({ content: `${t('send-verification-code')}...`})
+      setToken(token)
+
+      let { email } = await form.getFieldsValue()
+      if (!trim(email)) {
+        return
+      }
+
+      Toast({ content: `${t('send-verification-code')}...` })
       const res = await accountsEmailVerificationCode({
-        key: trim(email)
+        key: trim(email),
+        hcaptchaToken: token
       })
       if (res.statusCode === 201) {
         setTargetDate(Date.now() + 60 * 1000)
@@ -60,6 +80,16 @@ const EmailCode: React.FC<Props> = ({ form }) => {
         onClick={handleSendEmailCode}>
         {count === 0 ? t('button.send') : `${Math.round(count / 1000)}s`}
       </StyledButton>
+      <HCaptcha
+        size="invisible"
+        id="seed-email-code-hcaptcha"
+        sitekey={HCaptchaConfig.sitekey}
+        onVerify={sendEmailCode}
+        ref={captchaRef}
+        onLoad={() => console.log('onLoad')}
+        onExpire={() => console.log('onExpire')}
+        onError={err => console.error(err)}
+      />
     </>
   )
 }
