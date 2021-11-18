@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { useCountDown } from 'ahooks'
 import { accountsEmailVerificationCode } from '../../../services/ucenter'
@@ -7,6 +7,8 @@ import { trim } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
+import { useRouter } from 'next/router'
+import { LanguageProps } from '../../../typings/i18n.d'
 
 import useToast from '../../../hooks/useToast'
 import { HCaptchaConfig } from '../../../common/config'
@@ -19,10 +21,20 @@ interface Props {
 const EmailCode: React.FC<Props> = ({ form, setToken }) => {
   const { t } = useTranslation('common')
   const captchaRef = useRef<any>(null)
+  const router = useRouter()
 
   const onEnd = () => { console.log('onEnd of the time') }
   const [count, setTargetDate] = useCountDown({ onEnd: onEnd })
   const { Toast } = useToast()
+
+  const hcaptchaLanguage = useMemo(() => {
+    const list = {
+      'en-US': 'en',
+      'zh-CN': 'zh-CN',
+    }
+
+    return list[router.locale as LanguageProps] || list['en-US']
+  }, [router.locale])
 
   /**
    * 发送邮箱验证码
@@ -89,6 +101,7 @@ const EmailCode: React.FC<Props> = ({ form, setToken }) => {
         onLoad={() => console.log('onLoad')}
         onExpire={() => console.log('onExpire')}
         onError={err => console.error(err)}
+        languageOverride={hcaptchaLanguage}
       />
     </>
   )
