@@ -124,14 +124,15 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     }
 
     const nodeChooseHas = allNodeChoose.has(keyFormat({ x, y, z }))
-    if (nodeChooseHas) {
+    // 如果已经占领了 不会显示 choose 地块
+    if (nodeChooseHas && isEmpty(hexGridsMineData)) {
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
 
     // console.log('calcNodeMode default')
 
     return 'default'
-  }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState])
+  }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState, hexGridsMineData])
 
   /**
    * 节点是不是拥有者
@@ -264,6 +265,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                     bookmark={bookmark}
                     noticeBardOccupiedState={noticeBardOccupiedState}
                     isNodeOwner={isNodeOwner}
+                    hexGridsMineData={hexGridsMineData}
                   ></NodeContent>
                 </HexagonRound>
               )

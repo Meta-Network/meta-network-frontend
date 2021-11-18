@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
-import { assign, cloneDeep, isEmpty } from 'lodash'
+import { assign, cloneDeep, isEmpty, uniqBy } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
 
 import { Hex } from '../utils/lib'
@@ -10,7 +10,7 @@ import {
   cubeToAxial, calcTranslate, calcMaxDistance,
   calcCenterRangeAsMap, angle,
   isInViewPort, HandleHexagonStyle, strEllipsis,
-  keyFormat, keyFormatParse, calcTranslateValue
+  keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
@@ -23,6 +23,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
+import { KEY_RENDER_MODE } from '../common/config'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -58,7 +59,7 @@ const Home = () => {
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([])
   const [map, setMap] = useState<string>('hexagon')
-  const [mapProps, setMapProps] = useState<number[]>([15])
+  const [mapProps, setMapProps] = useState<number[]>([11])
   const [layout, setLayout] = useState<LayoutState>({ width: 66, height: 66, flat: false, spacing: 1.1 })
   const [size, setSize] = useState<AxialState>({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(1000)
@@ -130,45 +131,6 @@ const Home = () => {
     },
     { wait: 300 },
   )
-
-  // 计算所有可选择坐标范围
-  useEffect(() => {
-    // 已经占领
-    if (!isEmpty(hexGridsMineData)) {
-      setAllNodeChoose(new Map())
-      return
-    }
-
-    if (allNode.length) {
-      let points: Map<string, HexagonsState> = new Map()
-      let distance = 1
-
-      for (let i = 0; i < allNode.length; i++) {
-        const eleAllNode = allNode[i]
-        // 捕获 new hex 错误
-        try {
-          let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
-          calcCenterRangeAsMap(center, hex, distance, points)
-        } catch (e) {
-          console.log('e', e)
-          continue
-        }
-      }
-
-      setAllNodeChoose(points)
-    }
-  }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
-
-  /**
-   * 计算半径为10不可选区域
-   */
-  const calcForbiddenZoneRadius = (hex: HexagonsState[], forbiddenZoneRadius: number) => {
-    const center = new Hex(0, 0, 0)
-    const points = calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
-
-    setAllNodeDisabled(points)
-    console.log('计算半径为10不可选区域 只需要执行一次')
-  }
 
   /**
    * 获取收藏记录
@@ -378,13 +340,42 @@ const Home = () => {
    */
   const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
     const generator = GridGenerator.getGenerator(map)
-    const _mapProps = list.length ? calcMaxDistance(list) : mapProps
-    const hexagons = generator.apply(null, _mapProps)
+    const _mapProps = list.length ? calcMaxDistance(list, 1) : mapProps
+    const hexagons: HexagonsState[] = generator.apply(null, _mapProps)
 
-    // console.log('hexagons', hexagons)
-    setHex(hexagons)
+    // console.log('list render', list)
+    // console.log('list hexagons', hexagons)
+
+    // 计算禁用坐标
+    const pointsForbidden = calcForbiddenZoneRadius({
+      hex: hexagons, forbiddenZoneRadius: forbiddenZoneRadius
+    })
+    setAllNodeDisabled(pointsForbidden)
+
+    // 计算可选坐标
+    const pointsChoose = calcAllNodeChooseZoneRadius({
+      hex: hexagons,
+      allNode: list,
+      distance: 1
+    })
+    setAllNodeChoose(pointsChoose)
+
+    const renderMode = StoreGet(KEY_RENDER_MODE)
+    if (renderMode === 'simple' && list.length) {
+      // merged
+      let hexChoose = Array.from(pointsChoose, ([, value]) => value)
+      let hexForbidden = Array.from(pointsForbidden, ([, value]) => value)
+
+      let hexList = [...hexChoose, ...hexForbidden]
+      let hexListResult = uniqBy(hexList, n => [n.q, n.s, n.r].join())
+
+      // console.log('newMap', hexListResult)
+      setHex(hexListResult)
+    } else {
+      setHex(hexagons)
+    }
+
     setContainerDrag()
-    calcForbiddenZoneRadius(hexagons, forbiddenZoneRadius)
     fetchHexGridsMine()
   }, [mapProps, map, setContainerDrag, fetchHexGridsMine])
 
