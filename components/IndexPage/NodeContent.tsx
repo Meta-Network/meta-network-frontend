@@ -6,7 +6,6 @@ import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwor
 import NodeChoose from '../../components/IndexPage/NodeChoose'
 import NodeUser from '../../components/IndexPage/NodeUser'
 import { keyFormat } from '../../utils'
-import { isEmpty } from 'lodash'
 
 interface Props {
   readonly coordinate: PointState
@@ -17,13 +16,12 @@ interface Props {
   readonly bookmark: PointState[]
   readonly noticeBardOccupiedState: boolean
   readonly isNodeOwner: (value: PointState) => boolean
-  readonly hexGridsMineData: hexGridsByFilterState
 }
 
 const NodeContent: React.FC<Props> = React.memo(function NodeContent({
   coordinate, allNodeDisabled, allNodeMap,
   allNodeChoose, defaultPoint, bookmark,
-  noticeBardOccupiedState, isNodeOwner, hexGridsMineData
+  noticeBardOccupiedState, isNodeOwner
 }) {
   // useWhyDidYouUpdate('NodeContent useWhyDidYouUpdateComponent', {
   //   coordinate, allNodeDisabled, allNodeMap,
@@ -71,8 +69,7 @@ const NodeContent: React.FC<Props> = React.memo(function NodeContent({
   }
 
   const nodeChooseHas = allNodeChoose.has(keyFormat(coordinate))
-  // 如果已经占领了 不会显示 choose 地块
-  if (nodeChooseHas && isEmpty(hexGridsMineData)) {
+  if (nodeChooseHas) {
     return <NodeChoose style={{ opacity: noticeBardOccupiedState ? 1 : 0 }} />
   }
   return null

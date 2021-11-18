@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { Tooltip, Menu, Dropdown } from 'antd'
 import { isMobile } from 'react-device-detect'
-import { GlobalOutlined, SettingOutlined } from '@ant-design/icons'
+import { GlobalOutlined, DownOutlined } from '@ant-design/icons'
 import { StyledSliderCItem } from './Style'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -52,26 +52,16 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
           <h4>{t('settings')}</h4>
         </li> : null
       }
-      <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
-        <li>
-          <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
+      <li>
+        <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
+          <Dropdown overlay={menu} trigger={ isMobile ? ['click'] : ['hover'] }>
             <a href="javascript:;">
               <GlobalOutlined style={{ fontSize: 22 }} />
               {visible ? t(language) : ''}
             </a>
           </Dropdown>
-        </li>
-      </Tooltip>
-      <Tooltip title={(visible || isMobile) ? '' : t('slider.settings')} placement="right">
-        <li>
-          <Link href="/settings">
-            <a target="_blank">
-              <SettingOutlined style={{ fontSize: 22 }} />
-              {visible ? t('slider.settings') : ''}
-            </a>
-          </Link>
-        </li>
-      </Tooltip>
+        </Tooltip>
+      </li>
     </StyledSliderCItem>
   )
 })

@@ -29,5 +29,3 @@ export const FeedbackLink = 'https://matrix.to/#/!RWJlSDkUlUNMHlXESQ:matrix.org?
 export const HCaptchaConfig = {
   sitekey: '40ada9cc-0bf6-4553-8159-5594e1a1994c'
 }
-
-export const KEY_RENDER_MODE = 'META_NETWORK_RENDER_MODE'
