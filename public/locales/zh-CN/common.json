@@ -146,11 +146,6 @@
   "message.fetchToken.fail": "上传失败，请重试。",
   "button.noticeBardCreateSpace.confirm.okText": "查看预告",
   "button.noticeBardCreateSpace.confirm.cancelText": "知道了",
-  "button.noticeBardCreateSpace.confirm.content": "恭喜您已经提前锁定了 Meta Space 元数据宇宙的坐标。Meta Network 将会在 2021年11月22号正式发布，敬请期待。",
-  "inviteCode.shareText": "Hi，Meta Network原住民正在邀请您来做邻居，快去 {{ url }}，通过您的邀请码来入驻吧！{{ code }}",
-  "settings.systemSettings": "系统设置",
-  "settings.systemSettings.mapRenderMode": "地图渲染模式",
-  "settings.systemSettings.simple": "简单",
-  "settings.systemSettings.full": "全部",
-  "slider.settings": "系统设置"
+  "button.noticeBardCreateSpace.confirm.content": "恭喜您已经提前锁定了 Meta Space 元数据宇宙的坐标。Meta Network 将会在 2022年11月22号正式发布，敬请期待。",
+  "inviteCode.shareText": "Hi，Meta Network原住民正在邀请您来做邻居，快去 {{ url }}，通过您的邀请码来入驻吧！{{ code }}"
 }
