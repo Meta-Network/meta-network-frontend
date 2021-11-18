@@ -112,6 +112,7 @@ const Home = () => {
   const focus$ = useEventEmitter<string>()
 
   const [switchMapStatus, setSwitchMapStatus] = useState<boolean>(false);
+  const [useInfoShowStatus, setUseInfoShowStatus] = useState<boolean>(true);
   /**
    * resize event
    */
@@ -280,9 +281,13 @@ const Home = () => {
         } else {
           setCurrentNode(node)
         }
+
+        setUseInfoShowStatus(false)
       }
 
       const eventEnd = () => {
+
+        setUseInfoShowStatus(true)
 
         const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
           (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
@@ -653,14 +658,17 @@ const Home = () => {
         hexGridsMineData={hexGridsMineData} ></HomeArrow>
       <MapPosition HandlePosition={HandlePosition}></MapPosition>
       <MapZoom></MapZoom>
-      <UserInfo
-        bookmark={bookmark}
-        currentNode={currentNode}
-        HandleBookmark={HandleBookmark}
-        url={currentNode.userAvatar}
-        focus$={focus$}
-        translateMap={translateMap}
-      />
+      {
+        useInfoShowStatus ? <UserInfo
+          bookmark={bookmark}
+          currentNode={currentNode}
+          HandleBookmark={HandleBookmark}
+          url={currentNode.userAvatar}
+          focus$={focus$}
+          translateMap={translateMap}
+        /> : <></>
+      }
+
       {
         !switchMapStatus ? <UserInfoMouse
           currentNode={currentNode}
