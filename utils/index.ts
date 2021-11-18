@@ -385,3 +385,50 @@ export const keyFormatParse = (val: string) => {
     return
   }
 }
+
+
+/**
+ * calc Forbidden Zone Radius
+ * 计算半径为 x 不可选区域
+ * @param hex 
+ * @param forbiddenZoneRadius 
+ * @returns 
+ */
+export const calcForbiddenZoneRadius = ({
+  hex,
+  forbiddenZoneRadius
+}: {
+  hex: HexagonsState[], forbiddenZoneRadius: number
+}) => {
+  const center = new Hex(0, 0, 0)
+  return calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
+}
+
+
+/**
+ * calc AllNode Choose Zone Radius
+ * @param param0 
+ * @returns 
+ */
+export const calcAllNodeChooseZoneRadius = ({
+  hex, allNode, distance = 1
+}: {
+  hex: HexagonsState[], allNode: hexGridsByFilterState[], distance: number
+}) => {
+  let points: Map<string, HexagonsState> = new Map()
+
+  for (let i = 0; i < allNode.length; i++) {
+    const eleAllNode = allNode[i]
+    // 捕获 new hex 错误
+    try {
+      let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
+      calcCenterRangeAsMap(center, hex, distance, points)
+    } catch (e) {
+      console.error('e', e)
+      continue
+    }
+  }
+
+  return points
+}
+
