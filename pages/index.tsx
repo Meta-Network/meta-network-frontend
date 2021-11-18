@@ -23,7 +23,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
-import { KEY_RENDER_MODE } from '../common/config'
+import { KEY_RENDER_MODE, KEY_RENDER_MODE_DEFAULT_VALUE } from '../common/config'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -360,8 +360,8 @@ const Home = () => {
     })
     setAllNodeChoose(pointsChoose)
 
-    const renderMode = StoreGet(KEY_RENDER_MODE)
-    if (renderMode === 'simple' && list.length) {
+    const renderMode = StoreGet(KEY_RENDER_MODE) || KEY_RENDER_MODE_DEFAULT_VALUE
+    if (renderMode === KEY_RENDER_MODE_DEFAULT_VALUE && list.length) {
       // merged
       let hexChoose = Array.from(pointsChoose, ([, value]) => value)
       let hexForbidden = Array.from(pointsForbidden, ([, value]) => value)

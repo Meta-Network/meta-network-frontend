@@ -31,3 +31,4 @@ export const HCaptchaConfig = {
 }
 
 export const KEY_RENDER_MODE = 'META_NETWORK_RENDER_MODE'
+export const KEY_RENDER_MODE_DEFAULT_VALUE = 'simple'
