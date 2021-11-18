@@ -132,25 +132,6 @@ const Home = () => {
     { wait: 300 },
   )
 
-  // 计算所有可选择坐标范围
-  useEffect(() => {
-    // TODO： 切换会重复计算
-    // 已经占领
-    if (!isEmpty(hexGridsMineData)) {
-      setAllNodeChoose(new Map())
-      return
-    }
-
-    if (allNode.length) {
-      const points = calcAllNodeChooseZoneRadius({
-        hex: hex,
-        allNode: allNode,
-        distance: 1
-      })
-      setAllNodeChoose(points)
-    }
-  }, [allNode, hex, noticeBardOccupiedState, hexGridsMineData])
-
   /**
    * 获取收藏记录
    */
@@ -371,18 +352,18 @@ const Home = () => {
     })
     setAllNodeDisabled(pointsForbidden)
 
+    // 计算可选坐标
+    const pointsChoose = calcAllNodeChooseZoneRadius({
+      hex: hexagons,
+      allNode: list,
+      distance: 1
+    })
+    setAllNodeChoose(pointsChoose)
+
     const renderMode = StoreGet(KEY_RENDER_MODE)
     if (renderMode === 'simple' && list.length) {
-      // TODO： 和 “计算所有可选择坐标范围” 重复计算
-      // 计算可选坐标
-      const points = calcAllNodeChooseZoneRadius({
-        hex: hexagons,
-        allNode: list,
-        distance: 1
-      })
-
       // merged
-      let hexChoose = Array.from(points, ([, value]) => value)
+      let hexChoose = Array.from(pointsChoose, ([, value]) => value)
       let hexForbidden = Array.from(pointsForbidden, ([, value]) => value)
 
       let hexList = [...hexChoose, ...hexForbidden]
