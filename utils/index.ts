@@ -432,3 +432,19 @@ export const calcAllNodeChooseZoneRadius = ({
   return points
 }
 
+export const calcZoneRadius = ({
+  centerPoint,
+  hex,
+  zoneRadius
+}: {
+  centerPoint: HexagonsState,
+  hex: HexagonsState[],
+  zoneRadius: number
+}) => {
+  const { q, r, s } = centerPoint
+  const center = new Hex(q, r, s)
+  return calcCenterRangeAsMap(center, hex, zoneRadius)
+}
+
+// x y z
+// q s r
