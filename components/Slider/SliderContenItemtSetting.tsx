@@ -65,7 +65,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <Tooltip title={(visible || isMobile) ? '' : t('slider.settings')} placement="right">
         <li>
           <Link href="/settings">
-            <a target="_blank">
+            <a>
               <SettingOutlined style={{ fontSize: 22 }} />
               {visible ? t('slider.settings') : ''}
             </a>
