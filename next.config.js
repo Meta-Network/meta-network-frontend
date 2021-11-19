@@ -1,4 +1,3 @@
-const withPlugins = require('next-compose-plugins')
 const { i18n } = require('./next-i18next.config')
 
 // This file sets a custom webpack configuration to use your Next.js app
@@ -8,17 +7,16 @@ const { i18n } = require('./next-i18next.config')
 
 const { withSentryConfig } = require('@sentry/nextjs')
 
-const nextConfig = {
-
+// Your existing module.exports
+const moduleExports = {
   reactStrictMode: true,
   i18n,
-  webpack: (config, options) => {
-    return config
-  },
+  sentry: {
+    disableServerWebpackPlugin: true,
+    disableClientWebpackPlugin: true,
+  }
 }
 
-// Your existing module.exports
-const moduleExports = withPlugins([], nextConfig)
 
 const SentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
