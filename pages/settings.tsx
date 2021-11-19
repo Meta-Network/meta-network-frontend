@@ -3,7 +3,7 @@ import { Button, Space, Radio, RadioChangeEvent, Typography } from 'antd'
 import { StoreGet, StoreSet } from '../utils/store'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
-import { KEY_RENDER_MODE } from '../common/config'
+import { KEY_RENDER_MODE, KEY_RENDER_MODE_DEFAULT_VALUE } from '../common/config'
 import { useMount } from 'ahooks'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useTranslation } from 'next-i18next'
@@ -25,7 +25,7 @@ const Settings = React.memo(function Settings() {
 
   useMount(() => {
     const _renderMode = StoreGet(KEY_RENDER_MODE)
-    setRenderMode(_renderMode || 'simple')
+    setRenderMode(_renderMode || KEY_RENDER_MODE_DEFAULT_VALUE)
   })
 
   return (
