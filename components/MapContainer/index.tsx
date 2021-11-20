@@ -1,16 +1,15 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
+import { HexGrid, Layout } from 'react-hexgrid'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
-import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
+import {  isEmpty, shuffle, random } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
-import { useMount, useUnmount } from 'ahooks'
 
 import { getZoomPercentage, toggleLayoutHide } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
-import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork'
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
 interface Props {
   readonly width: number
@@ -239,7 +238,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                   onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
                   // need space
                   className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}>
-                  {/* <Text>{HexUtils.getID(hex)}</Text> */}
                   <NodeContent
                     coordinate={{ x, y, z }}
                     allNodeDisabled={allNodeDisabled}
