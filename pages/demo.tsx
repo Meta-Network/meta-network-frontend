@@ -227,7 +227,7 @@ const Home = () => {
         setCurrentHexPoint(point)
       }
 
-    
+
     },
     [hex, currentHexPoint, mapProps, layout.width, width],
   )
@@ -290,7 +290,7 @@ const Home = () => {
       if (svgContainer.left > -600) {
         direction = 'left'
       } else if (width - svgContainer.right > -600) {
-          direction = 'right'
+        direction = 'right'
       } else if (svgContainer.top > -600) {
         direction = 'top'
       } else if (height - svgContainer.bottom > -600) {
@@ -307,70 +307,70 @@ const Home = () => {
    */
   const translateMap = useCallback(
     ({
-        point,
-        scale,
-        showUserInfo = true,
-        nodeActive = true,
-        callback,
-        duration = 600
-      }: translateMapState
+      point,
+      scale,
+      showUserInfo = true,
+      nodeActive = true,
+      callback,
+      duration = 600
+    }: translateMapState
     ) => {
-    const svg = d3.select('#container svg')
-    const { x, y, z } = point
+      const svg = d3.select('#container svg')
+      const { x, y, z } = point
 
-    const showUserMore = () => {
-      if (!showUserInfo) {
-        return
+      const showUserMore = () => {
+        if (!showUserInfo) {
+          return
+        }
+        const node = allNodeMap.get(keyFormat({ x, y, z }))
+        if (!node) {
+          Toast({ content: t('no-coordinate-data') })
+          return
+        }
+        // 重复点击垱前块 Toggle
+        if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+          //
+        } else {
+          setCurrentNode(node)
+        }
       }
-      const node = allNodeMap.get(keyFormat({ x, y, z }))
-      if (!node) {
-        Toast({ content: t('no-coordinate-data') })
-        return
-      }
-      // 重复点击垱前块 Toggle
-      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-        //
-      } else {
-        setCurrentNode(node)
-      }
-    }
 
-    const eventEnd = () => {
-      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-      (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+      const eventEnd = () => {
+        const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
+          (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
 
-      requestAnimationFrame(() => {
-        callback && callback()
+        requestAnimationFrame(() => {
+          callback && callback()
+        })
+      }
+
+      HandleHexagonStyle({ x, y, z }, nodeActive)
+
+      // 坐标转换，这么写方便后续能阅读懂
+      const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+      // 计算坐标位置
+      let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+      // 计算缩放值
+      const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
+      // 计算坐标位置数据
+      const { x: xVal, y: yVal } = calcTranslateValue({
+        x: _x,
+        y: _y,
+        width: width,
+        height: height,
+        scale: _scale
       })
-    }
 
-    HandleHexagonStyle({ x, y, z }, nodeActive)
-
-    // 坐标转换，这么写方便后续能阅读懂
-    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    // 计算坐标位置
-    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    // 计算缩放值
-    const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
-    // 计算坐标位置数据
-    const { x: xVal, y: yVal } = calcTranslateValue({
-      x: _x,
-      y: _y,
-      width: width,
-      height: height,
-      scale: _scale
-    })
-
-    svg.transition()
-      .duration(duration)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
-      )
-      .on('start', showUserMore)
-      .on('end', eventEnd)
+      svg.transition()
+        .duration(duration)
+        .call(
+          zoom.transform,
+          d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
+        )
+        .on('start', showUserMore)
+        .on('end', eventEnd)
       svg.node()
-  }, [allNodeMap, currentNode, layout, Toast, t, width, height])
+    }, [allNodeMap, currentNode, layout, Toast, t, width, height])
 
   /**
    * 偏移地图坐标 默认取消动画使用
@@ -389,7 +389,7 @@ const Home = () => {
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
-  }, [ layout ])
+  }, [layout])
 
   /**
    * 获取自己的坐标点
@@ -414,23 +414,23 @@ const Home = () => {
           const { x, y, z } = data
 
           const point = calcZoneRadius({
-            centerPoint: { q: x , s: y , r: z },
+            centerPoint: { q: x, s: y, r: z },
             hex: hexList,
             zoneRadius: zoneRadius
           })
-    
+
           setCurrentHex(Array.from(point, ([, value]) => value))
 
           translateMapDefault({ x, y, z }, true)
         } else {
 
-        const point = calcZoneRadius({
-          centerPoint: currentHexPoint,
-          hex: hexList,
-          zoneRadius: zoneRadius
-        })
-  
-        setCurrentHex(Array.from(point, ([, value]) => value))
+          const point = calcZoneRadius({
+            centerPoint: currentHexPoint,
+            hex: hexList,
+            zoneRadius: zoneRadius
+          })
+
+          setCurrentHex(Array.from(point, ([, value]) => value))
 
           translateMapDefault(defaultPoint, false)
         }
@@ -747,6 +747,15 @@ const Home = () => {
 
   return (
     <>
+      <ToggleSlider
+        translateMap={translateMap}
+        allNodeMap={allNodeMap}
+        bookmark={bookmark}
+        defaultHexGridsRange={defaultHexGridsRange}
+        hexGridsMineData={hexGridsMineData}
+        HandleRemoveBookmark={HandleRemoveBookmark}
+      >
+      </ToggleSlider>
       <MapContainer
         width={width}
         height={height}
@@ -788,8 +797,8 @@ const Home = () => {
       }
       {
         !isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin && !hexGridsMineData.subdomain
-        ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
-        : null
+          ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
+          : null
       }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       <HomeArrow
