@@ -90,7 +90,12 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
           CoordinateEnd
         )
 
-        api.start({ transform: `rotate(${angleResult}deg)`, opacity: isShow ? 1 : 0, x: 0 })
+        try {
+          // TODO：仍然会报错
+          api.start({ transform: `rotate(${angleResult}deg)`, opacity: isShow ? 1 : 0 })
+        } catch (e) {
+          console.error(e)
+        }
       }
     },
     [ hexGridsMineData, api, isShow ],
