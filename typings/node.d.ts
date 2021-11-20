@@ -49,3 +49,5 @@ export interface translateMapState {
   callback?: undefined | Function
   duration?: number
 }
+
+export type ZoomTransform = { k: number, x: number, y: number }
