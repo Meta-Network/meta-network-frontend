@@ -1,21 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Tooltip } from 'antd'
 import {
   EnvironmentOutlined
 } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { useMount, useUnmount } from 'ahooks'
 import { useTranslation } from 'next-i18next'
-
-/**
- * requestAnimationFrame
- * cancelAnimationFrame
- */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-(window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
 
 interface Props {
   HandlePosition: () => void
@@ -32,18 +22,13 @@ const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePos
     }
   }))
 
-  useMount(() => {
-    if (process.browser) {
-      const domShow = () => {
-        api.start({ x: 0, opacity: 1 })
-      }
-      ID = requestAnimationFrame(domShow)
-    }
-  })
+  useEffect(() => {
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: 1 })
+    }, 3000)
 
-  useUnmount(() => {
-    cancelAnimationFrame(ID)
-  })
+    return () => clearInterval(timerShow)
+  }, [api])
 
   return (
     <Tooltip title={t('position')} placement="left">

@@ -11,18 +11,9 @@ interface Props {
   readonly isOwner: boolean
 }
 
-/**
- * requestAnimationFrame
- * cancelAnimationFrame
- */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
 
 const NodeUser: React.FC<Props> = React.memo(function NodeUser({ isBookmark, node, isOwner }) {
   const { t } = useTranslation('common')
-
   // console.log('NodeUser components')
 
   return (

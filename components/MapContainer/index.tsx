@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
@@ -6,7 +6,7 @@ import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 import { useMount, useUnmount } from 'ahooks'
 
-import { getZoomPercentage } from '../../helpers/index'
+import { getZoomPercentage, toggleLayoutHide } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
@@ -38,14 +38,6 @@ import { useUser } from '../../hooks/useUser'
 import useToast from '../../hooks/useToast'
 import { keyFormat } from '../../utils'
 
-/**
- * requestAnimationFrame
- * cancelAnimationFrame
- */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
 // 可操作的节点模式
 const OperableNodeMode = ['exist', 'active']
 
@@ -74,7 +66,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   const { t } = useTranslation('common')
   const { Toast } = useToast()
   const { isLoggin } = useUser()
-  const [percentageVal, setPercentageVal] = useState<number>(0)
 
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex),
@@ -212,28 +203,21 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
  * 获取缩放
  */
   const fetchZoomValue = useCallback(() => {
-    let percentage = getZoomPercentage()
-    setPercentageVal(percentage)
-
-    cancelAnimationFrame(ID)
-    ID = requestAnimationFrame(fetchZoomValue)
+    const percentage = getZoomPercentage()
+    toggleLayoutHide(percentage)
   }, [])
 
-  useMount(() => {
-    if (process.browser) {
-      ID = requestAnimationFrame(fetchZoomValue)
-    }
-  })
+  useEffect(() => {
+    const timer = setInterval(fetchZoomValue, 2000)
+    return () => clearInterval(timer)
+  }, [fetchZoomValue])
 
-  useUnmount(() => {
-    cancelAnimationFrame(ID)
-  })
 
 
   return (
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
-        <Layout size={size} flat={layout.flat} spacing={layout.spacing} origin={origin} className={percentageVal < 20 ? 'hide-node' : ''}>
+        <Layout className="layout-wrapper" size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
           {
             // note: key must be unique between re-renders.
             // using config.mapProps+i makes a new key when the goal template chnages.

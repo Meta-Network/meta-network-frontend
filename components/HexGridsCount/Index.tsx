@@ -1,23 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Tooltip } from 'antd'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import AnimatedNumber from 'animated-number-react'
-import { useMount, useUnmount, useThrottleFn, useInViewport } from 'ahooks'
 import { useTranslation } from 'next-i18next'
 
 import { PointScopeState } from '../../typings/metaNetwork'
 import { fetchHexGridsCountByFilterAPI } from '../../helpers/index'
 
-/**
- * requestAnimationFrame
- * cancelAnimationFrame
- */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-
-let ID: number
-let IDAPI: number
 interface Props {
   readonly range: PointScopeState
 }
@@ -39,36 +29,25 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
       duration: 300
   } }))
 
-  /**
-   * show
-   */
-  const show = useCallback(
-    () => {
-      api.start({ x: 0, opacity: 1 })
-    },
-    [ api ],
-  )
 
   // 获取所有坐标点统计
   const fetchHexGridsCountByFilterFn = useCallback(async () => {
     const res = await fetchHexGridsCountByFilterAPI(range)
-    ID = requestAnimationFrame(show)
-    if (res === hexGridsCountData) {
-      return
-    }
     setHexGridsCountData(res)
-  }, [ range, hexGridsCountData, show ])
+  }, [ range ])
 
-  useMount(() => {
-    if (process.browser) {
-      IDAPI = requestAnimationFrame(fetchHexGridsCountByFilterFn)
+
+  useEffect(() => {
+    const timer = setInterval(fetchHexGridsCountByFilterFn, 4000)
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: 1 })
+    }, 3000)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(timerShow)
     }
-  })
-
-  useUnmount(() => {
-    cancelAnimationFrame(ID)
-    cancelAnimationFrame(IDAPI)
-  })
+  }, [api, fetchHexGridsCountByFilterFn])
 
   return (
     <Tooltip title={t('coordinate-count')} placement="left">
