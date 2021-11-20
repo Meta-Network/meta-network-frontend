@@ -16,7 +16,7 @@ import { PointState, HexagonsState, AxialState, LayoutState, translateMapState }
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -105,11 +105,11 @@ const Home = () => {
   // 历史预览
   const [historyView, setHistoryView] = useState<PointState[]>([])
   // 默认禁用区域半径
-  const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
+  const [forbiddenZoneRadius, setForbiddenZoneRadius] = useState<number>(10)
   // FullLoading
   const [fullLoading, setFullLoading] = useState<boolean>(false)
 
-  const { isLoggin } = useUser()
+  const { isLogin } = useUser()
   const focus$ = useEventEmitter<string>()
   /**
    * resize event
@@ -382,14 +382,14 @@ const Home = () => {
   /**
    * 获取范围坐标点
    */
-  const fetchHexGriids = useCallback(
+  const fetchHexGrids = useCallback(
     async () => {
-      const data = await fetchHexGriidsAPI(defaultHexGridsRange)
+      const data = await fetchHexGridsAPI(defaultHexGridsRange)
 
       // 获取禁用坐标
       const forbiddenZoneRadiusResult = await fetchForbiddenZoneRadiusAPI(forbiddenZoneRadius)
       if (forbiddenZoneRadiusResult !== forbiddenZoneRadius) {
-        setforbiiddenZoneRadius(forbiddenZoneRadiusResult)
+        setForbiddenZoneRadius(forbiddenZoneRadiusResult)
       }
 
       if (data) {
@@ -493,7 +493,7 @@ const Home = () => {
       if (res.statusCode === 201) {
         Toast({ content: t('successful-occupation') })
 
-        fetchHexGriids()
+        fetchHexGrids()
         setIsModalVisibleOccupied(false)
       } else {
         throw new Error(res.message)
@@ -502,7 +502,7 @@ const Home = () => {
       console.log(e)
       Toast({ content: e.message, type: 'warning' })
     }
-  }, [currentNodeChoose, fetchHexGriids, Toast, t])
+  }, [currentNodeChoose, fetchHexGrids, Toast, t])
 
   // 重置定位
   const HandlePosition = useCallback(() => {
@@ -563,7 +563,7 @@ const Home = () => {
     () => {
       setFullLoading(true)
 
-      fetchHexGriids()
+      fetchHexGrids()
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
@@ -620,14 +620,14 @@ const Home = () => {
         setIsModalVisible={setIsModalVisibleOccupied}
         handleOccupied={handleOccupied}></Occupied>
       {
-        isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
+        isEmpty(hexGridsMineData) && hexGridsMineTag && isLogin ?
           <NoticeBardOccupied
             status={noticeBardOccupiedState}
             setNoticeBardOccupiedState={setNoticeBardOccupiedState}
           ></NoticeBardOccupied> : null
       }
       {
-        !isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin && !hexGridsMineData.subdomain
+        !isEmpty(hexGridsMineData) && hexGridsMineTag && isLogin && !hexGridsMineData.subdomain
         ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
         : null
       }

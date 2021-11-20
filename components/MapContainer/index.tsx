@@ -65,7 +65,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
 }) {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
-  const { isLoggin } = useUser()
+  const { isLogin } = useUser()
 
   const transApi = useSpringRef()
   const transition = useTransition(shuffle(hex),
@@ -185,7 +185,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       return
     } else if (mode === 'default') {
       // 未登录不提示 未开启占地功能不提示
-      if (!isLoggin || !noticeBardOccupiedState) {
+      if (!isLogin || !noticeBardOccupiedState) {
         return
       }
       Toast({ content: t('message-click-default-node') })
@@ -220,7 +220,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
         <Layout className="layout-wrapper" size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
           {
             // note: key must be unique between re-renders.
-            // using config.mapProps+i makes a new key when the goal template chnages.
+            // using config.mapProps+i makes a new key when the goal template changes.
 
             transition((style, hex: HexagonsState) => {
               const { q: x, s: y, r: z } = hex

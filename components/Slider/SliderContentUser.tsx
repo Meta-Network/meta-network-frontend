@@ -14,7 +14,7 @@ import { StyledSliderCUser, StyledSliderCUserInfo, StyledSliderCUserAvatar, Styl
 import { UsersMeProps } from '../../typings/ucenter'
 
 interface SliderContentUserProps {
-  readonly isLoggin: boolean
+  readonly isLogin: boolean
   readonly user: UsersMeProps
   readonly visible: boolean
   signOut: () => void
@@ -22,7 +22,7 @@ interface SliderContentUserProps {
 
 // 侧边栏 用户内容
 const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function SliderContentUser({
-  user, isLoggin, visible,
+  user, isLogin, visible,
   signOut
 }) {
   const router = useRouter()
@@ -50,7 +50,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
   return (
     <StyledSliderCUser visible={visible}>
       {
-        isLoggin
+        isLogin
           ? <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
               <StyledSliderCUserBox>
                 <StyledSliderCUserAvatar size={30} icon={<UserOutlined />} src={user?.avatar} />

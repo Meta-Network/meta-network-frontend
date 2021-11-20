@@ -9,14 +9,14 @@ import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
 
 interface SliderContenItemtNavProps {
   readonly visible: boolean
-  readonly isLoggin: boolean
+  readonly isLogin: boolean
   setIsModalVisibleSearch: (val: boolean) => void
   setIsModalVisibleBookmark: (val: boolean) => void
 }
 
 // 侧边栏 菜单 导航
 const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(function SliderContenItemtNav({
-  isLoggin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
+  isLogin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
 }) {
   const { t } = useTranslation('common')
 

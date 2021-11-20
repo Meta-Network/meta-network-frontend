@@ -46,7 +46,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
 
   // 显示侧边栏
   const [visibleSlider, setVisibleSlider] = useState(false)
-  const { user, isLoggin } = useUser()
+  const { user, isLogin } = useUser()
   const router = useRouter()
   const { Toast } = useToast()
 
@@ -113,10 +113,10 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
   )
 
   useEffect(() => {
-    if (isLoggin) {
+    if (isLogin) {
       fetchInviteCodeFn()
     }
-  }, [isLoggin, fetchInviteCodeFn])
+  }, [isLogin, fetchInviteCodeFn])
 
   return (
     <>
@@ -127,21 +127,21 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
         <StyledSliderContent>
           <SliderLogo
             visible={visibleSlider}
-            isLoggin={isLoggin} user={user}
+            isLogin={isLogin} user={user}
             signOut={signOut}></SliderLogo>
           <SliderContentUser
             visible={visibleSlider}
-            isLoggin={isLoggin}
+            isLogin={isLogin}
             user={user}
             signOut={signOut}></SliderContentUser>
           <SliderContenItemtNav
             visible={visibleSlider}
-            isLoggin={isLoggin}
+            isLogin={isLogin}
             setIsModalVisibleSearch={setIsModalVisibleSearch}
             setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>
           <SliderContenItemtUser
             visible={visibleSlider}
-            isLoggin={isLoggin}
+            isLogin={isLogin}
             inviteCodeData={inviteCodeData}
             hexGridsMineData={hexGridsMineData}
             setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}

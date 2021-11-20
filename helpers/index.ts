@@ -90,7 +90,7 @@ export const fetchHexGridsMineAPI = async () => {
  * @param defaultHexGridsRange
  * @returns
  */
-export const fetchHexGriidsAPI = async (defaultHexGridsRange: PointScopeState) => {
+export const fetchHexGridsAPI = async (defaultHexGridsRange: PointScopeState) => {
   try {
     const res = await hexGridsByFilter(defaultHexGridsRange)
     if (res.statusCode === 200) {

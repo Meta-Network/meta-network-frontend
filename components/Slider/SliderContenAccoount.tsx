@@ -8,14 +8,14 @@ import { StyledSliderCAccount, StyledSliderCAccountButton, StyledCount } from '.
 import { ArrowTopLeftIcon, LogoutIcon } from '../Icon/Index'
 
 interface SliderContenAccoountProps {
-  readonly isLoggin: boolean
+  readonly isLogin: boolean
   readonly visible: boolean
   signOut: () => void
 }
 
 // 侧边栏 内容 账户操作
 const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(function SliderContenAccoount({
-  isLoggin, signOut, visible
+  isLogin, signOut, visible
 }) {
   const { t } = useTranslation('common')
 
@@ -24,7 +24,7 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
   return (
     <StyledSliderCAccount visible={visible}>
       {
-        isLoggin
+        isLogin
           ?
           <Tooltip title={ visible ? '' : t('sign-out') }>
             <Popconfirm placement="top" title={t('confirm-logout')} onConfirm={signOut} okText="Yes" cancelText="No">
