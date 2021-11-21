@@ -4,15 +4,12 @@ import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'next-i18next'
-
+import { useSpring, animated } from 'react-spring'
 import {
   angle, isInViewPort
 } from '../../utils/index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
 
 interface Props {
   readonly hexGridsMineData: hexGridsByFilterState
@@ -27,7 +24,6 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   const { t } = useTranslation('common')
   const homeArrow = useRef<HTMLDivElement>(null)
   // 箭头角度
-  const [homeAngle, setHomeAngle] = useState<number>(0)
   // 自己的坐标是否在屏幕内
   const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
   // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
@@ -39,13 +35,14 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
     return (!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData))
   }, [ inViewPortHexagonOwner, hexGridsMineData ])
 
-  /**
-   * 箭头样式
-   */
-  const style = useMemo(() => ({
-    transform: `rotate(${homeAngle}deg)`,
-    opacity: isShow ? 1 : 0
-  }), [ homeAngle, isShow ])
+  const [styles, api] = useSpring(() => ({
+    x: 40,
+    opacity: 0,
+    transform: '',
+    config: {
+      duration: 300
+    }
+  }))
 
   /**
    * 计算箭头角度
@@ -93,35 +90,39 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
           CoordinateEnd
         )
 
-        // console.log('angle', angleResult)
-        setHomeAngle(angleResult)
+        try {
+          // TODO：仍然会报错
+          api.start({ transform: `rotate(${angleResult}deg)`, opacity: isShow ? 1 : 0 })
+        } catch (e) {
+          console.error(e)
+        }
       }
-
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(calcAngle)
     },
-    [ hexGridsMineData ],
+    [ hexGridsMineData, api, isShow ],
   )
 
-  // watch hexGridsMineData
-  useEffect(() => {
-    cancelAnimationFrame(ID)
-    ID = requestAnimationFrame(calcAngle)
+    useEffect(() => {
+    const timer = setInterval(calcAngle, 4000)
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: isShow ? 1 : 0 })
+    }, 3800)
+
     return () => {
-      cancelAnimationFrame(ID)
+      clearInterval(timer)
+      clearInterval(timerShow)
     }
-  }, [ hexGridsMineData, calcAngle ])
+  }, [calcAngle, api, isShow])
 
   return (
     <Tooltip title={ isShow ? t('my-position') : '' }>
-      <StyledArrow style={style} ref={homeArrow}>
+      <StyledArrow style={styles} ref={homeArrow}>
           <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>
     </Tooltip>
   )
 })
 
-const StyledArrow = styled.section`
+const StyledArrow = styled(animated.section)`
   position: fixed;
   right: 44px;
   bottom: 124px;

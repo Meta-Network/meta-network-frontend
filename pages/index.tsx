@@ -1,26 +1,21 @@
 import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import { HexGrid, Layout, Hexagon, Text, GridGenerator, HexUtils } from 'react-hexgrid'
+import { GridGenerator } from 'react-hexgrid'
 import { assign, cloneDeep, isEmpty, uniqBy } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
-
-import { Hex } from '../utils/lib'
 import { StoreGet, StoreSet } from '../utils/store'
 import {
   cubeToAxial, calcTranslate, calcMaxDistance,
-  calcCenterRangeAsMap, angle,
-  isInViewPort, HandleHexagonStyle, strEllipsis,
-  keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius
+  HandleHexagonStyle, keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius
 } from '../utils/index'
 import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGriidsAPI } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { KEY_RENDER_MODE, KEY_RENDER_MODE_DEFAULT_VALUE } from '../common/config'
@@ -50,18 +45,16 @@ if (process.browser) {
 }
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
+const map = 'hexagon'
+const mapProps = [11]
+const layout: LayoutState = { width: 66, height: 66, flat: false, spacing: 1.1 }
+const size: AxialState = { x: layout.width, y: layout.height }
 
 const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
-  const router = useRouter()
-
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([])
-  const [map, setMap] = useState<string>('hexagon')
-  const [mapProps, setMapProps] = useState<number[]>([11])
-  const [layout, setLayout] = useState<LayoutState>({ width: 66, height: 66, flat: false, spacing: 1.1 })
-  const [size, setSize] = useState<AxialState>({ x: layout.width, y: layout.height })
   const [width, setWidth] = useState<number>(1000)
   const [height, setHeight] = useState<number>(800)
   const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
@@ -79,7 +72,7 @@ const Home = () => {
   })
 
   // 所有节点
-  const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
+  // const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
   const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map())
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map())
@@ -105,11 +98,11 @@ const Home = () => {
   // 历史预览
   const [historyView, setHistoryView] = useState<PointState[]>([])
   // 默认禁用区域半径
-  const [forbiddenZoneRadius, setforbiiddenZoneRadius] = useState<number>(10)
+  const [forbiddenZoneRadius, setForbiddenZoneRadius] = useState<number>(10)
   // FullLoading
   const [fullLoading, setFullLoading] = useState<boolean>(false)
 
-  const { isLoggin } = useUser()
+  const { isLogin } = useUser()
   const focus$ = useEventEmitter<string>()
   /**
    * resize event
@@ -276,7 +269,7 @@ const Home = () => {
       .on('start', showUserMore)
       .on('end', eventEnd)
       svg.node()
-  }, [allNodeMap, currentNode, layout, Toast, t, width, height])
+  }, [allNodeMap, currentNode, Toast, t, width, height])
 
   /**
    * 偏移地图坐标 默认取消动画使用
@@ -295,7 +288,7 @@ const Home = () => {
         zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
-  }, [ layout ])
+  }, [ ])
 
   /**
    * 获取自己的坐标点
@@ -377,19 +370,19 @@ const Home = () => {
 
     setContainerDrag()
     fetchHexGridsMine()
-  }, [mapProps, map, setContainerDrag, fetchHexGridsMine])
+  }, [setContainerDrag, fetchHexGridsMine])
 
   /**
    * 获取范围坐标点
    */
-  const fetchHexGriids = useCallback(
+  const fetchHexGrids = useCallback(
     async () => {
-      const data = await fetchHexGriidsAPI(defaultHexGridsRange)
+      const data = await fetchHexGridsAPI(defaultHexGridsRange)
 
       // 获取禁用坐标
       const forbiddenZoneRadiusResult = await fetchForbiddenZoneRadiusAPI(forbiddenZoneRadius)
       if (forbiddenZoneRadiusResult !== forbiddenZoneRadius) {
-        setforbiiddenZoneRadius(forbiddenZoneRadiusResult)
+        setForbiddenZoneRadius(forbiddenZoneRadiusResult)
       }
 
       if (data) {
@@ -399,7 +392,7 @@ const Home = () => {
           _map.set(keyFormat({ x, y, z }), i)
         })
 
-        setAllNode(data)
+        // setAllNode(data)
         setAllNodeMap(_map)
 
         render(data, forbiddenZoneRadiusResult)
@@ -493,7 +486,7 @@ const Home = () => {
       if (res.statusCode === 201) {
         Toast({ content: t('successful-occupation') })
 
-        fetchHexGriids()
+        fetchHexGrids()
         setIsModalVisibleOccupied(false)
       } else {
         throw new Error(res.message)
@@ -502,7 +495,7 @@ const Home = () => {
       console.log(e)
       Toast({ content: e.message, type: 'warning' })
     }
-  }, [currentNodeChoose, fetchHexGriids, Toast, t])
+  }, [currentNodeChoose, fetchHexGrids, Toast, t])
 
   // 重置定位
   const HandlePosition = useCallback(() => {
@@ -563,7 +556,7 @@ const Home = () => {
     () => {
       setFullLoading(true)
 
-      fetchHexGriids()
+      fetchHexGrids()
 
       resizeFn()
       window.addEventListener('resize', resizeFn)
@@ -620,14 +613,14 @@ const Home = () => {
         setIsModalVisible={setIsModalVisibleOccupied}
         handleOccupied={handleOccupied}></Occupied>
       {
-        isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin ?
+        isEmpty(hexGridsMineData) && hexGridsMineTag && isLogin ?
           <NoticeBardOccupied
             status={noticeBardOccupiedState}
             setNoticeBardOccupiedState={setNoticeBardOccupiedState}
           ></NoticeBardOccupied> : null
       }
       {
-        !isEmpty(hexGridsMineData) && hexGridsMineTag && isLoggin && !hexGridsMineData.subdomain
+        !isEmpty(hexGridsMineData) && hexGridsMineTag && isLogin && !hexGridsMineData.subdomain
         ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
         : null
       }

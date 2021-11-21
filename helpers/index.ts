@@ -90,7 +90,7 @@ export const fetchHexGridsMineAPI = async () => {
  * @param defaultHexGridsRange
  * @returns
  */
-export const fetchHexGriidsAPI = async (defaultHexGridsRange: PointScopeState) => {
+export const fetchHexGridsAPI = async (defaultHexGridsRange: PointScopeState) => {
   try {
     const res = await hexGridsByFilter(defaultHexGridsRange)
     if (res.statusCode === 200) {
@@ -130,6 +130,27 @@ export const getZoomPercentage = () => {
 }
 
 /**
+ * toggle layout hide node
+ * @returns 
+ */
+export const toggleLayoutHide = (percentage: number) => {
+  const layoutWrapper = document.querySelector('.layout-wrapper')
+  if (!layoutWrapper) {
+    return
+  }
+
+  if (percentage < 20) {
+    if (!layoutWrapper.classList.contains('hide-node')) {
+      layoutWrapper.classList.add('hide-node')
+    }
+  } else {
+    if (layoutWrapper.classList.contains('hide-node')) {
+      layoutWrapper.classList.remove('hide-node')
+    }
+  }
+}
+
+/**
  * Oauth url 校验
  * @param url
  * @returns
@@ -149,7 +170,7 @@ export const OauthUrlVerify = (url: string) => {
  * @param data
  * @returns
  */
-export const fetchhexGridsLoctionByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
+export const fetchHexGridsLocationByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
   try {
     const res = await hexGridsLoctionByUserId(data)
     if (res.statusCode === 200 && res.data) {

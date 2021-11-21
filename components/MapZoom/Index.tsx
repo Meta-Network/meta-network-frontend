@@ -1,34 +1,21 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Tooltip } from 'antd'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { useMount, useUnmount } from 'ahooks'
 import { useTranslation } from 'next-i18next'
-
-import { amountSplit } from '../../utils/index'
 import { getZoomPercentage } from '../../helpers/index'
 
-/**
- * requestAnimationFrame
- * cancelAnimationFrame
- */
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-(window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
-let IDAnimation: number
-
-interface Props {}
+interface Props { }
 
 /**
  * 缩放统计
  * @returns
  */
-const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
+const MapZoom: React.FC<Props> = React.memo(function MapZoom({ }) {
   const { t } = useTranslation('common')
   const [value, setValue] = useState<Number>(0)
 
-  const [ styles, api ] = useSpring(() => ({
+  const [styles, api] = useSpring(() => ({
     x: 40,
     opacity: 0,
     config: {
@@ -41,26 +28,21 @@ const MapZoom: React.FC<Props> = React.memo( function MapZoom ({ }) {
    */
   const handleScale = useCallback(() => {
     let percentage = getZoomPercentage()
-    setValue( percentage )
-
-    cancelAnimationFrame(ID)
-    ID = requestAnimationFrame( handleScale )
+    setValue(percentage)
   }, [])
 
-  useMount(() => {
-    if (process.browser) {
-      const domShow = () => {
-        api.start({ x: 0, opacity: 1 })
-      }
-      IDAnimation = requestAnimationFrame( domShow )
-      ID = requestAnimationFrame( handleScale )
-    }
-  })
 
-  useUnmount(() => {
-    cancelAnimationFrame(IDAnimation)
-    cancelAnimationFrame(ID)
-  })
+  useEffect(() => {
+    const timer = setInterval(handleScale, 4000)
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: 1 })
+    }, 3600)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(timerShow)
+    }
+  }, [handleScale, api])
 
   return (
     <Tooltip title={t('zoom-percentage')} placement="left">

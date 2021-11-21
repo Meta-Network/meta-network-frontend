@@ -16,7 +16,7 @@ import { UsersMeProps } from '../../typings/ucenter'
 import MetaImage from '../../assets/images/meta.png'
 
 interface Props {
-  readonly isLoggin: boolean
+  readonly isLogin: boolean
   readonly user: UsersMeProps
   readonly visible: boolean
   signOut: () => void
@@ -24,7 +24,7 @@ interface Props {
 
 // 侧边栏 用户内容
 const SliderLogo: React.FC<Props> = React.memo(function SliderLogo({
-  user, isLoggin, visible,
+  user, isLogin, visible,
   signOut
 }) {
   const router = useRouter()

@@ -16,7 +16,7 @@ export const useUser = () => {
   // });
 
   const [user, setUser] = useState<UsersMeProps>({} as UsersMeProps)
-  const isLoggin = useMemo(() => !isEmpty(user), [user])
+  const isLogin = useMemo(() => !isEmpty(user), [user])
 
   const userMeFn = useCallback(async() => {
     try {
@@ -38,6 +38,6 @@ export const useUser = () => {
   }, [])
 
   return {
-    user, setUser, isLoggin
+    user, setUser, isLogin
   }
 }

@@ -12,7 +12,7 @@ import { isEmpty } from 'lodash'
 
 
 interface SliderContenItemtUserProps {
-  readonly isLoggin: boolean
+  readonly isLogin: boolean
   readonly inviteCodeData: InviitationsMineState[]
   readonly visible: boolean
   readonly hexGridsMineData: hexGridsByFilterState
@@ -22,12 +22,12 @@ interface SliderContenItemtUserProps {
 
 // 侧边栏 菜单 用户
 const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
-  isLoggin, inviteCodeData, hexGridsMineData, setIsModalVisibleInviteCode,
+  isLogin, inviteCodeData, hexGridsMineData, setIsModalVisibleInviteCode,
   visible, translateMap
 }) {
   const { t } = useTranslation('common')
 
-  console.log('SliderContenItemtUser', isLoggin, inviteCodeData)
+  console.log('SliderContenItemtUser', isLogin, inviteCodeData)
 
   // 有效邀请码
   const validCodeCount = useMemo(() => {
@@ -37,19 +37,19 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
 
   const openUrl = useCallback(
     () => {
-      if (isLoggin) {
+      if (isLogin) {
         window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
       }
-    }, [ isLoggin ])
+    }, [ isLogin ])
 
   const openUrlMySpace = useCallback(
     () => {
-      if (isLoggin) {
+      if (isLogin) {
         if (hexGridsMineData.subdomain) {
           window.open(`https://${hexGridsMineData.subdomain}`, '_blank')
         }
       }
-    }, [ isLoggin, hexGridsMineData ])
+    }, [ isLogin, hexGridsMineData ])
 
   const handleMySpace = () => {
     if (!hexGridsMineData.subdomain) {
@@ -96,7 +96,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
           <StyledSliderSpace
             visible={visible}
-            className={ (isLoggin && hexGridsMineData.subdomain) ? '' : 'disabled'}
+            className={ (isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleMySpace()}>
             <SliderHexagonIcon className="space-icon" />
@@ -108,7 +108,7 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
       <li>
         <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
           <a
-            className={(isLoggin && hexGridsMineData.subdomain) ? '' : 'disabled'}
+            className={(isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleManagementSpace()}>
             <SliderSpaceIcon />
@@ -120,12 +120,12 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
         <Tooltip title={(visible || isMobile) ? '' : t('invitation-code')} placement="right">
           <a
             href="javascript:;"
-            onClick={() => isLoggin && setIsModalVisibleInviteCode(true)}
-            className={isLoggin ? '' : 'disabled'}>
+            onClick={() => isLogin && setIsModalVisibleInviteCode(true)}
+            className={isLogin ? '' : 'disabled'}>
             <SliderInviteIcon />
             {visible ? t('invitation-code') : ''}
             {
-              isLoggin && visible ?
+              isLogin && visible ?
                 <StyledCount>{validCodeCount}</StyledCount> : null
             }
           </a>

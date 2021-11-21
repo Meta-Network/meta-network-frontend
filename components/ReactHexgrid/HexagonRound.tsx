@@ -5,7 +5,7 @@ import { HexUtils, Hex } from 'react-hexgrid'
 import { assign } from 'lodash'
 import { animated } from 'react-spring'
 
-class HexagonRoound extends Component {
+class HexagonRound extends Component {
   static propTypes = {
     q: PropTypes.number.isRequired,
     r: PropTypes.number.isRequired,
@@ -42,7 +42,9 @@ class HexagonRoound extends Component {
     const pixel = HexUtils.hexToPixel(hex, layout)
     this.state = { hex, pixel }
 
-    // console.log('HexagonRoound')
+    // console.log('layout', layout)
+
+    // console.log('HexagonRound')
   }
 
   // TODO Refactor to reduce duplicate
@@ -139,4 +141,4 @@ class HexagonRoound extends Component {
   }
 }
 
-export default HexagonRoound
+export default HexagonRound

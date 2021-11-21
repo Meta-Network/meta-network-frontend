@@ -13,7 +13,7 @@ import { PointState, translateMapState } from '../../typings/node'
 import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
-import { fetchhexGridsLoctionByUserIdAPI } from '../../helpers/index'
+import { fetchHexGridsLocationByUserIdAPI } from '../../helpers/index'
 
 interface Props {
   readonly bookmark: PointState[]
@@ -128,9 +128,9 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
   /**
    * 获取位置 通过 user id
    */
-  const fetchhexGridsLoctionByUserId = useCallback(
+  const fetchHexGridsLocationByUserId = useCallback(
     async () => {
-      const data = await fetchhexGridsLoctionByUserIdAPI({ userId: currentNode.inviterUserId })
+      const data = await fetchHexGridsLocationByUserIdAPI({ userId: currentNode.inviterUserId })
       if (data) {
         setInviteUserNode(data)
       }
@@ -147,14 +147,14 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
 
   useEffect(() => {
     if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
-      fetchhexGridsLoctionByUserId()
+      fetchHexGridsLocationByUserId()
     } else {
       setInviteUserNode({} as hexGridsByFilterState)
     }
 
     window.addEventListener('click', hideDropdown)
     return () => window.removeEventListener('click', hideDropdown)
-  }, [currentNode, fetchhexGridsLoctionByUserId, hideDropdown])
+  }, [currentNode, fetchHexGridsLocationByUserId, hideDropdown])
 
   return (
     <>
