@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { isEmpty } from 'lodash'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { useTranslation } from 'next-i18next'
@@ -18,15 +17,14 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
   const { user } = useUser()
   const { Toast } = useToast()
   const { t } = useTranslation('common')
-
-  const noticeBardOccupiedAnimatedStyles = useSpring({
-    from: { x: '-50%', y: -40, opacity: 0 },
-    to: { x: '-50%', y: 0, opacity: 1 },
+  const [styles, api] = useSpring(() => ({
+    x: '-50%',
+    y: -40,
+    opacity: 0,
     config: {
       duration: 300
-    },
-    delay: 1000
-  })
+    }
+  }))
 
   const ToggleState = useCallback((e: any) => {
 
@@ -39,8 +37,21 @@ const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedStat
     setNoticeBardOccupiedState(!status)
   }, [user, status, setNoticeBardOccupiedState, Toast, t])
 
+  const show = useCallback(
+    () => {
+      api.start({
+        y: 0,
+        opacity: 1
+      })
+    }, [api])
+
+  useEffect(() => {
+    const time = setTimeout(show, 3000)
+    return () => clearTimeout(time)
+  }, [show])
+
   return (
-    <StyledMessageRelative style={noticeBardOccupiedAnimatedStyles}>
+    <StyledMessageRelative style={styles}>
       <StyledIconBox>
         {
           status ? <CircleEmptyIcon /> : <CircleWarningIcon />

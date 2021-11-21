@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
@@ -12,15 +12,14 @@ const { confirm } = Modal
 
 const NoticeBardCreateSpace: React.FC<Props> = ({ }) => {
   const { t } = useTranslation('common')
-
-  const noticeBardOccupiedAnimatedStyles = useSpring({
-    from: { x: '-50%', y: -40, opacity: 0 },
-    to: { x: '-50%', y: 0, opacity: 1 },
+  const [styles, api] = useSpring(() => ({
+    x: '-50%',
+    y: -40,
+    opacity: 0,
     config: {
       duration: 300
-    },
-    delay: 1000
-  })
+    }
+  }))
 
   const openUrl = useCallback(
     () => {
@@ -36,8 +35,21 @@ const NoticeBardCreateSpace: React.FC<Props> = ({ }) => {
       })
     }, [t])
 
+  const show = useCallback(
+    () => {
+      api.start({
+        y: 0,
+        opacity: 1
+      })
+    }, [api])
+
+  useEffect(() => {
+    const time = setTimeout(show, 3000)
+    return () => clearTimeout(time)
+  }, [show])
+
   return (
-    <StyledMessageRelative style={noticeBardOccupiedAnimatedStyles}>
+    <StyledMessageRelative style={styles}>
       <StyledIconBox>
         <CircleSuccessIcon />
       </StyledIconBox>
