@@ -170,7 +170,7 @@ export const OauthUrlVerify = (url: string) => {
  * @param data
  * @returns
  */
-export const fetchhexGridsLoctionByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
+export const fetchHexGridsLocationByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
   try {
     const res = await hexGridsLoctionByUserId(data)
     if (res.statusCode === 200 && res.data) {

@@ -36,7 +36,7 @@ const MapZoom: React.FC<Props> = React.memo(function MapZoom({ }) {
     const timer = setInterval(handleScale, 4000)
     const timerShow = setTimeout(() => {
       api.start({ x: 0, opacity: 1 })
-    }, 3000)
+    }, 3600)
 
     return () => {
       clearInterval(timer)

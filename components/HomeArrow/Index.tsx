@@ -105,7 +105,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
     const timer = setInterval(calcAngle, 4000)
     const timerShow = setTimeout(() => {
       api.start({ x: 0, opacity: isShow ? 1 : 0 })
-    }, 3000)
+    }, 3800)
 
     return () => {
       clearInterval(timer)

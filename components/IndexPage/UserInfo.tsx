@@ -2,7 +2,6 @@
 import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -13,11 +12,6 @@ import UserAvatar from './UserAvatar'
 import UserMore from './UserMore'
 import { keyFormat } from '../../utils'
 
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
-
 interface Props {
   readonly url: string
   readonly bookmark: PointState[]
@@ -27,7 +21,7 @@ interface Props {
   focus$: EventEmitter<string>
 }
 
-const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
+const UserInfo: React.FC<Props> = React.memo(function UserInfo({
   url, bookmark, currentNode, HandleBookmark, focus$, translateMap
 }) {
   const refAvatar = useRef<HTMLDivElement>(null)
@@ -67,7 +61,7 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
             const moreWidth = refMore!.current.clientWidth
             const moreHeight = refMore!.current.clientHeight
 
-            refMore!.current.style.left =`${x}px`
+            refMore!.current.style.left = `${x}px`
             refMore!.current.style.top = `${y}px`
 
             if (isBrowser) {
@@ -83,12 +77,12 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
           }
         }
       }
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(handleFollow)
     }, [currentNode])
 
   useEffect(() => {
     // console.log('currentNode', currentNode, ID)
+    let time: NodeJS.Timeout | any = null
+
 
     if (isEmpty(currentNode)) {
       if (refAvatar.current) {
@@ -101,15 +95,15 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
         refMore!.current.style.left = '-100%'
         refMore!.current.style.top = '-100%'
       }
-      cancelAnimationFrame(ID)
+      clearInterval(time)
+
     } else {
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(handleFollow)
+      clearInterval(time)
+      // TODO: 因为卡顿，暂时取消 requestAnimateFrame，用 setInterval 代替先
+      time = setInterval(handleFollow, 60)
     }
 
-    return () => {
-      cancelAnimationFrame(ID)
-    }
+    return () => clearInterval(time)
   }, [currentNode, handleFollow])
 
   return (
@@ -119,7 +113,7 @@ const UserInfo: React.FC<Props> = React.memo( function UserInfo ({
       </StyledUserAvatar>
 
       <StyledUserMore ref={refMore}>
-        <UserMore 
+        <UserMore
           bookmark={bookmark}
           currentNode={currentNode}
           HandleBookmark={HandleBookmark}

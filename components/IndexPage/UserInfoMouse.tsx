@@ -2,18 +2,11 @@
 import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { useMount } from 'ahooks'
 import { isEmpty } from 'lodash'
-import { PointState } from '../../typings/node'
 import { isBrowser, isMobile } from 'react-device-detect'
 
 import UserAvatar from './UserAvatar'
 import { keyFormat } from '../../utils'
-
-const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-  (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
-const cancelAnimationFrame = window.cancelAnimationFrame || (window as any).mozCancelAnimationFrame
-let ID: number
 
 interface Props {
   readonly url: string
@@ -54,12 +47,10 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
           }
         }
       }
-      cancelAnimationFrame(ID)
-      ID = requestAnimationFrame(handleFollow)
     }, [currentNodeMouse])
 
   useEffect(() => {
-    // console.log('currentNodeMouse', currentNodeMouse, ID)
+    let time: NodeJS.Timeout | any = null
 
     if (isEmpty(currentNodeMouse)) {
       if (refAvatar.current) {
@@ -67,21 +58,22 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
         refAvatar!.current.style.left = '-100%'
         refAvatar!.current.style.top = '-100%'
       }
-      cancelAnimationFrame(ID)
+      clearInterval(time)
     } else {
-
       // 如果当前聚焦和鼠标经过为同一个
       if (
         currentNodeMouse.x === currentNode.x
         && currentNodeMouse.y === currentNode.y
         && currentNodeMouse.z === currentNode.z
       ) {
-        cancelAnimationFrame(ID)
+        clearInterval(time)
       } else {
-        cancelAnimationFrame(ID)
-        ID = requestAnimationFrame(handleFollow)
+        clearInterval(time)
+        time = setInterval(handleFollow, 800)
       }
     }
+
+    return () => clearInterval(time)
   }, [currentNodeMouse, currentNode, handleFollow])
 
   return (
