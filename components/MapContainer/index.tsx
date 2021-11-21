@@ -26,7 +26,7 @@ interface Props {
   readonly hex: HexagonsState[]
   readonly hexGridsMineData: hexGridsByFilterState
   readonly currentNode: hexGridsByFilterState
-  setCurrentNodeMouse: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
+  // setCurrentNodeMouse: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
   setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
   setCurrentNodeChoose: React.Dispatch<React.SetStateAction<PointState>>
   setIsModalVisibleOccupied: React.Dispatch<React.SetStateAction<boolean>>
@@ -55,7 +55,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   hex,
   hexGridsMineData,
   currentNode,
-  setCurrentNodeMouse,
+  // setCurrentNodeMouse,
   setCurrentNode,
   setCurrentNodeChoose,
   setIsModalVisibleOccupied,
@@ -140,17 +140,17 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * @param point 
    * @param mode 
    */
-  const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
-    if (isBrowser && OperableNodeMode.includes(mode)) {
-      // console.log('handleHexagonEventMouseEnter', point)
-      const { x, y, z } = point
-      let node = allNodeMap.get(keyFormat({ x, y, z }))
-      if (node) {
-        setCurrentNodeMouse(node)
-      }
-    }
-  }
+  // const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
+  //   e.stopPropagation()
+  //   if (isBrowser && OperableNodeMode.includes(mode)) {
+  //     // console.log('handleHexagonEventMouseEnter', point)
+  //     const { x, y, z } = point
+  //     let node = allNodeMap.get(keyFormat({ x, y, z }))
+  //     if (node) {
+  //       setCurrentNodeMouse(node)
+  //     }
+  //   }
+  // }
 
   /**
    * 处理鼠标移出
@@ -158,13 +158,13 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * @param point 
    * @param mode 
    */
-  const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
-    if (isBrowser && OperableNodeMode.includes(mode)) {
-      // console.log('handleHexagonEventMouseLeave', point)
-      setCurrentNodeMouse({} as hexGridsByFilterState)
-    }
-  }
+  // const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
+  //   e.stopPropagation()
+  //   if (isBrowser && OperableNodeMode.includes(mode)) {
+  //     // console.log('handleHexagonEventMouseLeave', point)
+  //     setCurrentNodeMouse({} as hexGridsByFilterState)
+  //   }
+  // }
 
   /**
  * 处理点击地图事件
@@ -234,8 +234,8 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                   r={hex.r}
                   s={hex.s}
                   onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                  onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
-                  onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
+                  // onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
+                  // onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
                   // need space
                   className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}>
                   <NodeContent
