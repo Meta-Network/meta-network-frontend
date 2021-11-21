@@ -38,9 +38,10 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
 
 
   useEffect(() => {
-    const timer = setInterval(fetchHexGridsCountByFilterFn, 4000)
+    const timer = setInterval(fetchHexGridsCountByFilterFn, 10 * 1000)
     const timerShow = setTimeout(() => {
       api.start({ x: 0, opacity: 1 })
+      fetchHexGridsCountByFilterFn()
     }, 3200)
 
     return () => {
