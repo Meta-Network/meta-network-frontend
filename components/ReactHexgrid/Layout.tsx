@@ -5,7 +5,18 @@ import PropTypes from 'prop-types'
 import Orientation from './models/Orientation'
 import Point from './models/Point'
 
-class Layout extends Component {
+interface IProps {
+  readonly size: { x: number, y: number }
+  readonly className: string
+  readonly flat: boolean
+  onClick: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void
+  onMouseOver: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void
+  onMouseOut: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void
+}
+interface IState {
+}
+
+class Layout extends Component<IProps, IState> {
   static LAYOUT_FLAT = new Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
   static LAYOUT_POINTY = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
 
@@ -45,15 +56,14 @@ class Layout extends Component {
       points
     }
   }
-
-  getPointOffset(corner, orientation, size) {
+  getPointOffset(corner: number, orientation: Orientation, size: { x: number, y: number }) {
     let angle = 2.0 * Math.PI * (corner + orientation.startAngle) / 6
     return new Point(size.x * Math.cos(angle), size.y * Math.sin(angle))
   }
 
   // TODO Refactor
-  calculateCoordinates(orientation) {
-    const corners = []
+  calculateCoordinates(orientation: Orientation) {
+    const corners: Point[] = []
     const center = new Point(0, 0)
     const { size } = this.props
 
@@ -71,9 +81,9 @@ class Layout extends Component {
     return (
       <g 
       className={className} 
-      onClick={e => onClick(e)} 
-      onMouseOver={e => onMouseOver(e)} 
-      onMouseOut={e => onMouseOut(e)}
+      onClick={(e: React.MouseEvent<SVGGElement, MouseEvent>) => onClick(e)} 
+      onMouseOver={(e: React.MouseEvent<SVGGElement, MouseEvent>) => onMouseOver(e)} 
+      onMouseOut={(e: React.MouseEvent<SVGGElement, MouseEvent>) => onMouseOut(e)}
       >
         {children}
       </g>

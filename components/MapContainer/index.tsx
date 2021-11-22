@@ -220,8 +220,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     if (target) {
       if (!layoutWrapper.contains(target)) return
 
-      console.log('tar', target)
-
       const q = target.getAttribute('data-q')
       const r = target.getAttribute('data-r')
       const s = target.getAttribute('data-s')
@@ -231,7 +229,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     } else if (targetChoose) {
       if (!layoutWrapper.contains(targetChoose)) return
 
-      // console.log('tar', targetChoose)
       const q = targetChoose.getAttribute('data-q')
       const r = targetChoose.getAttribute('data-r')
       const s = targetChoose.getAttribute('data-s')
