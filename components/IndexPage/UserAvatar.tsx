@@ -11,7 +11,7 @@ const UserAvatar: React.FC<Props> = ({ url }) => {
     <>
       <StyledUserAvatarImage>
         {
-          url ? <img src={ url } alt="avatar" /> : null
+          url && <img src={ url } alt="avatar" />
         }
       </StyledUserAvatarImage>
       <StyledUserAvatarArrow></StyledUserAvatarArrow>

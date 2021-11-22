@@ -1,15 +1,17 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { HexGrid, Layout } from 'react-hexgrid'
+import { HexGrid } from 'react-hexgrid'
 import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
-import {  isEmpty, shuffle, random } from 'lodash'
+import { isEmpty, shuffle, random } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
-import { getZoomPercentage, toggleLayoutHide } from '../../helpers/index'
+import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
+import Layout from '../ReactHexgrid/Layout'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
+import { toggleLayoutHide } from '../../utils/index'
 
 interface Props {
   readonly width: number
@@ -39,6 +41,7 @@ import { keyFormat } from '../../utils'
 
 // 可操作的节点模式
 const OperableNodeMode = ['exist', 'active']
+let currentElem: any = null
 
 const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   width,
@@ -134,23 +137,23 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       hexGridsMineData.z === z
   }, [hexGridsMineData])
 
+
   /**
-   * 处理鼠标移入
-   * @param e 
-   * @param point 
-   * @param mode 
-   */
-  const handleHexagonEventMouseEnter = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
+ * 处理鼠标移入
+ * @param e 
+ * @param point 
+ * @param mode 
+ */
+  const handleHexagonEventMouseOver = useCallback((point: PointState, mode: string) => {
     if (isBrowser && OperableNodeMode.includes(mode)) {
-      // console.log('handleHexagonEventMouseEnter', point)
+      // console.log('handleHexagonEventMouseOver', point)
       const { x, y, z } = point
       let node = allNodeMap.get(keyFormat({ x, y, z }))
       if (node) {
         setCurrentNodeMouse(node)
       }
     }
-  }
+  }, [allNodeMap, setCurrentNodeMouse])
 
   /**
    * 处理鼠标移出
@@ -158,18 +161,16 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * @param point 
    * @param mode 
    */
-  const handleHexagonEventMouseLeave = (e: Event, point: PointState, mode: string) => {
-    e.stopPropagation()
+  const handleHexagonEventMouseOut = useCallback((point: PointState, mode: string) => {
     if (isBrowser && OperableNodeMode.includes(mode)) {
-      // console.log('handleHexagonEventMouseLeave', point)
+      // console.log('handleHexagonEventMouseOut', point)
       setCurrentNodeMouse({} as hexGridsByFilterState)
     }
-  }
-
+  }, [setCurrentNodeMouse])
   /**
- * 处理点击地图事件
- */
-  const handleHexagonEventClick = (e: any, point: PointState, mode: string) => {
+  * 处理点击地图事件
+  */
+  const handleHexagonEventClick = useCallback((e: any, point: PointState, mode: string) => {
     // 重复点击垱前块
     if (currentNode.x === point.x && currentNode.y === point.y && currentNode.z === point.z) {
       // console.log('eeee', e)
@@ -187,7 +188,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       if (!isLogin || !noticeBardOccupiedState) {
         return
       }
-      Toast({ content: t('message-click-default-node') })
       return
     } else if (mode === 'disabled') {
       return
@@ -196,7 +196,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     translateMap({ point })
 
     handleHistoryView(point)
-  }
+  }, [currentNode, handleHistoryView, noticeBardOccupiedState, isLogin, translateMap, setCurrentNode, setCurrentNodeChoose, setIsModalVisibleOccupied])
 
   /**
  * 获取缩放
@@ -206,17 +206,112 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     toggleLayoutHide(percentage)
   }, [])
 
+  const handleLayoutEventClick = useCallback((e: Event) => {
+    const layoutWrapper = document.querySelector('.layout-wrapper')
+    if (!layoutWrapper) {
+      return
+    }
+
+    // @ts-ignore
+    const target = e.target.closest('.hexagon-exist') || e.target.closest('.hexagon-active')
+    // @ts-ignore
+    const targetChoose = e.target.closest('.hexagon-choose')
+
+    if (target) {
+      if (!layoutWrapper.contains(target)) return
+
+      console.log('tar', target)
+
+      const q = target.getAttribute('data-q')
+      const r = target.getAttribute('data-r')
+      const s = target.getAttribute('data-s')
+
+      const mode = calcNodeMode({ x: Number(q), y: Number(s), z: Number(r) })
+      handleHexagonEventClick(e, { x: Number(q), y: Number(s), z: Number(r) }, mode)
+    } else if (targetChoose) {
+      if (!layoutWrapper.contains(targetChoose)) return
+
+      // console.log('tar', targetChoose)
+      const q = targetChoose.getAttribute('data-q')
+      const r = targetChoose.getAttribute('data-r')
+      const s = targetChoose.getAttribute('data-s')
+
+      const mode = calcNodeMode({ x: Number(q), y: Number(s), z: Number(r) })
+      handleHexagonEventClick(e, { x: Number(q), y: Number(s), z: Number(r) }, mode)
+    }
+
+  }, [calcNodeMode, handleHexagonEventClick])
+
+  const handleLayoutEventMouseOver = useCallback((e: Event) => {
+    const layoutWrapper = document.querySelector('.layout-wrapper')
+    if (!layoutWrapper) {
+      return
+    }
+
+    if (currentElem) return
+
+    // @ts-ignore
+    const target = e.target.closest('.hexagon-exist') || e.target.closest('.hexagon-active')
+
+    if (!target) return
+
+    if (!layoutWrapper.contains(target)) return
+
+    currentElem = target
+
+    const q = target.getAttribute('data-q')
+    const r = target.getAttribute('data-r')
+    const s = target.getAttribute('data-s')
+
+    const mode = calcNodeMode({ x: Number(q), y: Number(s), z: Number(r) })
+    handleHexagonEventMouseOver({ x: Number(q), y: Number(s), z: Number(r) }, mode)
+  }, [calcNodeMode, handleHexagonEventMouseOver])
+
+  const handleLayoutEventMouseOut = useCallback((e: Event) => {
+    const layoutWrapper = document.querySelector('.layout-wrapper')
+    if (!layoutWrapper) {
+      return
+    }
+
+    if (!currentElem) return
+
+    // @ts-ignore
+    let relatedTarget = e.relatedTarget
+    while (relatedTarget) {
+      if (relatedTarget == currentElem) return
+
+      relatedTarget = relatedTarget.parentNode
+    }
+
+    const q = currentElem.getAttribute('data-q')
+    const r = currentElem.getAttribute('data-r')
+    const s = currentElem.getAttribute('data-s')
+
+    const mode = calcNodeMode({ x: Number(q), y: Number(s), z: Number(r) })
+    handleHexagonEventMouseOut({ x: Number(q), y: Number(s), z: Number(r) }, mode)
+
+    currentElem = null
+
+  }, [calcNodeMode, handleHexagonEventMouseOut])
+
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)
     return () => clearInterval(timer)
   }, [fetchZoomValue])
 
-
-
   return (
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
-        <Layout className="layout-wrapper" size={size} flat={layout.flat} spacing={layout.spacing} origin={origin}>
+        <Layout
+          className="layout-wrapper"
+          size={size}
+          flat={layout.flat}
+          spacing={layout.spacing}
+          origin={origin}
+          onClick={(e: any) => handleLayoutEventClick(e)}
+          onMouseOver={(e: any) => handleLayoutEventMouseOver(e)}
+          onMouseOut={(e: any) => handleLayoutEventMouseOut(e)}
+        >
           {
             // note: key must be unique between re-renders.
             // using config.mapProps+i makes a new key when the goal template changes.
@@ -224,7 +319,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
             transition((style, hex: HexagonsState) => {
               const { q: x, s: y, r: z } = hex
               const nodeMode = calcNodeMode({ x, y, z })
-              let key = `x${x}_y${y}_z${z}`
+              const key = `x${x}_y${y}_z${z}`
 
               return (
                 <HexagonRound
@@ -233,11 +328,9 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
                   q={hex.q}
                   r={hex.r}
                   s={hex.s}
-                  onClick={(e: any) => handleHexagonEventClick(e, { x, y, z }, nodeMode)}
-                  onMouseEnter={(e: any) => handleHexagonEventMouseEnter(e, { x, y, z }, nodeMode)}
-                  onMouseLeave={(e: any) => handleHexagonEventMouseLeave(e, { x, y, z }, nodeMode)}
                   // need space
-                  className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}>
+                  className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}
+                >
                   <NodeContent
                     coordinate={{ x, y, z }}
                     allNodeDisabled={allNodeDisabled}

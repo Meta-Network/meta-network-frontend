@@ -673,23 +673,6 @@ const Home = () => {
     fetchHistoryView()
   }, [fetchHistoryView])
 
-  const handleAddItem = useCallback(
-    () => {
-
-      const hexagon = Math.ceil(width / 50.13)
-      // hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
-      let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
-
-      const point = calcZoneRadius({
-        centerPoint: currentHexPoint,
-        hex: hex,
-        zoneRadius: zoneRadius
-      })
-
-      console.log('point', point)
-      setCurrentHex(Array.from(point, ([, value]) => value))
-    }, [hex, currentHexPoint, width])
-
   const move = useCallback(({
     point,
     scale,
@@ -823,9 +806,6 @@ const Home = () => {
       ></NodeHistory>
       <FullLoading loading={fullLoading} setLoading={setFullLoading} />
       <PointDEV></PointDEV>
-      <div style={{ position: 'fixed', right: 0, top: 0, zIndex: 100 }}>
-        <button onClick={handleAddItem}>Toggle</button>
-      </div>
     </>
   )
 }

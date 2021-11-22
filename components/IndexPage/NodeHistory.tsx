@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo, FC, memo } from 'react'
+import React, { useCallback, useMemo, FC, memo, useEffect } from 'react'
 import styled from 'styled-components'
 import { Avatar, Tooltip } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { useSpring, animated } from 'react-spring'
-import { assign, cloneDeep, isEmpty, shuffle, random } from 'lodash'
+import { assign, cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { PointState, translateMapState } from '../../typings/node'
@@ -43,10 +43,9 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     return _historyView.reverse() as hexGridsByFilterState[]
   }, [allNodeMap, historyView])
 
-  const styles = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 0.6 },
-  })
+  const [styles, api] = useSpring(() => ({
+    opacity: 0,
+  }))
 
   /**
    * 处理点击
@@ -66,6 +65,12 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
     },
     [HandleHistoryView, currentNode, setCurrentNode, translateMap],
   )
+
+  const show = useCallback(() => { api.start({ opacity: 0.6 }) }, [api])
+  useEffect(() => {
+    const time = setTimeout(show, 2500)
+    return () => clearTimeout(time)
+  }, [show])
 
   return (
     <StyledHistory>
