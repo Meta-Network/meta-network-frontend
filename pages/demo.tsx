@@ -280,7 +280,7 @@ const Home = () => {
       // zoom.translateExtent([[-(boxWidth / 2) - width, -(boxHeight / 2) - height], [(boxWidth), (boxHeight)]])
 
       const svgContainer = svgG.node().getBoundingClientRect()
-      console.log('svgContainer', svgContainer)
+      // console.log('svgContainer', svgContainer)
 
       let direction
       if (svgContainer.left > -600) {
