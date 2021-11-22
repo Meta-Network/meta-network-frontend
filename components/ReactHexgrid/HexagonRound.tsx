@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { HexUtils, Hex } from 'react-hexgrid'
 import { assign } from 'lodash'
 import { animated } from 'react-spring'
+import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
 class HexagonRound extends Component {
   static propTypes = {
@@ -40,7 +41,7 @@ class HexagonRound extends Component {
     const { layout } = context
     const hex = new Hex(q, r, s)
     const pixel = HexUtils.hexToPixel(hex, layout)
-    this.state = { hex, pixel }
+    this.state = { hex, pixel, q, r, s }
 
     // console.log('layout', layout)
 
@@ -54,63 +55,64 @@ class HexagonRound extends Component {
     const { layout } = this.context
     const hex = new Hex(q, r, s)
     const pixel = HexUtils.hexToPixel(hex, layout)
-    this.setState({ hex, pixel })
+    this.setState({ hex, pixel, q, r, s })
   }
-  onMouseEnter(e: any) {
-    if ((this.props as any).onMouseEnter) {
-      (this.props as any).onMouseEnter(e, this)
-    }
-  }
-  onMouseOver(e: any) {
-    if ((this.props as any).onMouseOver) {
-      (this.props as any).onMouseOver(e, this)
-    }
-  }
-  onMouseLeave(e: any) {
-    if ((this.props as any).onMouseLeave) {
-      (this.props as any).onMouseLeave(e, this)
-    }
-  }
+  // onMouseEnter(e: any) {
+  //   if ((this.props as any).onMouseEnter) {
+  //     (this.props as any).onMouseEnter(e, this)
+  //   }
+  // }
+  // onMouseOver(e: any) {
+  //   if ((this.props as any).onMouseOver) {
+  //     (this.props as any).onMouseOver(e, this)
+  //   }
+  // }
+  // onMouseLeave(e: any) {
+  //   if ((this.props as any).onMouseLeave) {
+  //     (this.props as any).onMouseLeave(e, this)
+  //   }
+  // }
   onClick(e: any) {
     if ((this.props as any).onClick) {
       (this.props as any).onClick(e, this)
     }
   }
-  onDragStart(e: any) {
-    if ((this.props as any).onDragStart) {
-      const targetProps = {
-        ...this.state,
-        data: (this.props as any).data,
-        fill: (this.props as any).fill,
-        className: (this.props as any).className
-      }
-      e.dataTransfer.setData('hexagon', JSON.stringify(targetProps));
-      (this.props as any).onDragStart(e, this)
-    }
-  }
-  onDragEnd(e: any) {
-    if ((this.props as any).onDragEnd) {
-      e.preventDefault()
-      const success = (e.dataTransfer.dropEffect !== 'none');
-      (this.props as any).onDragEnd(e, this, success)
-    }
-  }
-  onDragOver(e: any) {
-    if ((this.props as any).onDragOver) {
-      (this.props as any).onDragOver(e, this)
-    }
-  }
-  onDrop(e: any) {
-    if ((this.props as any).onDrop) {
-      e.preventDefault()
-      const target = JSON.parse(e.dataTransfer.getData('hexagon'));
-      (this.props as any).onDrop(e, this, target)
-    }
-  }
+  // onDragStart(e: any) {
+  //   if ((this.props as any).onDragStart) {
+  //     const targetProps = {
+  //       ...this.state,
+  //       data: (this.props as any).data,
+  //       fill: (this.props as any).fill,
+  //       className: (this.props as any).className
+  //     }
+  //     e.dataTransfer.setData('hexagon', JSON.stringify(targetProps));
+  //     (this.props as any).onDragStart(e, this)
+  //   }
+  // }
+  // onDragEnd(e: any) {
+  //   if ((this.props as any).onDragEnd) {
+  //     e.preventDefault()
+  //     const success = (e.dataTransfer.dropEffect !== 'none');
+  //     (this.props as any).onDragEnd(e, this, success)
+  //   }
+  // }
+  // onDragOver(e: any) {
+  //   if ((this.props as any).onDragOver) {
+  //     (this.props as any).onDragOver(e, this)
+  //   }
+  // }
+  // onDrop(e: any) {
+  //   if ((this.props as any).onDrop) {
+  //     e.preventDefault()
+  //     const target = JSON.parse(e.dataTransfer.getData('hexagon'));
+  //     (this.props as any).onDrop(e, this, target)
+  //   }
+  // }
+
   render() {
     const { fill, cellStyle, className } = (this.props as any)
     const { points } = this.context
-    const { hex, pixel } = (this.state as any)
+    const { hex, pixel, q, r, s } = (this.state as any)
     const fillId = (fill) ? `url(#${fill})` : null
 
     const styles = assign(cellStyle, {
@@ -122,14 +124,17 @@ class HexagonRound extends Component {
       <g className={classNames('hexagon-group', className)}
         transform={`translate(${pixel.x}, ${pixel.y})`}
         // draggable="true"
-        onMouseEnter={e => this.onMouseEnter(e)}
-        onMouseOver={e => this.onMouseOver(e)}
-        onMouseLeave={e => this.onMouseLeave(e)}
+        // onMouseEnter={e => this.onMouseEnter(e)}
+        // onMouseOver={e => this.onMouseOver(e)}
+        // onMouseLeave={e => this.onMouseLeave(e)}
         onClick={e => this.onClick(e)}
-        onDragStart={e => this.onDragStart(e)}
-        onDragEnd={e => this.onDragEnd(e)}
-        onDragOver={e => this.onDragOver(e)}
-        onDrop={e => this.onDrop(e)}
+        // onDragStart={e => this.onDragStart(e)}
+        // onDragEnd={e => this.onDragEnd(e)}
+        // onDragOver={e => this.onDragOver(e)}
+        // onDrop={e => this.onDrop(e)}
+        data-q={q}
+        data-r={r}
+        data-s={s}
       >
         <animated.g className="hexagon" style={{ ...(this.props as any).style }}>
           {/* <polygon points={points} fill={fillId} style={cellStyle} /> */}

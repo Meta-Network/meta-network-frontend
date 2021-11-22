@@ -86,7 +86,7 @@ const Home = () => {
   const [allNodeDisabled, setAllNodeDisabled] = useState<Map<string, HexagonsState>>(new Map())
   // 当前选择节点
   const [currentNode, setCurrentNode] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
-  // const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
+  const [currentNodeMouse, setCurrentNodeMouse] = useState<hexGridsByFilterState>({} as hexGridsByFilterState)
   // 当前占领节点
   const [currentNodeChoose, setCurrentNodeChoose] = useState<PointState>({} as PointState)
   // 部署网站 Modal
@@ -758,7 +758,7 @@ const Home = () => {
         size={size}
         layout={layout}
         hex={currentHex}
-        // setCurrentNodeMouse={setCurrentNodeMouse}
+        setCurrentNodeMouse={setCurrentNodeMouse}
         allNodeDisabled={allNodeDisabled}
         allNodeMap={allNodeMap}
         allNodeChoose={allNodeChoose}
@@ -809,6 +809,10 @@ const Home = () => {
         focus$={focus$}
         translateMap={translateMap}
       ></UserInfo>
+      <UserInfoMouse
+        currentNode={currentNode}
+        currentNodeMouse={currentNodeMouse}
+        url={currentNodeMouse.userAvatar}></UserInfoMouse>
       <NodeHistory
         allNodeMap={allNodeMap}
         historyView={historyView}
