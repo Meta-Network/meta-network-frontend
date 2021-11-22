@@ -34,6 +34,7 @@ class Layout extends Component {
   };
 
   getChildContext() {
+    // @ts-ignore
     const { children, flat, className, ...rest } = this.props
     const orientation = (flat) ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY
     const cornerCoords = this.calculateCoordinates(orientation)
@@ -45,28 +46,34 @@ class Layout extends Component {
       points
     }
   }
-
+  // @ts-ignore
   getPointOffset(corner, orientation, size) {
     let angle = 2.0 * Math.PI * (corner + orientation.startAngle) / 6
     return new Point(size.x * Math.cos(angle), size.y * Math.sin(angle))
   }
 
   // TODO Refactor
+  // @ts-ignore
   calculateCoordinates(orientation) {
+    // @ts-ignore
     const corners = []
     const center = new Point(0, 0)
+    // @ts-ignore
     const { size } = this.props
 
     Array.from(new Array(6), (x, i) => {
       const offset = this.getPointOffset(i, orientation, size)
+      // @ts-ignore
       const point = new Point(center.x + offset.x, center.y + offset.y)
       corners.push(point)
     })
 
+    // @ts-ignore
     return corners
   }
 
   render() {
+    // @ts-ignore
     const { children, className, onClick, onMouseOver, onMouseOut } = this.props
     return (
       <g 

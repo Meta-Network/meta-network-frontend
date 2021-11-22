@@ -1,5 +1,14 @@
 class Orientation {
-  constructor(f0, f1, f2, f3, b0, b1, b2, b3, startAngle) {
+  f0: any
+  f1: any
+  f2: any
+  f3: any
+  b0: any
+  b1: any
+  b2: any
+  b3: any
+  startAngle: any
+  constructor(f0: any, f1: any, f2: any, f3: any, b0: any, b1: any, b2: any, b3: any, startAngle: any) {
     this.f0 = f0
     this.f1 = f1
     this.f2 = f2
