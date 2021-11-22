@@ -10,7 +10,9 @@ const UserAvatar: React.FC<Props> = ({ url }) => {
   return (
     <>
       <StyledUserAvatarImage>
-        <img src={ url || 'https://storageapi.fleek.co/andoroyur-team-bucket/metanetwork/users/metaio-storage/default.png' } alt="avatar" />
+        {
+          url && <img src={ url } alt="avatar" />
+        }
       </StyledUserAvatarImage>
       <StyledUserAvatarArrow></StyledUserAvatarArrow>
     </>
