@@ -209,47 +209,19 @@ export const calcTranslateValue = ({ x, y, width, height, scale }: calcTranslate
 export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 6) => {
   let max = 0
   for (let i = 0; i < node.length; i++) {
-    const ele = node[i]
-    if (Math.abs(ele.x) > max) {
-      max = Math.abs(ele.x)
+    const { x, y, z } = node[i]
+    if (Math.abs(x) > max) {
+      max = Math.abs(x)
     }
-    if (Math.abs(ele.y) > max) {
-      max = Math.abs(ele.y)
+    if (Math.abs(y) > max) {
+      max = Math.abs(y)
     }
-    if (Math.abs(ele.z) > max) {
-      max = Math.abs(ele.z)
+    if (Math.abs(z) > max) {
+      max = Math.abs(z)
     }
   }
 
   return [max + attach]
-}
-
-/**
- * 计算范围内坐标点
- * 公用方法为了减少一层循坏 直接传data set value
- * @param center 
- * @param hexGrids 
- * @param distance 
- * @param data 
- * @returns Map<string, HexagonsState>
- */
-export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], distance: number, data?: Map<string, HexagonsState>) => {
-  let points: Map<string, HexagonsState> = new Map()
-  for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i]
-    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-    if (distanceResult) {
-      const { q: x, s: y, r: z } = ele
-
-      // qsr xyz
-      if (data) {
-        data.set(keyFormat({ x, y, z }), ele)
-      } else {
-        points.set(keyFormat({ x, y, z }), ele)
-      }
-    }
-  }
-  return points
 }
 
 /**
@@ -442,20 +414,6 @@ export const calcAllNodeChooseZoneRadius = ({
 
 
   return points
-}
-
-export const calcZoneRadius = ({
-  centerPoint,
-  hex,
-  zoneRadius
-}: {
-  centerPoint: HexagonsState,
-  hex: HexagonsState[],
-  zoneRadius: number
-}) => {
-  const { q, r, s } = centerPoint
-  const center = new Hex(q, r, s)
-  return calcCenterRangeAsMap(center, hex, zoneRadius)
 }
 
 
