@@ -487,16 +487,15 @@ export const getHexagonBox = (): {
  * generate hexagon
  */
 export const Hexagon = (center: HexagonsState, range: number) => {
-  let result: HexagonsState[] = []
-  const { q, r, s } = center
-  // TODO: 优化 减少循环
-  for (let x = q - range; x <= q + range; x++) {
-    for (let y = r - range; y <= r + range; y++) {
-      for (let z = s - range; z <= s + range; z++) {
-        if (x + y + z === 0) {
-          result.push(new HexData(x, y, z))
-        } 
-      }
+  const result: HexagonsState[] = []
+
+  const cube_add = (hex: HexagonsState, vec: HexagonsState) => new HexData(hex.q + vec.q, hex.r + vec.r, hex.s + vec.s)
+
+  for (let q = -range; q <= range; q++) {
+    const rMax = Math.max(-range, -q-range)
+    const rMin = Math.min(range, -q+range)
+    for (let r = rMax; r <= rMin; r++) {
+      result.push(cube_add(center, new HexData(q, r, -q-r)))      
     }
   }
   return result
