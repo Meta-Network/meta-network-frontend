@@ -1,6 +1,6 @@
-import { trim } from 'lodash'
+import { trim, xor, zip } from 'lodash'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
-import { HexagonsState, PointState } from '../typings/node.d'
+import { AxialState, HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
 
 interface CoordinateState {
@@ -125,7 +125,7 @@ export const randomRange = (min: number, max: number) => Math.floor(Math.random(
  * @param y
  * @returns
  */
-export const cubeToAxial = (x: number, y: number, z: number) => ({
+export const cubeToAxial = (x: number, y: number, z: number): AxialState => ({
   x: x,
   y: z
 })
@@ -137,11 +137,30 @@ export const cubeToAxial = (x: number, y: number, z: number) => ({
  * @param y
  * @returns
  */
-export const axialToCube = (x: number, y: number) => ({
+export const axialToCube = (x: number, y: number): PointState => ({
   x: x,
   y: -x - y,
   z: y,
 })
+
+// x y z
+// q s r
+
+/**
+ * transform format
+ */
+export const transformFormat = (point: PointState | HexagonsState ): PointState | HexagonsState => {
+  const keys = Object.keys(point)
+
+  if (keys.includes('x')) {
+    const { x, y, z } = point as PointState
+    return { q: x, s: y, r: z }
+  } else if (keys.includes('q')) {
+    const { q, s, r } = point as HexagonsState
+    return { x: q, y: s, z: r }
+  }
+  throw new Error('format error')
+}
 
 /**
  * 计算偏移位置
@@ -446,9 +465,6 @@ export const calcZoneRadius = ({
   return calcCenterRangeAsMap(center, hex, zoneRadius)
 }
 
-// x y z
-// q s r
-
 
 /**
  * toggle layout hide node
@@ -469,4 +485,18 @@ export const toggleLayoutHide = (percentage: number) => {
       layoutWrapper.classList.remove('hide-node')
     }
   }
+}
+
+/**
+ * get hexagon width
+ * @returns 
+ */
+export const getHexagonWidth = () => {
+  const hexagonDom = document.querySelector<SVGAElement>('.hexagon-group')
+  let hexagonWidth = 114.31
+  if (hexagonDom) {
+   const { width } = hexagonDom.getBBox()
+   return width
+  }
+  return hexagonWidth
 }
