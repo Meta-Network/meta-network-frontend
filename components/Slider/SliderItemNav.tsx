@@ -7,7 +7,7 @@ import { BookmarkIcon } from '../Icon/Index'
 import { StyledSliderCItem } from './Style'
 import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
 
-interface SliderContenItemtNavProps {
+interface Props {
   readonly visible: boolean
   readonly isLogin: boolean
   setIsModalVisibleSearch: (val: boolean) => void
@@ -15,7 +15,7 @@ interface SliderContenItemtNavProps {
 }
 
 // 侧边栏 菜单 导航
-const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(function SliderContenItemtNav({
+const SliderItemNav: React.FC<Props> = React.memo(function SliderItemNav({
   isLogin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
 }) {
   const { t } = useTranslation('common')
@@ -55,4 +55,4 @@ const SliderContenItemtNav: React.FC<SliderContenItemtNavProps> = React.memo(fun
   )
 })
 
-export default SliderContenItemtNav
+export default SliderItemNav

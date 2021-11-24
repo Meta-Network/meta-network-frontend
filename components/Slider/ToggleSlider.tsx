@@ -8,18 +8,17 @@ import Bookmark from '../Bookmark/Index'
 import InviteCode from '../InviteCode/Index'
 import SearchModal from '../SearchModal/Index'
 import { hexGridsByFilterState, PointScopeState } from '../../typings/metaNetwork.d'
-import { InviitationsMineState } from '../../typings/ucenter.d'
+import { InvitationsMineState } from '../../typings/ucenter.d'
 import { PointState, translateMapState } from '../../typings/node.d'
 import { fetchInviteCodeAPI } from '../../helpers/index'
 import {
   StyledSlider, StyledSliderContent
 } from './Style'
-import SliderContenAccoount from './SliderContenAccoount'
-import SliderContenItemtUser from './SliderContenItemtUser'
-import SliderContenItemtNav from './SliderContenItemtNav'
+import SliderItemUser from './SliderItemUser'
+import SliderItemNav from './SliderItemNav'
 import SliderContentUser from './SliderContentUser'
 import SliderLogo from './SliderLogo'
-import SliderContenItemtSetting from './SliderContenItemtSetting'
+import SliderItemSetting from './SliderItemSetting'
 import SliderToggle from './SliderToggle'
 import { useTranslation } from 'next-i18next'
 
@@ -55,7 +54,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
   // 邀请码
   const [isModalVisibleInviteCode, setIsModalVisibleInviteCode] = useState<boolean>(false)
   // 邀请码
-  const [inviteCodeData, setInviteCodeData] = useState<InviitationsMineState[]>([])
+  const [inviteCodeData, setInviteCodeData] = useState<InvitationsMineState[]>([])
   // 搜索
   const [isModalVisibleSearch, setIsModalVisibleSearch] = useState<boolean>(false)
 
@@ -134,22 +133,22 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
             isLogin={isLogin}
             user={user}
             signOut={signOut}></SliderContentUser>
-          <SliderContenItemtNav
+          <SliderItemNav
             visible={visibleSlider}
             isLogin={isLogin}
             setIsModalVisibleSearch={setIsModalVisibleSearch}
-            setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderContenItemtNav>
-          <SliderContenItemtUser
+            setIsModalVisibleBookmark={setIsModalVisibleBookmark}></SliderItemNav>
+          <SliderItemUser
             visible={visibleSlider}
             isLogin={isLogin}
             inviteCodeData={inviteCodeData}
             hexGridsMineData={hexGridsMineData}
             setIsModalVisibleInviteCode={setIsModalVisibleInviteCode}
             translateMap={translateMap}
-          ></SliderContenItemtUser>
-          <SliderContenItemtSetting
+          ></SliderItemUser>
+          <SliderItemSetting
             visible={visibleSlider}
-          ></SliderContenItemtSetting>
+          ></SliderItemSetting>
           <SliderMore visible={visibleSlider} />
           <SliderFeedback visible={visibleSlider}></SliderFeedback>
           <SliderToggle visible={visibleSlider} Toggle={() => setVisibleSlider(!visibleSlider)}></SliderToggle>

@@ -2,7 +2,7 @@ import { uCenterAPI } from './client'
 import { axiosResult } from '../typings/request'
 import {
   AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
-  InviitationsMineState, UsersMePatchProps, UsersMeUsernameState,
+  InvitationsMineState, UsersMePatchProps, UsersMeUsernameState,
   InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
 } from '../typings/ucenter'
 
@@ -38,7 +38,7 @@ export const accountsEmailSignup = (
  * 当前用户邀请码
  * @returns
  */
-export const invitationsMine = (): Promise<axiosResult<InviitationsMineState[]>> =>
+export const invitationsMine = (): Promise<axiosResult<InvitationsMineState[]>> =>
   uCenterAPI.get('/invitations/mine')
 
 /**

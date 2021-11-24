@@ -5,13 +5,13 @@ import { useTranslation } from 'next-i18next'
 
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'
-import { InviitationsMineState } from '../../typings/ucenter.d'
+import { InvitationsMineState } from '../../typings/ucenter.d'
 import CustomEmpty from '../CustomEmpty/Index'
 
 interface Props {
   isModalVisible: boolean,
   setIsModalVisible: (value: boolean) => void
-  inviteCodeData: InviitationsMineState[]
+  inviteCodeData: InvitationsMineState[]
 }
 
 const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, inviteCodeData }) => {

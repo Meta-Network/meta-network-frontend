@@ -5,15 +5,15 @@ import { useTranslation } from 'next-i18next'
 
 import { StyledCount, StyledSliderCItem, StyledSliderSpace } from './Style'
 import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon } from '../Icon/Index'
-import { InviitationsMineState } from '../../typings/ucenter.d'
+import { InvitationsMineState } from '../../typings/ucenter'
 import { translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { isEmpty } from 'lodash'
 
 
-interface SliderContenItemtUserProps {
+interface Props {
   readonly isLogin: boolean
-  readonly inviteCodeData: InviitationsMineState[]
+  readonly inviteCodeData: InvitationsMineState[]
   readonly visible: boolean
   readonly hexGridsMineData: hexGridsByFilterState
   setIsModalVisibleInviteCode: (val: boolean) => void
@@ -21,13 +21,11 @@ interface SliderContenItemtUserProps {
 }
 
 // 侧边栏 菜单 用户
-const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
+const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
   isLogin, inviteCodeData, hexGridsMineData, setIsModalVisibleInviteCode,
   visible, translateMap
 }) {
   const { t } = useTranslation('common')
-
-  console.log('SliderContenItemtUser', isLogin, inviteCodeData)
 
   // 有效邀请码
   const validCodeCount = useMemo(() => {
@@ -135,4 +133,4 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   )
 })
 
-export default SliderContenItemtUser
+export default SliderItemUser

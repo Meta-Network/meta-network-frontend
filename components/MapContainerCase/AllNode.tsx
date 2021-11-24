@@ -139,7 +139,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     
     // 找到间隙最大的
     const maxResult = maxBy(list, o => o.value)
-    console.log('max', maxResult)
 
     if (maxResult!.value <= 0) {
       return

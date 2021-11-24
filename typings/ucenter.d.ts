@@ -49,7 +49,7 @@ export interface UsersMePatchProps {
 
 // ---------------- Inviations ----------------
 
-export interface InviitationsMineState {
+export interface InvitationsMineState {
   id: number
   sub: string
   signature: string

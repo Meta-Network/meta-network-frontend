@@ -5,7 +5,7 @@ import {
 } from '../services/metaNetwork'
 import { invitationsMine, storageToken } from '../services/ucenter'
 import { HexGridsLoctionByUserIdState, PointScopeState } from '../typings/metaNetwork'
-import { InviitationsMineState } from '../typings/ucenter.d'
+import { InvitationsMineState } from '../typings/ucenter.d'
 import { amountSplit } from '../utils/index'
 import { OAuthWhiteList } from '../common/config/index'
 
@@ -36,7 +36,7 @@ export const fetchForbiddenZoneRadiusAPI = async (radius: number) => {
  * @returns
  */
 export const fetchInviteCodeAPI = async () => {
-  let result: InviitationsMineState[] = []
+  let result: InvitationsMineState[] = []
   try {
     const res = await invitationsMine()
     if (res.statusCode === 200) {
