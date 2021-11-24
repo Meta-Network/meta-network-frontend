@@ -1,6 +1,4 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { HexGrid } from 'react-hexgrid'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
 import { isEmpty, shuffle, random, maxBy } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
@@ -79,8 +77,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
 
-    // console.log('calcNodeMode default')
-
     return 'default'
   }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState, hexGridsMineData])
 
@@ -102,37 +98,32 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     toggleLayoutHide(percentage)
   }, [])
 
-  useEffect(() => {
-
-    if (!hex.length) {
-      return
-    }
-
-    const hexagon = Math.ceil(width / getHexagonWidth())
+  /**
+   * calc zone range
+   */
+  const calcZone = useCallback((currentHexPoint: HexagonsState) => {
+    const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const hexagon = Math.ceil(_width / getHexagonWidth())
     let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
     
-    console.log('zoneRadius', zoneRadius)
-
     const point = calcZoneRadius({
       centerPoint: currentHexPoint,
       hex: hex,
-      zoneRadius: zoneRadius - 2
+      zoneRadius: zoneRadius
     })
 
     setCurrentHex(Array.from(point, ([, value]) => value))
-  }, [ hex, width, currentHexPoint ])
+  }, [ hex ])
+
 
   const { run: load } = useDebounceFn(() => {
 
     const wrapper = document.querySelector('.layout-wrapper')
-    console.log('wrapper', wrapper?.getBoundingClientRect())
+    // console.log('wrapper', wrapper?.getBoundingClientRect())
+    const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
     const { left, top, right, bottom } = wrapper!.getBoundingClientRect()
-    const leftMargin = left
-    const rightMargin = window.innerWidth - right
-    const topMargin = top
-    const bottomMargin = window.innerHeight - bottom
-
     const list = [
       {
         key: 'left',
@@ -144,11 +135,11 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       },
       {
         key: 'right',
-        value: window.innerWidth - right
+        value: _width - right
       },
       {
         key: 'bottom',
-        value: window.innerHeight - bottom
+        value: _height - bottom
       }
     ]
     
@@ -164,10 +155,9 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     console.log('zoneRadiusMargin', zoneRadiusMargin)
 
     const hexagon = Math.ceil(width / getHexagonWidth())
-    // hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
     let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
 
-    console.log('zoneRadius', zoneRadius)
+    // console.log('zoneRadius', zoneRadius)
 
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
@@ -187,16 +177,29 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       return
     }
 
-    const point = calcZoneRadius({
-      centerPoint: transformFormat(axialToCubeResult) as HexagonsState,
-      hex: hex,
-      zoneRadius: zoneRadius - 2
-    })
-
-    setCurrentHex(Array.from(point, ([, value]) => value))
+    // TODO: 超过范围不拖动
+    calcZone(transformFormat(axialToCubeResult) as HexagonsState)
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
   }, { wait: 800 })
 
+  focus$.useSubscription((type: string) => {
+    // console.log('type', type)
+    if (type === 'positionDefault') {
+      calcZone({ q: 0, r: -11, s: 11 })
+    } else if (type === 'positionOwn') {
+      const { x, y, z } = hexGridsMineData
+      calcZone(transformFormat({ x, y, z }) as HexagonsState)
+    }
+  })
+
+  useEffect(() => {
+    if (!hex.length) {
+      // TODO: 需要默认空地块
+      return
+    }
+
+    calcZone(currentHexPoint)
+  }, [ hex, calcZone, currentHexPoint ])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)
@@ -204,7 +207,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   }, [fetchZoomValue])
 
   focus$.useSubscription((type: string) => {
-    console.log('zzz', type)
     if (type === 'zoom') {
       load()
     }

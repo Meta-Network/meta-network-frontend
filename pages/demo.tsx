@@ -426,19 +426,24 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
+
+      focus$.emit('positionDefault')
+
       translateMap({
         point: defaultPoint,
         showUserInfo: false,
         nodeActive: false
       })
     } else {
+      focus$.emit('positionOwn')
+
       translateMap({
         point: { x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z },
         showUserInfo: false
       })
     }
     setCurrentNode({} as hexGridsByFilterState)
-  }, [hexGridsMineData, translateMap])
+  }, [hexGridsMineData, translateMap, focus$])
 
   /**
    * 浏览历史
