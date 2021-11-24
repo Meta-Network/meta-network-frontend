@@ -36,8 +36,8 @@ const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
-const MapContainer = dynamic(() => import('../components/MapContainerCase'), { ssr: false })
-const AllNode = dynamic(() => import('../components/MapContainerCase/AllNode'), { ssr: false })
+const MapContainer = dynamic(() => import('../components/MapContainer'), { ssr: false })
+const AllNode = dynamic(() => import('../components/MapContainer/AllNode'), { ssr: false })
 const FullLoading = dynamic(() => import('../components/FullLoading'), { ssr: false })
 
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'

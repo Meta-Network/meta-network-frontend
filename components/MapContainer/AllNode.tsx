@@ -98,6 +98,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
+    // TODO: 缩放后 获取的 w h 还是原来的, 暂时不做缩放计算 这样缩小后可以看见完整的六边形
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     let hexagon = 0
     if (hexagonWidth > hexagonHeight) {
@@ -145,6 +146,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     }
      
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
+    console.log(hexagonWidth, hexagonHeight)
     let zoneRadiusWidthMargin = Math.ceil(maxResult!.value / hexagonWidth)
     let zoneRadiusHeightMargin = Math.ceil(maxResult!.value / hexagonHeight)
     const { q, r, s } = currentHexPoint

@@ -1,17 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { HexGrid } from 'react-hexgrid'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
-import { isEmpty, shuffle, random } from 'lodash'
+import { isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
-
 import { getZoomPercentage } from '../../helpers/index'
-import HexagonRound from '../ReactHexgrid/HexagonRound'
 import Layout from '../ReactHexgrid/Layout'
-import NodeContent from '../IndexPage/NodeContent'
-import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
+import { HexagonsState, PointState, AxialState, LayoutState, translateMapState, ZoomTransform } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { toggleLayoutHide } from '../../utils/index'
+import { useUser } from '../../hooks/useUser'
+import { keyFormat } from '../../utils'
+import * as d3 from 'd3'
+import { EventEmitter } from 'ahooks/lib/useEventEmitter'
+import { useMount } from 'ahooks'
+
 
 interface Props {
   readonly width: number
@@ -22,12 +24,11 @@ interface Props {
   readonly allNodeMap: Map<string, hexGridsByFilterState>
   readonly allNodeChoose: Map<string, HexagonsState>
   readonly defaultPoint: PointState
-  readonly bookmark: PointState[]
   readonly noticeBardOccupiedState: boolean
   readonly origin: AxialState
-  readonly hex: HexagonsState[]
   readonly hexGridsMineData: hexGridsByFilterState
   readonly currentNode: hexGridsByFilterState
+  focus$: EventEmitter<string>,
   setCurrentNodeMouse: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
   setCurrentNode: React.Dispatch<React.SetStateAction<hexGridsByFilterState>>
   setCurrentNodeChoose: React.Dispatch<React.SetStateAction<PointState>>
@@ -35,9 +36,6 @@ interface Props {
   handleHistoryView: (point: PointState) => void
   translateMap: (value: translateMapState) => void
 }
-import { useUser } from '../../hooks/useUser'
-import useToast from '../../hooks/useToast'
-import { keyFormat } from '../../utils'
 
 // 可操作的节点模式
 const OperableNodeMode = ['exist', 'active']
@@ -52,12 +50,12 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   allNodeMap,
   allNodeChoose,
   defaultPoint,
-  bookmark,
   noticeBardOccupiedState,
   origin,
-  hex,
   hexGridsMineData,
   currentNode,
+  children,
+  focus$,
   setCurrentNodeMouse,
   setCurrentNode,
   setCurrentNodeChoose,
@@ -66,28 +64,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
   translateMap
 }) {
   const { t } = useTranslation('common')
-  const { Toast } = useToast()
   const { isLogin } = useUser()
-
-  const transApi = useSpringRef()
-  const transition = useTransition(shuffle(hex),
-    process.env.NODE_ENV !== 'development'
-      ? {
-        ref: transApi,
-        trail: 2000 / hex.length,
-        from: { opacity: 0, scale: 0 },
-        enter: { opacity: 1, scale: 1 },
-        leave: { opacity: 0, scale: 0 },
-        delay: () => {
-          return random(30, 80)
-        },
-        // onStart: () => {
-        //   console.log('animated start')
-        // }
-      }
-      : {}
-  )
-  useChain([transApi], [0.1])
 
   /**
    * 计算节点模式
@@ -122,20 +99,8 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
       return noticeBardOccupiedState ? 'choose' : 'default'
     }
 
-    // console.log('calcNodeMode default')
-
     return 'default'
   }, [allNodeMap, allNodeChoose, allNodeDisabled, defaultPoint, noticeBardOccupiedState, hexGridsMineData])
-
-  /**
-   * 节点是不是拥有者
-   */
-  const isNodeOwner = useCallback(({ x, y, z }: PointState) => {
-    return !isEmpty(hexGridsMineData) &&
-      hexGridsMineData.x === x &&
-      hexGridsMineData.y === y &&
-      hexGridsMineData.z === z
-  }, [hexGridsMineData])
 
 
   /**
@@ -291,10 +256,39 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
 
   }, [calcNodeMode, handleHexagonEventMouseOut])
 
-  useEffect(() => {
+
+  /**
+   * 设置内容拖动 缩放
+   */
+   const setContainerDrag = useCallback(() => {
+    const containerD3Svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any> = d3.select('#container svg')
+    const containerD3Zoom: d3.ZoomBehavior<Element, unknown> = d3.zoom()
+
+    ;(window as any).containerD3Svg= containerD3Svg
+    ;(window as any).containerD3Zoom = containerD3Zoom
+
+    containerD3Svg.call(
+      // @ts-ignore
+      containerD3Zoom
+        .extent([[0, 0], [width, height]])
+        .scaleExtent([0.4, 4])
+        .on('zoom', zoomed)
+    )
+
+    function zoomed({ transform }: any) {
+      containerD3Svg.select('g').attr('transform', transform)
+      focus$.emit('zoom')
+    }
+  }, [width, height, focus$])
+
+  useEffect(() => {  
     const timer = setInterval(fetchZoomValue, 2000)
     return () => clearInterval(timer)
   }, [fetchZoomValue])
+
+  useMount(() => {
+    setContainerDrag()
+  })
 
   return (
     <div id="container">
@@ -309,40 +303,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
           onMouseOver={(e: any) => handleLayoutEventMouseOver(e)}
           onMouseOut={(e: any) => handleLayoutEventMouseOut(e)}
         >
-          {
-            // note: key must be unique between re-renders.
-            // using config.mapProps+i makes a new key when the goal template changes.
-
-            transition((style, hex: HexagonsState) => {
-              const { q: x, s: y, r: z } = hex
-              const nodeMode = calcNodeMode({ x, y, z })
-              const key = keyFormat({ x, y, z })
-
-              return (
-                <HexagonRound
-                  style={style}
-                  key={key}
-                  q={hex.q}
-                  r={hex.r}
-                  s={hex.s}
-                  // need space
-                  className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}
-                >
-                  <NodeContent
-                    coordinate={{ x, y, z }}
-                    allNodeDisabled={allNodeDisabled}
-                    allNodeMap={allNodeMap}
-                    allNodeChoose={allNodeChoose}
-                    defaultPoint={defaultPoint}
-                    bookmark={bookmark}
-                    noticeBardOccupiedState={noticeBardOccupiedState}
-                    isNodeOwner={isNodeOwner}
-                    hexGridsMineData={hexGridsMineData}
-                  ></NodeContent>
-                </HexagonRound>
-              )
-            })
-          }
+          {children}
         </Layout>
       </HexGrid>
     </div>
