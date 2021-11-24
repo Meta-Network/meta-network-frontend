@@ -6,15 +6,15 @@ import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } f
 
 import { StoreGet, StoreSet } from '../utils/store'
 import {
-  cubeToAxial, calcTranslate, calcMaxDistance,
+  cubeToAxial, calcTranslate,
   HandleHexagonStyle,
   keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius,
 } from '../utils/index'
-import { PointState, HexagonsState, AxialState, LayoutState, translateMapState, ZoomTransform } from '../typings/node.d'
+import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI, getZoomPercentage } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -42,7 +42,6 @@ const FullLoading = dynamic(() => import('../components/FullLoading'), { ssr: fa
 
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
-const map = 'hexagon'
 const layout: LayoutState = { width: 66, height: 66, flat: false, spacing: 1.1 }
 const size: AxialState = { x: layout.width, y: layout.height }
 // 默认坐标点
@@ -57,7 +56,6 @@ const defaultHexGridsRange: PointScopeState = {
   zMax: 90,
   simpleQuery: ''
 }
-const mapProps: number[] = [11]
 
 const Home = () => {
   const { t } = useTranslation('common')
@@ -67,7 +65,6 @@ const Home = () => {
   const [height, setHeight] = useState<number>(800)
   const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
   // 所有节点
-  // const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
   const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map())
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map())
@@ -293,7 +290,6 @@ const Home = () => {
           dataMap.set(keyFormat({ x, y, z }), i)
         })
 
-        // setAllNode(data)
         setAllNodeMap(dataMap)
 
         // 计算可选坐标

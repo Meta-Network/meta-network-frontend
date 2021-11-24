@@ -38,7 +38,7 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
       if (isLogin) {
         window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
       }
-    }, [ isLogin ])
+    }, [isLogin])
 
   const openUrlMySpace = useCallback(
     () => {
@@ -47,7 +47,7 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
           window.open(`https://${hexGridsMineData.subdomain}`, '_blank')
         }
       }
-    }, [ isLogin, hexGridsMineData ])
+    }, [isLogin, hexGridsMineData])
 
   const handleMySpace = () => {
     if (!hexGridsMineData.subdomain) {
@@ -90,21 +90,22 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
           <h4>{t('personal')}</h4>
         </li> : null
       }
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
+      <Tooltip title={(visible || isMobile) ? '' : t('my-meta-space')} placement="right">
+        <li>
           <StyledSliderSpace
             visible={visible}
-            className={ (isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
+            className={(isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleMySpace()}>
             <SliderHexagonIcon className="space-icon" />
             {visible ? t('my-meta-space') : ''}
             <SliderShareIcon className="space-link-icon" />
           </StyledSliderSpace>
-        </Tooltip>
-      </li>
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
+        </li>
+      </Tooltip>
+
+      <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
+        <li>
           <a
             className={(isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
             href="javascript:;"
@@ -112,10 +113,10 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
             <SliderSpaceIcon />
             {visible ? t('site-management') : ''}
           </a>
-        </Tooltip>
-      </li>
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('invitation-code')} placement="right">
+        </li>
+      </Tooltip>
+      <Tooltip title={(visible || isMobile) ? '' : t('invitation-code')} placement="right">
+        <li>
           <a
             href="javascript:;"
             onClick={() => isLogin && setIsModalVisibleInviteCode(true)}
@@ -123,12 +124,12 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
             <SliderInviteIcon />
             {visible ? t('invitation-code') : ''}
             {
-              isLogin && visible ?
-                <StyledCount>{validCodeCount}</StyledCount> : null
+              (isLogin && visible) &&
+              <StyledCount>{validCodeCount}</StyledCount>
             }
           </a>
-        </Tooltip>
-      </li>
+        </li>
+      </Tooltip>
     </StyledSliderCItem>
   )
 })
