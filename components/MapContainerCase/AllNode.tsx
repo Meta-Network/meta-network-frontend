@@ -7,12 +7,10 @@ import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
-import { useUser } from '../../hooks/useUser'
+import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { keyFormat } from '../../utils'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
-import { Hex } from 'react-hexgrid'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -35,9 +33,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   hexGridsMineData,
   focus$,
 }) {
-  const { t } = useTranslation('common')
-  const { isLogin } = useUser()
-
+  const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
 
@@ -170,7 +166,18 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       return
     }
 
-    // TODO: 超过范围不拖动
+    // 超过范围不拖动
+    // 容差
+    const _farthestDistance = farthestDistance + 6
+    if (
+      farthestDistance !== 0
+      && (axialToCubeResult.x >= _farthestDistance
+      || axialToCubeResult.y >= _farthestDistance
+      || axialToCubeResult.z >= _farthestDistance)
+    ) {
+      return
+    }
+
     calcZone(transformFormat(axialToCubeResult) as HexagonsState)
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
   }, { wait: 800 })
@@ -193,6 +200,11 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     calcZone(currentHexPoint)
   }, [ allNodeMap, calcZone, currentHexPoint ])
+
+  useEffect(() => {
+    const _farthestDistance = calcFarthestDistance(allNodeMap)
+    setFarthestDistance(_farthestDistance)
+  }, [ allNodeMap ])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)

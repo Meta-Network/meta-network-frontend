@@ -225,6 +225,30 @@ export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 
 }
 
 /**
+ * calc Farthest Distance
+ * @param allNode 
+ * @returns 
+ */
+export const calcFarthestDistance = (allNode: Map<string, hexGridsByFilterState>) => {
+  let max = 0
+
+  for (const value of allNode.values()) {
+    const { x, y, z } = value
+    if (Math.abs(x) > max) {
+      max = Math.abs(x)
+    }
+    if (Math.abs(y) > max) {
+      max = Math.abs(y)
+    }
+    if (Math.abs(z) > max) {
+      max = Math.abs(z)
+    }
+  }
+
+  return max
+}
+
+/**
  * 返回两点的角度
  * @param start
  * @param end
