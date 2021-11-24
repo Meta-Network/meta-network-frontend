@@ -7,14 +7,14 @@ import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcZoneRadius, cubeToAxial, getHexagonWidth, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { axialToCube, calcZoneRadius, cubeToAxial, getHexagonWidth, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { useUser } from '../../hooks/useUser'
 import { keyFormat } from '../../utils'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
+import { Hex } from 'react-hexgrid'
 
 interface Props {
-  readonly width: number
   readonly allNodeDisabled: Map<string, HexagonsState>
   readonly allNodeMap: Map<string, hexGridsByFilterState>
   readonly allNodeChoose: Map<string, HexagonsState>
@@ -22,12 +22,10 @@ interface Props {
   readonly bookmark: PointState[]
   readonly noticeBardOccupiedState: boolean
   readonly hexGridsMineData: hexGridsByFilterState
-  readonly hex: HexagonsState[]
   focus$: EventEmitter<string>
 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
-  width,
   allNodeDisabled,
   allNodeMap,
   allNodeChoose,
@@ -35,7 +33,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   bookmark,
   noticeBardOccupiedState,
   hexGridsMineData,
-  hex,
   focus$,
 }) {
   const { t } = useTranslation('common')
@@ -104,17 +101,11 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   const calcZone = useCallback((currentHexPoint: HexagonsState) => {
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const hexagon = Math.ceil(_width / getHexagonWidth())
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
+    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
     
-    const point = calcZoneRadius({
-      centerPoint: currentHexPoint,
-      hex: hex,
-      zoneRadius: zoneRadius
-    })
-
-    setCurrentHex(Array.from(point, ([, value]) => value))
-  }, [ hex ])
-
+    const points = Hexagon(currentHexPoint, zoneRadius)
+    setCurrentHex(points)
+  }, [])
 
   const { run: load } = useDebounceFn(() => {
 
@@ -154,8 +145,8 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const zoneRadiusMargin = Math.ceil(maxResult!.value / getHexagonWidth())
     console.log('zoneRadiusMargin', zoneRadiusMargin)
 
-    const hexagon = Math.ceil(width / getHexagonWidth())
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
+    const hexagon = Math.ceil(_width / getHexagonWidth())
+    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
 
     // console.log('zoneRadius', zoneRadius)
 
@@ -193,13 +184,13 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   })
 
   useEffect(() => {
-    if (!hex.length) {
-      // TODO: 需要默认空地块
+    if (!allNodeMap.size) {
+      calcZone({ q: 0, r: 0, s: 0 })
       return
     }
 
     calcZone(currentHexPoint)
-  }, [ hex, calcZone, currentHexPoint ])
+  }, [ allNodeMap, calcZone, currentHexPoint ])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)

@@ -2,6 +2,7 @@ import { trim, xor, zip } from 'lodash'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { AxialState, HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
+import { Hex as HexData } from 'react-hexgrid'
 
 interface CoordinateState {
   x: number,
@@ -225,26 +226,6 @@ export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 
 
 /**
  * 计算范围内坐标点
- * // center.subtract 不合规的坐标点会报错
- * @param center
- * @param hexGrids
- * @param distance
- * @returns HexagonsState[]
- */
-export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance: number) => {
-  let points: HexagonsState[] = []
-  for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i]
-    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-    if (distanceResult) {
-      points.push(ele)
-    }
-  }
-  return points
-}
-
-/**
- * 计算范围内坐标点
  * 公用方法为了减少一层循坏 直接传data set value
  * @param center 
  * @param hexGrids 
@@ -379,7 +360,7 @@ export const amountSplit = (amount: string, decimal: number) => {
  * @param point
  * @returns
  */
-export const keyFormat = (point: PointState) => `x${point.x}_y${point.y}_z${point.z}`
+export const keyFormat = (point: PointState): string => `x${point.x}_y${point.y}_z${point.z}`
 
 /**
  * 解析 Key 为对象
@@ -409,44 +390,56 @@ export const keyFormatParse = (val: string) => {
 /**
  * calc Forbidden Zone Radius
  * 计算半径为 x 不可选区域
- * @param hex 
  * @param forbiddenZoneRadius 
  * @returns 
  */
-export const calcForbiddenZoneRadius = ({
-  hex,
-  forbiddenZoneRadius
-}: {
-  hex: HexagonsState[], forbiddenZoneRadius: number
-}) => {
-  const center = new Hex(0, 0, 0)
-  return calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
+export const calcForbiddenZoneRadius = ({ forbiddenZoneRadius }: { forbiddenZoneRadius: number }) => {
+  const center = new HexData(0, 0, 0)
+
+  let points: Map<string, HexagonsState> = new Map()
+
+  const hexagons = Hexagon(center, forbiddenZoneRadius)
+  hexagons.forEach(i => {
+    const { q, r, s } = i
+    const key: string = compose(keyFormat, transformFormat)({q, r, s})
+    points.set(key, i)
+  })
+
+  return points
 }
 
 
 /**
  * calc AllNode Choose Zone Radius
- * @param param0 
+ * @param
  * @returns 
  */
-export const calcAllNodeChooseZoneRadius = ({
-  hex, allNode, distance = 1
-}: {
-  hex: HexagonsState[], allNode: hexGridsByFilterState[], distance: number
-}) => {
+export const calcAllNodeChooseZoneRadius = ({ 
+  allNodeMap, 
+  forbidden,
+  distance = 1}: { 
+    allNodeMap: Map<string, hexGridsByFilterState>,
+    forbidden: Map<string, HexagonsState>,
+    distance?: number }) => {
   let points: Map<string, HexagonsState> = new Map()
 
-  for (let i = 0; i < allNode.length; i++) {
-    const eleAllNode = allNode[i]
-    // 捕获 new hex 错误
-    try {
-      let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
-      calcCenterRangeAsMap(center, hex, distance, points)
-    } catch (e) {
-      console.error('e', e)
-      continue
-    }
+  for (const [, value] of allNodeMap.entries()) {
+    const { x, y, z } = value
+    const { q, r, s } = transformFormat({ x, y, z }) as HexagonsState
+    const center: HexagonsState = new HexData(q, r, s)
+    const hexagons = Hexagon(center, distance)
+
+    hexagons.forEach(i => {
+      const { q, r, s } = i
+      const keyChoose: string = compose(keyFormat, transformFormat)({q, r, s})
+
+      // 如果节点已经有数据不 set
+      if (!allNodeMap.get(keyChoose) && !forbidden.get(keyChoose)) {
+        points.set(keyChoose, i)
+      }
+    })
   }
+
 
   return points
 }
@@ -499,4 +492,24 @@ export const getHexagonWidth = () => {
    return width
   }
   return hexagonWidth
+}
+
+
+/**
+ * generate hexagon
+ */
+export const Hexagon = (center: HexagonsState, range: number) => {
+  let result: HexagonsState[] = []
+  const { q, r, s } = center
+  // TODO: 优化 减少循环
+  for (let x = q - range; x <= q + range; x++) {
+    for (let y = r - range; y <= r + range; y++) {
+      for (let z = s - range; z <= s + range; z++) {
+        if (x + y + z === 0) {
+          result.push(new HexData(x, y, z))
+        } 
+      }
+    }
+  }
+  return result
 }

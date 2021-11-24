@@ -63,8 +63,6 @@ const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
 
-  // hex all 坐标点
-  const [hex, setHex] = useState<HexagonsState[]>([])
   const [width, setWidth] = useState<number>(1000)
   const [height, setHeight] = useState<number>(800)
   const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
@@ -271,32 +269,6 @@ const Home = () => {
       setHexGridsMineTag(true)
     }, [translateMapDefault])
 
-  /**
-   * 渲染坐标地图
-   */
-  const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
-    const generator = GridGenerator.getGenerator(map)
-    const _mapProps = list.length ? calcMaxDistance(list, 20) : mapProps
-    const hexagons: HexagonsState[] = generator.apply(null, _mapProps)
-
-    // 计算禁用坐标
-    const pointsForbidden = calcForbiddenZoneRadius({
-      hex: hexagons,
-      forbiddenZoneRadius: forbiddenZoneRadius
-    })
-    setAllNodeDisabled(pointsForbidden)
-
-    // 计算可选坐标
-    const pointsChoose = calcAllNodeChooseZoneRadius({
-      hex: hexagons,
-      allNode: list,
-      distance: 1
-    })
-    setAllNodeChoose(pointsChoose)
-    setHex(hexagons)
-
-    fetchHexGridsMine()
-  }, [fetchHexGridsMine])
 
   /**
    * 获取范围坐标点
@@ -311,23 +283,28 @@ const Home = () => {
         setForbiddenZoneRadius(forbiddenZoneRadiusResult)
       }
 
+      // 计算禁用坐标
+      const pointsForbidden = calcForbiddenZoneRadius({ forbiddenZoneRadius: forbiddenZoneRadius})
+
       if (data) {
-        let _map: Map<string, hexGridsByFilterState> = new Map()
+        let dataMap: Map<string, hexGridsByFilterState> = new Map()
         data.forEach(i => {
           const { x, y, z } = i
-          _map.set(keyFormat({ x, y, z }), i)
+          dataMap.set(keyFormat({ x, y, z }), i)
         })
 
         // setAllNode(data)
-        setAllNodeMap(_map)
+        setAllNodeMap(dataMap)
 
-        render(data, forbiddenZoneRadiusResult)
-      } else {
-        render([], 0)
+        // 计算可选坐标
+        const pointsChoose = calcAllNodeChooseZoneRadius({ allNodeMap: dataMap, forbidden: pointsForbidden })
+        setAllNodeChoose(pointsChoose)
       }
 
+      fetchHexGridsMine()
+      setAllNodeDisabled(pointsForbidden)
       setFullLoading(false)
-    }, [forbiddenZoneRadius, render])
+    }, [forbiddenZoneRadius, fetchHexGridsMine])
 
   /**
    * 处理收藏
@@ -533,8 +510,6 @@ const Home = () => {
         focus$={focus$}
       >
         <AllNode
-          hex={hex}
-          width={width}
           allNodeDisabled={allNodeDisabled}
           allNodeMap={allNodeMap}
           allNodeChoose={allNodeChoose}
