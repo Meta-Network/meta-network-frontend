@@ -3,22 +3,24 @@ import dynamic from 'next/dynamic'
 import { GridGenerator } from 'react-hexgrid'
 import { assign, cloneDeep, isEmpty, uniqBy } from 'lodash'
 import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
+
 import { StoreGet, StoreSet } from '../utils/store'
 import {
   cubeToAxial, calcTranslate, calcMaxDistance,
-  HandleHexagonStyle, keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius
+  HandleHexagonStyle,
+  keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius, calcZoneRadius
 } from '../utils/index'
-import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
+import { PointState, HexagonsState, AxialState, LayoutState, translateMapState, ZoomTransform } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI, getZoomPercentage } from '../helpers/index'
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
-import { KEY_RENDER_MODE, KEY_RENDER_MODE_DEFAULT_VALUE } from '../common/config'
+import * as d3 from 'd3'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -34,43 +36,38 @@ const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
-const MapContainer = dynamic(() => import('../components/MapContainer'), { ssr: false })
+const MapContainer = dynamic(() => import('../components/MapContainerCase'), { ssr: false })
+const AllNode = dynamic(() => import('../components/MapContainerCase/AllNode'), { ssr: false })
 const FullLoading = dynamic(() => import('../components/FullLoading'), { ssr: false })
 
-let d3: any = null
-let zoom: any = null
-if (process.browser) {
-  d3 = require('d3')
-  zoom = d3.zoom()
-}
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
 const map = 'hexagon'
-const mapProps = [11]
 const layout: LayoutState = { width: 66, height: 66, flat: false, spacing: 1.1 }
 const size: AxialState = { x: layout.width, y: layout.height }
+// 默认坐标点
+const defaultPoint: PointState = { x: 0, y: 11, z: -11 }
+// 默认坐标范围
+const defaultHexGridsRange: PointScopeState = {
+  xMin: -90,
+  xMax: 90,
+  yMin: -90,
+  yMax: 90,
+  zMin: -90,
+  zMax: 90,
+  simpleQuery: ''
+}
+const mapProps: number[] = [11]
 
 const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
+
   // hex all 坐标点
   const [hex, setHex] = useState<HexagonsState[]>([])
   const [width, setWidth] = useState<number>(1000)
   const [height, setHeight] = useState<number>(800)
   const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
-  // 默认坐标点
-  const [defaultPoint] = useState<PointState>({ x: 0, y: 11, z: -11 })
-  // 默认坐标范围
-  const [defaultHexGridsRange] = useState<PointScopeState>({
-    xMin: -90,
-    xMax: 90,
-    yMin: -90,
-    yMax: 90,
-    zMin: -90,
-    zMax: 90,
-    simpleQuery: ''
-  })
-
   // 所有节点
   // const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
   const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map())
@@ -143,152 +140,98 @@ const Home = () => {
     setHistoryView(historyViewStoreList)
   }, [])
 
-  /**
-   * 发送事件
-   */
-  const { run: emitEvent } = useThrottleFn(
-    () => {
-      focus$.emit('zoom')
-    },
-    {
-      wait: 300,
-    },
-  )
-
-  /**
-   * 设置内容拖动 缩放
-   */
-  const setContainerDrag = useCallback(() => {
-    const svg = d3.select('#container svg')
-    let oldTransform: { k: number, x: number, y: number } | null = null
-
-    // const svgG = d3.select('#container svg > g')
-    // const svgBox = svgG.node().getBBox()
-    // const { width: boxWidth, height: boxHeight } = svgBox
-
-    svg.call(
-      zoom
-        .extent([[0, 0], [width, height]])
-        .scaleExtent([0.4, 4])
-        // .translateExtent([[-(boxWidth / 2), -(boxHeight / 2)], [(boxWidth / 2) + width, (boxHeight / 2) + height]])
-        .on('zoom', zoomed)
-    )
-
-    function zoomed({ transform }: { transform: { k: number, x: number, y: number } }) {
-      // console.log('transform', transform, oldTransform)
-      // 原点 点击不往下执行
-      if (oldTransform && oldTransform.k === transform.k && oldTransform.x === transform.x && oldTransform.y === transform.y) {
-        return
-      }
-
-      // 边界判定
-      let tran = transform
-      // console.log('transform', transform)
-      oldTransform = cloneDeep(transform)
-
-      const svg = d3.select('#container svg > g')
-      svg.attr('transform', tran)
-
-      const svgG = d3.select('#container svg > g')
-      const svgBox1 = svgG.node().getBBox()
-      const { width: boxWidth, height: boxHeight } = svgBox1
-
-      // TODO: 缩放 计算有问题 暂时还不知道为什么
-      // zoom.translateExtent([[-(boxWidth / 2) - width, -(boxHeight / 2) - height], [(boxWidth / 2) + width, (boxHeight / 2) + height]])
-      zoom.translateExtent([[-(boxWidth / 2) - width, -(boxHeight / 2) - height], [(boxWidth), (boxHeight)]])
-
-      emitEvent()
-    }
-  }, [width, height, emitEvent])
 
   /**
    * 偏移地图坐标
    */
   const translateMap = useCallback(
     ({
-        point,
-        scale,
-        showUserInfo = true,
-        nodeActive = true,
-        callback,
-        duration = 600
-      }: translateMapState
+      point,
+      scale,
+      showUserInfo = true,
+      nodeActive = true,
+      callback,
+      duration = 600
+    }: translateMapState
     ) => {
-    const svg = d3.select('#container svg')
-    const { x, y, z } = point
+      const { x, y, z } = point
 
-    const showUserMore = () => {
-      if (!showUserInfo) {
-        return
-      }
-      const node = allNodeMap.get(keyFormat({ x, y, z }))
-      if (!node) {
-        Toast({ content: t('no-coordinate-data') })
-        return
-      }
-      // 重复点击垱前块 Toggle
-      if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
-        //
-      } else {
-        setCurrentNode(node)
-      }
-    }
+      const showUserMore = () => {
 
-    const eventEnd = () => {
-      const requestAnimationFrame = window.requestAnimationFrame || (window as any).mozRequestAnimationFrame ||
-      (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame
+        if (!showUserInfo) {
+          return
+        }
+        const node = allNodeMap.get(keyFormat({ x, y, z }))
+        if (!node) {
+          Toast({ content: t('no-coordinate-data') })
+          return
+        }
+        // 重复点击垱前块 Toggle
+        if (currentNode.x === x && currentNode.y === y && currentNode.z === z) {
+          //
+        } else {
+          setCurrentNode(node)
+        }
+      }
 
-      requestAnimationFrame(() => {
+      const eventEnd = () => {
         callback && callback()
+      }
+
+      HandleHexagonStyle({ x, y, z }, nodeActive)
+
+      if (!(window as any).containerD3Svg) {
+        return
+      }
+      
+      // 坐标转换，这么写方便后续能阅读懂
+      const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
+      // 计算坐标位置
+      let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+      // 计算缩放值
+      const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
+      // 计算坐标位置数据
+      const { x: xVal, y: yVal } = calcTranslateValue({
+        x: _x,
+        y: _y,
+        width: width,
+        height: height,
+        scale: _scale
       })
-    }
 
-    HandleHexagonStyle({ x, y, z }, nodeActive)
-
-    // 坐标转换，这么写方便后续能阅读懂
-    const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    // 计算坐标位置
-    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    // 计算缩放值
-    const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
-    // 计算坐标位置数据
-    const { x: xVal, y: yVal } = calcTranslateValue({
-      x: _x,
-      y: _y,
-      width: width,
-      height: height,
-      scale: _scale
-    })
-
-    svg.transition()
-      .duration(duration)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
-      )
-      .on('start', showUserMore)
-      .on('end', eventEnd)
-      svg.node()
-  }, [allNodeMap, currentNode, Toast, t, width, height])
+      ;(window as any).containerD3Svg.transition()
+        .duration(duration)
+        .call(
+          // @ts-ignore
+          (window as any).containerD3Zoom.transform,
+          d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
+        )
+        .on('start', showUserMore)
+        .on('end', eventEnd)
+    }, [allNodeMap, currentNode, Toast, t, width, height])
 
   /**
    * 偏移地图坐标 默认取消动画使用
    */
   const translateMapDefault = useCallback(({ x, y, z }: PointState, nodeActive: boolean = true) => {
-    const svg = d3.select('#container svg')
-
     HandleHexagonStyle({ x, y, z }, nodeActive)
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
     let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
-    svg.transition()
-      .duration(0)
+
+    if (!(window as any).containerD3Svg) {
+      return
+    }
+
+    ;(window as any).containerD3Svg.transition()
+      .duration(1000)
       .call(
-        zoom.transform,
+        // @ts-ignore
+        (window as any).containerD3Zoom.transform,
         d3.zoomIdentity.translate(_x, _y).scale(1),
       )
-  }, [ ])
+  }, [])
 
   /**
    * 获取自己的坐标点
@@ -306,14 +249,14 @@ const Home = () => {
       // 默认地图偏移
       const defaultTranslateMap = () => {
         if (data) {
-          translateMapDefault({ x: data.x, y: data.y, z: data.z }, true)
+          const { x, y, z } = data
+          translateMapDefault({ x, y, z }, true)
         } else {
           translateMapDefault(defaultPoint, false)
         }
       }
 
       const { cube } = qs.parse(window.location.search, { ignoreQueryPrefix: true })
-
       if (cube) {
         const _cubeData = keyFormatParse(cube as string)
         if (_cubeData) {
@@ -326,22 +269,20 @@ const Home = () => {
       }
 
       setHexGridsMineTag(true)
-    }, [defaultPoint, translateMapDefault])
+    }, [translateMapDefault])
 
   /**
    * 渲染坐标地图
    */
   const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
     const generator = GridGenerator.getGenerator(map)
-    const _mapProps = list.length ? calcMaxDistance(list, 1) : mapProps
+    const _mapProps = list.length ? calcMaxDistance(list, 20) : mapProps
     const hexagons: HexagonsState[] = generator.apply(null, _mapProps)
-
-    // console.log('list render', list)
-    // console.log('list hexagons', hexagons)
 
     // 计算禁用坐标
     const pointsForbidden = calcForbiddenZoneRadius({
-      hex: hexagons, forbiddenZoneRadius: forbiddenZoneRadius
+      hex: hexagons,
+      forbiddenZoneRadius: forbiddenZoneRadius
     })
     setAllNodeDisabled(pointsForbidden)
 
@@ -352,25 +293,10 @@ const Home = () => {
       distance: 1
     })
     setAllNodeChoose(pointsChoose)
+    setHex(hexagons)
 
-    const renderMode = StoreGet(KEY_RENDER_MODE) || KEY_RENDER_MODE_DEFAULT_VALUE
-    if (renderMode === KEY_RENDER_MODE_DEFAULT_VALUE && list.length) {
-      // merged
-      let hexChoose = Array.from(pointsChoose, ([, value]) => value)
-      let hexForbidden = Array.from(pointsForbidden, ([, value]) => value)
-
-      let hexList = [...hexChoose, ...hexForbidden]
-      let hexListResult = uniqBy(hexList, n => [n.q, n.s, n.r].join())
-
-      // console.log('newMap', hexListResult)
-      setHex(hexListResult)
-    } else {
-      setHex(hexagons)
-    }
-
-    setContainerDrag()
     fetchHexGridsMine()
-  }, [setContainerDrag, fetchHexGridsMine])
+  }, [fetchHexGridsMine])
 
   /**
    * 获取范围坐标点
@@ -401,7 +327,7 @@ const Home = () => {
       }
 
       setFullLoading(false)
-    }, [defaultHexGridsRange, forbiddenZoneRadius, render])
+    }, [forbiddenZoneRadius, render])
 
   /**
    * 处理收藏
@@ -500,19 +426,24 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
+
+      focus$.emit('positionDefault')
+
       translateMap({
         point: defaultPoint,
         showUserInfo: false,
         nodeActive: false
       })
     } else {
+      focus$.emit('positionOwn')
+
       translateMap({
         point: { x: hexGridsMineData.x, y: hexGridsMineData.y, z: hexGridsMineData.z },
         showUserInfo: false
       })
     }
     setCurrentNode({} as hexGridsByFilterState)
-  }, [hexGridsMineData, defaultPoint, translateMap])
+  }, [hexGridsMineData, translateMap, focus$])
 
   /**
    * 浏览历史
@@ -585,13 +516,11 @@ const Home = () => {
         height={height}
         size={size}
         layout={layout}
-        hex={hex}
         setCurrentNodeMouse={setCurrentNodeMouse}
         allNodeDisabled={allNodeDisabled}
         allNodeMap={allNodeMap}
         allNodeChoose={allNodeChoose}
         defaultPoint={defaultPoint}
-        bookmark={bookmark}
         noticeBardOccupiedState={noticeBardOccupiedState}
         hexGridsMineData={hexGridsMineData}
         origin={origin}
@@ -601,8 +530,20 @@ const Home = () => {
         setIsModalVisibleOccupied={setIsModalVisibleOccupied}
         handleHistoryView={HandleHistoryView}
         translateMap={translateMap}
+        focus$={focus$}
       >
-
+        <AllNode
+          hex={hex}
+          width={width}
+          allNodeDisabled={allNodeDisabled}
+          allNodeMap={allNodeMap}
+          allNodeChoose={allNodeChoose}
+          defaultPoint={defaultPoint}
+          bookmark={bookmark}
+          noticeBardOccupiedState={noticeBardOccupiedState}
+          hexGridsMineData={hexGridsMineData}
+          focus$={focus$}
+        ></AllNode>
       </MapContainer>
       <MarkContainer></MarkContainer>
       <DeploySite
@@ -621,8 +562,8 @@ const Home = () => {
       }
       {
         !isEmpty(hexGridsMineData) && hexGridsMineTag && isLogin && !hexGridsMineData.subdomain
-        ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
-        : null
+          ? <NoticeBardCreateSpace></NoticeBardCreateSpace>
+          : null
       }
       <HexGridsCount range={defaultHexGridsRange}></HexGridsCount>
       <HomeArrow
