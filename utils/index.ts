@@ -481,17 +481,23 @@ export const toggleLayoutHide = (percentage: number) => {
 }
 
 /**
- * get hexagon width
+ * get hexagon box
  * @returns 
  */
-export const getHexagonWidth = () => {
+export const getHexagonBox = (): {
+  width: number,
+  height: number,
+} => {
   const hexagonDom = document.querySelector<SVGAElement>('.hexagon-group')
   let hexagonWidth = 114.31
+  let hexagonHeight = 125.31
   if (hexagonDom) {
-   const { width } = hexagonDom.getBBox()
-   return width
+    return hexagonDom.getBBox()
   }
-  return hexagonWidth
+  return {
+    width: hexagonWidth,
+    height: hexagonHeight,
+  }
 }
 
 

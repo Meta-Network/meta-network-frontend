@@ -7,7 +7,7 @@ import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcZoneRadius, cubeToAxial, getHexagonWidth, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { axialToCube, calcZoneRadius, cubeToAxial, getHexagonBox, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { useUser } from '../../hooks/useUser'
 import { keyFormat } from '../../utils'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -100,17 +100,24 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
    */
   const calcZone = useCallback((currentHexPoint: HexagonsState) => {
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const hexagon = Math.ceil(_width / getHexagonWidth())
+    const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+
+    const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
+    let hexagon = 0
+    if (hexagonWidth > hexagonHeight) {
+      hexagon = Math.ceil(_width / hexagonWidth)
+    } else {
+      hexagon = Math.ceil(_height / hexagonHeight)
+    }
+
     let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
     
-    const points = Hexagon(currentHexPoint, zoneRadius)
+    const points = Hexagon(currentHexPoint, zoneRadius + 4)
     setCurrentHex(points)
   }, [])
 
   const { run: load } = useDebounceFn(() => {
-
     const wrapper = document.querySelector('.layout-wrapper')
-    // console.log('wrapper', wrapper?.getBoundingClientRect())
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
@@ -142,26 +149,21 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       return
     }
      
-    const zoneRadiusMargin = Math.ceil(maxResult!.value / getHexagonWidth())
-    console.log('zoneRadiusMargin', zoneRadiusMargin)
-
-    const hexagon = Math.ceil(_width / getHexagonWidth())
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
-
-    // console.log('zoneRadius', zoneRadius)
-
+    const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
+    let zoneRadiusWidthMargin = Math.ceil(maxResult!.value / hexagonWidth)
+    let zoneRadiusHeightMargin = Math.ceil(maxResult!.value / hexagonHeight)
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
     let axialToCubeResult: PointState | undefined
 
     if (maxResult!.key === 'left') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusMargin, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusWidthMargin, cubeToAxialResult.y)
     } else if (maxResult!.key === 'right') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusMargin, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusWidthMargin, cubeToAxialResult.y)
     } else if (maxResult!.key === 'top') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusMargin )
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusHeightMargin )
     } else if (maxResult!.key === 'bottom') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusMargin)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusHeightMargin)
     }
 
     if (!axialToCubeResult) {
