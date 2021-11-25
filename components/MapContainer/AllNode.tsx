@@ -21,6 +21,9 @@ interface Props {
   focus$: EventEmitter<string>
 }
 
+// key x_y_z_distance
+const hexagonMap = new Map()
+
 const AllNode: React.FC<Props> = React.memo(function AllNode({
   allNodeDisabled,
   allNodeMap,
@@ -106,12 +109,27 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     }
 
     let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
-    
     console.log('hexagon', zoneRadius, hexagon)
 
-    const points = HexagonMemo(currentHexPoint, zoneRadius * 3)
-    // const points = Hexagon(currentHexPoint, zoneRadius)
-    setCurrentHex(points)
+    // 寻找 cache, 超过 x 删除部分
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 3
+
+    if (hexagonMap.size >= 40) {
+      for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
+        hexagonMap.delete(key)
+      }
+    }
+
+    const hexagonResult = hexagonMap.get(_key)
+    if (hexagonResult) {
+      setCurrentHex(hexagonResult)
+    } else {
+      const result = HexagonMemo(currentHexPoint, zoneRadius * 3)
+      hexagonMap.set(_key, result)
+      setCurrentHex(result)
+    }
+
+    console.log('hexagonMap', hexagonMap)
   }, [])
 
   const { run: load } = useDebounceFn(() => {
