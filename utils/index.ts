@@ -476,7 +476,7 @@ export const getHexagonBox = (): {
   let hexagonWidth = 114.31
   let hexagonHeight = 125.31
   if (hexagonDom) {
-    return hexagonDom.getBBox()
+    return hexagonDom.getBoundingClientRect()
   }
   return {
     width: hexagonWidth,

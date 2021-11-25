@@ -101,7 +101,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
-    // TODO: 缩放后 获取的 w h 还是原来的, 暂时不做缩放计算 这样缩小后可以看见完整的六边形
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     let hexagon = 0
     if (hexagonWidth > hexagonHeight) {
@@ -114,7 +113,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     console.log('hexagon', zoneRadius, hexagon)
 
     // 寻找 cache, 超过 x 删除部分
-    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 4
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 2
 
     if (hexagonMap.size >= 40) {
       for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
@@ -126,7 +125,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     if (hexagonResult) {
       setCurrentHex(hexagonResult)
     } else {
-      const result = HexagonMemo(currentHexPoint, zoneRadius * 4)
+      const result = HexagonMemo(currentHexPoint, zoneRadius * 2)
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }
