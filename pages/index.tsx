@@ -20,7 +20,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
-import * as d3 from 'd3'
+import { zoomIdentity } from 'd3-zoom'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -199,7 +199,7 @@ const Home = () => {
         .call(
           // @ts-ignore
           (window as any).containerD3Zoom.transform,
-          d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
+          zoomIdentity.translate(xVal, yVal).scale(_scale),
         )
         .on('start', showUserMore)
         .on('end', eventEnd)
@@ -224,7 +224,7 @@ const Home = () => {
       .call(
         // @ts-ignore
         (window as any).containerD3Zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1),
+        zoomIdentity.translate(_x, _y).scale(1),
       )
   }, [])
 
