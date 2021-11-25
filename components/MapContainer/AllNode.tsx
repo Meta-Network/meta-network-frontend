@@ -23,6 +23,8 @@ interface Props {
 
 // key x_y_z_distance
 const hexagonMap = new Map()
+const currentDefaultPoint: HexagonsState = { q: 0, r: -11, s: 11 }
+const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
   allNodeDisabled,
@@ -112,7 +114,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     console.log('hexagon', zoneRadius, hexagon)
 
     // 寻找 cache, 超过 x 删除部分
-    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 3
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 4
 
     if (hexagonMap.size >= 40) {
       for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
@@ -124,7 +126,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     if (hexagonResult) {
       setCurrentHex(hexagonResult)
     } else {
-      const result = HexagonMemo(currentHexPoint, zoneRadius * 3)
+      const result = HexagonMemo(currentHexPoint, zoneRadius * 4)
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }
@@ -216,7 +218,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   focus$.useSubscription((type: string) => {
     // console.log('type', type)
     if (type === 'positionDefault') {
-      calcZone({ q: 0, r: -11, s: 11 })
+      calcZone(currentDefaultPoint)
     } else if (type === 'positionOwn') {
       const { x, y, z } = hexGridsMineData
       calcZone(transformFormat({ x, y, z }) as HexagonsState)
@@ -225,12 +227,12 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
   useEffect(() => {
     if (!allNodeMap.size) {
-      calcZone({ q: 0, r: 0, s: 0 })
+      calcZone(currentDefaultCenterPoint)
       return
     }
 
-    calcZone(currentHexPoint)
-  }, [ allNodeMap, calcZone, currentHexPoint ])
+    calcZone(currentDefaultPoint)
+  }, [ allNodeMap, calcZone ])
 
   useEffect(() => {
     const _farthestDistance = calcFarthestDistance(allNodeMap)
