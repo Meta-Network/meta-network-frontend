@@ -32,7 +32,7 @@ const moduleExports = withPlugins([
       disableClientWebpackPlugin: true,
     },
     webpack: (config, options) => {
-      if (!options.isServer) {
+      if (!options.dev && !options.isServer) {
         config.optimization.splitChunks.cacheGroups['tool'] = {
           chunks: 'all',
           name: 'chunk-tool',

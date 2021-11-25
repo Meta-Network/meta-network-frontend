@@ -1,14 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { isEmpty, shuffle, random, maxBy } from 'lodash'
-import { isBrowser, isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
-import { keyFormat } from '../../utils'
+import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
 
@@ -95,30 +93,33 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
    * calc zone range
    */
   const calcZone = useCallback((currentHexPoint: HexagonsState) => {
-    const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
     // TODO: 缩放后 获取的 w h 还是原来的, 暂时不做缩放计算 这样缩小后可以看见完整的六边形
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     let hexagon = 0
     if (hexagonWidth > hexagonHeight) {
-      hexagon = Math.ceil(_width / hexagonWidth)
+      hexagon = Math.ceil(clientWidth / hexagonWidth)
     } else {
-      hexagon = Math.ceil(_height / hexagonHeight)
+      hexagon = Math.ceil(clientHeight / hexagonHeight)
     }
 
     let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
     
-    const points = Hexagon(currentHexPoint, zoneRadius + 4)
+    console.log('hexagon', zoneRadius, hexagon)
+
+    const points = HexagonMemo(currentHexPoint, zoneRadius * 3)
+    // const points = Hexagon(currentHexPoint, zoneRadius)
     setCurrentHex(points)
   }, [])
 
   const { run: load } = useDebounceFn(() => {
     const wrapper = document.querySelector('.layout-wrapper')
-    const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
-    const { left, top, right, bottom } = wrapper!.getBoundingClientRect()
+    const { left, top, right, bottom, width, height } = wrapper!.getBoundingClientRect()
     const list = [
       {
         key: 'left',
@@ -130,36 +131,47 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       },
       {
         key: 'right',
-        value: _width - right
+        value: clientWidth - right
       },
       {
         key: 'bottom',
-        value: _height - bottom
+        value: clientHeight - bottom
       }
     ]
     
     // 找到间隙最大的
-    const maxResult = maxBy(list, o => o.value)
+    const maxResult = maxBy(list, o => o.value)!
+    console.log('maxResult', maxResult, wrapper!.getBoundingClientRect())
 
-    if (maxResult!.value <= 0) {
-      return
-    }
-     
+    // if (maxResult.value <= 0) {
+    //   return
+    // }
+
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     console.log(hexagonWidth, hexagonHeight)
-    let zoneRadiusWidthMargin = Math.ceil(maxResult!.value / hexagonWidth)
-    let zoneRadiusHeightMargin = Math.ceil(maxResult!.value / hexagonHeight)
+
+    const wrapperWidthMargin = Math.ceil((width - clientWidth) / 2)
+    const wrapperHeightMargin = Math.ceil((height - clientHeight) / 2)
+    
+    const zoneRadiusWidthMargin = Math.ceil(Math.abs((Math.abs(wrapperWidthMargin) - Math.abs(maxResult.value)) / hexagonWidth))
+    const zoneRadiusHeightMargin = Math.ceil(Math.abs((Math.abs(wrapperHeightMargin) - Math.abs(maxResult.value)) / hexagonHeight))
+
+    // let zoneRadiusWidthMargin = Math.ceil(maxResult.value / hexagonWidth)
+    // let zoneRadiusHeightMargin = Math.ceil(maxResult.value / hexagonHeight)
+
+    console.log('zoneRadiusWidthMargin', zoneRadiusWidthMargin, zoneRadiusHeightMargin)
+
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
     let axialToCubeResult: PointState | undefined
 
-    if (maxResult!.key === 'left') {
+    if (maxResult.key === 'left') {
       axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusWidthMargin, cubeToAxialResult.y)
-    } else if (maxResult!.key === 'right') {
+    } else if (maxResult.key === 'right') {
       axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusWidthMargin, cubeToAxialResult.y)
-    } else if (maxResult!.key === 'top') {
+    } else if (maxResult.key === 'top') {
       axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusHeightMargin )
-    } else if (maxResult!.key === 'bottom') {
+    } else if (maxResult.key === 'bottom') {
       axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusHeightMargin)
     }
 
@@ -181,7 +193,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     calcZone(transformFormat(axialToCubeResult) as HexagonsState)
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
-  }, { wait: 800 })
+  }, { wait: 500 })
 
   focus$.useSubscription((type: string) => {
     // console.log('type', type)
@@ -235,7 +247,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
               r={hex.r}
               s={hex.s}
               // need space
-              className={`${`hexagon-${nodeMode}`} hexagon-${key}${isMobile ? ' nohover' : ''}`}
+              className={`${`hexagon-${nodeMode}`} hexagon-${key}`}
             >
               <NodeContent
                 coordinate={{ x, y, z }}

@@ -3,6 +3,8 @@ import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { AxialState, HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
 import { Hex as HexData } from 'react-hexgrid'
+import memoizeOne from 'memoize-one'
+import { isEqual } from 'lodash'
 
 interface CoordinateState {
   x: number,
@@ -500,3 +502,5 @@ export const Hexagon = (center: HexagonsState, range: number) => {
   }
   return result
 }
+
+export const HexagonMemo = memoizeOne(Hexagon, isEqual)
