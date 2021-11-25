@@ -18,14 +18,14 @@ class HexagonRound extends Component {
     ]),
     className: PropTypes.string,
     data: PropTypes.object,
-    onMouseEnter: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onClick: PropTypes.func,
-    onDragStart: PropTypes.func,
-    onDragEnd: PropTypes.func,
-    onDragOver: PropTypes.func,
-    onDrop: PropTypes.func,
+    // onMouseEnter: PropTypes.func,
+    // onMouseOver: PropTypes.func,
+    // onMouseLeave: PropTypes.func,
+    // onClick: PropTypes.func,
+    // onDragStart: PropTypes.func,
+    // onDragEnd: PropTypes.func,
+    // onDragOver: PropTypes.func,
+    // onDrop: PropTypes.func,
     children: PropTypes.node,
     style: PropTypes.any
   };
@@ -72,11 +72,11 @@ class HexagonRound extends Component {
   //     (this.props as any).onMouseLeave(e, this)
   //   }
   // }
-  onClick(e: any) {
-    if ((this.props as any).onClick) {
-      (this.props as any).onClick(e, this)
-    }
-  }
+  // onClick(e: any) {
+  //   if ((this.props as any).onClick) {
+  //     (this.props as any).onClick(e, this)
+  //   }
+  // }
   // onDragStart(e: any) {
   //   if ((this.props as any).onDragStart) {
   //     const targetProps = {
@@ -127,7 +127,7 @@ class HexagonRound extends Component {
         // onMouseEnter={e => this.onMouseEnter(e)}
         // onMouseOver={e => this.onMouseOver(e)}
         // onMouseLeave={e => this.onMouseLeave(e)}
-        onClick={e => this.onClick(e)}
+        // onClick={e => this.onClick(e)}
         // onDragStart={e => this.onDragStart(e)}
         // onDragEnd={e => this.onDragEnd(e)}
         // onDragOver={e => this.onDragOver(e)}

@@ -6,10 +6,10 @@ import { StyledSliderCItem } from './Style'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { LanguageProps } from '../../typings/i18n.d'
+import { LanguageProps } from '../../typings/i18n'
 import { setCookie } from '../../utils/cookie'
 
-interface SliderContenItemtUserProps {
+interface Props {
   readonly visible: boolean
 }
 
@@ -18,7 +18,7 @@ const COOKIE_NEXT_LOCALE = 'NEXT_LOCALE'
 const COOKIE_NEXT_LOCALE_EXPIRES = 365
 
 // 侧边栏 菜单 用户
-const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(function SliderContenItemtUser({
+const SliderItemSetting: React.FC<Props> = React.memo(function SliderItemSetting({
   visible
 }) {
   const { t } = useTranslation('common')
@@ -76,4 +76,4 @@ const SliderContenItemtUser: React.FC<SliderContenItemtUserProps> = React.memo(f
   )
 })
 
-export default SliderContenItemtUser
+export default SliderItemSetting

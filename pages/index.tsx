@@ -6,15 +6,15 @@ import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } f
 
 import { StoreGet, StoreSet } from '../utils/store'
 import {
-  cubeToAxial, calcTranslate, calcMaxDistance,
+  cubeToAxial, calcTranslate,
   HandleHexagonStyle,
-  keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius, calcZoneRadius
+  keyFormat, keyFormatParse, calcTranslateValue, calcForbiddenZoneRadius, calcAllNodeChooseZoneRadius,
 } from '../utils/index'
-import { PointState, HexagonsState, AxialState, LayoutState, translateMapState, ZoomTransform } from '../typings/node.d'
+import { PointState, HexagonsState, AxialState, LayoutState, translateMapState } from '../typings/node.d'
 import { hexGridsByFilterState, PointScopeState } from '../typings/metaNetwork.d'
 import { hexGridsCoordinateValidation, hexGrids } from '../services/metaNetwork'
 import { useUser } from '../hooks/useUser'
-import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI, getZoomPercentage } from '../helpers/index'
+import { fetchForbiddenZoneRadiusAPI, fetchHexGridsMineAPI, fetchHexGridsAPI } from '../helpers/index'
 import useToast from '../hooks/useToast'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -36,13 +36,12 @@ const UserInfo = dynamic(() => import('../components/IndexPage/UserInfo'), { ssr
 const UserInfoMouse = dynamic(() => import('../components/IndexPage/UserInfoMouse'), { ssr: false })
 const NodeHistory = dynamic(() => import('../components/IndexPage/NodeHistory'), { ssr: false })
 const PointDEV = dynamic(() => import('../components/PointDEV/Index'), { ssr: false })
-const MapContainer = dynamic(() => import('../components/MapContainerCase'), { ssr: false })
-const AllNode = dynamic(() => import('../components/MapContainerCase/AllNode'), { ssr: false })
+const MapContainer = dynamic(() => import('../components/MapContainer'), { ssr: false })
+const AllNode = dynamic(() => import('../components/MapContainer/AllNode'), { ssr: false })
 const FullLoading = dynamic(() => import('../components/FullLoading'), { ssr: false })
 
 const KeyMetaNetWorkBookmark = 'MetaNetWorkBookmark'
 const KeyMetaNetWorkHistoryView = 'MetaNetWorkHistoryView'
-const map = 'hexagon'
 const layout: LayoutState = { width: 66, height: 66, flat: false, spacing: 1.1 }
 const size: AxialState = { x: layout.width, y: layout.height }
 // 默认坐标点
@@ -57,19 +56,15 @@ const defaultHexGridsRange: PointScopeState = {
   zMax: 90,
   simpleQuery: ''
 }
-const mapProps: number[] = [11]
 
 const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
 
-  // hex all 坐标点
-  const [hex, setHex] = useState<HexagonsState[]>([])
   const [width, setWidth] = useState<number>(1000)
   const [height, setHeight] = useState<number>(800)
   const [origin, setOrigin] = useState<AxialState>({ x: 100, y: 100 })
   // 所有节点
-  // const [allNode, setAllNode] = useState<hexGridsByFilterState[]>([])
   const [allNodeMap, setAllNodeMap] = useState<Map<string, hexGridsByFilterState>>(new Map())
   // 所有可以选择的节点
   const [allNodeChoose, setAllNodeChoose] = useState<Map<string, HexagonsState>>(new Map())
@@ -271,32 +266,6 @@ const Home = () => {
       setHexGridsMineTag(true)
     }, [translateMapDefault])
 
-  /**
-   * 渲染坐标地图
-   */
-  const render = useCallback((list: hexGridsByFilterState[], forbiddenZoneRadius: number) => {
-    const generator = GridGenerator.getGenerator(map)
-    const _mapProps = list.length ? calcMaxDistance(list, 20) : mapProps
-    const hexagons: HexagonsState[] = generator.apply(null, _mapProps)
-
-    // 计算禁用坐标
-    const pointsForbidden = calcForbiddenZoneRadius({
-      hex: hexagons,
-      forbiddenZoneRadius: forbiddenZoneRadius
-    })
-    setAllNodeDisabled(pointsForbidden)
-
-    // 计算可选坐标
-    const pointsChoose = calcAllNodeChooseZoneRadius({
-      hex: hexagons,
-      allNode: list,
-      distance: 1
-    })
-    setAllNodeChoose(pointsChoose)
-    setHex(hexagons)
-
-    fetchHexGridsMine()
-  }, [fetchHexGridsMine])
 
   /**
    * 获取范围坐标点
@@ -311,23 +280,27 @@ const Home = () => {
         setForbiddenZoneRadius(forbiddenZoneRadiusResult)
       }
 
+      // 计算禁用坐标
+      const pointsForbidden = calcForbiddenZoneRadius({ forbiddenZoneRadius: forbiddenZoneRadius})
+
       if (data) {
-        let _map: Map<string, hexGridsByFilterState> = new Map()
+        let dataMap: Map<string, hexGridsByFilterState> = new Map()
         data.forEach(i => {
           const { x, y, z } = i
-          _map.set(keyFormat({ x, y, z }), i)
+          dataMap.set(keyFormat({ x, y, z }), i)
         })
 
-        // setAllNode(data)
-        setAllNodeMap(_map)
+        setAllNodeMap(dataMap)
 
-        render(data, forbiddenZoneRadiusResult)
-      } else {
-        render([], 0)
+        // 计算可选坐标
+        const pointsChoose = calcAllNodeChooseZoneRadius({ allNodeMap: dataMap, forbidden: pointsForbidden })
+        setAllNodeChoose(pointsChoose)
       }
 
+      fetchHexGridsMine()
+      setAllNodeDisabled(pointsForbidden)
       setFullLoading(false)
-    }, [forbiddenZoneRadius, render])
+    }, [forbiddenZoneRadius, fetchHexGridsMine])
 
   /**
    * 处理收藏
@@ -533,8 +506,6 @@ const Home = () => {
         focus$={focus$}
       >
         <AllNode
-          hex={hex}
-          width={width}
           allNodeDisabled={allNodeDisabled}
           allNodeMap={allNodeMap}
           allNodeChoose={allNodeChoose}

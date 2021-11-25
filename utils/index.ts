@@ -2,6 +2,7 @@ import { trim, xor, zip } from 'lodash'
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { AxialState, HexagonsState, PointState } from '../typings/node.d'
 import { Hex } from './lib'
+import { Hex as HexData } from 'react-hexgrid'
 
 interface CoordinateState {
   x: number,
@@ -208,15 +209,15 @@ export const calcTranslateValue = ({ x, y, width, height, scale }: calcTranslate
 export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 6) => {
   let max = 0
   for (let i = 0; i < node.length; i++) {
-    const ele = node[i]
-    if (Math.abs(ele.x) > max) {
-      max = Math.abs(ele.x)
+    const { x, y, z } = node[i]
+    if (Math.abs(x) > max) {
+      max = Math.abs(x)
     }
-    if (Math.abs(ele.y) > max) {
-      max = Math.abs(ele.y)
+    if (Math.abs(y) > max) {
+      max = Math.abs(y)
     }
-    if (Math.abs(ele.z) > max) {
-      max = Math.abs(ele.z)
+    if (Math.abs(z) > max) {
+      max = Math.abs(z)
     }
   }
 
@@ -224,51 +225,27 @@ export const calcMaxDistance = (node: hexGridsByFilterState[], attach: number = 
 }
 
 /**
- * 计算范围内坐标点
- * // center.subtract 不合规的坐标点会报错
- * @param center
- * @param hexGrids
- * @param distance
- * @returns HexagonsState[]
+ * calc Farthest Distance
+ * @param allNode 
+ * @returns 
  */
-export const calcCenterRange = (center: Hex, hexGrids: HexagonsState[], distance: number) => {
-  let points: HexagonsState[] = []
-  for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i]
-    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-    if (distanceResult) {
-      points.push(ele)
+export const calcFarthestDistance = (allNode: Map<string, hexGridsByFilterState>) => {
+  let max = 0
+
+  for (const value of allNode.values()) {
+    const { x, y, z } = value
+    if (Math.abs(x) > max) {
+      max = Math.abs(x)
+    }
+    if (Math.abs(y) > max) {
+      max = Math.abs(y)
+    }
+    if (Math.abs(z) > max) {
+      max = Math.abs(z)
     }
   }
-  return points
-}
 
-/**
- * 计算范围内坐标点
- * 公用方法为了减少一层循坏 直接传data set value
- * @param center 
- * @param hexGrids 
- * @param distance 
- * @param data 
- * @returns Map<string, HexagonsState>
- */
-export const calcCenterRangeAsMap = (center: Hex, hexGrids: HexagonsState[], distance: number, data?: Map<string, HexagonsState>) => {
-  let points: Map<string, HexagonsState> = new Map()
-  for (let i = 0; i < hexGrids.length; i++) {
-    const ele = hexGrids[i]
-    let distanceResult = center.subtract({ q: ele.q, r: ele.r, s: ele.s }).len() <= distance
-    if (distanceResult) {
-      const { q: x, s: y, r: z } = ele
-
-      // qsr xyz
-      if (data) {
-        data.set(keyFormat({ x, y, z }), ele)
-      } else {
-        points.set(keyFormat({ x, y, z }), ele)
-      }
-    }
-  }
-  return points
+  return max
 }
 
 /**
@@ -379,7 +356,7 @@ export const amountSplit = (amount: string, decimal: number) => {
  * @param point
  * @returns
  */
-export const keyFormat = (point: PointState) => `x${point.x}_y${point.y}_z${point.z}`
+export const keyFormat = (point: PointState): string => `x${point.x}_y${point.y}_z${point.z}`
 
 /**
  * 解析 Key 为对象
@@ -409,60 +386,58 @@ export const keyFormatParse = (val: string) => {
 /**
  * calc Forbidden Zone Radius
  * 计算半径为 x 不可选区域
- * @param hex 
  * @param forbiddenZoneRadius 
  * @returns 
  */
-export const calcForbiddenZoneRadius = ({
-  hex,
-  forbiddenZoneRadius
-}: {
-  hex: HexagonsState[], forbiddenZoneRadius: number
-}) => {
-  const center = new Hex(0, 0, 0)
-  return calcCenterRangeAsMap(center, hex, forbiddenZoneRadius)
+export const calcForbiddenZoneRadius = ({ forbiddenZoneRadius }: { forbiddenZoneRadius: number }) => {
+  const center = new HexData(0, 0, 0)
+
+  let points: Map<string, HexagonsState> = new Map()
+
+  const hexagons = Hexagon(center, forbiddenZoneRadius)
+  hexagons.forEach(i => {
+    const { q, r, s } = i
+    const key: string = compose(keyFormat, transformFormat)({q, r, s})
+    points.set(key, i)
+  })
+
+  return points
 }
 
 
 /**
  * calc AllNode Choose Zone Radius
- * @param param0 
+ * @param
  * @returns 
  */
-export const calcAllNodeChooseZoneRadius = ({
-  hex, allNode, distance = 1
-}: {
-  hex: HexagonsState[], allNode: hexGridsByFilterState[], distance: number
-}) => {
+export const calcAllNodeChooseZoneRadius = ({ 
+  allNodeMap, 
+  forbidden,
+  distance = 1}: { 
+    allNodeMap: Map<string, hexGridsByFilterState>,
+    forbidden: Map<string, HexagonsState>,
+    distance?: number }) => {
   let points: Map<string, HexagonsState> = new Map()
 
-  for (let i = 0; i < allNode.length; i++) {
-    const eleAllNode = allNode[i]
-    // 捕获 new hex 错误
-    try {
-      let center = new Hex(eleAllNode.x, eleAllNode.z, eleAllNode.y)
-      calcCenterRangeAsMap(center, hex, distance, points)
-    } catch (e) {
-      console.error('e', e)
-      continue
-    }
+  for (const [, value] of allNodeMap.entries()) {
+    const { x, y, z } = value
+    const { q, r, s } = transformFormat({ x, y, z }) as HexagonsState
+    const center: HexagonsState = new HexData(q, r, s)
+    const hexagons = Hexagon(center, distance)
+
+    hexagons.forEach(i => {
+      const { q, r, s } = i
+      const keyChoose: string = compose(keyFormat, transformFormat)({q, r, s})
+
+      // 如果节点已经有数据不 set
+      if (!allNodeMap.get(keyChoose) && !forbidden.get(keyChoose)) {
+        points.set(keyChoose, i)
+      }
+    })
   }
 
-  return points
-}
 
-export const calcZoneRadius = ({
-  centerPoint,
-  hex,
-  zoneRadius
-}: {
-  centerPoint: HexagonsState,
-  hex: HexagonsState[],
-  zoneRadius: number
-}) => {
-  const { q, r, s } = centerPoint
-  const center = new Hex(q, r, s)
-  return calcCenterRangeAsMap(center, hex, zoneRadius)
+  return points
 }
 
 
@@ -488,15 +463,40 @@ export const toggleLayoutHide = (percentage: number) => {
 }
 
 /**
- * get hexagon width
+ * get hexagon box
  * @returns 
  */
-export const getHexagonWidth = () => {
+export const getHexagonBox = (): {
+  width: number,
+  height: number,
+} => {
   const hexagonDom = document.querySelector<SVGAElement>('.hexagon-group')
   let hexagonWidth = 114.31
+  let hexagonHeight = 125.31
   if (hexagonDom) {
-   const { width } = hexagonDom.getBBox()
-   return width
+    return hexagonDom.getBBox()
   }
-  return hexagonWidth
+  return {
+    width: hexagonWidth,
+    height: hexagonHeight,
+  }
+}
+
+
+/**
+ * generate hexagon
+ */
+export const Hexagon = (center: HexagonsState, range: number) => {
+  const result: HexagonsState[] = []
+
+  const cube_add = (hex: HexagonsState, vec: HexagonsState) => new HexData(hex.q + vec.q, hex.r + vec.r, hex.s + vec.s)
+
+  for (let q = -range; q <= range; q++) {
+    const rMax = Math.max(-range, -q-range)
+    const rMin = Math.min(range, -q+range)
+    for (let r = rMax; r <= rMin; r++) {
+      result.push(cube_add(center, new HexData(q, r, -q-r)))      
+    }
+  }
+  return result
 }

@@ -7,14 +7,12 @@ import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcZoneRadius, cubeToAxial, getHexagonWidth, toggleLayoutHide, transformFormat } from '../../utils/index'
-import { useUser } from '../../hooks/useUser'
+import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { keyFormat } from '../../utils'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
 
 interface Props {
-  readonly width: number
   readonly allNodeDisabled: Map<string, HexagonsState>
   readonly allNodeMap: Map<string, hexGridsByFilterState>
   readonly allNodeChoose: Map<string, HexagonsState>
@@ -22,12 +20,10 @@ interface Props {
   readonly bookmark: PointState[]
   readonly noticeBardOccupiedState: boolean
   readonly hexGridsMineData: hexGridsByFilterState
-  readonly hex: HexagonsState[]
   focus$: EventEmitter<string>
 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
-  width,
   allNodeDisabled,
   allNodeMap,
   allNodeChoose,
@@ -35,12 +31,9 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   bookmark,
   noticeBardOccupiedState,
   hexGridsMineData,
-  hex,
   focus$,
 }) {
-  const { t } = useTranslation('common')
-  const { isLogin } = useUser()
-
+  const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
 
@@ -103,23 +96,25 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
    */
   const calcZone = useCallback((currentHexPoint: HexagonsState) => {
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const hexagon = Math.ceil(_width / getHexagonWidth())
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
+    const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+
+    // TODO: 缩放后 获取的 w h 还是原来的, 暂时不做缩放计算 这样缩小后可以看见完整的六边形
+    const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
+    let hexagon = 0
+    if (hexagonWidth > hexagonHeight) {
+      hexagon = Math.ceil(_width / hexagonWidth)
+    } else {
+      hexagon = Math.ceil(_height / hexagonHeight)
+    }
+
+    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
     
-    const point = calcZoneRadius({
-      centerPoint: currentHexPoint,
-      hex: hex,
-      zoneRadius: zoneRadius
-    })
-
-    setCurrentHex(Array.from(point, ([, value]) => value))
-  }, [ hex ])
-
+    const points = Hexagon(currentHexPoint, zoneRadius + 4)
+    setCurrentHex(points)
+  }, [])
 
   const { run: load } = useDebounceFn(() => {
-
     const wrapper = document.querySelector('.layout-wrapper')
-    // console.log('wrapper', wrapper?.getBoundingClientRect())
     const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
@@ -145,39 +140,45 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     
     // 找到间隙最大的
     const maxResult = maxBy(list, o => o.value)
-    console.log('max', maxResult)
 
     if (maxResult!.value <= 0) {
       return
     }
      
-    const zoneRadiusMargin = Math.ceil(maxResult!.value / getHexagonWidth())
-    console.log('zoneRadiusMargin', zoneRadiusMargin)
-
-    const hexagon = Math.ceil(width / getHexagonWidth())
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : (hexagon - 1 / 2)
-
-    // console.log('zoneRadius', zoneRadius)
-
+    const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
+    console.log(hexagonWidth, hexagonHeight)
+    let zoneRadiusWidthMargin = Math.ceil(maxResult!.value / hexagonWidth)
+    let zoneRadiusHeightMargin = Math.ceil(maxResult!.value / hexagonHeight)
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
     let axialToCubeResult: PointState | undefined
 
     if (maxResult!.key === 'left') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusMargin, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusWidthMargin, cubeToAxialResult.y)
     } else if (maxResult!.key === 'right') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusMargin, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusWidthMargin, cubeToAxialResult.y)
     } else if (maxResult!.key === 'top') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusMargin )
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusHeightMargin )
     } else if (maxResult!.key === 'bottom') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusMargin)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusHeightMargin)
     }
 
     if (!axialToCubeResult) {
       return
     }
 
-    // TODO: 超过范围不拖动
+    // 超过范围不拖动
+    // 容差
+    const _farthestDistance = farthestDistance + 6
+    if (
+      farthestDistance !== 0
+      && (axialToCubeResult.x >= _farthestDistance
+      || axialToCubeResult.y >= _farthestDistance
+      || axialToCubeResult.z >= _farthestDistance)
+    ) {
+      return
+    }
+
     calcZone(transformFormat(axialToCubeResult) as HexagonsState)
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
   }, { wait: 800 })
@@ -193,13 +194,18 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   })
 
   useEffect(() => {
-    if (!hex.length) {
-      // TODO: 需要默认空地块
+    if (!allNodeMap.size) {
+      calcZone({ q: 0, r: 0, s: 0 })
       return
     }
 
     calcZone(currentHexPoint)
-  }, [ hex, calcZone, currentHexPoint ])
+  }, [ allNodeMap, calcZone, currentHexPoint ])
+
+  useEffect(() => {
+    const _farthestDistance = calcFarthestDistance(allNodeMap)
+    setFarthestDistance(_farthestDistance)
+  }, [ allNodeMap ])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)
