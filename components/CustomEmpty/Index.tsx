@@ -17,7 +17,6 @@ const  CustomEmpty: React.FC<Props> = ({ description }) => {
 }
 
 const StyledText = styled.section`
-  font-family: Noto Sans TC,sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 12px;
