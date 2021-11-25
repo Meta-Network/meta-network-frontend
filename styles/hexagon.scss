@@ -100,29 +100,24 @@
 
 .hexagon-group {
   .node-user {
-    opacity: 0;
-    display: none;
-    will-change: opacity;
+    visibility: hidden;
+    will-change: visibility;
   }
   .node-user-default {
-    opacity: 1;
-    display: initial;
-    will-change: opacity;
+    visibility: initial;
+    will-change: visibility;
   }
   &.active {
     .node-user {
-      opacity: 1;
-      display: initial;
+      visibility: initial;
     }
     .node-user-default {
-      opacity: 0;
-      display: none;
+      visibility: hidden;
     }
   }
 }
 
 .hide-node .node-user-wrapper {
-  opacity: 0;
-  display: none;
-  will-change: opacity;
+  visibility: hidden;
+  will-change: visibility;
 }
