@@ -113,7 +113,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     console.log('hexagon', zoneRadius, hexagon)
 
     // 寻找 cache, 超过 x 删除部分
-    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 2
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 3
 
     if (hexagonMap.size >= 40) {
       for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
@@ -125,7 +125,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     if (hexagonResult) {
       setCurrentHex(hexagonResult)
     } else {
-      const result = HexagonMemo(currentHexPoint, zoneRadius * 2)
+      const result = HexagonMemo(currentHexPoint, zoneRadius * 3)
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }

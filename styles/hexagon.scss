@@ -101,23 +101,28 @@
 .hexagon-group {
   .node-user {
     opacity: 0;
+    display: none;
     will-change: opacity;
   }
   .node-user-default {
     opacity: 1;
+    display: initial;
     will-change: opacity;
   }
   &.active {
     .node-user {
       opacity: 1;
+      display: initial;
     }
     .node-user-default {
       opacity: 0;
+      display: none;
     }
   }
 }
 
 .hide-node .node-user-wrapper {
   opacity: 0;
+  display: none;
   will-change: opacity;
 }
