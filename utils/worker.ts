@@ -1,5 +1,6 @@
-import { HexagonsState } from '../typings/node.d'
+
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
+import { HexagonsState, PointState } from '../typings/node.d'
 
 /**
  * 
@@ -46,4 +47,18 @@ export const calcFarthestDistanceWorker = (allNode: Map<string, hexGridsByFilter
   }
 
   return max
+}
+
+/**
+ * 
+ */
+export const AllNodeTransferToMapWorker = (all: hexGridsByFilterState[]): Map<string, hexGridsByFilterState> => {
+  const keyFormat = (point: PointState): string => `x${point.x}_y${point.y}_z${point.z}`
+
+  let dataMap: Map<string, hexGridsByFilterState> = new Map()
+  all.forEach(i => {
+    const { x, y, z } = i
+    dataMap.set(keyFormat({ x, y, z }), i)
+  })
+  return dataMap
 }
