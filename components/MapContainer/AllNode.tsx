@@ -7,7 +7,7 @@ import { HexagonsState, PointState, AxialState, LayoutState, translateMapState }
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
-import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
+import { useDebounce, useDebounceFn, useMount, useThrottleFn } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
 import { calcFarthestDistanceWorker, HexagonWorker } from '../../utils/worker'
 
@@ -25,7 +25,7 @@ interface Props {
 // key x_y_z_distance
 const hexagonMap = new Map()
 const currentDefaultPoint: HexagonsState = { q: 0, r: -11, s: 11 }
-const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
+// const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
   allNodeDisabled,
@@ -135,7 +135,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       try {
         result = await HexagonWorkerFn(currentHexPoint, zoneRadius)
       } catch (e) {
-        console.log(e)
+        console.error(e)
         result = HexagonMemo(currentHexPoint, zoneRadius)
       }
 
@@ -199,7 +199,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     } else {
       dragDistance = wrapperMargin - Math.abs(maxResult.value)
     }
-    console.log('dragDistance', dragDistance)
+    // console.log('dragDistance', dragDistance)
 
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
@@ -235,20 +235,15 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
   }, { wait: 500 })
 
-  useEffect(() => {
-    if (!allNodeMap.size) {
-      calcZone(currentDefaultCenterPoint)
-      return
-    }
-
+  useMount(() => {
     calcZone(currentDefaultPoint)
-  }, [ allNodeMap, calcZone ])
+  })
 
   useEffect(() => {
     calcFarthestDistanceWorkerFn(allNodeMap).then(result => {
       setFarthestDistance(result)
     }).catch(e => {
-      console.log(e)
+      console.error(e)
       const _farthestDistance = calcFarthestDistanceWorker(allNodeMap)
       setFarthestDistance(_farthestDistance)
     })
@@ -297,7 +292,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
                 allNodeChoose={allNodeChoose}
                 defaultPoint={defaultPoint}
                 bookmark={bookmark}
-                noticeBardOccupiedState={noticeBardOccupiedState}
                 isNodeOwner={isNodeOwner}
                 hexGridsMineData={hexGridsMineData}
               ></NodeContent>

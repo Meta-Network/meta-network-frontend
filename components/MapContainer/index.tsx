@@ -295,7 +295,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
         <Layout
-          className={`layout-wrapper${isBrowser ? ' pc' : ''}`}
+          className={`layout-wrapper${isBrowser ? ' pc' : ''}${noticeBardOccupiedState ? ' choose' : ''}`}
           size={size}
           flat={layout.flat}
           spacing={layout.spacing}

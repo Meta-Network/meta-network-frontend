@@ -99,6 +99,10 @@
 }
 
 .hexagon-group {
+  .node-choose {
+    visibility: hidden;
+  }
+
   .node-user {
     visibility: hidden;
     will-change: visibility;
@@ -121,4 +125,10 @@
 .hide-node .node-user-wrapper {
   visibility: hidden;
   will-change: visibility;
+}
+
+.layout-wrapper.choose {
+  .node-choose {
+    visibility: initial;
+  }
 }
