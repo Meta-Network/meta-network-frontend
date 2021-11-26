@@ -1,15 +1,15 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { isEmpty, shuffle, random, maxBy } from 'lodash'
-import { useTranslation } from 'next-i18next'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, HexagonWorker, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
+import { calcFarthestDistanceWorker, HexagonWorker } from '../../utils/worker'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -38,6 +38,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   focus$,
 }) {
   const [ HexagonWorkerFn ] = useWorker(HexagonWorker)
+  const [ calcFarthestDistanceWorkerFn ] = useWorker(calcFarthestDistanceWorker)
 
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
@@ -170,14 +171,10 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     
     // 找到间隙最大的
     const maxResult = maxBy(list, o => o.value)!
-    console.log('maxResult', maxResult, wrapper!.getBoundingClientRect())
-
-    // if (maxResult.value <= 0) {
-    //   return
-    // }
+    // console.log('maxResult', maxResult, wrapper!.getBoundingClientRect())
 
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
-    console.log(hexagonWidth, hexagonHeight)
+    // console.log(hexagonWidth, hexagonHeight)
 
     const wrapperWidthMargin = Math.ceil((width - clientWidth) / 2)
     const wrapperHeightMargin = Math.ceil((height - clientHeight) / 2)
@@ -238,16 +235,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
   }, { wait: 500 })
 
-  focus$.useSubscription((type: string) => {
-    // console.log('type', type)
-    if (type === 'positionDefault') {
-      calcZone(currentDefaultPoint)
-    } else if (type === 'positionOwn') {
-      const { x, y, z } = hexGridsMineData
-      calcZone(transformFormat({ x, y, z }) as HexagonsState)
-    }
-  })
-
   useEffect(() => {
     if (!allNodeMap.size) {
       calcZone(currentDefaultCenterPoint)
@@ -258,9 +245,14 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   }, [ allNodeMap, calcZone ])
 
   useEffect(() => {
-    const _farthestDistance = calcFarthestDistance(allNodeMap)
-    setFarthestDistance(_farthestDistance)
-  }, [ allNodeMap ])
+    calcFarthestDistanceWorkerFn(allNodeMap).then(result => {
+      setFarthestDistance(result)
+    }).catch(e => {
+      console.log(e)
+      const _farthestDistance = calcFarthestDistanceWorker(allNodeMap)
+      setFarthestDistance(_farthestDistance)
+    })
+  }, [ allNodeMap, calcFarthestDistanceWorkerFn ])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)
@@ -270,6 +262,12 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   focus$.useSubscription((type: string) => {
     if (type === 'zoom') {
       load()
+    }
+    if (type === 'positionDefault') {
+      calcZone(currentDefaultPoint)
+    } else if (type === 'positionOwn') {
+      const { x, y, z } = hexGridsMineData
+      calcZone(transformFormat({ x, y, z }) as HexagonsState)
     }
   })
 
