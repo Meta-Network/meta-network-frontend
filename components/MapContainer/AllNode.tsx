@@ -6,9 +6,10 @@ import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { axialToCube, calcFarthestDistance, cubeToAxial, getHexagonBox, Hexagon, HexagonWorker, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useThrottleFn } from 'ahooks'
+import { useWorker, WORKER_STATUS } from '@koale/useworker'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -36,6 +37,8 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   hexGridsMineData,
   focus$,
 }) {
+  const [ HexagonWorkerFn ] = useWorker(HexagonWorker)
+
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
@@ -97,10 +100,11 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   /**
    * calc zone range
    */
-  const calcZone = useCallback((currentHexPoint: HexagonsState) => {
+  const calcZone = useCallback(async (currentHexPoint: HexagonsState) => {
     const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
     const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
+    // 计算一屏幕格子数量 忽略间隙计算
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     let hexagon = 0
     if (hexagonWidth > hexagonHeight) {
@@ -109,11 +113,12 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       hexagon = Math.ceil(clientHeight / hexagonHeight)
     }
 
-    let zoneRadius = hexagon % 2 === 0 ? hexagon / 2 : ((hexagon - 1) / 2)
-    console.log('hexagon', zoneRadius, hexagon)
+    // 需要 偶数 / 2
+    let zoneRadius = ( hexagon % 2 === 0 ? hexagon : hexagon + 1 ) / 2 * 4
+    // console.log('zoneRadius', zoneRadius)
 
     // 寻找 cache, 超过 x 删除部分
-    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius * 3
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius
 
     if (hexagonMap.size >= 40) {
       for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
@@ -125,13 +130,18 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     if (hexagonResult) {
       setCurrentHex(hexagonResult)
     } else {
-      const result = HexagonMemo(currentHexPoint, zoneRadius * 3)
+      let result: HexagonsState[] = []
+      try {
+        result = await HexagonWorkerFn(currentHexPoint, zoneRadius)
+      } catch (e) {
+        console.log(e)
+        result = HexagonMemo(currentHexPoint, zoneRadius)
+      }
+
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }
-
-    console.log('hexagonMap', hexagonMap)
-  }, [])
+  }, [ HexagonWorkerFn ])
 
   const { run: load } = useDebounceFn(() => {
     const wrapper = document.querySelector('.layout-wrapper')
@@ -171,31 +181,45 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     const wrapperWidthMargin = Math.ceil((width - clientWidth) / 2)
     const wrapperHeightMargin = Math.ceil((height - clientHeight) / 2)
-    
-    const zoneRadiusWidthMargin = Math.ceil(Math.abs((Math.abs(wrapperWidthMargin) - Math.abs(maxResult.value)) / hexagonWidth))
-    const zoneRadiusHeightMargin = Math.ceil(Math.abs((Math.abs(wrapperHeightMargin) - Math.abs(maxResult.value)) / hexagonHeight))
 
-    // let zoneRadiusWidthMargin = Math.ceil(maxResult.value / hexagonWidth)
-    // let zoneRadiusHeightMargin = Math.ceil(maxResult.value / hexagonHeight)
-
-    console.log('zoneRadiusWidthMargin', zoneRadiusWidthMargin, zoneRadiusHeightMargin)
+    // 默认地图比屏幕大 判断一种
+ 
+    // 计算拖动举例
+    let dragDistance = 0
+    let wrapperMargin = 0
+    // x >= 0 1700 + x
+    // x < 0 abs 1700 - abs x 
+    if (maxResult.key === 'left' || maxResult.key === 'right') {
+      wrapperMargin = Math.abs(wrapperWidthMargin)
+    } else if (maxResult.key === 'top' || maxResult.key === 'bottom') {
+      wrapperMargin = Math.abs(wrapperHeightMargin)
+    } else {
+      return
+    }
+  
+    if (maxResult.value >= 0) {
+      dragDistance = wrapperMargin + maxResult.value
+    } else {
+      dragDistance = wrapperMargin - Math.abs(maxResult.value)
+    }
+    console.log('dragDistance', dragDistance)
 
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
-    let axialToCubeResult: PointState | undefined
+    let axialToCubeResult!: PointState
 
     if (maxResult.key === 'left') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusWidthMargin, cubeToAxialResult.y)
+      const zoneRadiusMarginX = Math.ceil(dragDistance / hexagonWidth)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusMarginX, cubeToAxialResult.y)
     } else if (maxResult.key === 'right') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusWidthMargin, cubeToAxialResult.y)
+      const zoneRadiusMarginX = Math.ceil(dragDistance / hexagonWidth)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusMarginX, cubeToAxialResult.y)
     } else if (maxResult.key === 'top') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusHeightMargin )
+      const zoneRadiusMarginY = Math.ceil(dragDistance / hexagonHeight)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusMarginY )
     } else if (maxResult.key === 'bottom') {
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusHeightMargin)
-    }
-
-    if (!axialToCubeResult) {
-      return
+      const zoneRadiusMarginY = Math.ceil(dragDistance / hexagonHeight)
+      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusMarginY)
     }
 
     // 超过范围不拖动

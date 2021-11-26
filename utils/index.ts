@@ -503,4 +503,22 @@ export const Hexagon = (center: HexagonsState, range: number) => {
   return result
 }
 
+export const HexagonWorker = (center: HexagonsState, range: number) => {
+  const result: HexagonsState[] = []
+  const cube_add = (hex: HexagonsState, vec: HexagonsState) => ({
+    q: hex.q + vec.q,
+    r: hex.r + vec.r,
+    s: hex.s + vec.s,
+  })
+
+  for (let q = -range; q <= range; q++) {
+    const rMax = Math.max(-range, -q-range)
+    const rMin = Math.min(range, -q+range)
+    for (let r = rMax; r <= rMin; r++) {
+      result.push(cube_add(center, { q:q, r: r, s: -q-r }))    
+    }
+  }
+  return result
+}
+
 export const HexagonMemo = memoizeOne(Hexagon, isEqual)

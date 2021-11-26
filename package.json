@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^0.3.9",
+    "@koale/useworker": "^4.0.2",
     "@sentry/nextjs": "^6.13.3",
     "ahooks": "^2.10.9",
     "animated-number-react": "^0.1.2",
