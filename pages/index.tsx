@@ -20,7 +20,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
-import * as d3 from 'd3'
+import { zoomIdentity } from 'd3-zoom'
+import { useWorker, WORKER_STATUS } from '@koale/useworker'
+import { AllNodeTransferToMapWorker } from '../utils/worker'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
 const DeploySite = dynamic(() => import('../components/DeploySite/Index'), { ssr: false })
@@ -60,6 +62,7 @@ const defaultHexGridsRange: PointScopeState = {
 const Home = () => {
   const { t } = useTranslation('common')
   const { Toast } = useToast()
+  const [ AllNodeTransferToMapWorkerFn ] = useWorker(AllNodeTransferToMapWorker)
 
   const [width, setWidth] = useState<number>(1000)
   const [height, setHeight] = useState<number>(800)
@@ -197,9 +200,8 @@ const Home = () => {
       ;(window as any).containerD3Svg.transition()
         .duration(duration)
         .call(
-          // @ts-ignore
           (window as any).containerD3Zoom.transform,
-          d3.zoomIdentity.translate(xVal, yVal).scale(_scale),
+          zoomIdentity.translate(xVal, yVal).scale(_scale),
         )
         .on('start', showUserMore)
         .on('end', eventEnd)
@@ -222,9 +224,8 @@ const Home = () => {
     ;(window as any).containerD3Svg.transition()
       .duration(1000)
       .call(
-        // @ts-ignore
         (window as any).containerD3Zoom.transform,
-        d3.zoomIdentity.translate(_x, _y).scale(1),
+        zoomIdentity.translate(_x, _y).scale(1),
       )
   }, [])
 
@@ -284,12 +285,18 @@ const Home = () => {
       const pointsForbidden = calcForbiddenZoneRadius({ forbiddenZoneRadius: forbiddenZoneRadius})
 
       if (data) {
-        let dataMap: Map<string, hexGridsByFilterState> = new Map()
-        data.forEach(i => {
-          const { x, y, z } = i
-          dataMap.set(keyFormat({ x, y, z }), i)
-        })
 
+        let dataMap: Map<string, hexGridsByFilterState> = new Map()
+        try {
+          dataMap = await AllNodeTransferToMapWorkerFn(data)
+        } catch (e) {
+          console.log(e)
+          data.forEach(i => {
+            const { x, y, z } = i
+            dataMap.set(keyFormat({ x, y, z }), i)
+          })
+  
+        }
         setAllNodeMap(dataMap)
 
         // 计算可选坐标
@@ -300,7 +307,7 @@ const Home = () => {
       fetchHexGridsMine()
       setAllNodeDisabled(pointsForbidden)
       setFullLoading(false)
-    }, [forbiddenZoneRadius, fetchHexGridsMine])
+    }, [forbiddenZoneRadius, fetchHexGridsMine, AllNodeTransferToMapWorkerFn])
 
   /**
    * 处理收藏

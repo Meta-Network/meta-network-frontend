@@ -10,7 +10,8 @@ import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { toggleLayoutHide } from '../../utils/index'
 import { useUser } from '../../hooks/useUser'
 import { keyFormat } from '../../utils'
-import * as d3 from 'd3'
+import { select } from 'd3-selection'
+import { zoom } from 'd3-zoom'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useMount } from 'ahooks'
 
@@ -261,8 +262,8 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
    * 设置内容拖动 缩放
    */
    const setContainerDrag = useCallback(() => {
-    const containerD3Svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any> = d3.select('#container svg')
-    const containerD3Zoom: d3.ZoomBehavior<Element, unknown> = d3.zoom()
+    const containerD3Svg = select('#container svg')
+    const containerD3Zoom= zoom()
 
     ;(window as any).containerD3Svg= containerD3Svg
     ;(window as any).containerD3Zoom = containerD3Zoom
@@ -294,7 +295,7 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
     <div id="container">
       <HexGrid width={width} height={height} viewBox={`0, 0, ${Math.floor(width)}, ${Math.floor(height)}`} >
         <Layout
-          className="layout-wrapper"
+          className={`layout-wrapper${isBrowser ? ' pc' : ''}${noticeBardOccupiedState ? ' choose' : ''}`}
           size={size}
           flat={layout.flat}
           spacing={layout.spacing}

@@ -5,7 +5,7 @@ interface Props {}
 const NodeChoose: React.FC<Props> = React.memo( function NodeChoose ({}) {
 
   return (
-    <g style={{ transform: 'translate(-10px, -10px)' }} className="node-choose">
+    <g style={{ transform: 'translate(-10px, -10px)', visibility: 'initial' }}>
       <svg
         width="19"
         height="19"

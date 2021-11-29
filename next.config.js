@@ -1,22 +1,50 @@
 const { i18n } = require('./next-i18next.config')
+const withPlugins = require('next-compose-plugins')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
+const { withSentryConfig } = require('@sentry/nextjs')
+
 
 // This file sets a custom webpack configuration to use your Next.js app
 // with Sentry.
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-const { withSentryConfig } = require('@sentry/nextjs')
+// TODO：CDN
+const cdnPath = {
+  'test': 'meta-network-test',
+  'prod': 'meta-network-prod'
+}
+const isProd = false
 
 // Your existing module.exports
-const moduleExports = {
-  reactStrictMode: true,
-  i18n,
-  sentry: {
-    disableServerWebpackPlugin: true,
-    disableClientWebpackPlugin: true,
-  }
-}
+const moduleExports = withPlugins([
+    [withBundleAnalyzer]
+  ],
+  {
+    // Use the CDN in production and localhost for development.
+    assetPrefix: isProd ? `https://cdn.frontenduse.top/${cdnPath['test']}` : '',
+    reactStrictMode: true,
+    i18n,
+    sentry: {
+      disableServerWebpackPlugin: true,
+      disableClientWebpackPlugin: true,
+    },
+    webpack: (config, options) => {
+      if (!options.dev && !options.isServer) {
+        config.optimization.splitChunks.cacheGroups['tool'] = {
+          chunks: 'all',
+          name: 'chunk-tool',
+          test: /(?<!node_modules.*)[\\/]node_modules[\\/](@sentry|axios)[\\/]/,
+        }
+        // console.log('config.optimization', config.optimization.splitChunks.cacheGroups)
+      }
 
+      return config
+    },
+  }
+)
 
 const SentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that

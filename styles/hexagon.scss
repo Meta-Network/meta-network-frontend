@@ -1,98 +1,134 @@
 .hexagon-default {
-  fill: #2A1058;
-  stroke: #5538DD;
+  fill: #2a1058;
+  stroke: #5538dd;
   stroke-width: 1;
   opacity: 0.6;
-  transition: fill, stroke, opacity .2s;
-  &:not(.nohover):hover {
-    opacity: 1;
-    fill: #2A1056;
-    stroke: rgba(245, 245, 245, 0.8);
-  }
+  transition: fill, stroke, opacity 0.2s;
 }
 .hexagon-choose {
   fill: #241250;
-  stroke: #5538DD;
+  stroke: #5538dd;
   stroke-width: 1;
-  transition: fill, stroke, opacity .2s;
+  transition: fill, stroke, opacity 0.2s;
   opacity: 0.6;
-  &:not(.nohover):hover {
-    opacity: 1;
-    fill: #2a1156;
-    stroke: rgba(245, 245, 245, 0.8);
-  }
 }
 .hexagon-add {
   font-size: 2em !important;
 }
 .hexagon-exist {
-  fill: #46156A;
-  stroke: #5538DD;
+  fill: #46156a;
+  stroke: #5538dd;
   stroke-width: 1;
-  transition: fill, stroke, opacity .2s;
+  transition: fill, stroke, opacity 0.2s;
   opacity: 0.6;
-  &:not(.nohover):hover, &.active {
+  &.active {
     opacity: 1;
     stroke-width: 2;
-    fill: #46156A;
+    fill: #46156a;
     stroke: rgba(245, 245, 245, 0.8);
   }
 }
 .hexagon-active {
-  fill: #7D4DA0;
-  stroke: #5538DD;
+  fill: #7d4da0;
+  stroke: #5538dd;
   stroke-width: 1;
   opacity: 0.6;
-  transition: fill, stroke, opacity .2s;
-  &:not(.nohover):hover, &.active {
+  transition: fill, stroke, opacity 0.2s;
+  &.active {
     opacity: 1;
     stroke-width: 2;
-    fill: #7D4DA0;
+    fill: #7d4da0;
     stroke: rgba(245, 245, 245, 0.8);
   }
 }
 .hexagon-v {
-  fill: #CAA2E7;
-  stroke: #5538DD;
+  fill: #caa2e7;
+  stroke: #5538dd;
   stroke-width: 1;
   opacity: 0.6;
-  transition: fill, stroke, opacity .2s;
-  &:not(.nohover):hover, &.active {
+  transition: fill, stroke, opacity 0.2s;
+  &.active {
     opacity: 1;
     stroke-width: 2;
-    fill: #CAA2E7;
-    stroke: rgba(245, 245, 245, 0.8);;
+    fill: #caa2e7;
+    stroke: rgba(245, 245, 245, 0.8);
   }
 }
 
 .hexagon-disabled {
   fill: transparent;
-  stroke: #492c77;;
+  stroke: #492c77;
   stroke-width: 1;
-  transition: stroke .2s;
-  cursor:not-allowed !important;
+  transition: stroke 0.2s;
+  cursor: not-allowed !important;
+}
+
+.layout-wrapper.pc {
+  .hexagon-default:hover {
+    opacity: 1;
+    fill: #2a1056;
+    stroke: rgba(245, 245, 245, 0.8);
+  }
+
+  .hexagon-choose:hover {
+    opacity: 1;
+    fill: #2a1156;
+    stroke: rgba(245, 245, 245, 0.8);
+  }
+
+  .hexagon-exist:hover {
+    opacity: 1;
+    stroke-width: 2;
+    fill: #46156a;
+    stroke: rgba(245, 245, 245, 0.8);
+  }
+
+  .hexagon-active:hover {
+    opacity: 1;
+    stroke-width: 2;
+    fill: #7d4da0;
+    stroke: rgba(245, 245, 245, 0.8);
+  }
+
+  .hexagon-v:hover {
+    opacity: 1;
+    stroke-width: 2;
+    fill: #caa2e7;
+    stroke: rgba(245, 245, 245, 0.8);
+  }
 }
 
 .hexagon-group {
+  .node-choose {
+    visibility: hidden;
+  }
+
   .node-user {
-    opacity: 0;
-    will-change: opacity;
+    visibility: hidden;
+    will-change: visibility;
   }
   .node-user-default {
-    opacity: 1;
-    will-change: opacity;
+    visibility: initial;
+    will-change: visibility;
   }
   &.active {
     .node-user {
-      opacity: 1;
+      visibility: initial;
     }
     .node-user-default {
-      opacity: 0;
+      visibility: hidden;
     }
   }
 }
 
+.hide-node .node-user-default,
 .hide-node .node-user-wrapper {
-  opacity: 0;
-  will-change: opacity;
+  visibility: hidden;
+  will-change: visibility;
+}
+
+.layout-wrapper.choose {
+  .node-choose {
+    visibility: initial;
+  }
 }
