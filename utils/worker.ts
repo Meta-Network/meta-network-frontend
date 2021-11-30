@@ -1,10 +1,12 @@
 
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
-import { HexagonsState, PointState } from '../typings/node.d'
+import { HexagonsState, PointState, rectangleState } from '../typings/node.d'
 
-type rectangleState = { col: number, row: number }
 /**
- * 
+ * Hexagon worker
+ * @param center 
+ * @param range 
+ * @returns 
  */
 export const HexagonWorker = (center: HexagonsState, range: number) => {
   const result: HexagonsState[] = []
@@ -64,7 +66,7 @@ export const HexagonRectangleWorker = (center: HexagonsState, w: number, h: numb
 
 
 /**
- * 
+ * calc Farthest Distance Worker
  * @param allNode 
  * @returns 
  */
@@ -88,7 +90,9 @@ export const calcFarthestDistanceWorker = (allNode: Map<string, hexGridsByFilter
 }
 
 /**
- * 
+ * AllNode Transfer To Map Worker
+ * @param all 
+ * @returns 
  */
 export const AllNodeTransferToMapWorker = (all: hexGridsByFilterState[]): Map<string, hexGridsByFilterState> => {
   const keyFormat = (point: PointState): string => `x${point.x}_y${point.y}_z${point.z}`

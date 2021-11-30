@@ -25,7 +25,7 @@ interface Props {
 // key x_y_z_distance
 const hexagonMap = new Map()
 const currentDefaultPoint: HexagonsState = { q: 0, r: -11, s: 11 }
-const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
+// const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
   allNodeDisabled,
@@ -205,6 +205,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const cubeToAxialResult = cubeToAxial(q, s, r)
     let axialToCubeResult!: PointState
 
+    // TODO: 最好能计算两个方向  也许？
     if (maxResult.key === 'left') {
       const zoneRadiusMarginX = Math.ceil(dragDistance / hexagonWidth)
       axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusMarginX, cubeToAxialResult.y)

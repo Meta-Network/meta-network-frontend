@@ -51,3 +51,5 @@ export interface translateMapState {
 }
 
 export type ZoomTransform = { k: number, x: number, y: number }
+
+export type rectangleState = { col: number, row: number }
