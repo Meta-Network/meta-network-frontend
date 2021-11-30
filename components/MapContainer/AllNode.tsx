@@ -9,7 +9,7 @@ import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyForma
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useMount, useThrottleFn } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
-import { calcFarthestDistanceWorker, HexagonWorker } from '../../utils/worker'
+import { calcFarthestDistanceWorker, HexagonRectangleWorker } from '../../utils/worker'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -25,7 +25,7 @@ interface Props {
 // key x_y_z_distance
 const hexagonMap = new Map()
 const currentDefaultPoint: HexagonsState = { q: 0, r: -11, s: 11 }
-// const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
+const currentDefaultCenterPoint: HexagonsState = { q: 0, r: 0, s: 0 }
 
 const AllNode: React.FC<Props> = React.memo(function AllNode({
   allNodeDisabled,
@@ -37,7 +37,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   hexGridsMineData,
   focus$,
 }) {
-  const [ HexagonWorkerFn ] = useWorker(HexagonWorker)
+  const [ hexagonRectangleWorkerFn, {status: hexagonRectangleWorkerStatus, kill: hexagonRectangleWorkerTerminate } ] = useWorker(HexagonRectangleWorker)
   const [ calcFarthestDistanceWorkerFn ] = useWorker(calcFarthestDistanceWorker)
 
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
@@ -107,19 +107,15 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     // 计算一屏幕格子数量 忽略间隙计算
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
-    let hexagon = 0
-    if (hexagonWidth > hexagonHeight) {
-      hexagon = Math.ceil(clientWidth / hexagonWidth)
-    } else {
-      hexagon = Math.ceil(clientHeight / hexagonHeight)
-    }
-
+    let hexagonX = Math.ceil(clientWidth / hexagonWidth)
+    let hexagonY = Math.ceil(clientHeight / hexagonHeight)
+    
     // 需要 偶数 / 2
-    let zoneRadius = ( hexagon % 2 === 0 ? hexagon : hexagon + 1 ) / 2 * 4
-    // console.log('zoneRadius', zoneRadius)
+    let zoneRadiusX = ( hexagonX % 2 === 0 ? hexagonX : hexagonX + 1 ) / 2 * 3
+    let zoneRadiusY = ( hexagonY % 2 === 0 ? hexagonY : hexagonY + 1 ) / 2 * 3
 
     // 寻找 cache, 超过 x 删除部分
-    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + '_' + zoneRadius
+    const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + `_w${zoneRadiusX}_h${zoneRadiusY}`
 
     if (hexagonMap.size >= 40) {
       for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
@@ -133,16 +129,20 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     } else {
       let result: HexagonsState[] = []
       try {
-        result = await HexagonWorkerFn(currentHexPoint, zoneRadius)
+        // TODO: 待优化
+        if (hexagonRectangleWorkerStatus === WORKER_STATUS.RUNNING) {
+          hexagonRectangleWorkerTerminate()
+        }
+        result = await hexagonRectangleWorkerFn(currentHexPoint, zoneRadiusX, zoneRadiusY)
       } catch (e) {
         console.error(e)
-        result = HexagonMemo(currentHexPoint, zoneRadius)
+        result = HexagonRectangleWorker(currentHexPoint, zoneRadiusX, zoneRadiusY)
       }
 
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }
-  }, [ HexagonWorkerFn ])
+  }, [ hexagonRectangleWorkerFn, hexagonRectangleWorkerStatus, hexagonRectangleWorkerTerminate ])
 
   const { run: load } = useDebounceFn(() => {
     const wrapper = document.querySelector('.layout-wrapper')
@@ -233,7 +233,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     calcZone(transformFormat(axialToCubeResult) as HexagonsState)
     setCurrentHexPoint(transformFormat(axialToCubeResult) as HexagonsState)
-  }, { wait: 500 })
+  }, { wait: 400 })
 
   useMount(() => {
     calcZone(currentDefaultPoint)
