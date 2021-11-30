@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 
 import LoginAuth from '../../../assets/svg/login_auth.svg'
-import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
+// import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
 import Email from '../../../components/OAuth/Login/Email'
 
 const OAuthLogin: React.FC = () => {
