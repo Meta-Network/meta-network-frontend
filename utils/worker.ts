@@ -1,6 +1,9 @@
 
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
 import { HexagonsState, PointState, rectangleState } from '../typings/node.d'
+import memoizeOne from 'memoize-one'
+import { isEqual } from 'lodash'
+
 
 /**
  * Hexagon worker
@@ -63,6 +66,8 @@ export const HexagonRectangleWorker = (center: HexagonsState, w: number, h: numb
 
   return hexas
 }
+
+export const HexagonRectangleMemo = memoizeOne(HexagonRectangleWorker, isEqual)
 
 
 /**

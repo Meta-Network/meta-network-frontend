@@ -3,13 +3,13 @@ import { isEmpty, maxBy } from 'lodash'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
-import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
+import { HexagonsState, PointState } from '../../typings/node'
 import { hexGridsByFilterState, RenderMode } from '../../typings/metaNetwork'
-import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { axialToCube, cubeToAxial, getHexagonBox, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useMount, useThrottleFn } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
-import { calcFarthestDistanceWorker, HexagonRectangleWorker } from '../../utils/worker'
+import { calcFarthestDistanceWorker, HexagonRectangleWorker, HexagonRectangleMemo } from '../../utils/worker'
 import { StoreGet } from '../../utils/store'
 import { KEY_RENDER_MODE, KEY_RENDER_MODE_VALUE_FULL, KEY_RENDER_MODE_VALUE_SIMPLE } from '../../common/config'
 
@@ -140,7 +140,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
         result = await hexagonRectangleWorkerFn(currentHexPoint, zoneRadiusX, zoneRadiusY)
       } catch (e) {
         console.error(e)
-        result = HexagonRectangleWorker(currentHexPoint, zoneRadiusX, zoneRadiusY)
+        result = HexagonRectangleMemo(currentHexPoint, zoneRadiusX, zoneRadiusY)
       }
 
       hexagonMap.set(_key, result)
