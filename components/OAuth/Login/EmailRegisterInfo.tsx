@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd'
+import React, { useState, useCallback } from 'react'
+import { Form, Input } from 'antd'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -28,7 +27,7 @@ interface Props {
 const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 	const { t } = useTranslation('common')
 	const [formResister] = Form.useForm()
-	const [loading, setLoading] = useState(false)
+	const [loading] = useState(false)
 	const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
 	const [timerUsername, setTimerUsername] = useState<ReturnType<typeof setTimeout>>(null as any)
 	const router = useRouter()

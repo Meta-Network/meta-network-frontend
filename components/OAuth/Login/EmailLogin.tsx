@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd'
+import { Form, Input } from 'antd'
 import { useTranslation } from 'next-i18next'
 
 import { EmailModeProps } from '../../../typings/oauth'

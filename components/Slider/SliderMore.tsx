@@ -10,7 +10,6 @@ import {
 	LinkOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
@@ -26,7 +25,6 @@ interface Props {
 const SliderMore: React.FC<Props> = React.memo(function SliderMore({
 	visible
 }) {
-	const router = useRouter()
 	const { t } = useTranslation('common')
 
 	const MenuJson = useMemo(() => {

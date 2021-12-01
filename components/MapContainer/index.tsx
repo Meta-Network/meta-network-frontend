@@ -1,11 +1,10 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { HexGrid } from 'react-hexgrid'
 import { isEmpty } from 'lodash'
-import { isBrowser, isMobile } from 'react-device-detect'
-import { useTranslation } from 'next-i18next'
+import { isBrowser } from 'react-device-detect'
 import { getZoomPercentage } from '../../helpers/index'
 import Layout from '../ReactHexgrid/Layout'
-import { HexagonsState, PointState, AxialState, LayoutState, translateMapState, ZoomTransform } from '../../typings/node'
+import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { toggleLayoutHide } from '../../utils/index'
 import { useUser } from '../../hooks/useUser'
@@ -64,7 +63,6 @@ const MapContainer: React.FC<Props> = React.memo(function MapContainer({
 	handleHistoryView,
 	translateMap
 }) {
-	const { t } = useTranslation('common')
 	const { isLogin } = useUser()
 
 	/**

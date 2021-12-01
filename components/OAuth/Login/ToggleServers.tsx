@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ExclamationOutlined } from '@ant-design/icons'
-import { Tooltip, Button } from 'antd'
+import { Tooltip } from 'antd'
 import { useTranslation } from 'next-i18next'
 
 import ToggleServersModal from '../../ToggleServersModal/Index'

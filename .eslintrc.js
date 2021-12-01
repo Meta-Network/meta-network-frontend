@@ -23,6 +23,13 @@ module.exports = {
 		'semi': [
 			'error',
 			'never'
-		]
+		],
+		'no-unused-vars': [
+			'warn',
+			{
+				'args': 'none',
+				'ignoreRestSiblings': true
+			}
+		],
 	}
 }

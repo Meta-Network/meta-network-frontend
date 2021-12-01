@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal } from 'antd'
 import styled from 'styled-components'
 import { isBrowser, isMobile } from 'react-device-detect'

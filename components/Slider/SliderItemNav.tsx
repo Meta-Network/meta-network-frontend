@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { BookmarkIcon } from '../Icon/Index'
 
 import { StyledSliderCItem } from './Style'
-import { SearchIcon, SwitchVerticalIcon } from '../Icon/Index'
+import { SearchIcon } from '../Icon/Index'
 
 interface Props {
   readonly visible: boolean

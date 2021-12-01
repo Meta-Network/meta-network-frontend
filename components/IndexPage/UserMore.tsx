@@ -1,8 +1,8 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Menu, Dropdown, message } from 'antd'
+import { Menu, Dropdown } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CloseOutlined, EllipsisOutlined, CopyOutlined, SmileOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
+import { CloseOutlined, EllipsisOutlined, CopyOutlined } from '@ant-design/icons'
 import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -242,8 +242,7 @@ const StyledUserMoreButton = styled.button`
     }
   }
 `
-const StyledUserMoreBtnContent = styled.span`
-`
+// const StyledUserMoreBtnContent = styled.span``
 
 const StyledUserMoreBtn = styled.section<{ show: boolean }>`
   background: #F5F5F5;
@@ -266,34 +265,34 @@ const StyledUserMoreBtn = styled.section<{ show: boolean }>`
   overflow: hidden;
   transition: all .3s;
 `
-const StyledMenu = styled.ul`
-  outline: none;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  list-style-type: none;
-  li {
-    margin: 0;
-    padding: 12px 12px;
-    color: rgba(0, 0, 0, 0.85);
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 22px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    &:hover {
-      background-color: #e8e8e8;
-    }
-  }
-`
+// const StyledMenu = styled.ul`
+//   outline: none;
+//   margin: 0;
+//   padding: 0;
+//   text-align: left;
+//   list-style-type: none;
+//   li {
+//     margin: 0;
+//     padding: 12px 12px;
+//     color: rgba(0, 0, 0, 0.85);
+//     font-weight: normal;
+//     font-size: 14px;
+//     line-height: 22px;
+//     white-space: nowrap;
+//     cursor: pointer;
+//     transition: all 0.3s;
+//     display: flex;
+//     align-items: center;
+//     &:hover {
+//       background-color: #e8e8e8;
+//     }
+//   }
+// `
 const StyledMenuMore = styled.span`
   padding: 12px 20px;
 `
-const StyledMenuText = styled.span`
-  margin-left: 8px;
-`
+// const StyledMenuText = styled.span`
+//   margin-left: 8px;
+// `
 
 export default UserMore

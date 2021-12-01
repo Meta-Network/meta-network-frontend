@@ -4,8 +4,6 @@ import {
 	CopyOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { message } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useTranslation } from 'next-i18next'
 
 import useToast from '../../hooks/useToast'

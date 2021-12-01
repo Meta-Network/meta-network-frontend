@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { GridGenerator } from 'react-hexgrid'
-import { assign, cloneDeep, isEmpty, uniqBy } from 'lodash'
-import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
+import {  cloneDeep, isEmpty } from 'lodash'
+import { useMount, useUnmount, useThrottleFn, useEventEmitter } from 'ahooks'
 
 import { StoreGet, StoreSet } from '../utils/store'
 import {
@@ -21,7 +20,7 @@ import { useTranslation } from 'next-i18next'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { zoomIdentity } from 'd3-zoom'
-import { useWorker, WORKER_STATUS } from '@koale/useworker'
+import { useWorker } from '@koale/useworker'
 import { AllNodeTransferToMapWorker } from '../utils/worker'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })

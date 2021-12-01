@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
-import { useSpring, animated, useSpringRef, useTransition, useChain } from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
 
 import { CircleWarningIcon, CircleEmptyIcon } from '../Icon/Index'

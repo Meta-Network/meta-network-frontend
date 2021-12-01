@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Avatar, Radio, Button, Empty } from 'antd'
-import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons'
+import { Avatar, Radio, Button } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
 import { cloneDeep } from 'lodash'
-import { isBrowser, isMobile } from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
