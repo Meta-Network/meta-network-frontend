@@ -1,1 +1,2 @@
+import React from 'react'
 export const AddSvg = () => <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2013" width="200" height="200"><path d="M947.392 435.328H588.704V76.64a76.672 76.672 0 0 0-153.344 0v358.688H76.672a76.672 76.672 0 0 0 0 153.344h358.688v358.688a76.672 76.672 0 0 0 153.344 0V588.672h358.688a76.64 76.64 0 0 0 0-153.344z" p-id="2014" fill="#ffffff"></path></svg>

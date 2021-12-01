@@ -8,7 +8,6 @@ import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon }
 import { InvitationsMineState } from '../../typings/ucenter'
 import { translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { isEmpty } from 'lodash'
 
 
 interface Props {

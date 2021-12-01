@@ -1,8 +1,7 @@
 import React from 'react'
-import { Avatar, Menu, Dropdown } from 'antd'
+import { Menu, Dropdown } from 'antd'
 import {
 	UserOutlined,
-	LeftOutlined,
 	DownOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'

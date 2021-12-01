@@ -125,9 +125,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
 			>
 				<StyledSliderContent>
 					<SliderLogo
-						visible={visibleSlider}
-						isLogin={isLogin} user={user}
-						signOut={signOut}></SliderLogo>
+						visible={visibleSlider}></SliderLogo>
 					<SliderContentUser
 						visible={visibleSlider}
 						isLogin={isLogin}

@@ -210,7 +210,7 @@ const Home = () => {
 				)
 				.on('start', showUserMore)
 				.on('end', eventEnd)
-		}, [allNodeMap, currentNode, Toast, t, width, height])
+		}, [allNodeMap, currentNode, Toast, t, width, height, focus$])
 
 	/**
    * 偏移地图坐标 默认取消动画使用

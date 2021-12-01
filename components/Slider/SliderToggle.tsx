@@ -3,16 +3,14 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
 
 import { StyledSliderToggle, StyledSliderBtn } from './Style'
 
-interface SliderContenAccoountProps {
+interface Props {
   readonly visible: boolean
   Toggle: () => void
 }
 
-const SliderToggle: React.FC<SliderContenAccoountProps> = React.memo(function SliderToggle({
+const SliderToggle: React.FC<Props> = React.memo(function SliderToggle({
 	Toggle, visible
 }) {
-	// console.log('SliderToggle')
-
 	return (
 		<StyledSliderToggle visible={visible}>
 			<StyledSliderBtn onClick={() => Toggle()}>
