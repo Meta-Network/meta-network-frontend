@@ -45,6 +45,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
+  const [ allowZoom, setAllowZoom ] = useState<boolean>(true)
 
   const renderMode = useMemo((): RenderMode => StoreGet(KEY_RENDER_MODE) || KEY_RENDER_MODE_VALUE_FULL, [])
 
@@ -307,14 +308,24 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   }, [fetchZoomValue])
 
   focus$.useSubscription((type: string) => {
-    if (type === 'zoom') {
-      load()
-    }
     if (type === 'positionDefault') {
+      setAllowZoom(false)
+      
       calcZone(currentDefaultPoint)
     } else if (type === 'positionOwn') {
+      setAllowZoom(false)
+
       const { x, y, z } = hexGridsMineData
       calcZone(transformFormat({ x, y, z }) as HexagonsState)
+    }
+    if (type === 'zoom') {
+      if (allowZoom) {
+        load()
+      }
+    }
+
+    if (type === 'allowZoom') {
+      setAllowZoom(true)
     }
   })
 

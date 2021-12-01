@@ -173,6 +173,11 @@ const Home = () => {
       }
 
       const eventEnd = () => {
+
+        setTimeout(() => {
+          focus$.emit('allowZoom')
+        }, duration)
+
         callback && callback()
       }
 
@@ -406,7 +411,6 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
-
       focus$.emit('positionDefault')
 
       translateMap({
