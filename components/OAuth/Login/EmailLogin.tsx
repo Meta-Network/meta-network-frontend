@@ -15,6 +15,8 @@ import {
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
 } from './StyleEmail'
 import { OauthUrlVerify } from '../../../helpers/index'
+import { StoreSet } from '../../../utils/store'
+import { KEY_IS_LOGIN } from '../../../common/config'
 
 interface Props {
   setEmailModeFn: (value: EmailModeProps) => void
@@ -50,6 +52,10 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
       })
       if (res.statusCode === 200) {
         Toast({ content: t('login-successful') })
+
+        // 记录登录
+        StoreSet(KEY_IS_LOGIN, 'true')
+
         redirectUrl()
       } else {
         throw new Error(res.message)

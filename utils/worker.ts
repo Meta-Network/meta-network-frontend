@@ -1,9 +1,12 @@
 
 import { hexGridsByFilterState } from '../typings/metaNetwork.d'
-import { HexagonsState, PointState } from '../typings/node.d'
+import { HexagonsState, PointState, rectangleState } from '../typings/node.d'
 
 /**
- * 
+ * Hexagon worker
+ * @param center 
+ * @param range 
+ * @returns 
  */
 export const HexagonWorker = (center: HexagonsState, range: number) => {
   const result: HexagonsState[] = []
@@ -24,9 +27,46 @@ export const HexagonWorker = (center: HexagonsState, range: number) => {
   return result
 }
 
+/**
+ * Hexagon Rectangle Worker
+ * @param center 
+ * @param w 
+ * @param h 
+ * @returns 
+ */
+export const HexagonRectangleWorker = (center: HexagonsState, w: number, h: number) => {
+
+  const oddr_to_cube = (hex: rectangleState) => {
+    let q = hex.col - (hex.row - (hex.row & 1)) / 2
+    let r = hex.row
+    return { q, r, s: -q - r }
+  }
+
+  const axial_to_oddr = (hex: HexagonsState) => {
+    var col = hex.q + (hex.r - (hex.r & 1)) / 2
+    var row = hex.r
+    return { col, row }
+  }
+  
+  const { col, row } = axial_to_oddr(center)
+  const q1 = col - w
+  const q2 = col + w
+  const r1 = row - h
+  const r2 = row + h
+
+  let hexas: HexagonsState[] = []
+  for (let col = q1; col <= q2; col++) {
+    for (let row = r1; row <= r2; row++) {
+      hexas.push(oddr_to_cube({ col, row }))
+    }
+  }
+
+  return hexas
+}
+
 
 /**
- * 
+ * calc Farthest Distance Worker
  * @param allNode 
  * @returns 
  */
@@ -50,7 +90,9 @@ export const calcFarthestDistanceWorker = (allNode: Map<string, hexGridsByFilter
 }
 
 /**
- * 
+ * AllNode Transfer To Map Worker
+ * @param all 
+ * @returns 
  */
 export const AllNodeTransferToMapWorker = (all: hexGridsByFilterState[]): Map<string, hexGridsByFilterState> => {
   const keyFormat = (point: PointState): string => `x${point.x}_y${point.y}_z${point.z}`

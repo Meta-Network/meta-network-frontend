@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import {  Button, Tooltip } from 'antd'
 import { useTranslation } from 'next-i18next'
@@ -8,6 +8,8 @@ import EmailRegister from './EmailRegister'
 import ToggleServers from './ToggleServers'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
+import { StoreGet } from '../../../utils/store'
+import { KEY_IS_LOGIN } from '../../../common/config'
 
 interface Props {
 }
@@ -22,6 +24,14 @@ const Email: React.FC<Props> = () => {
   const setEmailModeFn = (val: EmailModeProps): void => {
     setEmailMode(val)
   }
+
+  // 没有登录过
+  useEffect(() => {
+    const isLogin = StoreGet(KEY_IS_LOGIN)
+    if (!isLogin) {
+      setEmailModeFn('register')
+    }
+  }, [])
 
   return (
     <>

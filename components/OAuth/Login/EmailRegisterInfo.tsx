@@ -10,13 +10,14 @@ import { UsersMeUsernameState } from '../../../typings/ucenter.d'
 import { accountsEmailVerify, accountsEmailSignup, usersMeUsername, usersUsernameValidate } from '../../../services/ucenter'
 import EmailCode from './EmailCode'
 import useToast from '../../../hooks/useToast'
-import { rules } from '../../../common/config/index'
+import { KEY_IS_LOGIN, rules } from '../../../common/config/index'
 
 import {
   StyledEmailForm, StyledFormItem, StyledFormBtn,
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
 } from './StyleEmail'
 import { OauthUrlVerify } from '../../../helpers/index'
+import { StoreSet } from '../../../utils/store'
 
 
 interface Props {
@@ -87,6 +88,10 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         })
         if (resEmailSignup.statusCode === 201) {
           Toast({ content: t('registration-success') })
+
+          // 记录登陆
+          StoreSet(KEY_IS_LOGIN, 'true')
+
           await updateUsername({
             username: username
           })
