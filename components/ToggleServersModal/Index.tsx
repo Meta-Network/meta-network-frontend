@@ -11,29 +11,29 @@ interface Props {
 }
 
 const Occupied: React.FC<Props> = React.memo(function Occupied({ isModalVisible, setIsModalVisible }) {
-  const { t } = useTranslation('common')
+	const { t } = useTranslation('common')
 
-  const Content: React.FC = () => {
-    return (
-      <div>
-        <StyledContentTextTips>{t('server-options-description')}</StyledContentTextTips>
-        <StyledContentFooter>
-          <Button className="custom-primary" onClick={() => setIsModalVisible(false)}>{t('ignore')}</Button>
-        </StyledContentFooter>
-      </div>
-    )
-  }
+	const Content: React.FC = () => {
+		return (
+			<div>
+				<StyledContentTextTips>{t('server-options-description')}</StyledContentTextTips>
+				<StyledContentFooter>
+					<Button className="custom-primary" onClick={() => setIsModalVisible(false)}>{t('ignore')}</Button>
+				</StyledContentFooter>
+			</div>
+		)
+	}
 
-  return (
-    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
-      <StyledContent>
-        <StyledContentHead>
-          <StyledContentHeadTitle>{t('server-options')}</StyledContentHeadTitle>
-        </StyledContentHead>
-        <Content></Content>
-      </StyledContent>
-    </CustomModal>
-  )
+	return (
+		<CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+			<StyledContent>
+				<StyledContentHead>
+					<StyledContentHeadTitle>{t('server-options')}</StyledContentHeadTitle>
+				</StyledContentHead>
+				<Content></Content>
+			</StyledContent>
+		</CustomModal>
+	)
 })
 
 const StyledContent = styled.section`

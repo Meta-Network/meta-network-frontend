@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Tooltip } from 'antd'
 import {
-  EnvironmentOutlined
+	EnvironmentOutlined
 } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
@@ -12,31 +12,31 @@ interface Props {
 }
 
 const MapPosition: React.FC<Props> = React.memo(function MapPosition({ HandlePosition }) {
-  const { t } = useTranslation('common')
+	const { t } = useTranslation('common')
 
-  const [styles, api] = useSpring(() => ({
-    x: 60,
-    opacity: 0,
-    config: {
-      duration: 300
-    }
-  }))
+	const [styles, api] = useSpring(() => ({
+		x: 60,
+		opacity: 0,
+		config: {
+			duration: 300
+		}
+	}))
 
-  useEffect(() => {
-    const timerShow = setTimeout(() => {
-      api.start({ x: 0, opacity: 1 })
-    }, 3000)
+	useEffect(() => {
+		const timerShow = setTimeout(() => {
+			api.start({ x: 0, opacity: 1 })
+		}, 3000)
 
-    return () => clearInterval(timerShow)
-  }, [api])
+		return () => clearInterval(timerShow)
+	}, [api])
 
-  return (
-    <Tooltip title={t('position')} placement="left">
-      <StyledButtonMap onClick={HandlePosition} style={{ ...styles }}>
-        <EnvironmentOutlined />
-      </StyledButtonMap>
-    </Tooltip>
-  )
+	return (
+		<Tooltip title={t('position')} placement="left">
+			<StyledButtonMap onClick={HandlePosition} style={{ ...styles }}>
+				<EnvironmentOutlined />
+			</StyledButtonMap>
+		</Tooltip>
+	)
 })
 
 export const StyledButtonMap = styled(animated.button)`

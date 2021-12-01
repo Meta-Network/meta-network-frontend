@@ -24,183 +24,183 @@ interface Props {
 }
 
 const UserMore: React.FC<Props> = ({ bookmark, currentNode, HandleBookmark, focus$, translateMap }) => {
-  const { Toast } = useToast()
-  const [visible, setVisible] = useState<boolean>(false)
-  const { t } = useTranslation('common')
-  const [inviteUserNode, setInviteUserNode] = useState({} as hexGridsByFilterState)
-  const [state, setState] = useState<boolean>(false)
+	const { Toast } = useToast()
+	const [visible, setVisible] = useState<boolean>(false)
+	const { t } = useTranslation('common')
+	const [inviteUserNode, setInviteUserNode] = useState({} as hexGridsByFilterState)
+	const [state, setState] = useState<boolean>(false)
 
-  // 是否收藏
-  const isBookmark = useMemo(() => {
-    if (!isArray(bookmark)) {
-      return false
-    }
-    // console.log('bookmark', bookmark)
+	// 是否收藏
+	const isBookmark = useMemo(() => {
+		if (!isArray(bookmark)) {
+			return false
+		}
+		// console.log('bookmark', bookmark)
 
-    // 是否收藏
-    const _isBookmark = (i: PointState) =>
-      i.x === currentNode.x &&
+		// 是否收藏
+		const _isBookmark = (i: PointState) =>
+			i.x === currentNode.x &&
       i.y === currentNode.y &&
       i.z === currentNode.z
 
-    const isBookmarkResult = bookmark.some(_isBookmark)
+		const isBookmarkResult = bookmark.some(_isBookmark)
 
-    return isBookmarkResult
-  }, [bookmark, currentNode])
+		return isBookmarkResult
+	}, [bookmark, currentNode])
 
-  // 复制信息
-  const userInfoText = useMemo(() => `${t('nickname')}：${currentNode.userNickname || currentNode.username || t('no-nickname')}
+	// 复制信息
+	const userInfoText = useMemo(() => `${t('nickname')}：${currentNode.userNickname || currentNode.username || t('no-nickname')}
 ${t('meta-space-introduction')}：${currentNode.userBio}
 ${t('meta-space-position')}：${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}
 ${t('meta-space-name')}：${currentNode.siteName || t('no-content')}
 ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
 `, [currentNode, t])
 
-  // 按钮点击
-  const handleJumpHome = (e: Event): void => {
-    e.stopPropagation()
-    Toast({ content: t('go-to-homepage') })
-    window.open(`https://${currentNode.subdomain}`, '_blank')
-  }
+	// 按钮点击
+	const handleJumpHome = (e: Event): void => {
+		e.stopPropagation()
+		Toast({ content: t('go-to-homepage') })
+		window.open(`https://${currentNode.subdomain}`, '_blank')
+	}
 
-  // 菜单点击
-  const handleMenuClick = ({ key, domEvent }: { key: string, domEvent: any } | any): void => {
-    domEvent.stopPropagation()
-    if (key === 'bookmark') {
-      HandleBookmark(currentNode)
-    } else if (key === 'invite') {
-      const { x, y, z } = inviteUserNode
-      translateMap({ point: { x, y, z } })
-    }
-  }
+	// 菜单点击
+	const handleMenuClick = ({ key, domEvent }: { key: string, domEvent: any } | any): void => {
+		domEvent.stopPropagation()
+		if (key === 'bookmark') {
+			HandleBookmark(currentNode)
+		} else if (key === 'invite') {
+			const { x, y, z } = inviteUserNode
+			translateMap({ point: { x, y, z } })
+		}
+	}
 
-  /**
+	/**
    * 事件订阅
    */
-  focus$.useSubscription((val: string): void => {
-    // console.log('val', val)
-    if (val === 'zoom') {
-      setVisible(false)
-      setState(false)
-    }
-  })
+	focus$.useSubscription((val: string): void => {
+		// console.log('val', val)
+		if (val === 'zoom') {
+			setVisible(false)
+			setState(false)
+		}
+	})
 
-  const MenuComponent = () => (
-    <Menu onClick={handleMenuClick} className="custom-user-more">
-      <Menu.Item key="bookmark" icon={isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
-        {
-          isBookmark ? t('delete-bookmark') : t('bookmark')
-        }
-      </Menu.Item>
-      <CopyToClipboard
-        text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
-        onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
-        <Menu.Item key="copy" icon={<CopyOutlined />}>
-          {t('copy-location')}
-        </Menu.Item>
-      </CopyToClipboard>
-      <CopyToClipboard text={userInfoText}
-        onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
-        <Menu.Item key="copy" icon={<CopyOutlined />}>
-          {t('copy-information')}
-        </Menu.Item>
-      </CopyToClipboard>
-      {
-        isEmpty(inviteUserNode)
-          ? <Menu.Item icon={<SliderInviteIcon />}>Meta Network</Menu.Item>
-          : <Menu.Item key="invite" icon={<SliderInviteIcon />}>
-            {
-              strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || t('no-nickname')
-            }
-          </Menu.Item>
-      }
-    </Menu>
-  )
+	const MenuComponent = () => (
+		<Menu onClick={handleMenuClick} className="custom-user-more">
+			<Menu.Item key="bookmark" icon={isBookmark ? <BookmarkFillIcon></BookmarkFillIcon> : <BookmarkIcon></BookmarkIcon>}>
+				{
+					isBookmark ? t('delete-bookmark') : t('bookmark')
+				}
+			</Menu.Item>
+			<CopyToClipboard
+				text={`${window.location.origin}?cube=${keyFormat({ x: currentNode.x, y: currentNode.y, z: currentNode.z })}`}
+				onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
+				<Menu.Item key="copy" icon={<CopyOutlined />}>
+					{t('copy-location')}
+				</Menu.Item>
+			</CopyToClipboard>
+			<CopyToClipboard text={userInfoText}
+				onCopy={() => Toast({ content: t('copy-successfully-tips') })}>
+				<Menu.Item key="copy" icon={<CopyOutlined />}>
+					{t('copy-information')}
+				</Menu.Item>
+			</CopyToClipboard>
+			{
+				isEmpty(inviteUserNode)
+					? <Menu.Item icon={<SliderInviteIcon />}>Meta Network</Menu.Item>
+					: <Menu.Item key="invite" icon={<SliderInviteIcon />}>
+						{
+							strEllipsis(inviteUserNode.userNickname || inviteUserNode.username) || t('no-nickname')
+						}
+					</Menu.Item>
+			}
+		</Menu>
+	)
 
-  const handleVisible = useCallback(
-    (val: boolean) => {
-      // console.log('val', val)
-      setVisible(val)
-    },
-    [],
-  )
+	const handleVisible = useCallback(
+		(val: boolean) => {
+			// console.log('val', val)
+			setVisible(val)
+		},
+		[],
+	)
 
-  /**
+	/**
    * 获取位置 通过 user id
    */
-  const fetchHexGridsLocationByUserId = useCallback(
-    async () => {
-      const data = await fetchHexGridsLocationByUserIdAPI({ userId: currentNode.inviterUserId })
-      if (data) {
-        setInviteUserNode(data)
-      }
-    }, [currentNode.inviterUserId])
+	const fetchHexGridsLocationByUserId = useCallback(
+		async () => {
+			const data = await fetchHexGridsLocationByUserIdAPI({ userId: currentNode.inviterUserId })
+			if (data) {
+				setInviteUserNode(data)
+			}
+		}, [currentNode.inviterUserId])
 
-  /**
+	/**
    * hide dropdown more
    */
-  const hideDropdown = useCallback(() => {
-    if (isMobile) {
-      setState(false)
-    }
-  }, [],)
+	const hideDropdown = useCallback(() => {
+		if (isMobile) {
+			setState(false)
+		}
+	}, [],)
 
-  useEffect(() => {
-    if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
-      fetchHexGridsLocationByUserId()
-    } else {
-      setInviteUserNode({} as hexGridsByFilterState)
-    }
+	useEffect(() => {
+		if (!isEmpty(currentNode) && Number(currentNode.inviterUserId) > 0) {
+			fetchHexGridsLocationByUserId()
+		} else {
+			setInviteUserNode({} as hexGridsByFilterState)
+		}
 
-    window.addEventListener('click', hideDropdown)
-    return () => window.removeEventListener('click', hideDropdown)
-  }, [currentNode, fetchHexGridsLocationByUserId, hideDropdown])
+		window.addEventListener('click', hideDropdown)
+		return () => window.removeEventListener('click', hideDropdown)
+	}, [currentNode, fetchHexGridsLocationByUserId, hideDropdown])
 
-  return (
-    <>
-      {
-        currentNode.subdomain
-          ? <StyledUserMoreButton
-            onClick={(e: any) => handleJumpHome(e)}
-            style={{ marginBottom: 16 }}
-          >
-            <SliderSpaceIcon className="btn-icon" />{' '}{t('visit-meta-space')}
-            <SliderShareIcon className="view-icon" />
-          </StyledUserMoreButton>
-          : null
-      }
-      {/* mobile pc 两套 */}
-      {
-        isMobile
-          ? <Dropdown
-            onVisibleChange={handleVisible}
-            visible={visible}
-            overlay={MenuComponent}
-            trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
-            placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
-          >
-            <StyledUserMoreButton onClick={(e: any) => { e.stopPropagation();setState(!state) }}>
-              {state ? <CloseOutlined /> : <EllipsisOutlined />}
-            </StyledUserMoreButton>
-          </Dropdown>
-          : isBrowser
-            ? <StyledUserMoreBtn
-                style={{ width: state ? 'auto' : 60, justifyContent: 'center' }}
-                show={state} 
-                onMouseEnter={() => setState(true)}
-                onMouseLeave={() => setState(false)}>
-              {
-                state
-                  ? <MenuComponent />
-                  : <StyledMenuMore>
-                    <EllipsisOutlined />
-                  </StyledMenuMore>
-              }
-            </StyledUserMoreBtn>
-            : null
-      }
-    </>
-  )
+	return (
+		<>
+			{
+				currentNode.subdomain
+					? <StyledUserMoreButton
+						onClick={(e: any) => handleJumpHome(e)}
+						style={{ marginBottom: 16 }}
+					>
+						<SliderSpaceIcon className="btn-icon" />{' '}{t('visit-meta-space')}
+						<SliderShareIcon className="view-icon" />
+					</StyledUserMoreButton>
+					: null
+			}
+			{/* mobile pc 两套 */}
+			{
+				isMobile
+					? <Dropdown
+						onVisibleChange={handleVisible}
+						visible={visible}
+						overlay={MenuComponent}
+						trigger={[isBrowser ? 'hover' : isMobile ? 'click' : 'hover']}
+						placement={isBrowser ? 'bottomCenter' : isMobile ? 'topCenter' : 'bottomCenter'}
+					>
+						<StyledUserMoreButton onClick={(e: any) => { e.stopPropagation();setState(!state) }}>
+							{state ? <CloseOutlined /> : <EllipsisOutlined />}
+						</StyledUserMoreButton>
+					</Dropdown>
+					: isBrowser
+						? <StyledUserMoreBtn
+							style={{ width: state ? 'auto' : 60, justifyContent: 'center' }}
+							show={state} 
+							onMouseEnter={() => setState(true)}
+							onMouseLeave={() => setState(false)}>
+							{
+								state
+									? <MenuComponent />
+									: <StyledMenuMore>
+										<EllipsisOutlined />
+									</StyledMenuMore>
+							}
+						</StyledUserMoreBtn>
+						: null
+			}
+		</>
+	)
 }
 
 

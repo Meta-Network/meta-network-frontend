@@ -12,34 +12,34 @@ interface Props {
 
 const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsModalVisible }) => {
 
-  const handleOk = (): void => {
-    setIsModalVisible(false)
-  }
+	const handleOk = (): void => {
+		setIsModalVisible(false)
+	}
 
-  const handleCancel = (): void => {
-    setIsModalVisible(false)
-  }
+	const handleCancel = (): void => {
+		setIsModalVisible(false)
+	}
 
-  return (
-    <Modal
-      width={408}
-      visible={isModalVisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-      className={ `custom-modal${mode ? ' ' + mode : ''}` }
-      footer={null}
-      closable={false}
-      centered={true}
-      transitionName={ isBrowser ? undefined : isMobile ? '' : undefined}
-    >
-      {children}
-      {
-        mode === 'full' || mode === 'half-code' || mode === 'half-occupied'
-        ? <StyledClose onClick={() => handleCancel()}></StyledClose>
-        : null
-      }
-    </Modal>
-  )
+	return (
+		<Modal
+			width={408}
+			visible={isModalVisible}
+			onOk={handleOk}
+			onCancel={handleCancel}
+			className={ `custom-modal${mode ? ' ' + mode : ''}` }
+			footer={null}
+			closable={false}
+			centered={true}
+			transitionName={ isBrowser ? undefined : isMobile ? '' : undefined}
+		>
+			{children}
+			{
+				mode === 'full' || mode === 'half-code' || mode === 'half-occupied'
+					? <StyledClose onClick={() => handleCancel()}></StyledClose>
+					: null
+			}
+		</Modal>
+	)
 }
 
 const StyledClose = styled(CloseModalIcon)`

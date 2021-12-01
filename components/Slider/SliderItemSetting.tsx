@@ -19,61 +19,61 @@ const COOKIE_NEXT_LOCALE_EXPIRES = 365
 
 // 侧边栏 菜单 用户
 const SliderItemSetting: React.FC<Props> = React.memo(function SliderItemSetting({
-  visible
+	visible
 }) {
-  const { t } = useTranslation('common')
-  const router = useRouter()
-  const language = useMemo((): LanguageProps => {
-    return router.locale as LanguageProps
-  }, [router.locale])
+	const { t } = useTranslation('common')
+	const router = useRouter()
+	const language = useMemo((): LanguageProps => {
+		return router.locale as LanguageProps
+	}, [router.locale])
 
-  const menu = (
-    <Menu>
-      {
-        languageList.map((i, idx) => (
-          <Menu.Item key={idx} onClick={() => setCookie(COOKIE_NEXT_LOCALE, i, COOKIE_NEXT_LOCALE_EXPIRES)}>
-            <Link
-              href='/'
-              passHref
-              locale={i}
-            >
-              {t(i)}
-            </Link>
-          </Menu.Item>
-        ))
-      }
-    </Menu>
-  )
+	const menu = (
+		<Menu>
+			{
+				languageList.map((i, idx) => (
+					<Menu.Item key={idx} onClick={() => setCookie(COOKIE_NEXT_LOCALE, i, COOKIE_NEXT_LOCALE_EXPIRES)}>
+						<Link
+							href='/'
+							passHref
+							locale={i}
+						>
+							{t(i)}
+						</Link>
+					</Menu.Item>
+				))
+			}
+		</Menu>
+	)
 
-  return (
-    <StyledSliderCItem visible={visible}>
-      {
-        visible ? <li>
-          <h4>{t('settings')}</h4>
-        </li> : null
-      }
-      <Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
-        <li>
-          <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
-            <a href="javascript:;">
-              <GlobalOutlined style={{ fontSize: 22 }} />
-              {visible ? t(language) : ''}
-            </a>
-          </Dropdown>
-        </li>
-      </Tooltip>
-      <Tooltip title={(visible || isMobile) ? '' : t('slider.settings')} placement="right">
-        <li>
-          <Link href="/settings">
-            <a>
-              <SettingOutlined style={{ fontSize: 22 }} />
-              {visible ? t('slider.settings') : ''}
-            </a>
-          </Link>
-        </li>
-      </Tooltip>
-    </StyledSliderCItem>
-  )
+	return (
+		<StyledSliderCItem visible={visible}>
+			{
+				visible ? <li>
+					<h4>{t('settings')}</h4>
+				</li> : null
+			}
+			<Tooltip title={(visible || isMobile) ? '' : t('switch-language')} placement="right">
+				<li>
+					<Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
+						<a href="javascript:;">
+							<GlobalOutlined style={{ fontSize: 22 }} />
+							{visible ? t(language) : ''}
+						</a>
+					</Dropdown>
+				</li>
+			</Tooltip>
+			<Tooltip title={(visible || isMobile) ? '' : t('slider.settings')} placement="right">
+				<li>
+					<Link href="/settings">
+						<a>
+							<SettingOutlined style={{ fontSize: 22 }} />
+							{visible ? t('slider.settings') : ''}
+						</a>
+					</Link>
+				</li>
+			</Tooltip>
+		</StyledSliderCItem>
+	)
 })
 
 export default SliderItemSetting

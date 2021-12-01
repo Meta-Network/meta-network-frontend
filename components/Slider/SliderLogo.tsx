@@ -1,9 +1,9 @@
 import React from 'react'
 import { Avatar, Menu, Dropdown } from 'antd'
 import {
-  UserOutlined,
-  LeftOutlined,
-  DownOutlined
+	UserOutlined,
+	LeftOutlined,
+	DownOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -24,26 +24,26 @@ interface Props {
 
 // 侧边栏 用户内容
 const SliderLogo: React.FC<Props> = React.memo(function SliderLogo({
-  user, isLogin, visible,
-  signOut
+	user, isLogin, visible,
+	signOut
 }) {
-  const router = useRouter()
-  const { t } = useTranslation('common')
+	const router = useRouter()
+	const { t } = useTranslation('common')
 
-  return (
-    <StyledSliderLogo visible={visible}>
-      <Link href="/" passHref>
-        <StyledSliderLink>
-          <StyledSliderLinkLogo>
-            <Image src={MetaImage} alt={'logo'} layout="fill" objectFit="contain" />
-          </StyledSliderLinkLogo>
-          {
-            visible ? <StyledSliderLinkText>Meta Network</StyledSliderLinkText> : null
-          }
-        </StyledSliderLink>
-      </Link>
-    </StyledSliderLogo>
-  )
+	return (
+		<StyledSliderLogo visible={visible}>
+			<Link href="/" passHref>
+				<StyledSliderLink>
+					<StyledSliderLinkLogo>
+						<Image src={MetaImage} alt={'logo'} layout="fill" objectFit="contain" />
+					</StyledSliderLinkLogo>
+					{
+						visible ? <StyledSliderLinkText>Meta Network</StyledSliderLinkText> : null
+					}
+				</StyledSliderLink>
+			</Link>
+		</StyledSliderLogo>
+	)
 })
 
 

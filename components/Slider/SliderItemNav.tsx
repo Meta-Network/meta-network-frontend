@@ -16,34 +16,34 @@ interface Props {
 
 // 侧边栏 菜单 导航
 const SliderItemNav: React.FC<Props> = React.memo(function SliderItemNav({
-  isLogin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
+	isLogin, setIsModalVisibleSearch, visible, setIsModalVisibleBookmark
 }) {
-  const { t } = useTranslation('common')
+	const { t } = useTranslation('common')
 
-  return (
-    <StyledSliderCItem visible={visible}>
-      {
-        visible ? <li>
-          <h4>{t('slider-navigation')}</h4>
-        </li> : null
-      }
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('search')} placement="right">
-          <a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
-            <SearchIcon />
-            {visible ? t('search') : ''}
-          </a>
-        </Tooltip>
-      </li>
-      <li>
-        <Tooltip title={(visible || isMobile) ? '' : t('favorites')} placement="right">
-          <a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
-            <BookmarkIcon />
-            {visible ? t('favorites') : ''}
-          </a>
-        </Tooltip>
-      </li>
-      {/* <li>
+	return (
+		<StyledSliderCItem visible={visible}>
+			{
+				visible ? <li>
+					<h4>{t('slider-navigation')}</h4>
+				</li> : null
+			}
+			<li>
+				<Tooltip title={(visible || isMobile) ? '' : t('search')} placement="right">
+					<a href="javascript:;" onClick={() => setIsModalVisibleSearch(true)}>
+						<SearchIcon />
+						{visible ? t('search') : ''}
+					</a>
+				</Tooltip>
+			</li>
+			<li>
+				<Tooltip title={(visible || isMobile) ? '' : t('favorites')} placement="right">
+					<a href="javascript:;" onClick={() => setIsModalVisibleBookmark(true)}>
+						<BookmarkIcon />
+						{visible ? t('favorites') : ''}
+					</a>
+				</Tooltip>
+			</li>
+			{/* <li>
         <Tooltip title={(visible || isMobile) ? '' : t('switch-ID-layer')} placement="right">
           <a href="javascript:;" className="disabled">
             <SwitchVerticalIcon />
@@ -51,8 +51,8 @@ const SliderItemNav: React.FC<Props> = React.memo(function SliderItemNav({
           </a>
         </Tooltip>
       </li> */}
-    </StyledSliderCItem>
-  )
+		</StyledSliderCItem>
+	)
 })
 
 export default SliderItemNav

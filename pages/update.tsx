@@ -32,211 +32,211 @@ interface UploadAvatar {
 const keyUploadAvatar = 'keyUploadAvatar'
 
 const Update: React.FC<Props> = () => {
-  const { t } = useTranslation('common')
-  const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false)
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
-  const [token, setToken] = useState<string>('')
-  const router = useRouter()
-  const { Toast } = useToast()
+	const { t } = useTranslation('common')
+	const [form] = Form.useForm()
+	const [loading, setLoading] = useState<boolean>(false)
+	const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
+	const [token, setToken] = useState<string>('')
+	const router = useRouter()
+	const { Toast } = useToast()
 
-  // 获取用户信息
-  const fetchUserMe = useCallback(
-    async () => {
-      try {
-        const res = await usersMe()
-        if (res.statusCode === 200) {
-          setAvatarUrl(res.data.avatar)
+	// 获取用户信息
+	const fetchUserMe = useCallback(
+		async () => {
+			try {
+				const res = await usersMe()
+				if (res.statusCode === 200) {
+					setAvatarUrl(res.data.avatar)
 
-          const { avatar, nickname, bio } = res.data
-          form.setFieldsValue({
-            avatar,
-            nickname,
-            bio
-          })
-        } else {
-          throw new Error(res.message)
-        }
-      } catch (e) {
-        console.log(e)
-        router.push('/')
-      }
-    }, [setAvatarUrl, form, router])
+					const { avatar, nickname, bio } = res.data
+					form.setFieldsValue({
+						avatar,
+						nickname,
+						bio
+					})
+				} else {
+					throw new Error(res.message)
+				}
+			} catch (e) {
+				console.log(e)
+				router.push('/')
+			}
+		}, [setAvatarUrl, form, router])
 
-  const onFinishEmail = useCallback(
-    async (values: any): Promise<void> => {
+	const onFinishEmail = useCallback(
+		async (values: any): Promise<void> => {
 
-      setLoading(true)
+			setLoading(true)
 
-      console.log('Success:', values)
-      let { nickname, bio } = values
-      try {
-        const res = await usersMePatch({
-          avatar: avatarUrl!,
-          nickname: trim(nickname),
-          bio: trim(bio),
-        })
-        if (res.statusCode === 200) {
-          Toast({ content: t('update-successfully') })
-          router.push('/')
-        } else {
-          throw new Error(res.message)
-        }
-      } catch (e) {
-        console.log(e)
-        Toast({ content: t('update-failed'), type: 'warning' })
-      } finally {
-        setLoading(false)
-      }
-    },
-    [router, avatarUrl, Toast, t],
-  )
+			console.log('Success:', values)
+			const { nickname, bio } = values
+			try {
+				const res = await usersMePatch({
+					avatar: avatarUrl!,
+					nickname: trim(nickname),
+					bio: trim(bio),
+				})
+				if (res.statusCode === 200) {
+					Toast({ content: t('update-successfully') })
+					router.push('/')
+				} else {
+					throw new Error(res.message)
+				}
+			} catch (e) {
+				console.log(e)
+				Toast({ content: t('update-failed'), type: 'warning' })
+			} finally {
+				setLoading(false)
+			}
+		},
+		[router, avatarUrl, Toast, t],
+	)
 
-  const onFinishFailedEmail = (errorInfo: any): void => {
-    console.log('Failed:', errorInfo)
-  }
+	const onFinishFailedEmail = (errorInfo: any): void => {
+		console.log('Failed:', errorInfo)
+	}
 
-  // upload props
-  const props: any = useMemo(() => ({
-    name: 'file',
-    accept: '.jpg,.jpeg,.png',
-    action: storageFleek,
-    maxCount: 1,
-    headers: {
-      authorization: `Bearer ${token}`,
-    },
-    async beforeUpload(file: File) {
-      setLoading(true)
+	// upload props
+	const props: any = useMemo(() => ({
+		name: 'file',
+		accept: '.jpg,.jpeg,.png',
+		action: storageFleek,
+		maxCount: 1,
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+		async beforeUpload(file: File) {
+			setLoading(true)
 
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-      if (!isJpgOrPng) {
-        Toast({ content: t('upload-images-format', { type: 'JPG/PNG' }), type: 'warning' })
-      }
-      const isLtMB = file.size / 1024 / 1024 < uploadImageSize
-      if (!isLtMB) {
-        Toast({ content: t('message-upload-images-size', { size: uploadImageSize }), type: 'warning' })
-      }
+			const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+			if (!isJpgOrPng) {
+				Toast({ content: t('upload-images-format', { type: 'JPG/PNG' }), type: 'warning' })
+			}
+			const isLtMB = file.size / 1024 / 1024 < uploadImageSize
+			if (!isLtMB) {
+				Toast({ content: t('message-upload-images-size', { size: uploadImageSize }), type: 'warning' })
+			}
 
-      const res = isJpgOrPng && isLtMB
+			const res = isJpgOrPng && isLtMB
 
-      if (res) {
-        const result = await fetchTokenAPI()
-        if (result) {
-          setToken(result)
-        } else {
-          Toast({ content: t('message.fetchToken.fail') })
-          return false
-        }
+			if (res) {
+				const result = await fetchTokenAPI()
+				if (result) {
+					setToken(result)
+				} else {
+					Toast({ content: t('message.fetchToken.fail') })
+					return false
+				}
         
-        notification.open({
-          key: keyUploadAvatar,
-          className: 'custom-notification',
-          message: t('upload-picture'),
-          description: `${t('uploading')}...`,
-        })
-      } else {
-        setLoading(false)
-      }
+				notification.open({
+					key: keyUploadAvatar,
+					className: 'custom-notification',
+					message: t('upload-picture'),
+					description: `${t('uploading')}...`,
+				})
+			} else {
+				setLoading(false)
+			}
 
-      return res
-    },
-    onChange(info: UploadAvatar) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (info.file.status === 'done') {
-        console.log('info', info)
-        if (info.file.response.statusCode === 201) {
-          Toast({ content: t('upload-successfully') })
-          setAvatarUrl(info.file.response.data.publicUrl)
-        }
-        notification.close(keyUploadAvatar)
-        // (`${info.file.name} file uploaded successfully`);
+			return res
+		},
+		onChange(info: UploadAvatar) {
+			if (info.file.status !== 'uploading') {
+				console.log(info.file, info.fileList)
+			}
+			if (info.file.status === 'done') {
+				console.log('info', info)
+				if (info.file.response.statusCode === 201) {
+					Toast({ content: t('upload-successfully') })
+					setAvatarUrl(info.file.response.data.publicUrl)
+				}
+				notification.close(keyUploadAvatar)
+				// (`${info.file.name} file uploaded successfully`);
 
-      setLoading(false)
-      } else if (info.file.status === 'error') {
-        // (`${info.file.name} file upload failed.`);
-        Toast({ content: t('upload-failed') })
-        notification.close(keyUploadAvatar)
+				setLoading(false)
+			} else if (info.file.status === 'error') {
+				// (`${info.file.name} file upload failed.`);
+				Toast({ content: t('upload-failed') })
+				notification.close(keyUploadAvatar)
 
-        setLoading(false)
-      }
-    }
-  }), [token, Toast, t])
+				setLoading(false)
+			}
+		}
+	}), [token, Toast, t])
 
-  const normFile = (e: { file: File, fileList: File[] }) => {
-    console.log('Upload event:', e)
-    if (Array.isArray(e)) {
-      return e
-    }
-    return e && e.fileList
-  }
+	const normFile = (e: { file: File, fileList: File[] }) => {
+		console.log('Upload event:', e)
+		if (Array.isArray(e)) {
+			return e
+		}
+		return e && e.fileList
+	}
 
 
-  useMount(() => {
-    fetchUserMe()
-  })
+	useMount(() => {
+		fetchUserMe()
+	})
 
-  return (
-    <>
-      <StyledTitle>{t('user-info-settings')}</StyledTitle>
-      <StyledEmailForm
-        form={form}
-        name="email-register"
-        layout="vertical"
-        initialValues={{ remember: false }}
-        onFinish={onFinishEmail}
-        onFinishFailed={onFinishFailedEmail}
-      >
+	return (
+		<>
+			<StyledTitle>{t('user-info-settings')}</StyledTitle>
+			<StyledEmailForm
+				form={form}
+				name="email-register"
+				layout="vertical"
+				initialValues={{ remember: false }}
+				onFinish={onFinishEmail}
+				onFinishFailed={onFinishFailedEmail}
+			>
 
-        <StyledFormItem
-          label=""
-          name="avatar"
-          getValueFromEvent={normFile}
-          rules={[
-            { required: false, message: t('message-upload-avatar') },
-          ]}
-          className="upload-avatar-form"
-        >
-          <Upload {...props} className="upload-avatar">
-            <Avatar size={100} icon={<UserOutlined />} src={avatarUrl} />
-          </Upload>
-        </StyledFormItem>
+				<StyledFormItem
+					label=""
+					name="avatar"
+					getValueFromEvent={normFile}
+					rules={[
+						{ required: false, message: t('message-upload-avatar') },
+					]}
+					className="upload-avatar-form"
+				>
+					<Upload {...props} className="upload-avatar">
+						<Avatar size={100} icon={<UserOutlined />} src={avatarUrl} />
+					</Upload>
+				</StyledFormItem>
 
-        <StyledFormItem
-          label=""
-          name="nickname"
-          rules={[
-            { required: true, message: t('message-enter-nickname') },
-            { min: rules.nickname.min, max: rules.nickname.max, message: t('message-length', { min: rules.nickname.min, max: rules.nickname.max }) },
-          ]}
-        >
-          <Input className="form-input" placeholder={t('message-enter-nickname')} autoComplete="new-text" />
-        </StyledFormItem>
+				<StyledFormItem
+					label=""
+					name="nickname"
+					rules={[
+						{ required: true, message: t('message-enter-nickname') },
+						{ min: rules.nickname.min, max: rules.nickname.max, message: t('message-length', { min: rules.nickname.min, max: rules.nickname.max }) },
+					]}
+				>
+					<Input className="form-input" placeholder={t('message-enter-nickname')} autoComplete="new-text" />
+				</StyledFormItem>
 
-        <StyledFormItem
-          label=""
-          name="bio"
-          rules={[
-            { required: true, message: t('message-enter-bio') },
-            { min: rules.bio.min, max: rules.bio.max, message: t('message-length', { min: rules.bio.min, max: rules.bio.max }) },
-          ]}
-        >
-          <Input className="form-input" placeholder={t('message-enter-bio')} autoComplete="new-text" />
-        </StyledFormItem>
+				<StyledFormItem
+					label=""
+					name="bio"
+					rules={[
+						{ required: true, message: t('message-enter-bio') },
+						{ min: rules.bio.min, max: rules.bio.max, message: t('message-length', { min: rules.bio.min, max: rules.bio.max }) },
+					]}
+				>
+					<Input className="form-input" placeholder={t('message-enter-bio')} autoComplete="new-text" />
+				</StyledFormItem>
 
-        <StyledFormItem>
-          <StyledFormBtn htmlType="submit" loading={loading}>
-            {t('update')}
-          </StyledFormBtn>
+				<StyledFormItem>
+					<StyledFormBtn htmlType="submit" loading={loading}>
+						{t('update')}
+					</StyledFormBtn>
 
-          <StyledFormBtnBack onClick={() => router.push('/')}>
-            {t('back')}
-          </StyledFormBtnBack>
-        </StyledFormItem>
-      </StyledEmailForm>
-    </>
-  )
+					<StyledFormBtnBack onClick={() => router.push('/')}>
+						{t('back')}
+					</StyledFormBtnBack>
+				</StyledFormItem>
+			</StyledEmailForm>
+		</>
+	)
 }
 
 const StyledTitle = styled.h1`
@@ -331,12 +331,12 @@ const StyledFormBtnBack = styled(Button)`
 
 
 export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
-    },
-  }
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ['common'])),
+			// Will be passed to the page component as props
+		},
+	}
 }
 
 export default Update

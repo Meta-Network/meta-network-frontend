@@ -19,92 +19,92 @@ interface Props {
 }
 
 const EmailCode: React.FC<Props> = ({ form, setToken }) => {
-  const { t } = useTranslation('common')
-  const captchaRef = useRef<any>(null)
-  const router = useRouter()
+	const { t } = useTranslation('common')
+	const captchaRef = useRef<any>(null)
+	const router = useRouter()
 
-  const onEnd = () => { console.log('onEnd of the time') }
-  const [count, setTargetDate] = useCountDown({ onEnd: onEnd })
-  const { Toast } = useToast()
+	const onEnd = () => { console.log('onEnd of the time') }
+	const [count, setTargetDate] = useCountDown({ onEnd: onEnd })
+	const { Toast } = useToast()
 
-  const hcaptchaLanguage = useMemo(() => {
-    const list = {
-      'en-US': 'en',
-      'zh-CN': 'zh-CN',
-    }
+	const hcaptchaLanguage = useMemo(() => {
+		const list = {
+			'en-US': 'en',
+			'zh-CN': 'zh-CN',
+		}
 
-    return list[router.locale as LanguageProps] || list['en-US']
-  }, [router.locale])
+		return list[router.locale as LanguageProps] || list['en-US']
+	}, [router.locale])
 
-  /**
+	/**
    * 发送邮箱验证码
    * @returns
    */
-  const handleSendEmailCode = async () => {
-    let { email } = await form.getFieldsValue()
-    if (!trim(email)) {
-      Toast({ content: t('message-enter-email'), type: 'warning' })
-      return
-    }
-    if (captchaRef) {
-      captchaRef.current.execute()
-    } else {
-      return
-    }
-  }
+	const handleSendEmailCode = async () => {
+		const { email } = await form.getFieldsValue()
+		if (!trim(email)) {
+			Toast({ content: t('message-enter-email'), type: 'warning' })
+			return
+		}
+		if (captchaRef) {
+			captchaRef.current.execute()
+		} else {
+			return
+		}
+	}
 
-  /**
+	/**
  * send email code
  * @param token 
  */
-  const sendEmailCode = async (token: string) => {
-    try {
-      setToken(token)
+	const sendEmailCode = async (token: string) => {
+		try {
+			setToken(token)
 
-      let { email } = await form.getFieldsValue()
-      if (!trim(email)) {
-        return
-      }
+			const { email } = await form.getFieldsValue()
+			if (!trim(email)) {
+				return
+			}
 
-      Toast({ content: `${t('send-verification-code')}...` })
-      const res = await accountsEmailVerificationCode({
-        key: trim(email),
-        hcaptchaToken: token
-      })
-      if (res.statusCode === 201) {
-        setTargetDate(Date.now() + 60 * 1000)
-        Toast({ content: t('send-successfully') })
-      } else {
-        throw new Error(res.message)
-      }
-    } catch (e) {
-      console.error(e)
-      Toast({ content: t('send-faild'), type: 'warning' })
-    }
-  }
+			Toast({ content: `${t('send-verification-code')}...` })
+			const res = await accountsEmailVerificationCode({
+				key: trim(email),
+				hcaptchaToken: token
+			})
+			if (res.statusCode === 201) {
+				setTargetDate(Date.now() + 60 * 1000)
+				Toast({ content: t('send-successfully') })
+			} else {
+				throw new Error(res.message)
+			}
+		} catch (e) {
+			console.error(e)
+			Toast({ content: t('send-faild'), type: 'warning' })
+		}
+	}
 
-  return (
-    <>
-      <StyledButton
-        className={count !== 0 ? 'g-red' : ''}
-        type="button"
-        disabled={count !== 0}
-        onClick={handleSendEmailCode}>
-        {count === 0 ? t('button.send') : `${Math.round(count / 1000)}s`}
-      </StyledButton>
-      <HCaptcha
-        size="invisible"
-        id="seed-email-code-hcaptcha"
-        sitekey={HCaptchaConfig.sitekey}
-        onVerify={sendEmailCode}
-        ref={captchaRef}
-        onLoad={() => console.log('onLoad')}
-        onExpire={() => console.log('onExpire')}
-        onError={err => console.error(err)}
-        languageOverride={hcaptchaLanguage}
-      />
-    </>
-  )
+	return (
+		<>
+			<StyledButton
+				className={count !== 0 ? 'g-red' : ''}
+				type="button"
+				disabled={count !== 0}
+				onClick={handleSendEmailCode}>
+				{count === 0 ? t('button.send') : `${Math.round(count / 1000)}s`}
+			</StyledButton>
+			<HCaptcha
+				size="invisible"
+				id="seed-email-code-hcaptcha"
+				sitekey={HCaptchaConfig.sitekey}
+				onVerify={sendEmailCode}
+				ref={captchaRef}
+				onLoad={() => console.log('onLoad')}
+				onExpire={() => console.log('onExpire')}
+				onError={err => console.error(err)}
+				languageOverride={hcaptchaLanguage}
+			/>
+		</>
+	)
 }
 
 const StyledButton = styled.button`

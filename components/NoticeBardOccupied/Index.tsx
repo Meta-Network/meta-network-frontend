@@ -14,62 +14,62 @@ interface Props {
 }
 
 const NoticeBardOccupied: React.FC<Props> = ({ status, setNoticeBardOccupiedState }) => {
-  const { user } = useUser()
-  const { Toast } = useToast()
-  const { t } = useTranslation('common')
-  const [styles, api] = useSpring(() => ({
-    x: '-50%',
-    y: -40,
-    opacity: 0,
-    config: {
-      duration: 300
-    }
-  }))
+	const { user } = useUser()
+	const { Toast } = useToast()
+	const { t } = useTranslation('common')
+	const [styles, api] = useSpring(() => ({
+		x: '-50%',
+		y: -40,
+		opacity: 0,
+		config: {
+			duration: 300
+		}
+	}))
 
-  const ToggleState = useCallback((e: any) => {
+	const ToggleState = useCallback((e: any) => {
 
-    e.stopPropagation()
+		e.stopPropagation()
 
-    if (isEmpty(user)) {
-      Toast({ content: t('please-sign-in'), type: 'warning' })
-      return
-    }
-    setNoticeBardOccupiedState(!status)
-  }, [user, status, setNoticeBardOccupiedState, Toast, t])
+		if (isEmpty(user)) {
+			Toast({ content: t('please-sign-in'), type: 'warning' })
+			return
+		}
+		setNoticeBardOccupiedState(!status)
+	}, [user, status, setNoticeBardOccupiedState, Toast, t])
 
-  const show = useCallback(
-    () => {
-      api.start({
-        y: 0,
-        opacity: 1
-      })
-    }, [api])
+	const show = useCallback(
+		() => {
+			api.start({
+				y: 0,
+				opacity: 1
+			})
+		}, [api])
 
-  useEffect(() => {
-    const time = setTimeout(show, 3000)
-    return () => clearTimeout(time)
-  }, [show])
+	useEffect(() => {
+		const time = setTimeout(show, 3000)
+		return () => clearTimeout(time)
+	}, [show])
 
-  return (
-    <StyledMessageRelative style={styles}>
-      <StyledIconBox>
-        {
-          status ? <CircleEmptyIcon /> : <CircleWarningIcon />
-        }
-      </StyledIconBox>
-      {/* 140 - 12 + 40 */}
-      <StyledText>
-        {
-          status ? t('occupy-open-prompt') : t('occupy-close-prompt')
-        }
-      </StyledText>
-      <StyledMessageButton
-        status={status}
-        onClick={(e: any) => ToggleState(e)}>
-        {status ? t('abandon-creation') : t('start-creating')}
-      </StyledMessageButton>
-    </StyledMessageRelative>
-  )
+	return (
+		<StyledMessageRelative style={styles}>
+			<StyledIconBox>
+				{
+					status ? <CircleEmptyIcon /> : <CircleWarningIcon />
+				}
+			</StyledIconBox>
+			{/* 140 - 12 + 40 */}
+			<StyledText>
+				{
+					status ? t('occupy-open-prompt') : t('occupy-close-prompt')
+				}
+			</StyledText>
+			<StyledMessageButton
+				status={status}
+				onClick={(e: any) => ToggleState(e)}>
+				{status ? t('abandon-creation') : t('start-creating')}
+			</StyledMessageButton>
+		</StyledMessageRelative>
+	)
 }
 
 const StyledMessageRelative = styled(animated.section)`

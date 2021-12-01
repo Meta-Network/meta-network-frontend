@@ -7,13 +7,13 @@ interface Props {
 }
 
 const  CustomEmpty: React.FC<Props> = ({ description }) => {
-  return (
-    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={
-      <StyledText>
-        { description }
-      </StyledText>
-    } />
-  )
+	return (
+		<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={
+			<StyledText>
+				{ description }
+			</StyledText>
+		} />
+	)
 }
 
 const StyledText = styled.section`

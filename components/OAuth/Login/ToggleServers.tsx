@@ -7,31 +7,31 @@ import { useTranslation } from 'next-i18next'
 import ToggleServersModal from '../../ToggleServersModal/Index'
 
 const ToggleServers: React.FC = () => {
-  const { t } = useTranslation('common')
+	const { t } = useTranslation('common')
 
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+	const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
 
-  return (
-    <StyledWrapper>
-      <StyledHead>
-        <StyledTitle>{t('account-hosted')}</StyledTitle>
-        <StyledHeadIcon onClick={ () => setIsModalVisible(true) }></StyledHeadIcon>
-      </StyledHead>
-      <StyledLine>
-        <div>
-          <Tooltip placement="right" title={process.env.NEXT_PUBLIC_META_NETWORK_URL}>
-            <StyledServer>metanetwork.online</StyledServer>
-          </Tooltip>
-          <StyledServerDescription>{t('account-hosted-tips')}</StyledServerDescription>
-        </div>
-        <StyledServerEdit>{t('edit')}</StyledServerEdit>
-      </StyledLine>
-      <ToggleServersModal
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        ></ToggleServersModal>
-    </StyledWrapper>
-  )
+	return (
+		<StyledWrapper>
+			<StyledHead>
+				<StyledTitle>{t('account-hosted')}</StyledTitle>
+				<StyledHeadIcon onClick={ () => setIsModalVisible(true) }></StyledHeadIcon>
+			</StyledHead>
+			<StyledLine>
+				<div>
+					<Tooltip placement="right" title={process.env.NEXT_PUBLIC_META_NETWORK_URL}>
+						<StyledServer>metanetwork.online</StyledServer>
+					</Tooltip>
+					<StyledServerDescription>{t('account-hosted-tips')}</StyledServerDescription>
+				</div>
+				<StyledServerEdit>{t('edit')}</StyledServerEdit>
+			</StyledLine>
+			<ToggleServersModal
+				isModalVisible={isModalVisible}
+				setIsModalVisible={setIsModalVisible}
+			></ToggleServersModal>
+		</StyledWrapper>
+	)
 }
 
 const StyledWrapper = styled.section`

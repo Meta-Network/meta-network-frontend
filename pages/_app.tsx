@@ -15,16 +15,16 @@ import { useToken } from '../hooks/useToken'
 import { theme } from '../theme/index'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // refresh token
-  useToken()
+	// refresh token
+	useToken()
 
-  return (
-    <>
-      <HeadInfo></HeadInfo>
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
-  )
+	return (
+		<>
+			<HeadInfo></HeadInfo>
+			<ThemeProvider theme={theme}>
+				<Component {...pageProps} />
+			</ThemeProvider>
+		</>
+	)
 }
 export default appWithTranslation(MyApp)
