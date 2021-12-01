@@ -1,15 +1,17 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { isEmpty, shuffle, random, maxBy } from 'lodash'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import { isEmpty, maxBy } from 'lodash'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
 import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
-import { hexGridsByFilterState } from '../../typings/metaNetwork'
+import { hexGridsByFilterState, RenderMode } from '../../typings/metaNetwork'
 import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
 import { useDebounce, useDebounceFn, useMount, useThrottleFn } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
 import { calcFarthestDistanceWorker, HexagonRectangleWorker } from '../../utils/worker'
+import { StoreGet } from '../../utils/store'
+import { KEY_RENDER_MODE, KEY_RENDER_MODE_VALUE_FULL, KEY_RENDER_MODE_VALUE_SIMPLE } from '../../common/config'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -43,6 +45,8 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
+
+  const renderMode = useMemo((): RenderMode => StoreGet(KEY_RENDER_MODE) || KEY_RENDER_MODE_VALUE_FULL, [])
 
   /**
    * 计算节点模式
@@ -321,8 +325,13 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
         // using config.mapProps+i makes a new key when the goal template changes.
         currentHex.map((hex: HexagonsState) => {
           const { q: x, s: y, r: z } = hex
-          const nodeMode = calcNodeMode({ x, y, z })
           const key = keyFormat({ x, y, z })
+          // TODO：和 full 拖动判断似乎有点冲突
+          // TODO: 移动到 worker 里面处理
+          // 简易渲染模式
+          if ( renderMode === KEY_RENDER_MODE_VALUE_SIMPLE && !(allNodeDisabled.get(key) || allNodeMap.get(key) || allNodeChoose.get(key))) return
+
+          const nodeMode = calcNodeMode({ x, y, z })
 
           return (
             <HexagonRound
