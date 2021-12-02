@@ -27,7 +27,6 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const { Toast } = useToast()
-	const [token, setToken] = useState<string>()
 
 	/**
    * 用户登录
@@ -36,18 +35,13 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 	const onFinishEmail = async (values: any): Promise<void> => {
 		console.log('Success:', values)
 
-		if (!token) {
-			Toast({ content: t('fail'), type: 'warning' })
-			return
-		}
-
 		const { email, code } = values
 		try {
 			setLoading(true)
 			const res = await accountsEmailLogin({
 				account: trim(email),
 				verifyCode: trim(code),
-				hcaptchaToken: token
+				hcaptchaToken: 'hcaptcha_token_here'
 			})
 
 			if (res.statusCode === 200) {
@@ -63,6 +57,8 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 		} catch (e: any) {
 			if (e?.data?.statusCode === 401) {
 				Toast({ content: t('message.accountNotExist'), type: 'warning' })
+			} else if (e?.data?.statusCode === 403) {
+				Toast({ content: t('message.codeHasExpired'), type: 'warning' })
 			} else if (e?.data?.statusCode === 400) {
 				Toast({ content: t('message.wrongCaptchaCode'), type: 'warning' })
 			} else {
@@ -120,9 +116,9 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 					name="code"
 					rules={[{ required: true, message: t('message-enter-verification-code') }]}
 				>
-					<Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
+					<Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={8} />
 				</StyledFormItem>
-				<EmailCode setToken={setToken} form={formLogin}></EmailCode>
+				<EmailCode form={formLogin}></EmailCode>
 			</StyledFormCode>
 
 			<StyledFormItem>

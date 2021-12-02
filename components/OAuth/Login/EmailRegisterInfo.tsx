@@ -32,7 +32,6 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 	const [timerUsername, setTimerUsername] = useState<ReturnType<typeof setTimeout>>(null as any)
 	const router = useRouter()
 	const { Toast } = useToast()
-	const [token, setToken] = useState<string>()
 
 	/**
    * 重定向 url
@@ -73,17 +72,12 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 		async (values: any): Promise<void> => {
 			console.log('Success:', values)
 
-			if (!token) {
-				Toast({ content: t('fail'), type: 'warning' })
-				return
-			}
-
 			const { email, code, username } = values
 			try {
 				const resEmailSignup = await accountsEmailSignup(inviteCode, {
 					account: trim(email),
 					verifyCode: trim(code),
-					hcaptchaToken: token
+					'hcaptchaToken': 'hcaptcha_token_here'
 				})
 				if (resEmailSignup.statusCode === 201) {
 					Toast({ content: t('registration-success') })
@@ -101,7 +95,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 				console.error(e)
 				Toast({ content: t('fail'), type: 'warning' })
 			}
-		}, [updateUsername, inviteCode, Toast, t, token])
+		}, [updateUsername, inviteCode, Toast, t])
 
 	const onFinishFailedEmail = (errorInfo: any): void => {
 		console.log('Failed:', errorInfo)
@@ -223,9 +217,9 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 					name="code"
 					rules={[{ required: true, message: t('message-enter-verification-code') }]}
 				>
-					<Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
+					<Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={8} />
 				</StyledFormItem>
-				<EmailCode setToken={setToken} form={formResister}></EmailCode>
+				<EmailCode form={formResister}></EmailCode>
 			</StyledFormCode>
 
 			<StyledFormItem>
