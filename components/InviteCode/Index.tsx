@@ -15,41 +15,41 @@ interface Props {
 }
 
 const DeploySite: React.FC<Props> = ({ isModalVisible, setIsModalVisible, inviteCodeData }) => {
-	const { t } = useTranslation('common')
+  const { t } = useTranslation('common')
 
-	// 使用过的放后面
-	const inviteCodeDataList = useMemo(() => inviteCodeData.sort((a, b) => (Number(a.invitee_user_id) - Number(b.invitee_user_id))), [inviteCodeData])
+  // 使用过的放后面
+  const inviteCodeDataList = useMemo(() => inviteCodeData.sort((a, b) => (Number(a.invitee_user_id) - Number(b.invitee_user_id))), [inviteCodeData])
 
-	// 内容
-	const Content: React.FC = () => {
-		return (
-			<section>
-				<p>{t('invitation-code-introduction')}</p>
-				{
-					inviteCodeData.length ? <StyledItem>
-						{
-							inviteCodeDataList.map((i, idx) => (
-								<StyledContentCopy key={idx}>
-									<Copy text={i.signature} disabled={Number(i.invitee_user_id) > 0}></Copy>
-								</StyledContentCopy>
-							))
-						}
-					</StyledItem> : <CustomEmpty description={t('no-invitation-code')} />
-				}
-			</section>
-		)
-	}
+  // 内容
+  const Content: React.FC = () => {
+    return (
+      <section>
+        <p>{t('invitation-code-introduction')}</p>
+        {
+          inviteCodeData.length ? <StyledItem>
+            {
+              inviteCodeDataList.map((i, idx) => (
+                <StyledContentCopy key={idx}>
+                  <Copy text={i.signature} disabled={Number(i.invitee_user_id) > 0}></Copy>
+                </StyledContentCopy>
+              ))
+            }
+          </StyledItem> : <CustomEmpty description={t('no-invitation-code')} />
+        }
+      </section>
+    )
+  }
 
-	return (
-		<CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'half-code' : ''}>
-			<StyledContent>
-				<StyledContentHead>
-					<StyledContentHeadTitle>{t('your-invitation-code')}</StyledContentHeadTitle>
-				</StyledContentHead>
-				<Content></Content>
-			</StyledContent>
-		</CustomModal>
-	)
+  return (
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'half-code' : ''}>
+      <StyledContent>
+        <StyledContentHead>
+          <StyledContentHeadTitle>{t('your-invitation-code')}</StyledContentHeadTitle>
+        </StyledContentHead>
+        <Content></Content>
+      </StyledContent>
+    </CustomModal>
+  )
 }
 
 const StyledContent = styled.section`

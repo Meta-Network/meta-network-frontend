@@ -104,26 +104,26 @@ IP和其他元数据: 登录时，我们会记录你登录的IP地址以及浏�
 `
 
 const PrivacyAndTerms = React.memo(function PrivacyAndTerms() {
-	const router = useRouter()
+  const router = useRouter()
 
-	const doc = useMemo(() => {
-		const list = {
-			'en-US': markdownEn,
-			'zh-CN': markdownZh,
-		}
-		return list[router.locale as LanguageProps] || list['en-US']
-	}, [router.locale])
+  const doc = useMemo(() => {
+    const list = {
+      'en-US': markdownEn,
+      'zh-CN': markdownZh,
+    }
+    return list[router.locale as LanguageProps] || list['en-US']
+  }, [router.locale])
 
-	return (
-		<>
-			<Head>
-				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" />
-			</Head>
-			<div className="markdown-body" style={{ maxWidth: 840, margin: '0 auto', padding: '40px 20px' }}>
-				<ReactMarkdown>{doc}</ReactMarkdown>
-			</div>
-		</>
-	)
+  return (
+    <>
+      <Head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" />
+      </Head>
+      <div className="markdown-body" style={{ maxWidth: 840, margin: '0 auto', padding: '40px 20px' }}>
+        <ReactMarkdown>{doc}</ReactMarkdown>
+      </div>
+    </>
+  )
 })
 
 export default PrivacyAndTerms

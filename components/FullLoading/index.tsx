@@ -10,22 +10,22 @@ interface Props {
 }
 
 const FullLoading: React.FC<Props> = ({ loading, setLoading }) => {
-	const { t } = useTranslation('common')
-	const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
+  const { t } = useTranslation('common')
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 
-	return (
-		<>
-			{loading && <StyledWrapper>
-				<Spin indicator={antIcon} tip="Loading..." />
-				<Tooltip
-					title={t('fullLoading.closeTip')}
-				>
-					<StyledClose onClick={() => setLoading(false)} />
-				</Tooltip>
-			</StyledWrapper>
-			}
-		</>
-	)
+  return (
+    <>
+      {loading && <StyledWrapper>
+        <Spin indicator={antIcon} tip="Loading..." />
+        <Tooltip
+          title={t('fullLoading.closeTip')}
+        >
+          <StyledClose onClick={() => setLoading(false)} />
+        </Tooltip>
+      </StyledWrapper>
+      }
+    </>
+  )
 }
 
 

@@ -10,20 +10,20 @@ interface Props {
 
 // 侧边栏 用户内容
 const SliderLogo: React.FC<Props> = React.memo(function SliderLogo({ visible }) {
-	return (
-		<StyledSliderLogo visible={visible}>
-			<Link href="/" passHref>
-				<StyledSliderLink>
-					<StyledSliderLinkLogo>
-						<Image src={MetaImage} alt={'logo'} layout="fill" objectFit="contain" />
-					</StyledSliderLinkLogo>
-					{
-						visible ? <StyledSliderLinkText>Meta Network</StyledSliderLinkText> : null
-					}
-				</StyledSliderLink>
-			</Link>
-		</StyledSliderLogo>
-	)
+  return (
+    <StyledSliderLogo visible={visible}>
+      <Link href="/" passHref>
+        <StyledSliderLink>
+          <StyledSliderLinkLogo>
+            <Image src={MetaImage} alt={'logo'} layout="fill" objectFit="contain" />
+          </StyledSliderLinkLogo>
+          {
+            visible ? <StyledSliderLinkText>Meta Network</StyledSliderLinkText> : null
+          }
+        </StyledSliderLink>
+      </Link>
+    </StyledSliderLogo>
+  )
 })
 
 

@@ -29,269 +29,269 @@ interface Props {
  * @returns
  */
 const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, setIsModalVisible, setVisibleSlider, translateMap }) => {
-	const { t } = useTranslation('common')
-	const [form] = Form.useForm()
-	// 是否显示历史记录内容
-	const [showSearch, setShowSearch] = useState<boolean>(false)
-	// 搜索历史
-	const [searchHistoryList, setSearchHistoryList] = useState<SearchHistory[]>([])
-	// 搜索结果
-	const [searchList, setSearchList] = useState<hexGridsByFilterState[]>([])
-	// 搜索
-	const [loading, setLoading] = useState<boolean>(false)
+  const { t } = useTranslation('common')
+  const [form] = Form.useForm()
+  // 是否显示历史记录内容
+  const [showSearch, setShowSearch] = useState<boolean>(false)
+  // 搜索历史
+  const [searchHistoryList, setSearchHistoryList] = useState<SearchHistory[]>([])
+  // 搜索结果
+  const [searchList, setSearchList] = useState<hexGridsByFilterState[]>([])
+  // 搜索
+  const [loading, setLoading] = useState<boolean>(false)
 
-	const KEY = 'MetaNetWorkSearchHistory'
+  const KEY = 'MetaNetWorkSearchHistory'
 
-	// init
-	useEffect(() => {
-		if (isModalVisible) {
-			fetchHistory()
-		} else {
-			setSearchList([])
-			setLoading(false)
-			setShowSearch(false)
-			form.resetFields()
-		}
-	}, [isModalVisible, form])
+  // init
+  useEffect(() => {
+    if (isModalVisible) {
+      fetchHistory()
+    } else {
+      setSearchList([])
+      setLoading(false)
+      setShowSearch(false)
+      form.resetFields()
+    }
+  }, [isModalVisible, form])
 
-	const onFinish = (values: any) => {
-		console.log('Success:', values)
-	}
+  const onFinish = (values: any) => {
+    console.log('Success:', values)
+  }
 
-	const onFinishFailed = (errorInfo: any) => {
-		console.log('Failed:', errorInfo)
-	}
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo)
+  }
 
 
-	/**
+  /**
    * 搜素 event
    * @param value
    */
-	const handlePressEnter = (value: string) => {
-		handleSearch(value)
-	}
-	// input changed
-	const { run: handleSearchChanged } = useDebounceFn(
-		(value: string) => {
-			handleSearch(value)
-		},
-		{
-			wait: 300,
-		},
-	)
-	// tag
-	const handleTagClick = (value: string) => {
-		form.setFieldsValue({ searchValue: value })
-		handleSearch(value)
-	}
-	useEffect(() => {
-		console.log('form')
-	}, [form])
+  const handlePressEnter = (value: string) => {
+    handleSearch(value)
+  }
+  // input changed
+  const { run: handleSearchChanged } = useDebounceFn(
+    (value: string) => {
+      handleSearch(value)
+    },
+    {
+      wait: 300,
+    },
+  )
+  // tag
+  const handleTagClick = (value: string) => {
+    form.setFieldsValue({ searchValue: value })
+    handleSearch(value)
+  }
+  useEffect(() => {
+    console.log('form')
+  }, [form])
 
 
 
-	/**
+  /**
    * 处理搜索
    * @param val
    * @returns
    */
-	const handleSearch = (val: string) => {
-		const value = trim(val) || ''
-		if (!value) {
-			setShowSearch(false)
-			return
-		}
+  const handleSearch = (val: string) => {
+    const value = trim(val) || ''
+    if (!value) {
+      setShowSearch(false)
+      return
+    }
 
-		fetchSearch(value)
-		mergedHistory(value)
-		fetchHistory()
-	}
+    fetchSearch(value)
+    mergedHistory(value)
+    fetchHistory()
+  }
 
-	/**
+  /**
    * 获取搜索内容
    */
-	const fetchSearch = useCallback(
-		async (value: string): Promise<void> => {
-			setShowSearch(true)
-			setLoading(true)
-			try {
-				const data = assign(defaultHexGridsRange, { simpleQuery: value })
-				const res = await hexGridsByFilter(data)
-				if (res.statusCode === 200) {
-					setSearchList(res.data)
-				} else {
-					console.error(res.message)
-				}
-			} catch (e) {
-				console.error(e)
-			} finally {
-				setLoading(false)
-			}
-		}, [defaultHexGridsRange])
+  const fetchSearch = useCallback(
+    async (value: string): Promise<void> => {
+      setShowSearch(true)
+      setLoading(true)
+      try {
+        const data = assign(defaultHexGridsRange, { simpleQuery: value })
+        const res = await hexGridsByFilter(data)
+        if (res.statusCode === 200) {
+          setSearchList(res.data)
+        } else {
+          console.error(res.message)
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }, [defaultHexGridsRange])
 
-	/**
+  /**
    * 合并历史记录
    * @param value
    */
-	const mergedHistory = (value: string): void => {
-		console.log('value', value)
+  const mergedHistory = (value: string): void => {
+    console.log('value', value)
 
-		const searchHistoryJSON = StoreGet(KEY)
-		const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
-		searchHistory.push({
-			value: value,
-			lastTime: Date.now()
-		})
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+    searchHistory.push({
+      value: value,
+      lastTime: Date.now()
+    })
 
-		const list = uniqBy(searchHistory, 'value')
+    const list = uniqBy(searchHistory, 'value')
 
-		if (list.length > 12) {
-			list.shift()
-		}
+    if (list.length > 12) {
+      list.shift()
+    }
 
-		StoreSet(KEY, JSON.stringify(list))
-	}
+    StoreSet(KEY, JSON.stringify(list))
+  }
 
-	/**
+  /**
    * 获取搜索历史
    */
-	const fetchHistory = (): void => {
-		const searchHistoryJSON = StoreGet(KEY)
-		const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
-		// 防止意外过滤一次
-		const filterEmpty = (data: SearchHistory[]) => data.filter((i: SearchHistory) => !!i.value)
-		const filterDuplication = (data: SearchHistory[]) => uniqBy(data, 'value')
+  const fetchHistory = (): void => {
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+    // 防止意外过滤一次
+    const filterEmpty = (data: SearchHistory[]) => data.filter((i: SearchHistory) => !!i.value)
+    const filterDuplication = (data: SearchHistory[]) => uniqBy(data, 'value')
 
-		const list = compose(filterDuplication, filterEmpty)(searchHistory)
-		setSearchHistoryList(list.reverse())
-	}
+    const list = compose(filterDuplication, filterEmpty)(searchHistory)
+    setSearchHistoryList(list.reverse())
+  }
 
-	/**
+  /**
    * 删除所有历史
    */
-	const removeAllHistory = (): void => {
-		StoreRemove(KEY)
-		fetchHistory()
-	}
+  const removeAllHistory = (): void => {
+    StoreRemove(KEY)
+    fetchHistory()
+  }
 
-	/**
+  /**
    * 删除历史
    * @param history
    */
-	const removeHistory = (e: any, history: SearchHistory): void => {
-		e.preventDefault()
+  const removeHistory = (e: any, history: SearchHistory): void => {
+    e.preventDefault()
 
-		const searchHistoryJSON = StoreGet(KEY)
-		const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
+    const searchHistoryJSON = StoreGet(KEY)
+    const searchHistory: SearchHistory[] = searchHistoryJSON ? JSON.parse(searchHistoryJSON) : []
 
-		const idx = searchHistory.findIndex(i => i.value === history.value)
-		if (~idx) {
-			searchHistory.splice(idx, 1)
-			StoreSet(KEY, JSON.stringify(searchHistory))
+    const idx = searchHistory.findIndex(i => i.value === history.value)
+    if (~idx) {
+      searchHistory.splice(idx, 1)
+      StoreSet(KEY, JSON.stringify(searchHistory))
 
-			fetchHistory()
-		}
-	}
+      fetchHistory()
+    }
+  }
 
-	/**
+  /**
    * 查看搜索记录
    * @param i
    */
-	const handleViewNode = (i: hexGridsByFilterState) => {
-		setIsModalVisible(false)
-		setVisibleSlider(false)
+  const handleViewNode = (i: hexGridsByFilterState) => {
+    setIsModalVisible(false)
+    setVisibleSlider(false)
 
-		translateMap({ point: { x: i.x, y: i.y, z: i.z } })
-	}
+    translateMap({ point: { x: i.x, y: i.y, z: i.z } })
+  }
 
-	return (
-		<CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
-			<StyledContent>
-				<StyledContentHead>
-					<StyledContentHeadTitle>{t('search')}</StyledContentHeadTitle>
-				</StyledContentHead>
-				<div>
-					<Form
-						form={form}
-						name="search"
-						initialValues={{ remember: true }}
-						onFinish={onFinish}
-						onFinishFailed={onFinishFailed}
-					>
-						<Form.Item
-							label=""
-							name="searchValue"
-							rules={[{ required: true, message: 'Please search!' }]}
-						>
-							<Input
-								placeholder={t('search')}
-								prefix={<SearchOutlined />}
-								className="custom-search"
-								maxLength={40}
-								allowClear={true}
-								onPressEnter={(e: any) => handlePressEnter(e.target.value)}
-								onChange={(e: any) => handleSearchChanged(e.target.value)}
-							/>
-						</Form.Item>
-					</Form>
+  return (
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'full' : '' }>
+      <StyledContent>
+        <StyledContentHead>
+          <StyledContentHeadTitle>{t('search')}</StyledContentHeadTitle>
+        </StyledContentHead>
+        <div>
+          <Form
+            form={form}
+            name="search"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Form.Item
+              label=""
+              name="searchValue"
+              rules={[{ required: true, message: 'Please search!' }]}
+            >
+              <Input
+                placeholder={t('search')}
+                prefix={<SearchOutlined />}
+                className="custom-search"
+                maxLength={40}
+                allowClear={true}
+                onPressEnter={(e: any) => handlePressEnter(e.target.value)}
+                onChange={(e: any) => handleSearchChanged(e.target.value)}
+              />
+            </Form.Item>
+          </Form>
 
-					{
-						showSearch ?
-							<StyledContentItem>
-								<StyledContentItemHead>
-									<StyledContentItemHeadTitle>ID{t('layer')}</StyledContentItemHeadTitle>
-								</StyledContentItemHead>
-								<StyledItem >
-									{
-										searchList.map((i) => (
-											<StyledItemLi key={i.userId}>
-												<Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
-												<StyledItemLiUser>
-													<h3>{i.userNickname || i.username || t('no-nickname')}</h3>
-													<p>{i.userBio || t('no-introduction')}</p>
-												</StyledItemLiUser>
-												<StyledItemLiButton onClick={() => handleViewNode(i)}>{t('check')}</StyledItemLiButton>
-											</StyledItemLi>
-										))
-									}
-									{
-										searchList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
-									}
-									{
-										loading ? <StyledEmpty>
-											<Spin></Spin>
-										</StyledEmpty> : null
-									}
-								</StyledItem>
-							</StyledContentItem> :
-							<StyledContentItem>
-								<StyledContentItemHead>
-									<StyledContentItemHeadTitle>{t('search-history')}</StyledContentItemHeadTitle>
-									{
-										searchHistoryList.length <= 0 ? null :
-											<Popconfirm placement="top" title={t('confirm-delete-history')} onConfirm={() => removeAllHistory()} okText="Yes" cancelText="No">
-												<StyledContentItemHeadDelete>{t('delete')}</StyledContentItemHeadDelete>
-											</Popconfirm>
-									}
-								</StyledContentItemHead>
-								<StyledContentHiitory>
-									{
-										searchHistoryList.map((i, idx) => (
-											<Tag closable onClose={(e: any) => removeHistory(e, i)} key={idx} className="custom-tag" onClick={() => handleTagClick(i.value)}>
-												{i.value}
-											</Tag>
-										))
-									}
-									{
-										searchHistoryList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
-									}
-								</StyledContentHiitory>
-							</StyledContentItem>
-					}
-				</div>
-			</StyledContent>
-		</CustomModal>
-	)
+          {
+            showSearch ?
+              <StyledContentItem>
+                <StyledContentItemHead>
+                  <StyledContentItemHeadTitle>ID{t('layer')}</StyledContentItemHeadTitle>
+                </StyledContentItemHead>
+                <StyledItem >
+                  {
+                    searchList.map((i) => (
+                      <StyledItemLi key={i.userId}>
+                        <Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
+                        <StyledItemLiUser>
+                          <h3>{i.userNickname || i.username || t('no-nickname')}</h3>
+                          <p>{i.userBio || t('no-introduction')}</p>
+                        </StyledItemLiUser>
+                        <StyledItemLiButton onClick={() => handleViewNode(i)}>{t('check')}</StyledItemLiButton>
+                      </StyledItemLi>
+                    ))
+                  }
+                  {
+                    searchList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
+                  }
+                  {
+                    loading ? <StyledEmpty>
+                      <Spin></Spin>
+                    </StyledEmpty> : null
+                  }
+                </StyledItem>
+              </StyledContentItem> :
+              <StyledContentItem>
+                <StyledContentItemHead>
+                  <StyledContentItemHeadTitle>{t('search-history')}</StyledContentItemHeadTitle>
+                  {
+                    searchHistoryList.length <= 0 ? null :
+                      <Popconfirm placement="top" title={t('confirm-delete-history')} onConfirm={() => removeAllHistory()} okText="Yes" cancelText="No">
+                        <StyledContentItemHeadDelete>{t('delete')}</StyledContentItemHeadDelete>
+                      </Popconfirm>
+                  }
+                </StyledContentItemHead>
+                <StyledContentHiitory>
+                  {
+                    searchHistoryList.map((i, idx) => (
+                      <Tag closable onClose={(e: any) => removeHistory(e, i)} key={idx} className="custom-tag" onClick={() => handleTagClick(i.value)}>
+                        {i.value}
+                      </Tag>
+                    ))
+                  }
+                  {
+                    searchHistoryList.length <= 0 ? <CustomEmpty description={t('no-content')}></CustomEmpty> : null
+                  }
+                </StyledContentHiitory>
+              </StyledContentItem>
+          }
+        </div>
+      </StyledContent>
+    </CustomModal>
+  )
 }
 
 const StyledContent = styled.section`

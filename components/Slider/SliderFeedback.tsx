@@ -8,19 +8,19 @@ interface Props {
 }
 
 const SliderFeedback: React.FC<Props> = React.memo(function SliderFeedback({
-	visible
+  visible
 }) {
 
-	return (
-		<StyledSliderToggle visible={visible}>
-			<StyledSliderBottomLink
-				href={ FeedbackLink }
-				target="_blank"
-				rel="noopener noreferrer">
-				<MatrixIcon />
-			</StyledSliderBottomLink>
-		</StyledSliderToggle>
-	)
+  return (
+    <StyledSliderToggle visible={visible}>
+      <StyledSliderBottomLink
+        href={ FeedbackLink }
+        target="_blank"
+        rel="noopener noreferrer">
+        <MatrixIcon />
+      </StyledSliderBottomLink>
+    </StyledSliderToggle>
+  )
 })
 
 export default SliderFeedback

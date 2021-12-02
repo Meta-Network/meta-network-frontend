@@ -15,37 +15,37 @@ interface SliderContenAccoountProps {
 
 // 侧边栏 内容 账户操作
 const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(function SliderContenAccoount({
-	isLogin, signOut, visible
+  isLogin, signOut, visible
 }) {
-	const { t } = useTranslation('common')
+  const { t } = useTranslation('common')
 
-	return (
-		<StyledSliderCAccount visible={visible}>
-			{
-				isLogin
-					?
-					<Tooltip title={ visible ? '' : t('sign-out') }>
-						<Popconfirm placement="top" title={t('confirm-logout')} onConfirm={signOut} okText="Yes" cancelText="No">
-							<StyledSliderCAccountButton className="g-red" visible={visible}>
-								<LogoutIcon />
-								{visible ? t('logout-account') : ''}
-							</StyledSliderCAccountButton>
-						</Popconfirm>
-					</Tooltip>
-					:
-					<Tooltip title={ visible ? '' : t('log-in') }>
-						<Link href="/oauth/login">
-							<a>
-								<StyledSliderCAccountButton className="g-green" visible={visible}>
-									<ArrowTopLeftIcon />
-									{visible ? t('go-to-register-or-login') : ''}
-								</StyledSliderCAccountButton>
-							</a>
-						</Link>
-					</Tooltip>
-			}
-		</StyledSliderCAccount>
-	)
+  return (
+    <StyledSliderCAccount visible={visible}>
+      {
+        isLogin
+          ?
+          <Tooltip title={ visible ? '' : t('sign-out') }>
+            <Popconfirm placement="top" title={t('confirm-logout')} onConfirm={signOut} okText="Yes" cancelText="No">
+              <StyledSliderCAccountButton className="g-red" visible={visible}>
+                <LogoutIcon />
+                {visible ? t('logout-account') : ''}
+              </StyledSliderCAccountButton>
+            </Popconfirm>
+          </Tooltip>
+          :
+          <Tooltip title={ visible ? '' : t('log-in') }>
+            <Link href="/oauth/login">
+              <a>
+                <StyledSliderCAccountButton className="g-green" visible={visible}>
+                  <ArrowTopLeftIcon />
+                  {visible ? t('go-to-register-or-login') : ''}
+                </StyledSliderCAccountButton>
+              </a>
+            </Link>
+          </Tooltip>
+      }
+    </StyledSliderCAccount>
+  )
 })
 
 export default SliderContenAccoount

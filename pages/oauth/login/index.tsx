@@ -9,47 +9,47 @@ import LoginAuth from '../../../assets/svg/login_auth.svg'
 import Email from '../../../components/OAuth/Login/Email'
 
 const OAuthLogin: React.FC = () => {
-	// 登录方式
-	const [mode] = useState<'email'>('email') // email ...
+  // 登录方式
+  const [mode] = useState<'email'>('email') // email ...
 
-	// tips 根据 mode 显示
-	// const tips = useMemo(() => {
-	// 	const list = {
-	// 		email: t('login-with-email'),
-	// 		wechat: t('login-with-wechat')
-	// 	}
-	// 	return list[mode]
-	// }, [mode, t])
+  // tips 根据 mode 显示
+  // const tips = useMemo(() => {
+  // 	const list = {
+  // 		email: t('login-with-email'),
+  // 		wechat: t('login-with-wechat')
+  // 	}
+  // 	return list[mode]
+  // }, [mode, t])
 
-	// animated start
-	const animatedDecoration = useSpring({
-		from: { x: 40, opacity: 0 },
-		to: { x: 0, opacity: 1 },
-	})
-	const animatedMain = useSpring({
-		from: { x: -40, opacity: 0 },
-		to: { x: 0, opacity: 1 },
-	})
-	// animated end
+  // animated start
+  const animatedDecoration = useSpring({
+    from: { x: 40, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+  })
+  const animatedMain = useSpring({
+    from: { x: -40, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+  })
+  // animated end
 
-	return (
-		<StyledWrapper>
-			<StyledWrapperInner>
-				<StyledWrapperMain style={{ ...animatedMain }}>
-					<StyledWrapperContent>
-						{
-							mode === 'email' ? <Email></Email> : null
-						}
-						{/* <ToggleMode></ToggleMode> */}
-					</StyledWrapperContent>
-					{/* <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount> */}
-				</StyledWrapperMain>
-				<StyledDecoration style={{ ...animatedDecoration }}>
-					<Image src={LoginAuth} alt={'Meta Network'} layout="fill" objectFit="contain" />
-				</StyledDecoration>
-			</StyledWrapperInner>
-		</StyledWrapper>
-	)
+  return (
+    <StyledWrapper>
+      <StyledWrapperInner>
+        <StyledWrapperMain style={{ ...animatedMain }}>
+          <StyledWrapperContent>
+            {
+              mode === 'email' ? <Email></Email> : null
+            }
+            {/* <ToggleMode></ToggleMode> */}
+          </StyledWrapperContent>
+          {/* <StyledFollowPublishAccount>{ tips }</StyledFollowPublishAccount> */}
+        </StyledWrapperMain>
+        <StyledDecoration style={{ ...animatedDecoration }}>
+          <Image src={LoginAuth} alt={'Meta Network'} layout="fill" objectFit="contain" />
+        </StyledDecoration>
+      </StyledWrapperInner>
+    </StyledWrapper>
+  )
 }
 
 const StyledWrapper = styled.section`
@@ -120,12 +120,12 @@ const StyledDecoration = styled(animated.section)`
   }
 `
 export async function getStaticProps({ locale }: any) {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ['common'])),
-			// Will be passed to the page component as props
-		},
-	}
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
 }
 
 export default OAuthLogin

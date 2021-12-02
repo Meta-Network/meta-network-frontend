@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useSpring, animated } from 'react-spring'
 import {
-	angle, isInViewPort
+  angle, isInViewPort
 } from '../../utils/index'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 
@@ -21,105 +21,105 @@ interface Props {
  * @returns
  */
 const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMineData }) {
-	const { t } = useTranslation('common')
-	const homeArrow = useRef<HTMLDivElement>(null)
-	// 箭头角度
-	// 自己的坐标是否在屏幕内
-	const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
-	// console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
+  const { t } = useTranslation('common')
+  const homeArrow = useRef<HTMLDivElement>(null)
+  // 箭头角度
+  // 自己的坐标是否在屏幕内
+  const [inViewPortHexagonOwner, setInViewPortHexagonOwner] = useState<boolean | undefined>()
+  // console.log('inViewPortHexagonOwner', inViewPortHexagonOwner)
 
-	/**
+  /**
    * 是否显示
    */
-	const isShow = useMemo(() => {
-		return (!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData))
-	}, [ inViewPortHexagonOwner, hexGridsMineData ])
+  const isShow = useMemo(() => {
+    return (!inViewPortHexagonOwner && inViewPortHexagonOwner !== undefined && !isEmpty(hexGridsMineData))
+  }, [ inViewPortHexagonOwner, hexGridsMineData ])
 
-	const [styles, api] = useSpring(() => ({
-		x: 40,
-		opacity: 0,
-		transform: '',
-		config: {
-			duration: 300
-		}
-	}))
+  const [styles, api] = useSpring(() => ({
+    x: 40,
+    opacity: 0,
+    transform: '',
+    config: {
+      duration: 300
+    }
+  }))
 
-	/**
+  /**
    * 计算箭头角度
    */
-	const calcAngle = useCallback(
-		() => {
+  const calcAngle = useCallback(
+    () => {
 
-			const tag = document.querySelector<HTMLElement>('.hexagon-owner')
-			const inViewPortResult = isInViewPort(tag!)
-			setInViewPortHexagonOwner(inViewPortResult)
+      const tag = document.querySelector<HTMLElement>('.hexagon-owner')
+      const inViewPortResult = isInViewPort(tag!)
+      setInViewPortHexagonOwner(inViewPortResult)
 
-			// console.log('tag', tag, inViewPortResult)
+      // console.log('tag', tag, inViewPortResult)
 
-			// 在窗口内不计算 undefined 不计算
-			// 没有坐标点不计算
-			if (
-				(inViewPortResult || inViewPortResult === undefined)
+      // 在窗口内不计算 undefined 不计算
+      // 没有坐标点不计算
+      if (
+        (inViewPortResult || inViewPortResult === undefined)
         || isEmpty(hexGridsMineData)
-			) {
-				//
-			} else {
-				// 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
-				// 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
+      ) {
+        //
+      } else {
+        // 没有 DOM 不计算, 没有 DOM getBoundingClientRect 不计算
+        // 如果没有 DOM isInViewPort 方法里面会返回 undefined 在上面拦截
 
-				const { x, y, width: domWidth, height: domHeight } = tag!.getBoundingClientRect()
-				const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-				const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+        const { x, y, width: domWidth, height: domHeight } = tag!.getBoundingClientRect()
+        const _width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        const _height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
-				let CoordinateStart = {
-					x: _width,
-					y: _height
-				}
-				const CoordinateEnd = {
-					x: x + (domWidth / 2),
-					y: y + (domHeight / 2)
-				}
+        let CoordinateStart = {
+          x: _width,
+          y: _height
+        }
+        const CoordinateEnd = {
+          x: x + (domWidth / 2),
+          y: y + (domHeight / 2)
+        }
 
-				if (homeArrow.current) {
-					const { x: homeArrowX, y: homeArrowY, width: homeArrowW, height: homeArrowH } = homeArrow!.current.getBoundingClientRect()
-					CoordinateStart = { x: homeArrowX + homeArrowW / 2, y: homeArrowY + homeArrowH / 2 }
-				}
+        if (homeArrow.current) {
+          const { x: homeArrowX, y: homeArrowY, width: homeArrowW, height: homeArrowH } = homeArrow!.current.getBoundingClientRect()
+          CoordinateStart = { x: homeArrowX + homeArrowW / 2, y: homeArrowY + homeArrowH / 2 }
+        }
 
-				const angleResult = angle(
-					CoordinateStart,
-					CoordinateEnd
-				)
+        const angleResult = angle(
+          CoordinateStart,
+          CoordinateEnd
+        )
 
-				try {
-					// TODO：仍然会报错
-					api.start({ transform: `rotate(${angleResult}deg)`, opacity: isShow ? 1 : 0 })
-				} catch (e) {
-					console.error(e)
-				}
-			}
-		},
-		[ hexGridsMineData, api, isShow ],
-	)
+        try {
+          // TODO：仍然会报错
+          api.start({ transform: `rotate(${angleResult}deg)`, opacity: isShow ? 1 : 0 })
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    },
+    [ hexGridsMineData, api, isShow ],
+  )
 
-	useEffect(() => {
-		const timer = setInterval(calcAngle, 4000)
-		const timerShow = setTimeout(() => {
-			api.start({ x: 0, opacity: isShow ? 1 : 0 })
-		}, 3800)
+  useEffect(() => {
+    const timer = setInterval(calcAngle, 4000)
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: isShow ? 1 : 0 })
+    }, 3800)
 
-		return () => {
-			clearInterval(timer)
-			clearInterval(timerShow)
-		}
-	}, [calcAngle, api, isShow])
+    return () => {
+      clearInterval(timer)
+      clearInterval(timerShow)
+    }
+  }, [calcAngle, api, isShow])
 
-	return (
-		<Tooltip title={ isShow ? t('my-position') : '' }>
-			<StyledArrow style={styles} ref={homeArrow}>
-				<img src="/images/arrow.png" alt="arrow" draggable="false" />
-			</StyledArrow>
-		</Tooltip>
-	)
+  return (
+    <Tooltip title={ isShow ? t('my-position') : '' }>
+      <StyledArrow style={styles} ref={homeArrow}>
+        <img src="/images/arrow.png" alt="arrow" draggable="false" />
+      </StyledArrow>
+    </Tooltip>
+  )
 })
 
 const StyledArrow = styled(animated.section)`

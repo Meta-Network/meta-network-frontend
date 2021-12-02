@@ -26,158 +26,158 @@ interface Props {
  * @returns
  */
 const DeploySite: React.FC<Props> = ({
-	isModalVisible, setIsModalVisible, translateMap,
-	bookmarkNode, setVisibleSlider, HandleRemoveBookmark
+  isModalVisible, setIsModalVisible, translateMap,
+  bookmarkNode, setVisibleSlider, HandleRemoveBookmark
 }) => {
-	const { t } = useTranslation('common')
-	const [selected, setSelected] = useState<boolean>(false)
-	const [bookmarkNodeChecked, setBookmarkNodeChecked] = useState<boolean[]>([])
+  const { t } = useTranslation('common')
+  const [selected, setSelected] = useState<boolean>(false)
+  const [bookmarkNodeChecked, setBookmarkNodeChecked] = useState<boolean[]>([])
 
-	// 监听数据 重制状态
-	// selected, isModalVisible
-	useEffect(() => {
-		const list = bookmarkNode.map(() => false)
-		setBookmarkNodeChecked(list)
+  // 监听数据 重制状态
+  // selected, isModalVisible
+  useEffect(() => {
+    const list = bookmarkNode.map(() => false)
+    setBookmarkNodeChecked(list)
 
-		// 如果删除完了
-		// 如果关闭了窗口
-		if (bookmarkNode.length <= 0 || !isModalVisible) {
-			setSelected(false)
-		}
+    // 如果删除完了
+    // 如果关闭了窗口
+    if (bookmarkNode.length <= 0 || !isModalVisible) {
+      setSelected(false)
+    }
 
-	}, [bookmarkNode, selected, isModalVisible])
+  }, [bookmarkNode, selected, isModalVisible])
 
-	// 切换 单选按钮
-	const toggleRadio = useCallback(
-		(idx: number) => {
-			const list = cloneDeep(bookmarkNodeChecked)
-			list[idx] = !list[idx]
-			setBookmarkNodeChecked(list)
-		},
-		[bookmarkNodeChecked],
-	)
-	// 选中全部
-	const checkedAll = useCallback(
-		(value: boolean) => {
-			const list = bookmarkNodeChecked.map(i => i = value)
-			setBookmarkNodeChecked(list)
-		},
-		[bookmarkNodeChecked],
-	)
+  // 切换 单选按钮
+  const toggleRadio = useCallback(
+    (idx: number) => {
+      const list = cloneDeep(bookmarkNodeChecked)
+      list[idx] = !list[idx]
+      setBookmarkNodeChecked(list)
+    },
+    [bookmarkNodeChecked],
+  )
+  // 选中全部
+  const checkedAll = useCallback(
+    (value: boolean) => {
+      const list = bookmarkNodeChecked.map(i => i = value)
+      setBookmarkNodeChecked(list)
+    },
+    [bookmarkNodeChecked],
+  )
 
-	// 选中统计
-	const countCheck = useMemo(() => {
-		return (bookmarkNodeChecked.filter(i => !!i)).length
-	}, [bookmarkNodeChecked])
+  // 选中统计
+  const countCheck = useMemo(() => {
+    return (bookmarkNodeChecked.filter(i => !!i)).length
+  }, [bookmarkNodeChecked])
 
-	// 移除选中项
-	const removeChecked = useCallback(
-		() => {
-			if (countCheck <= 0) {
-				return
-			}
-			const list = bookmarkNode.filter((_, idx) => bookmarkNodeChecked[idx])
-			HandleRemoveBookmark(list)
-		},
-		[bookmarkNode, bookmarkNodeChecked, HandleRemoveBookmark, countCheck],
-	)
+  // 移除选中项
+  const removeChecked = useCallback(
+    () => {
+      if (countCheck <= 0) {
+        return
+      }
+      const list = bookmarkNode.filter((_, idx) => bookmarkNodeChecked[idx])
+      HandleRemoveBookmark(list)
+    },
+    [bookmarkNode, bookmarkNodeChecked, HandleRemoveBookmark, countCheck],
+  )
 
-	/**
+  /**
    * 切换收藏坐标点
    * @param param0
    */
-	const ToggleFn = ({ x, y, z }: { x: number, y: number, z: number }) => {
-		setIsModalVisible(false)
-		setVisibleSlider(false)
+  const ToggleFn = ({ x, y, z }: { x: number, y: number, z: number }) => {
+    setIsModalVisible(false)
+    setVisibleSlider(false)
 
-		translateMap({
-			point: {
-				x: x,
-				y: y,
-				z: z
-			}
-		})
-	}
+    translateMap({
+      point: {
+        x: x,
+        y: y,
+        z: z
+      }
+    })
+  }
 
-	// 内容
-	const Content: React.FC = () => {
-		return (
-			<>
-				<StyledItemHead>
-					<StyledItemHeadLeft>
-						<StyledItemHeadTitle>{t('bookmark-time')}</StyledItemHeadTitle>
-						<SortTopIcon />
-					</StyledItemHeadLeft>
+  // 内容
+  const Content: React.FC = () => {
+    return (
+      <>
+        <StyledItemHead>
+          <StyledItemHeadLeft>
+            <StyledItemHeadTitle>{t('bookmark-time')}</StyledItemHeadTitle>
+            <SortTopIcon />
+          </StyledItemHeadLeft>
 
-					<div>
-						{
-							selected ?
-								<StyledItemHeadSelected onClick={() => setSelected(false)}>{t('finish')}</StyledItemHeadSelected> :
-								(
-							// 没有数据不展示多选按钮
-									bookmarkNode.length > 0 ?
-										<StyledItemHeadIconSelected onClick={() => setSelected(true)} /> : null
-								)
-						}
-					</div>
-				</StyledItemHead>
-				{
-					bookmarkNode.length ?
-						<StyledItem >
-							{
-								bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
-									<StyledItemLi key={idx}>
-										<Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
-										<StyledItemLiUser>
-											<h3>{i.userNickname || i.username || t('no-nickname')}</h3>
-											<p>{i.userBio || t('no-introduction')}</p>
-										</StyledItemLiUser>
-										{
-											selected ?
-												<StyledItemHeadIconRadio
-													onClick={() => toggleRadio(idx)}
-													className="custom-radio"
-													checked={bookmarkNodeChecked[idx]}></StyledItemHeadIconRadio> :
-												<StyledItemLiButton
-													onClick={() => ToggleFn({
-														x: i.x,
-														y: i.y,
-														z: i.z,
-													})}>{t('check')}</StyledItemLiButton>
-										}
-									</StyledItemLi>
-								))
-							}
-						</StyledItem> : <CustomEmpty description={t('not-bookmark')}></CustomEmpty>
-				}
-				{
-					selected ?
-						<StyledContentFooter>
-							<Button
-								className="custom-default"
-								onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
-							>
-								{
-									countCheck >= bookmarkNodeChecked.length ? t('unselect-all') : t('select-all')
-								}
-							</Button>
-							<Button className="custom-primary" onClick={removeChecked}>{t('remove-items', { count: countCheck })}</Button>
-						</StyledContentFooter> : null
-				}
-			</>
-		)
-	}
+          <div>
+            {
+              selected ?
+                <StyledItemHeadSelected onClick={() => setSelected(false)}>{t('finish')}</StyledItemHeadSelected> :
+                (
+              // 没有数据不展示多选按钮
+                  bookmarkNode.length > 0 ?
+                    <StyledItemHeadIconSelected onClick={() => setSelected(true)} /> : null
+                )
+            }
+          </div>
+        </StyledItemHead>
+        {
+          bookmarkNode.length ?
+            <StyledItem >
+              {
+                bookmarkNode.map((i: hexGridsByFilterState, idx: number) => (
+                  <StyledItemLi key={idx}>
+                    <Avatar size={40} src={i.userAvatar} icon={<UserOutlined />} />
+                    <StyledItemLiUser>
+                      <h3>{i.userNickname || i.username || t('no-nickname')}</h3>
+                      <p>{i.userBio || t('no-introduction')}</p>
+                    </StyledItemLiUser>
+                    {
+                      selected ?
+                        <StyledItemHeadIconRadio
+                          onClick={() => toggleRadio(idx)}
+                          className="custom-radio"
+                          checked={bookmarkNodeChecked[idx]}></StyledItemHeadIconRadio> :
+                        <StyledItemLiButton
+                          onClick={() => ToggleFn({
+                            x: i.x,
+                            y: i.y,
+                            z: i.z,
+                          })}>{t('check')}</StyledItemLiButton>
+                    }
+                  </StyledItemLi>
+                ))
+              }
+            </StyledItem> : <CustomEmpty description={t('not-bookmark')}></CustomEmpty>
+        }
+        {
+          selected ?
+            <StyledContentFooter>
+              <Button
+                className="custom-default"
+                onClick={() => checkedAll(countCheck >= bookmarkNodeChecked.length ? false : true)}
+              >
+                {
+                  countCheck >= bookmarkNodeChecked.length ? t('unselect-all') : t('select-all')
+                }
+              </Button>
+              <Button className="custom-primary" onClick={removeChecked}>{t('remove-items', { count: countCheck })}</Button>
+            </StyledContentFooter> : null
+        }
+      </>
+    )
+  }
 
-	return (
-		<CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'full' : ''}>
-			<StyledContainer>
-				<StyledContentHead>
-					<StyledContentHeadTitle>{t('my-bookmark')}</StyledContentHeadTitle>
-				</StyledContentHead>
-				<Content></Content>
-			</StyledContainer>
-		</CustomModal>
-	)
+  return (
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={isMobile ? 'full' : ''}>
+      <StyledContainer>
+        <StyledContentHead>
+          <StyledContentHeadTitle>{t('my-bookmark')}</StyledContentHeadTitle>
+        </StyledContentHead>
+        <Content></Content>
+      </StyledContainer>
+    </CustomModal>
+  )
 }
 
 const StyledContainer = styled.section`

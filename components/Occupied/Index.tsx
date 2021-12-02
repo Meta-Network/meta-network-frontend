@@ -13,53 +13,53 @@ interface Props {
 }
 
 const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible, setIsModalVisible, handleOccupied }) {
-	const { t } = useTranslation('common')
-	// loading button
-	const [loading, setLoading] = useState<boolean>(false)
+  const { t } = useTranslation('common')
+  // loading button
+  const [loading, setLoading] = useState<boolean>(false)
 
-	// 确认占领
-	const HandleOccupied = async () => {
-		setLoading(true)
-		await handleOccupied()
-		setLoading(false)
-	}
+  // 确认占领
+  const HandleOccupied = async () => {
+    setLoading(true)
+    await handleOccupied()
+    setLoading(false)
+  }
 
-	// reset
-	useEffect(() => {
-		if (!isModalVisible) {
-			setLoading(false  )
-		}
-	}, [isModalVisible])
+  // reset
+  useEffect(() => {
+    if (!isModalVisible) {
+      setLoading(false  )
+    }
+  }, [isModalVisible])
 
-	const Content: React.FC = () => {
-		return (
-			<div>
-				<StyledContentTitle>{t('occupied-modal-help-title')}</StyledContentTitle>
-				<StyledContentText>{t('occupied-modal-help-rules-1')}</StyledContentText>
-				<StyledContentText>{t('occupied-modal-help-rules-2')}</StyledContentText>
-				<StyledContentTitle>{t('occupied-modal-help-description-1')} </StyledContentTitle>
-				<StyledContentText>{t('occupied-modal-help-description-2')}</StyledContentText>
+  const Content: React.FC = () => {
+    return (
+      <div>
+        <StyledContentTitle>{t('occupied-modal-help-title')}</StyledContentTitle>
+        <StyledContentText>{t('occupied-modal-help-rules-1')}</StyledContentText>
+        <StyledContentText>{t('occupied-modal-help-rules-2')}</StyledContentText>
+        <StyledContentTitle>{t('occupied-modal-help-description-1')} </StyledContentTitle>
+        <StyledContentText>{t('occupied-modal-help-description-2')}</StyledContentText>
 
-				<StyledContentTextTips>{t('occupied-modal-help-confirm')}</StyledContentTextTips>
+        <StyledContentTextTips>{t('occupied-modal-help-confirm')}</StyledContentTextTips>
 
-				<StyledContentFooter>
-					<Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>{t('confirm')}</Button>
-					<Button className="custom-default" onClick={() => setIsModalVisible(false)}>{t('occupied-modal-close')}</Button>
-				</StyledContentFooter>
-			</div>
-		)
-	}
+        <StyledContentFooter>
+          <Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>{t('confirm')}</Button>
+          <Button className="custom-default" onClick={() => setIsModalVisible(false)}>{t('occupied-modal-close')}</Button>
+        </StyledContentFooter>
+      </div>
+    )
+  }
 
-	return (
-		<CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'half-occupied' : '' }>
-			<StyledContent>
-				<StyledContentHead>
-					<StyledContentHeadTitle>{t('create')} META SPACE</StyledContentHeadTitle>
-				</StyledContentHead>
-				<Content></Content>
-			</StyledContent>
-		</CustomModal>
-	)
+  return (
+    <CustomModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} mode={ isMobile ? 'half-occupied' : '' }>
+      <StyledContent>
+        <StyledContentHead>
+          <StyledContentHeadTitle>{t('create')} META SPACE</StyledContentHeadTitle>
+        </StyledContentHead>
+        <Content></Content>
+      </StyledContent>
+    </CustomModal>
+  )
 })
 
 const StyledContent = styled.section`

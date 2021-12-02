@@ -9,19 +9,19 @@ interface Props {
 }
 
 const SliderToggle: React.FC<Props> = React.memo(function SliderToggle({
-	Toggle, visible
+  Toggle, visible
 }) {
-	return (
-		<StyledSliderToggle visible={visible}>
-			<StyledSliderBtn onClick={() => Toggle()}>
-				{
-					visible
-						? <MenuFoldOutlined />
-						: <MenuUnfoldOutlined />
-				}
-			</StyledSliderBtn>
-		</StyledSliderToggle>
-	)
+  return (
+    <StyledSliderToggle visible={visible}>
+      <StyledSliderBtn onClick={() => Toggle()}>
+        {
+          visible
+            ? <MenuFoldOutlined />
+            : <MenuUnfoldOutlined />
+        }
+      </StyledSliderBtn>
+    </StyledSliderToggle>
+  )
 })
 
 export default SliderToggle

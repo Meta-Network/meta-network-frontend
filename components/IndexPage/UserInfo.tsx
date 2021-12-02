@@ -22,27 +22,27 @@ interface Props {
 }
 
 const UserInfo: React.FC<Props> = React.memo(function UserInfo({
-	url, bookmark, currentNode, HandleBookmark, focus$, translateMap
+  url, bookmark, currentNode, HandleBookmark, focus$, translateMap
 }) {
-	const refAvatar = useRef<HTMLDivElement>(null)
-	const refMore = useRef<HTMLDivElement>(null)
+  const refAvatar = useRef<HTMLDivElement>(null)
+  const refMore = useRef<HTMLDivElement>(null)
 
-	const handleFollow = useCallback(
-		() => {
+  const handleFollow = useCallback(
+    () => {
 
-			const { x, y, z } = currentNode
-			if (!isEmpty(currentNode)) {
-				const key = keyFormat({ x, y, z })
-				const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
+      const { x, y, z } = currentNode
+      if (!isEmpty(currentNode)) {
+        const key = keyFormat({ x, y, z })
+        const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
-				if (dom) {
-					// console.log('dom', dom)
-					// console.log('dom', dom.getBoundingClientRect())
-					const domClient = dom.getBoundingClientRect()
-					const { x, y, width, height } = domClient
-					if (refAvatar.current) {
-						// console.dir(refAvatar!.current)
-						const avatarWidth = refAvatar!.current.clientWidth
+        if (dom) {
+          // console.log('dom', dom)
+          // console.log('dom', dom.getBoundingClientRect())
+          const domClient = dom.getBoundingClientRect()
+          const { x, y, width, height } = domClient
+          if (refAvatar.current) {
+            // console.dir(refAvatar!.current)
+            const avatarWidth = refAvatar!.current.clientWidth
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
@@ -56,10 +56,10 @@ const UserInfo: React.FC<Props> = React.memo(function UserInfo({
 
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
-					}
-					if (refMore.current) {
-						const moreWidth = refMore!.current.clientWidth
-						const moreHeight = refMore!.current.clientHeight
+          }
+          if (refMore.current) {
+            const moreWidth = refMore!.current.clientWidth
+            const moreHeight = refMore!.current.clientHeight
 
             refMore!.current.style.left = `${x}px`
             refMore!.current.style.top = `${y}px`
@@ -74,54 +74,54 @@ const UserInfo: React.FC<Props> = React.memo(function UserInfo({
 
             refMore!.current.style.opacity = '1'
             // console.log('refMore', refMore.current)
-					}
-				}
-			}
-		}, [currentNode])
+          }
+        }
+      }
+    }, [currentNode])
 
-	useEffect(() => {
-		// console.log('currentNode', currentNode, ID)
-		let time: NodeJS.Timeout | any = null
+  useEffect(() => {
+    // console.log('currentNode', currentNode, ID)
+    let time: NodeJS.Timeout | any = null
 
 
-		if (isEmpty(currentNode)) {
-			if (refAvatar.current) {
+    if (isEmpty(currentNode)) {
+      if (refAvatar.current) {
         refAvatar!.current.style.opacity = '0'
         refAvatar!.current.style.left = '-100%'
         refAvatar!.current.style.top = '-100%'
-			}
-			if (refMore.current) {
+      }
+      if (refMore.current) {
         refMore!.current.style.opacity = '0'
         refMore!.current.style.left = '-100%'
         refMore!.current.style.top = '-100%'
-			}
-			clearInterval(time)
+      }
+      clearInterval(time)
 
-		} else {
-			clearInterval(time)
-			// TODO: 因为卡顿，暂时取消 requestAnimateFrame，用 setInterval 代替先
-			time = setInterval(handleFollow, 60)
-		}
+    } else {
+      clearInterval(time)
+      // TODO: 因为卡顿，暂时取消 requestAnimateFrame，用 setInterval 代替先
+      time = setInterval(handleFollow, 60)
+    }
 
-		return () => clearInterval(time)
-	}, [currentNode, handleFollow])
+    return () => clearInterval(time)
+  }, [currentNode, handleFollow])
 
-	return (
-		<>
-			<StyledUserAvatar ref={refAvatar}>
-				<UserAvatar url={url}></UserAvatar>
-			</StyledUserAvatar>
+  return (
+    <>
+      <StyledUserAvatar ref={refAvatar}>
+        <UserAvatar url={url}></UserAvatar>
+      </StyledUserAvatar>
 
-			<StyledUserMore ref={refMore}>
-				<UserMore
-					bookmark={bookmark}
-					currentNode={currentNode}
-					HandleBookmark={HandleBookmark}
-					focus$={focus$}
-					translateMap={translateMap}></UserMore>
-			</StyledUserMore>
-		</>
-	)
+      <StyledUserMore ref={refMore}>
+        <UserMore
+          bookmark={bookmark}
+          currentNode={currentNode}
+          HandleBookmark={HandleBookmark}
+          focus$={focus$}
+          translateMap={translateMap}></UserMore>
+      </StyledUserMore>
+    </>
+  )
 })
 
 const StyledUserAvatar = styled.div`

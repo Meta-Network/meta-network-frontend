@@ -15,39 +15,39 @@ interface Props {
 }
 
 const Email: React.FC<Props> = () => {
-	const { t } = useTranslation('common')
-	const router = useRouter()
-	// email 登录模式
-	const [emailMode, setEmailMode] = useState<EmailModeProps>('login')
+  const { t } = useTranslation('common')
+  const router = useRouter()
+  // email 登录模式
+  const [emailMode, setEmailMode] = useState<EmailModeProps>('login')
 
-	// 设置 email 登录模式
-	const setEmailModeFn = (val: EmailModeProps): void => {
-		setEmailMode(val)
-	}
+  // 设置 email 登录模式
+  const setEmailModeFn = (val: EmailModeProps): void => {
+    setEmailMode(val)
+  }
 
-	// 没有登录过
-	useEffect(() => {
-		const isLogin = StoreGet(KEY_IS_LOGIN)
-		if (!isLogin) {
-			setEmailModeFn('register')
-		}
-	}, [])
+  // 没有登录过
+  useEffect(() => {
+    const isLogin = StoreGet(KEY_IS_LOGIN)
+    if (!isLogin) {
+      setEmailModeFn('register')
+    }
+  }, [])
 
-	return (
-		<>
-			<Tooltip title={t('back-to-homepage')}>
-				<StyledBackBtn icon={ <ArrowLeftOutlined /> } onClick={() => { router.push('/') }}></StyledBackBtn>
-			</Tooltip>
-			<StyledMethod>{emailMode === 'login' ? t('log-in') : t('create-account')}</StyledMethod>
-			<ToggleServers />
-			{
-				emailMode === 'login' ?
-					<EmailLogin setEmailModeFn={setEmailModeFn}></EmailLogin> :
-					emailMode === 'register' ?
-						<EmailRegister setEmailModeFn={setEmailModeFn}></EmailRegister> : null
-			}
-		</>
-	)
+  return (
+    <>
+      <Tooltip title={t('back-to-homepage')}>
+        <StyledBackBtn icon={ <ArrowLeftOutlined /> } onClick={() => { router.push('/') }}></StyledBackBtn>
+      </Tooltip>
+      <StyledMethod>{emailMode === 'login' ? t('log-in') : t('create-account')}</StyledMethod>
+      <ToggleServers />
+      {
+        emailMode === 'login' ?
+          <EmailLogin setEmailModeFn={setEmailModeFn}></EmailLogin> :
+          emailMode === 'register' ?
+            <EmailRegister setEmailModeFn={setEmailModeFn}></EmailRegister> : null
+      }
+    </>
+  )
 }
 
 const StyledMethod = styled.p`

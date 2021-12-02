@@ -18,48 +18,48 @@ interface Props {
  * @returns
  */
 const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ range }) {
-	// 统计所有坐标点
-	const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
-	const { t } = useTranslation('common')
+  // 统计所有坐标点
+  const [hexGridsCountData, setHexGridsCountData] = useState<number>(0)
+  const { t } = useTranslation('common')
 
-	const [ styles, api ] = useSpring(() => ({
-		x: 40,
-		opacity: 0,
-		config: {
-			duration: 300
-		} }))
-
-
-	// 获取所有坐标点统计
-	const fetchHexGridsCountByFilterFn = useCallback(async () => {
-		const res = await fetchHexGridsCountByFilterAPI(range)
-		setHexGridsCountData(res)
-	}, [ range ])
+  const [ styles, api ] = useSpring(() => ({
+    x: 40,
+    opacity: 0,
+    config: {
+      duration: 300
+    } }))
 
 
-	useEffect(() => {
-		const timer = setInterval(fetchHexGridsCountByFilterFn, 10 * 1000)
-		const timerShow = setTimeout(() => {
-			api.start({ x: 0, opacity: 1 })
-			fetchHexGridsCountByFilterFn()
-		}, 3200)
+  // 获取所有坐标点统计
+  const fetchHexGridsCountByFilterFn = useCallback(async () => {
+    const res = await fetchHexGridsCountByFilterAPI(range)
+    setHexGridsCountData(res)
+  }, [ range ])
 
-		return () => {
-			clearInterval(timer)
-			clearInterval(timerShow)
-		}
-	}, [api, fetchHexGridsCountByFilterFn])
 
-	return (
-		<Tooltip title={t('coordinate-count')} placement="left">
-			<StyledText style={styles}>
-				<AnimatedNumber
-					value={hexGridsCountData}
-					formatValue={(value: number) => value.toFixed(0)}
-				/>
-			</StyledText>
-		</Tooltip>
-	)
+  useEffect(() => {
+    const timer = setInterval(fetchHexGridsCountByFilterFn, 10 * 1000)
+    const timerShow = setTimeout(() => {
+      api.start({ x: 0, opacity: 1 })
+      fetchHexGridsCountByFilterFn()
+    }, 3200)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(timerShow)
+    }
+  }, [api, fetchHexGridsCountByFilterFn])
+
+  return (
+    <Tooltip title={t('coordinate-count')} placement="left">
+      <StyledText style={styles}>
+        <AnimatedNumber
+          value={hexGridsCountData}
+          formatValue={(value: number) => value.toFixed(0)}
+        />
+      </StyledText>
+    </Tooltip>
+  )
 })
 
 const StyledText = styled(animated.span)`

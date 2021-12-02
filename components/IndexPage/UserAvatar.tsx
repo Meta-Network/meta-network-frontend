@@ -7,16 +7,16 @@ interface Props {
 }
 
 const UserAvatar: React.FC<Props> = ({ url }) => {
-	return (
-		<>
-			<StyledUserAvatarImage>
-				{
-					url && <img src={ url } alt="avatar" />
-				}
-			</StyledUserAvatarImage>
-			<StyledUserAvatarArrow></StyledUserAvatarArrow>
-		</>
-	)
+  return (
+    <>
+      <StyledUserAvatarImage>
+        {
+          url && <img src={ url } alt="avatar" />
+        }
+      </StyledUserAvatarImage>
+      <StyledUserAvatarArrow></StyledUserAvatarArrow>
+    </>
+  )
 }
 
 const StyledUserAvatarImage = styled.div`

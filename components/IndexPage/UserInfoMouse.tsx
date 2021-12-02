@@ -16,21 +16,21 @@ interface Props {
 
 const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url, currentNodeMouse, currentNode }) {
 
-	const refAvatar = useRef<HTMLDivElement>(null)
+  const refAvatar = useRef<HTMLDivElement>(null)
 
-	const handleFollow = useCallback(
-		() => {
-			const { x, y, z } = currentNodeMouse
-			if (!isEmpty(currentNodeMouse)) {
-				const key = keyFormat({ x, y, z })
-				const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
+  const handleFollow = useCallback(
+    () => {
+      const { x, y, z } = currentNodeMouse
+      if (!isEmpty(currentNodeMouse)) {
+        const key = keyFormat({ x, y, z })
+        const dom = document.querySelector<HTMLElement>(`.hexagon-${key}`)
 
-				if (dom) {
-					// console.log('dom', dom, dom.getBoundingClientRect())
-					const domClient = dom.getBoundingClientRect()
-					const { x, y, width } = domClient
-					if (refAvatar.current) {
-						const avatarWidth = refAvatar!.current.clientWidth
+        if (dom) {
+          // console.log('dom', dom, dom.getBoundingClientRect())
+          const domClient = dom.getBoundingClientRect()
+          const { x, y, width } = domClient
+          if (refAvatar.current) {
+            const avatarWidth = refAvatar!.current.clientWidth
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`
@@ -44,43 +44,43 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
 
             refAvatar!.current.style.opacity = '1'
             // console.log('refAvatar', refAvatar.current)
-					}
-				}
-			}
-		}, [currentNodeMouse])
+          }
+        }
+      }
+    }, [currentNodeMouse])
 
-	useEffect(() => {
-		let time: NodeJS.Timeout | any = null
+  useEffect(() => {
+    let time: NodeJS.Timeout | any = null
 
-		if (isEmpty(currentNodeMouse)) {
-			if (refAvatar.current) {
+    if (isEmpty(currentNodeMouse)) {
+      if (refAvatar.current) {
         refAvatar!.current.style.opacity = '0'
         refAvatar!.current.style.left = '-100%'
         refAvatar!.current.style.top = '-100%'
-			}
-			clearInterval(time)
-		} else {
-			// 如果当前聚焦和鼠标经过为同一个
-			if (
-				currentNodeMouse.x === currentNode.x
+      }
+      clearInterval(time)
+    } else {
+      // 如果当前聚焦和鼠标经过为同一个
+      if (
+        currentNodeMouse.x === currentNode.x
         && currentNodeMouse.y === currentNode.y
         && currentNodeMouse.z === currentNode.z
-			) {
-				clearInterval(time)
-			} else {
-				clearInterval(time)
-				time = setInterval(handleFollow, 800)
-			}
-		}
+      ) {
+        clearInterval(time)
+      } else {
+        clearInterval(time)
+        time = setInterval(handleFollow, 800)
+      }
+    }
 
-		return () => clearInterval(time)
-	}, [currentNodeMouse, currentNode, handleFollow])
+    return () => clearInterval(time)
+  }, [currentNodeMouse, currentNode, handleFollow])
 
-	return (
-		<StyledUserAvatar ref={refAvatar}>
-			<UserAvatar url={url}></UserAvatar>
-		</StyledUserAvatar>
-	)
+  return (
+    <StyledUserAvatar ref={refAvatar}>
+      <UserAvatar url={url}></UserAvatar>
+    </StyledUserAvatar>
+  )
 })
 
 const StyledUserAvatar = styled.div`

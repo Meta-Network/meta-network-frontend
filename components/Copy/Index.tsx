@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import {
-	CopyOutlined
+  CopyOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useTranslation } from 'next-i18next'
@@ -13,38 +13,38 @@ interface Props {
 }
 
 const Copy: React.FC<Props> = ({ text, disabled = false }) => {
-	const { Toast } = useToast()
-	const { t } = useTranslation('common')
+  const { Toast } = useToast()
+  const { t } = useTranslation('common')
 
-	const handleCopy = useCallback(
-		() => {
-			if (!disabled) {
-				Toast({ content: t('copy-successfully-tips') })
-			}
-		},
-		[disabled, Toast, t])
+  const handleCopy = useCallback(
+    () => {
+      if (!disabled) {
+        Toast({ content: t('copy-successfully-tips') })
+      }
+    },
+    [disabled, Toast, t])
 
-	const textInfo = useMemo(() => {
-		// TODO: 暂时写死
-		return t('inviteCode.shareText', {
-			url: 'https://home.metanetwork.online',
-			code: text
-		})
-	}, [text, t])
+  const textInfo = useMemo(() => {
+    // TODO: 暂时写死
+    return t('inviteCode.shareText', {
+      url: 'https://home.metanetwork.online',
+      code: text
+    })
+  }, [text, t])
 
-	return (
-		<CopyText disabled={disabled}>
-			<p>{text}</p>
-			{
-				disabled
-					? <CopyUsed>{t('used')}</CopyUsed>
-					: <CopyToClipboard text={textInfo}
-						onCopy={() => handleCopy()}>
-						<CopyOutlined className="copy-btn" />
-					</CopyToClipboard>
-			}
-		</CopyText>
-	)
+  return (
+    <CopyText disabled={disabled}>
+      <p>{text}</p>
+      {
+        disabled
+          ? <CopyUsed>{t('used')}</CopyUsed>
+          : <CopyToClipboard text={textInfo}
+            onCopy={() => handleCopy()}>
+            <CopyOutlined className="copy-btn" />
+          </CopyToClipboard>
+      }
+    </CopyText>
+  )
 }
 
 const CopyText = styled.section<{ disabled: boolean }>`

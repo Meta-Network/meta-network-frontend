@@ -8,43 +8,43 @@ import { EmailIcon } from '../../Icon/Index'
 
 // Toggle 登录方式
 const ToggleMode: React.FC = () => {
-	const { t } = useTranslation('common')
+  const { t } = useTranslation('common')
 
-	return (
-		<>
-			<StyledTitle>{t('other-login')}</StyledTitle>
-			<StyledList>
-				<StyledItem>
-					<Tooltip placement="bottom" title={`Email ${t('log-in')}`}>
-						<StyledItemBtn>
-							<EmailIcon />
-						</StyledItemBtn>
-					</Tooltip>
-				</StyledItem>
-				<StyledItem>
-					<Tooltip placement="bottom" title={t('wechat-scan-code-login')}>
-						<StyledItemBtn>
-							<WechatOutlined className="icon" />
-						</StyledItemBtn>
-					</Tooltip>
-				</StyledItem>
-				<StyledItem>
-					<Tooltip placement="bottom" title={`GitHub ${t('log-in')}`}>
-						<StyledItemBtn>
-							<GithubOutlined className="icon" />
-						</StyledItemBtn>
-					</Tooltip>
-				</StyledItem>
-				<StyledItem>
-					<Tooltip placement="bottom" title={`Twitter ${t('log-in')}`}>
-						<StyledItemBtn>
-							<TwitterOutlined className="icon" />
-						</StyledItemBtn>
-					</Tooltip>
-				</StyledItem>
-			</StyledList>
-		</>
-	)
+  return (
+    <>
+      <StyledTitle>{t('other-login')}</StyledTitle>
+      <StyledList>
+        <StyledItem>
+          <Tooltip placement="bottom" title={`Email ${t('log-in')}`}>
+            <StyledItemBtn>
+              <EmailIcon />
+            </StyledItemBtn>
+          </Tooltip>
+        </StyledItem>
+        <StyledItem>
+          <Tooltip placement="bottom" title={t('wechat-scan-code-login')}>
+            <StyledItemBtn>
+              <WechatOutlined className="icon" />
+            </StyledItemBtn>
+          </Tooltip>
+        </StyledItem>
+        <StyledItem>
+          <Tooltip placement="bottom" title={`GitHub ${t('log-in')}`}>
+            <StyledItemBtn>
+              <GithubOutlined className="icon" />
+            </StyledItemBtn>
+          </Tooltip>
+        </StyledItem>
+        <StyledItem>
+          <Tooltip placement="bottom" title={`Twitter ${t('log-in')}`}>
+            <StyledItemBtn>
+              <TwitterOutlined className="icon" />
+            </StyledItemBtn>
+          </Tooltip>
+        </StyledItem>
+      </StyledList>
+    </>
+  )
 }
 
 const StyledTitle = styled.p`
