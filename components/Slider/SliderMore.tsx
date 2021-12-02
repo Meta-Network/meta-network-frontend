@@ -7,15 +7,16 @@ import {
 	TwitterOutlined,
 	// GithubOutlined,
 	// MediumOutlined,
-	LinkOutlined
+	LinkOutlined,
+	QuestionOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
 import { StyledSliderMore, StyledSliderBtn } from './Style'
-import { QuestionOutlined } from '@ant-design/icons'
 // import { TelegramIcon, DiscordIcon } from '../Icon/Index'
+import { PlayBackIcon } from '../Icon/Index'
 
 interface Props {
   readonly visible: boolean
@@ -74,13 +75,18 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
 				item: [
 					{
 						url: 'https://www.meta.io',
-						icon: null,
+						icon: <LinkOutlined />,
 						name: 'Meta.io'
 					},
 					{
 						url: 'https://www.matataki.io',
-						icon: null,
+						icon: <LinkOutlined />,
 						name: 'Matataki'
+					},
+					{
+						url: 'https://meta-grid-visualizer.vercel.app',
+						icon: <PlayBackIcon />,
+						name: t('slider.more.replay')
 					},
 					// {
 					//   url: 'https://meta-space.vercel.app',
