@@ -58,13 +58,13 @@ const Email: React.FC<Props> = ({ setEmailModeFn }) => {
 
 				redirectUrl()
 			} else {
-				Toast({ content: '验证码不匹配', type: 'warning' })
+				Toast({ content: t('message.wrongCaptchaCode'), type: 'warning' })
 			}
 		} catch (e: any) {
 			if (e?.data?.statusCode === 401) {
-				Toast({ content: '账户不存在，请先注册', type: 'warning' })
+				Toast({ content: t('message.accountNotExist'), type: 'warning' })
 			} else if (e?.data?.statusCode === 400) {
-				Toast({ content: '验证码不匹配', type: 'warning' })
+				Toast({ content: t('message.wrongCaptchaCode'), type: 'warning' })
 			} else {
 				Toast({ content: t('fail'), type: 'warning' })
 				console.error(e)

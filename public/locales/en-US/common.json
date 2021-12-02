@@ -152,5 +152,7 @@
   "settings.systemSettings.mapRenderMode": "Map rendering mode",
   "settings.systemSettings.simple": "Easy",
   "settings.systemSettings.full": "All",
-  "slider.settings": "System setting"
+  "slider.settings": "System setting",
+  "message.wrongCaptchaCode": "Wrong captcha code",
+  "message.accountNotExist": "Account does not exist, please register first"
 }

@@ -152,5 +152,7 @@
   "settings.systemSettings.mapRenderMode": "地图渲染模式",
   "settings.systemSettings.simple": "简单",
   "settings.systemSettings.full": "全部",
-  "slider.settings": "系统设置"
+  "slider.settings": "系统设置",
+  "message.wrongCaptchaCode": "验证码不匹配",
+  "message.accountNotExist": "账户不存在，请先注册"
 }
