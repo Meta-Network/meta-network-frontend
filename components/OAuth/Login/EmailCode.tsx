@@ -50,10 +50,7 @@ const EmailCode: React.FC<Props> = ({ form }) => {
 		} catch (e: any) {
 			console.error(e)
 			if (e?.data?.statusCode === 403) {
-				let seconds = 0
-				if (e?.data?.error && !Number.isNaN(e?.data?.error)) {
-					seconds = Math.ceil((Number(e?.data?.error) - Date.now()) / 1000)
-				}
+				const seconds = Math.ceil((Number(e?.data?.error) - Date.now()) / 1000) || 0
 				const message = seconds ? t('message.getEmailCode.seconds', { seconds }) : t('message.getEmailCode.text')
 				Toast({ content: message, type: 'warning' })
 			} else if (e?.data?.statusCode === 400) {
