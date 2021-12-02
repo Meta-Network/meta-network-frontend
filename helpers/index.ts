@@ -1,7 +1,7 @@
 import {
-  hexGridsForbiddenZoneRadius, hexGridsCountByFilter, hexGridsMine,
-  hexGridsByFilter,
-  hexGridsLoctionByUserId
+	hexGridsForbiddenZoneRadius, hexGridsCountByFilter, hexGridsMine,
+	hexGridsByFilter,
+	hexGridsLoctionByUserId
 } from '../services/metaNetwork'
 import { invitationsMine, storageToken } from '../services/ucenter'
 import { HexGridsLoctionByUserIdState, PointScopeState } from '../typings/metaNetwork'
@@ -19,16 +19,16 @@ import { OAuthWhiteList } from '../common/config/index'
  * @returns
  */
 export const fetchForbiddenZoneRadiusAPI = async (radius: number) => {
-  let _radius = radius
-  try {
-    const res = await hexGridsForbiddenZoneRadius()
-    if (res.statusCode === 200 && res.data > 0) {
-      _radius = res.data
-    }
-  } catch (e) {
-    console.log(e)
-  }
-  return _radius
+	let _radius = radius
+	try {
+		const res = await hexGridsForbiddenZoneRadius()
+		if (res.statusCode === 200 && res.data > 0) {
+			_radius = res.data
+		}
+	} catch (e) {
+		console.error(e)
+	}
+	return _radius
 }
 
 /**
@@ -36,16 +36,16 @@ export const fetchForbiddenZoneRadiusAPI = async (radius: number) => {
  * @returns
  */
 export const fetchInviteCodeAPI = async () => {
-  let result: InvitationsMineState[] = []
-  try {
-    const res = await invitationsMine()
-    if (res.statusCode === 200) {
-      result = res.data
-    }
-  } catch (e) {
-    console.log(e)
-  }
-  return result
+	let result: InvitationsMineState[] = []
+	try {
+		const res = await invitationsMine()
+		if (res.statusCode === 200) {
+			result = res.data
+		}
+	} catch (e) {
+		console.error(e)
+	}
+	return result
 }
 
 /**
@@ -54,35 +54,35 @@ export const fetchInviteCodeAPI = async () => {
  * @returns
  */
 export const fetchHexGridsCountByFilterAPI = async (range: PointScopeState) => {
-  let count = 0
-  try {
-    const res = await hexGridsCountByFilter(range)
-    if (res.statusCode === 200 && res.data) {
-      count = res.data
-    }
-  } catch (e) {
-    console.log(e)
-  }
-  return count
+	let count = 0
+	try {
+		const res = await hexGridsCountByFilter(range)
+		if (res.statusCode === 200 && res.data) {
+			count = res.data
+		}
+	} catch (e) {
+		console.error(e)
+	}
+	return count
 }
 
 /**
  * 获取自己的坐标点
  */
 export const fetchHexGridsMineAPI = async () => {
-  try {
-    const res = await hexGridsMine()
-    if (res.statusCode === 200 && res.data) {
-      return res.data
-    } else {
-      throw new Error('没有占领')
-    }
-  } catch (e) {
-    console.log(e)
-    return null
-  } finally {
-    //
-  }
+	try {
+		const res = await hexGridsMine()
+		if (res.statusCode === 200 && res.data) {
+			return res.data
+		} else {
+			throw new Error('没有占领')
+		}
+	} catch (e) {
+		console.error(e)
+		return null
+	} finally {
+		//
+	}
 }
 
 /**
@@ -91,18 +91,18 @@ export const fetchHexGridsMineAPI = async () => {
  * @returns
  */
 export const fetchHexGridsAPI = async (defaultHexGridsRange: PointScopeState) => {
-  try {
-    const res = await hexGridsByFilter(defaultHexGridsRange)
-    if (res.statusCode === 200) {
-      return res.data
-    } else {
-      // console.log('获取失败')
-      throw new Error('获取失败')
-    }
-  } catch (e) {
-    console.log('e', e)
-    return null
-  }
+	try {
+		const res = await hexGridsByFilter(defaultHexGridsRange)
+		if (res.statusCode === 200) {
+			return res.data
+		} else {
+			// console.log('获取失败')
+			throw new Error('获取失败')
+		}
+	} catch (e) {
+		console.error('e', e)
+		return null
+	}
 }
 
 /**
@@ -110,23 +110,23 @@ export const fetchHexGridsAPI = async (defaultHexGridsRange: PointScopeState) =>
  * @returns
  */
 export const getZoomPercentage = () => {
-  const dom = document.querySelector<HTMLElement>('#container svg g')
+	const dom = document.querySelector<HTMLElement>('#container svg g')
 
-  if (dom) {
-    const transformScale = dom.getAttribute('transform')
-    const transformScaleMatch = transformScale?.match('scale\(.*\)')
-    const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
-    // console.log('transformScaleValue', transformScaleValue)
+	if (dom) {
+		const transformScale = dom.getAttribute('transform')
+		const transformScaleMatch = transformScale?.match('scale\(.*\)')
+		const transformScaleValue = transformScaleMatch?.length ? Number(transformScaleMatch[0].slice(6, -1)) : 1
+		// console.log('transformScaleValue', transformScaleValue)
 
-    // 0 - 4 min 0.4 max 4
-    const scale = 4 / 100
-    let percentage = transformScaleValue / scale
+		// 0 - 4 min 0.4 max 4
+		const scale = 4 / 100
+		let percentage = transformScaleValue / scale
 
-    // console.log('percentage', percentage)
-    return Number(amountSplit(String(percentage), 2))
-  }
+		// console.log('percentage', percentage)
+		return Number(amountSplit(String(percentage), 2))
+	}
 
-  return 0
+	return 0
 }
 
 /**
@@ -135,13 +135,13 @@ export const getZoomPercentage = () => {
  * @returns
  */
 export const OauthUrlVerify = (url: string) => {
-  try {
-    const { origin } = new URL(url)
-    return OAuthWhiteList.includes(origin)
-  } catch (e) {
-    console.log(e)
-    return false
-  }
+	try {
+		const { origin } = new URL(url)
+		return OAuthWhiteList.includes(origin)
+	} catch (e) {
+		console.error(e)
+		return false
+	}
 }
 
 /**
@@ -150,29 +150,29 @@ export const OauthUrlVerify = (url: string) => {
  * @returns
  */
 export const fetchHexGridsLocationByUserIdAPI = async (data: HexGridsLoctionByUserIdState) => {
-  try {
-    const res = await hexGridsLoctionByUserId(data)
-    if (res.statusCode === 200 && res.data) {
-      return res.data
-    } else {
-      // console.log('获取失败')
-      throw new Error(res.message)
-    }
-  } catch (e) {
-    console.log('e', e)
-    return null
-  }
+	try {
+		const res = await hexGridsLoctionByUserId(data)
+		if (res.statusCode === 200 && res.data) {
+			return res.data
+		} else {
+			// console.log('获取失败')
+			throw new Error(res.message)
+		}
+	} catch (e) {
+		console.error('e', e)
+		return null
+	}
 }
 
 /**
  * 获取 Token
  */
- export const fetchTokenAPI = async (): Promise< string | false > => {
-  const res = await storageToken()
-  if (res.statusCode === 201) {
-    return res.data
-  } else {
-    console.error(res.message)
-    return false
-  }
+export const fetchTokenAPI = async (): Promise< string | false > => {
+	const res = await storageToken()
+	if (res.statusCode === 201) {
+		return res.data
+	} else {
+		console.error(res.message)
+		return false
+	}
 }

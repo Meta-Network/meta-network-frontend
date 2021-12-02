@@ -28,7 +28,7 @@ const NodeHistory: FC<Props> = memo(function NodeHistory({
    * 历史预览列表
    */
   const historyViewList = useMemo(() => {
-    let _historyView = cloneDeep(historyView)
+    const _historyView = cloneDeep(historyView)
 
     for (let i = 0; i < _historyView.length; i++) {
       const ele = _historyView[i]

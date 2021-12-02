@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 
@@ -10,18 +9,17 @@ import LoginAuth from '../../../assets/svg/login_auth.svg'
 import Email from '../../../components/OAuth/Login/Email'
 
 const OAuthLogin: React.FC = () => {
-  const { t } = useTranslation('common')
   // 登录方式
-  const [mode, setMode] = useState<'email'>('email') // email ...
+  const [mode] = useState<'email'>('email') // email ...
 
   // tips 根据 mode 显示
-  const tips = useMemo(() => {
-    let list = {
-      email: t('login-with-email'),
-      wechat: t('login-with-wechat')
-    }
-    return list[mode]
-  }, [mode, t])
+  // const tips = useMemo(() => {
+  // 	const list = {
+  // 		email: t('login-with-email'),
+  // 		wechat: t('login-with-wechat')
+  // 	}
+  // 	return list[mode]
+  // }, [mode, t])
 
   // animated start
   const animatedDecoration = useSpring({
@@ -102,11 +100,11 @@ const StyledWrapperMain = styled(animated.section)`
 
 const StyledWrapperContent = styled.section``
 
-const StyledFollowPublishAccount = styled.section`
-  margin-top: 30px;
-  font-size: 12px;
-  color: #9b9b9f;
-`
+// const StyledFollowPublishAccount = styled.section`
+//   margin-top: 30px;
+//   font-size: 12px;
+//   color: #9b9b9f;
+// `
 
 const StyledDecoration = styled(animated.section)`
   position: relative;

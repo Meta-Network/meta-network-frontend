@@ -1,15 +1,17 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { isEmpty, shuffle, random, maxBy } from 'lodash'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import { isEmpty, maxBy } from 'lodash'
 import { getZoomPercentage } from '../../helpers/index'
 import HexagonRound from '../ReactHexgrid/HexagonRound'
 import NodeContent from '../IndexPage/NodeContent'
-import { HexagonsState, PointState, AxialState, LayoutState, translateMapState } from '../../typings/node'
-import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { axialToCube, cubeToAxial, getHexagonBox, Hexagon, HexagonMemo, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
+import { HexagonsState, PointState } from '../../typings/node'
+import { hexGridsByFilterState, RenderMode } from '../../typings/metaNetwork'
+import { axialToCube, cubeToAxial, getHexagonBox, keyFormat, toggleLayoutHide, transformFormat } from '../../utils/index'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
-import { useDebounce, useDebounceFn, useMount, useThrottleFn } from 'ahooks'
+import { useDebounceFn, useMount } from 'ahooks'
 import { useWorker, WORKER_STATUS } from '@koale/useworker'
-import { calcFarthestDistanceWorker, HexagonRectangleWorker } from '../../utils/worker'
+import { calcFarthestDistanceWorker, HexagonRectangleWorker, HexagonRectangleMemo } from '../../utils/worker'
+import { StoreGet } from '../../utils/store'
+import { KEY_RENDER_MODE, KEY_RENDER_MODE_VALUE_FULL, KEY_RENDER_MODE_VALUE_SIMPLE } from '../../common/config'
 
 interface Props {
   readonly allNodeDisabled: Map<string, HexagonsState>
@@ -37,12 +39,15 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   hexGridsMineData,
   focus$,
 }) {
-  const [ hexagonRectangleWorkerFn, {status: hexagonRectangleWorkerStatus, kill: hexagonRectangleWorkerTerminate } ] = useWorker(HexagonRectangleWorker)
-  const [ calcFarthestDistanceWorkerFn ] = useWorker(calcFarthestDistanceWorker)
+  const [hexagonRectangleWorkerFn, { status: hexagonRectangleWorkerStatus, kill: hexagonRectangleWorkerTerminate }] = useWorker(HexagonRectangleWorker)
+  const [calcFarthestDistanceWorkerFn] = useWorker(calcFarthestDistanceWorker)
 
   const [farthestDistance, setFarthestDistance] = useState<number>(0)
   const [currentHex, setCurrentHex] = useState<HexagonsState[]>([])
   const [currentHexPoint, setCurrentHexPoint] = useState<HexagonsState>({ q: 0, r: -11, s: 11 })
+  const [ allowZoom, setAllowZoom ] = useState<boolean>(true)
+
+  const renderMode = useMemo((): RenderMode => StoreGet(KEY_RENDER_MODE) || KEY_RENDER_MODE_VALUE_FULL, [])
 
   /**
    * 计算节点模式
@@ -107,18 +112,18 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
 
     // 计算一屏幕格子数量 忽略间隙计算
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
-    let hexagonX = Math.ceil(clientWidth / hexagonWidth)
-    let hexagonY = Math.ceil(clientHeight / hexagonHeight)
-    
+    const hexagonX = Math.ceil(clientWidth / hexagonWidth)
+    const hexagonY = Math.ceil(clientHeight / hexagonHeight)
+
     // 需要 偶数 / 2
-    let zoneRadiusX = ( hexagonX % 2 === 0 ? hexagonX : hexagonX + 1 ) / 2 * 3
-    let zoneRadiusY = ( hexagonY % 2 === 0 ? hexagonY : hexagonY + 1 ) / 2 * 3
+    const zoneRadiusX = (hexagonX % 2 === 0 ? hexagonX : hexagonX + 1) / 2 * 3
+    const zoneRadiusY = (hexagonY % 2 === 0 ? hexagonY : hexagonY + 1) / 2 * 3
 
     // 寻找 cache, 超过 x 删除部分
     const _key = keyFormat(transformFormat(currentHexPoint) as PointState) + `_w${zoneRadiusX}_h${zoneRadiusY}`
 
     if (hexagonMap.size >= 40) {
-      for ( let key of [...hexagonMap.keys()].slice(0, 20) ) {
+      for (const key of [...hexagonMap.keys()].slice(0, 20)) {
         hexagonMap.delete(key)
       }
     }
@@ -136,13 +141,13 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
         result = await hexagonRectangleWorkerFn(currentHexPoint, zoneRadiusX, zoneRadiusY)
       } catch (e) {
         console.error(e)
-        result = HexagonRectangleWorker(currentHexPoint, zoneRadiusX, zoneRadiusY)
+        result = HexagonRectangleMemo(currentHexPoint, zoneRadiusX, zoneRadiusY)
       }
 
       hexagonMap.set(_key, result)
       setCurrentHex(result)
     }
-  }, [ hexagonRectangleWorkerFn, hexagonRectangleWorkerStatus, hexagonRectangleWorkerTerminate ])
+  }, [hexagonRectangleWorkerFn, hexagonRectangleWorkerStatus, hexagonRectangleWorkerTerminate])
 
   const { run: load } = useDebounceFn(() => {
     const wrapper = document.querySelector('.layout-wrapper')
@@ -150,6 +155,37 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 
     const { left, top, right, bottom, width, height } = wrapper!.getBoundingClientRect()
+
+    const calcDistance = (list: { key: string; value: number; }[]): { dragDistance: number, maxResult: { key: string; value: number; } } => {
+      // 找到间隙最大的
+      const maxResult = maxBy(list, o => o.value)!
+
+      // 默认地图比屏幕大 判断一种
+
+      // 计算拖动举例
+      let dragDistance = 0
+      let wrapperMargin = 0
+      // x >= 0 1700 + x
+      // x < 0 abs 1700 - abs x 
+      if (maxResult.key === 'left' || maxResult.key === 'right') {
+        wrapperMargin = Math.abs(wrapperWidthMargin)
+      } else if (maxResult.key === 'top' || maxResult.key === 'bottom') {
+        wrapperMargin = Math.abs(wrapperHeightMargin)
+      }
+
+      if (maxResult.value >= 0) {
+        dragDistance = wrapperMargin + maxResult.value
+      } else {
+        dragDistance = wrapperMargin - Math.abs(maxResult.value)
+      }
+      // console.log('dragDistance', dragDistance)
+
+      return {
+        dragDistance,
+        maxResult
+      }
+    }
+
     const list = [
       {
         key: 'left',
@@ -168,10 +204,6 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
         value: clientHeight - bottom
       }
     ]
-    
-    // 找到间隙最大的
-    const maxResult = maxBy(list, o => o.value)!
-    // console.log('maxResult', maxResult, wrapper!.getBoundingClientRect())
 
     const { width: hexagonWidth, height: hexagonHeight } = getHexagonBox()
     // console.log(hexagonWidth, hexagonHeight)
@@ -179,45 +211,65 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     const wrapperWidthMargin = Math.ceil((width - clientWidth) / 2)
     const wrapperHeightMargin = Math.ceil((height - clientHeight) / 2)
 
-    // 默认地图比屏幕大 判断一种
- 
-    // 计算拖动举例
-    let dragDistance = 0
-    let wrapperMargin = 0
-    // x >= 0 1700 + x
-    // x < 0 abs 1700 - abs x 
-    if (maxResult.key === 'left' || maxResult.key === 'right') {
-      wrapperMargin = Math.abs(wrapperWidthMargin)
-    } else if (maxResult.key === 'top' || maxResult.key === 'bottom') {
-      wrapperMargin = Math.abs(wrapperHeightMargin)
-    } else {
-      return
-    }
-  
-    if (maxResult.value >= 0) {
-      dragDistance = wrapperMargin + maxResult.value
-    } else {
-      dragDistance = wrapperMargin - Math.abs(maxResult.value)
-    }
-    // console.log('dragDistance', dragDistance)
-
     const { q, r, s } = currentHexPoint
     const cubeToAxialResult = cubeToAxial(q, s, r)
     let axialToCubeResult!: PointState
 
-    // TODO: 最好能计算两个方向  也许？
+    const { maxResult, dragDistance } = calcDistance(list)
+
+    const marginX = () => {
+      const _list = [{
+        key: 'left',
+        value: left
+      },
+      {
+        key: 'right',
+        value: clientWidth - right
+      },
+      ]
+      const { dragDistance: dragDistanceX, maxResult: maxResultX } = calcDistance(_list)
+      let zoneRadiusMarginX = 0
+
+      // 至少偏移两格
+      if (dragDistanceX > hexagonWidth * 2) {
+        zoneRadiusMarginX = maxResultX.key === 'left' ? -Math.ceil(dragDistanceX / hexagonWidth) : Math.ceil(dragDistanceX / hexagonWidth)
+      }
+
+      return zoneRadiusMarginX
+    }
+
+    const marginY = () => {
+      const _list = [{
+        key: 'top',
+        value: top
+      },
+      {
+        key: 'bottom',
+        value: clientHeight - bottom
+      }]
+      const { dragDistance: dragDistanceY, maxResult: maxResultY } = calcDistance(_list)
+      let zoneRadiusMarginY = 0
+
+      // 至少偏移两格
+      if (dragDistanceY > hexagonHeight * 2) {
+        zoneRadiusMarginY = maxResultY.key === 'top' ? -Math.ceil(dragDistanceY / hexagonHeight) : Math.ceil(dragDistanceY / hexagonHeight)
+      }
+
+      return zoneRadiusMarginY
+    }
+
     if (maxResult.key === 'left') {
       const zoneRadiusMarginX = Math.ceil(dragDistance / hexagonWidth)
-      axialToCubeResult = axialToCube( cubeToAxialResult.x - zoneRadiusMarginX, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube(cubeToAxialResult.x - zoneRadiusMarginX, cubeToAxialResult.y + marginY())
     } else if (maxResult.key === 'right') {
       const zoneRadiusMarginX = Math.ceil(dragDistance / hexagonWidth)
-      axialToCubeResult = axialToCube( cubeToAxialResult.x + zoneRadiusMarginX, cubeToAxialResult.y)
+      axialToCubeResult = axialToCube(cubeToAxialResult.x + zoneRadiusMarginX, cubeToAxialResult.y + marginY())
     } else if (maxResult.key === 'top') {
       const zoneRadiusMarginY = Math.ceil(dragDistance / hexagonHeight)
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y - zoneRadiusMarginY )
+      axialToCubeResult = axialToCube(cubeToAxialResult.x + marginX(), cubeToAxialResult.y - zoneRadiusMarginY)
     } else if (maxResult.key === 'bottom') {
       const zoneRadiusMarginY = Math.ceil(dragDistance / hexagonHeight)
-      axialToCubeResult = axialToCube( cubeToAxialResult.x, cubeToAxialResult.y + zoneRadiusMarginY)
+      axialToCubeResult = axialToCube(cubeToAxialResult.x + marginX(), cubeToAxialResult.y + zoneRadiusMarginY)
     }
 
     // 超过范围不拖动
@@ -226,8 +278,8 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
     if (
       farthestDistance !== 0
       && (axialToCubeResult.x >= _farthestDistance
-      || axialToCubeResult.y >= _farthestDistance
-      || axialToCubeResult.z >= _farthestDistance)
+        || axialToCubeResult.y >= _farthestDistance
+        || axialToCubeResult.z >= _farthestDistance)
     ) {
       return
     }
@@ -248,7 +300,7 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       const _farthestDistance = calcFarthestDistanceWorker(allNodeMap)
       setFarthestDistance(_farthestDistance)
     })
-  }, [ allNodeMap, calcFarthestDistanceWorkerFn ])
+  }, [allNodeMap, calcFarthestDistanceWorkerFn])
 
   useEffect(() => {
     const timer = setInterval(fetchZoomValue, 2000)
@@ -256,14 +308,24 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
   }, [fetchZoomValue])
 
   focus$.useSubscription((type: string) => {
-    if (type === 'zoom') {
-      load()
-    }
     if (type === 'positionDefault') {
+      setAllowZoom(false)
+      
       calcZone(currentDefaultPoint)
     } else if (type === 'positionOwn') {
+      setAllowZoom(false)
+
       const { x, y, z } = hexGridsMineData
       calcZone(transformFormat({ x, y, z }) as HexagonsState)
+    }
+    if (type === 'zoom') {
+      if (allowZoom) {
+        load()
+      }
+    }
+
+    if (type === 'allowZoom') {
+      setAllowZoom(true)
     }
   })
 
@@ -272,10 +334,15 @@ const AllNode: React.FC<Props> = React.memo(function AllNode({
       {
         // note: key must be unique between re-renders.
         // using config.mapProps+i makes a new key when the goal template changes.
-        currentHex.map((hex: HexagonsState ) => {
+        currentHex.map((hex: HexagonsState) => {
           const { q: x, s: y, r: z } = hex
-          const nodeMode = calcNodeMode({ x, y, z })
           const key = keyFormat({ x, y, z })
+          // TODO：和 full 拖动判断似乎有点冲突
+          // TODO: 移动到 worker 里面处理
+          // 简易渲染模式
+          if ( renderMode === KEY_RENDER_MODE_VALUE_SIMPLE && !(allNodeDisabled.get(key) || allNodeMap.get(key) || allNodeChoose.get(key))) return
+
+          const nodeMode = calcNodeMode({ x, y, z })
 
           return (
             <HexagonRound

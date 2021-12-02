@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
+import React, { useRef, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { isEmpty } from 'lodash'
@@ -38,8 +38,8 @@ const UserInfo: React.FC<Props> = React.memo(function UserInfo({
         if (dom) {
           // console.log('dom', dom)
           // console.log('dom', dom.getBoundingClientRect())
-          let domClient = dom.getBoundingClientRect()
-          let { x, y, width, height } = domClient
+          const domClient = dom.getBoundingClientRect()
+          const { x, y, width, height } = domClient
           if (refAvatar.current) {
             // console.dir(refAvatar!.current)
             const avatarWidth = refAvatar!.current.clientWidth

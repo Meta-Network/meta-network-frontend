@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import styled from 'styled-components'
-import { Form, Input, Button, message } from 'antd'
+import React, { useState, useCallback } from 'react'
+import { Form, Input } from 'antd'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -28,12 +27,11 @@ interface Props {
 const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   const { t } = useTranslation('common')
   const [formResister] = Form.useForm()
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>(null as any)
   const [timerUsername, setTimerUsername] = useState<ReturnType<typeof setTimeout>>(null as any)
   const router = useRouter()
   const { Toast } = useToast()
-  const [token, setToken] = useState<string>()
 
   /**
    * 重定向 url
@@ -58,12 +56,12 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       try {
         const res = await usersMeUsername(data)
         if (res.statusCode === 200) {
-          console.log(res.message)
+          // console.log(res.message)
         } else {
-          throw new Error(res.message)
+          console.error(res.message)
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       } finally {
         redirectUrl()
       }
@@ -74,17 +72,12 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     async (values: any): Promise<void> => {
       console.log('Success:', values)
 
-      if (!token) {
-        Toast({ content: t('fail'), type: 'warning' })
-        return
-      }
-
-      let { email, code, username } = values
+      const { email, code, username } = values
       try {
         const resEmailSignup = await accountsEmailSignup(inviteCode, {
           account: trim(email),
           verifyCode: trim(code),
-          hcaptchaToken: token
+          'hcaptchaToken': 'hcaptcha_token_here'
         })
         if (resEmailSignup.statusCode === 201) {
           Toast({ content: t('registration-success') })
@@ -96,13 +89,13 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
             username: username
           })
         } else {
-          throw new Error(resEmailSignup.message)
+          Toast({ content: resEmailSignup.message, type: 'warning' })
         }
       } catch (e: any) {
-        console.log(e)
-        Toast({ content: (e.message).toString(), type: 'warning' })
+        console.error(e)
+        Toast({ content: t('fail'), type: 'warning' })
       }
-    }, [updateUsername, inviteCode, Toast, t, token])
+    }, [updateUsername, inviteCode, Toast, t])
 
   const onFinishFailedEmail = (errorInfo: any): void => {
     console.log('Failed:', errorInfo)
@@ -117,7 +110,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     // https://github.com/ant-design/ant-design/issues/23077
     return new Promise((resolve, reject) => {
       clearTimeout(timer)
-      let _timer = setTimeout(async () => {
+      const _timer = setTimeout(async () => {
         try {
           const values = await formResister.getFieldsValue()
           const res = await accountsEmailVerify({ account: trim(values.email) })
@@ -145,7 +138,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
    */
   const verifyUsernameRule = async (): Promise<void> => {
     return new Promise((resolve, reject) => {
-      let reg = new RegExp(rules.usernameReg)
+      const reg = new RegExp(rules.usernameReg)
       const values = formResister.getFieldsValue()
       const result = reg.test(trim(values.username))
       result ? resolve() : reject(t('username-rules-reg', { min: rules.username.min, max: rules.username.max }))
@@ -161,7 +154,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     // https://github.com/ant-design/ant-design/issues/23077
     return new Promise((resolve, reject) => {
       clearTimeout(timerUsername)
-      let _timer = setTimeout(async () => {
+      const _timer = setTimeout(async () => {
         try {
           const values = await formResister.getFieldsValue()
           const res = await usersUsernameValidate({ username: trim(values.username) })
@@ -224,9 +217,9 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           name="code"
           rules={[{ required: true, message: t('message-enter-verification-code') }]}
         >
-          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={6} />
+          <Input className="form-input" placeholder={t('message-enter-verification-code')} autoComplete="off" maxLength={8} />
         </StyledFormItem>
-        <EmailCode setToken={setToken} form={formResister}></EmailCode>
+        <EmailCode form={formResister}></EmailCode>
       </StyledFormCode>
 
       <StyledFormItem>

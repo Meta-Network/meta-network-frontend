@@ -101,7 +101,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
     [ hexGridsMineData, api, isShow ],
   )
 
-    useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(calcAngle, 4000)
     const timerShow = setTimeout(() => {
       api.start({ x: 0, opacity: isShow ? 1 : 0 })
@@ -116,7 +116,7 @@ const HomeArrow: React.FC<Props> = React.memo(function HomeArrow ({ hexGridsMine
   return (
     <Tooltip title={ isShow ? t('my-position') : '' }>
       <StyledArrow style={styles} ref={homeArrow}>
-          <img src="/images/arrow.png" alt="arrow" draggable="false" />
+        <img src="/images/arrow.png" alt="arrow" draggable="false" />
       </StyledArrow>
     </Tooltip>
   )

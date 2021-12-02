@@ -1,8 +1,7 @@
 import React from 'react'
-import { Avatar, Menu, Dropdown } from 'antd'
+import { Menu, Dropdown } from 'antd'
 import {
   UserOutlined,
-  LeftOutlined,
   DownOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
@@ -52,20 +51,20 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
       {
         isLogin
           ? <Dropdown overlay={menu} trigger={isMobile ? ['click'] : ['hover']}>
-              <StyledSliderCUserBox>
-                <StyledSliderCUserAvatar size={30} icon={<UserOutlined />} src={user?.avatar} />
-                {
-                  visible
-                    ? <>
-                      <StyledSliderCUserInfo>
-                        {user.nickname || user.username || t('no-nickname')}
-                      </StyledSliderCUserInfo>
-                      <DownOutlined className="arrow" />
-                    </>
-                    : null
-                }
-              </StyledSliderCUserBox>
-            </Dropdown>
+            <StyledSliderCUserBox>
+              <StyledSliderCUserAvatar size={30} icon={<UserOutlined />} src={user?.avatar} />
+              {
+                visible
+                  ? <>
+                    <StyledSliderCUserInfo>
+                      {user.nickname || user.username || t('no-nickname')}
+                    </StyledSliderCUserInfo>
+                    <DownOutlined className="arrow" />
+                  </>
+                  : null
+              }
+            </StyledSliderCUserBox>
+          </Dropdown>
           : <Link href="/oauth/login">
             <a style={{ width: '100%', textAlign: 'center' }}>
               <StyledSliderCUserInfo style={{ marginLeft: 0 }}>

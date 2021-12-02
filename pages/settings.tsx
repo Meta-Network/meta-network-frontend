@@ -3,19 +3,19 @@ import { Button, Space, Radio, RadioChangeEvent, Typography } from 'antd'
 import { StoreGet, StoreSet } from '../utils/store'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
-import { KEY_RENDER_MODE, KEY_RENDER_MODE_DEFAULT_VALUE } from '../common/config'
+import { KEY_RENDER_MODE, KEY_RENDER_MODE_VALUE_FULL } from '../common/config'
 import { useMount } from 'ahooks'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { RenderMode } from '../typings/metaNetwork'
 
-type renderMode = 'simple' | 'full'
 
 const { Title } = Typography
 
 const Settings = React.memo(function Settings() {
   const router = useRouter()
-  const [renderMode, setRenderMode] = React.useState<renderMode>()
+  const [renderMode, setRenderMode] = React.useState<RenderMode>()
   const { t } = useTranslation('common')
 
   const onChange = (e: RadioChangeEvent) => {
@@ -25,7 +25,7 @@ const Settings = React.memo(function Settings() {
 
   useMount(() => {
     const _renderMode = StoreGet(KEY_RENDER_MODE)
-    setRenderMode(_renderMode || KEY_RENDER_MODE_DEFAULT_VALUE)
+    setRenderMode(_renderMode || KEY_RENDER_MODE_VALUE_FULL)
   })
 
   return (
@@ -39,8 +39,8 @@ const Settings = React.memo(function Settings() {
           <Space>
             <span>{t('settings.systemSettings.mapRenderMode')}</span>
             <Radio.Group onChange={onChange} value={renderMode}>
-              <Radio value={'simple'}>{t('settings.systemSettings.simple')}</Radio>
               <Radio value={'full'}>{t('settings.systemSettings.full')}</Radio>
+              <Radio value={'simple'}>{t('settings.systemSettings.simple')}</Radio>
             </Radio.Group>
           </Space>
         </li>

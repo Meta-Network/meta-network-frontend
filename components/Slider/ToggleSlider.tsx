@@ -62,7 +62,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
    * 收藏坐标点 合并数据后
    */
   const bookmarkNode = useMemo(() => {
-    let _bookmark = cloneDeep(bookmark)
+    const _bookmark = cloneDeep(bookmark)
 
     for (let i = 0; i < _bookmark.length; i++) {
       const ele = _bookmark[i]
@@ -88,11 +88,11 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
           Toast({ content: t('sign-out-successfully') })
           router.reload()
         } else {
-          throw new Error(res.message)
+          Toast({ content: (res.message).toString(), type: 'warning' })
         }
       } catch (e: any) {
-        console.log(e)
-        Toast({ content: (e.message).toString(), type: 'warning' })
+        console.error(e)
+        Toast({ content: t('fail'), type: 'warning' })
       }
     }, [router, Toast, t]
   )
@@ -125,9 +125,7 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
       >
         <StyledSliderContent>
           <SliderLogo
-            visible={visibleSlider}
-            isLogin={isLogin} user={user}
-            signOut={signOut}></SliderLogo>
+            visible={visibleSlider}></SliderLogo>
           <SliderContentUser
             visible={visibleSlider}
             isLogin={isLogin}

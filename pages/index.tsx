@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef, createRef, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { GridGenerator } from 'react-hexgrid'
-import { assign, cloneDeep, isEmpty, uniqBy } from 'lodash'
-import { useMount, useUnmount, useThrottleFn, useEventEmitter, useDebounceFn } from 'ahooks'
+import {  cloneDeep, isEmpty } from 'lodash'
+import { useMount, useUnmount, useThrottleFn, useEventEmitter } from 'ahooks'
 
 import { StoreGet, StoreSet } from '../utils/store'
 import {
@@ -21,7 +20,7 @@ import { useTranslation } from 'next-i18next'
 import qs from 'qs'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { zoomIdentity } from 'd3-zoom'
-import { useWorker, WORKER_STATUS } from '@koale/useworker'
+import { useWorker } from '@koale/useworker'
 import { AllNodeTransferToMapWorker } from '../utils/worker'
 
 const ToggleSlider = dynamic(() => import('../components/Slider/ToggleSlider'), { ssr: false })
@@ -125,7 +124,7 @@ const Home = () => {
    */
   const fetchBookmark = useCallback(() => {
     const bookmark = StoreGet(KeyMetaNetWorkBookmark)
-    let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
+    const bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
     setBookmark(bookmarkList)
   }, [])
 
@@ -134,7 +133,7 @@ const Home = () => {
    */
   const fetchHistoryView = useCallback(() => {
     const historyViewStore = StoreGet(KeyMetaNetWorkHistoryView)
-    let historyViewStoreList: PointState[] = historyViewStore ? JSON.parse(historyViewStore) : []
+    const historyViewStoreList: PointState[] = historyViewStore ? JSON.parse(historyViewStore) : []
     setHistoryView(historyViewStoreList)
   }, [])
 
@@ -173,6 +172,11 @@ const Home = () => {
       }
 
       const eventEnd = () => {
+
+        setTimeout(() => {
+          focus$.emit('allowZoom')
+        }, duration)
+
         callback && callback()
       }
 
@@ -185,7 +189,7 @@ const Home = () => {
       // 坐标转换，这么写方便后续能阅读懂
       const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
       // 计算坐标位置
-      let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+      const { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
       // 计算缩放值
       const _scale = scale || (isBrowser ? 1.4 : isMobile ? 1.2 : 1)
       // 计算坐标位置数据
@@ -205,23 +209,23 @@ const Home = () => {
         )
         .on('start', showUserMore)
         .on('end', eventEnd)
-    }, [allNodeMap, currentNode, Toast, t, width, height])
+    }, [allNodeMap, currentNode, Toast, t, width, height, focus$])
 
   /**
    * 偏移地图坐标 默认取消动画使用
    */
-  const translateMapDefault = useCallback(({ x, y, z }: PointState, nodeActive: boolean = true) => {
+  const translateMapDefault = useCallback(({ x, y, z }: PointState, nodeActive = true) => {
     HandleHexagonStyle({ x, y, z }, nodeActive)
 
     // 坐标转换，这么写方便后续能阅读懂
     const { x: hexX, y: HexY } = cubeToAxial(x, y, z)
-    let { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
+    const { x: _x, y: _y } = calcTranslate(layout, { x: hexX, y: HexY })
 
     if (!(window as any).containerD3Svg) {
       return
     }
 
-    ;(window as any).containerD3Svg.transition()
+    (window as any).containerD3Svg.transition()
       .duration(1000)
       .call(
         (window as any).containerD3Zoom.transform,
@@ -290,7 +294,7 @@ const Home = () => {
         try {
           dataMap = await AllNodeTransferToMapWorkerFn(data)
         } catch (e) {
-          console.log(e)
+          console.error(e)
           data.forEach(i => {
             const { x, y, z } = i
             dataMap.set(keyFormat({ x, y, z }), i)
@@ -322,7 +326,7 @@ const Home = () => {
       StoreSet(KeyMetaNetWorkBookmark, JSON.stringify([point]))
       Toast({ content: t('collection-success-tips') })
     } else {
-      let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
+      const bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
       const bookmarkListIdx = bookmarkList.findIndex(i =>
         i.x === x &&
         i.y === y &&
@@ -349,7 +353,7 @@ const Home = () => {
   const HandleRemoveBookmark = useCallback(
     (bookmarkNodeList: hexGridsByFilterState[]) => {
       const bookmark = StoreGet(KeyMetaNetWorkBookmark)
-      let bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
+      const bookmarkList: PointState[] = bookmark ? JSON.parse(bookmark) : []
 
       for (let i = 0; i < bookmarkNodeList.length; i++) {
         const ele = bookmarkNodeList[i]
@@ -379,11 +383,11 @@ const Home = () => {
       if (resPointValidation.statusCode === 200 && resPointValidation.data) {
         // ('允许占领')
       } else {
-        throw new Error(resPointValidation.message)
+        Toast({ content: resPointValidation.message, type: 'warning' })
       }
     } catch (e: any) {
-      console.log(e)
-      Toast({ content: e.message, type: 'warning' })
+      console.error(e)
+      Toast({ content: t('fail'), type: 'warning' })
       return
     }
 
@@ -406,7 +410,6 @@ const Home = () => {
   // 重置定位
   const HandlePosition = useCallback(() => {
     if (isEmpty(hexGridsMineData)) {
-
       focus$.emit('positionDefault')
 
       translateMap({
@@ -436,7 +439,7 @@ const Home = () => {
     if (isEmpty(historyView)) {
       StoreSet(KeyMetaNetWorkHistoryView, JSON.stringify([point]))
     } else {
-      let historyViewList: PointState[] = historyView ? JSON.parse(historyView) : []
+      const historyViewList: PointState[] = historyView ? JSON.parse(historyView) : []
       const historyViewIdx = historyViewList.findIndex(i =>
         i.x === x &&
         i.y === y &&

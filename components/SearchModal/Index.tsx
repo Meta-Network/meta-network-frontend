@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Avatar, Popconfirm, message, Tag, Spin } from 'antd'
+import { Form, Input, Avatar, Popconfirm, Tag, Spin } from 'antd'
 import { SearchOutlined, UserOutlined } from '@ant-design/icons'
 import { useDebounceFn } from 'ahooks'
-import { isBrowser, isMobile } from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
@@ -120,11 +120,10 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
         if (res.statusCode === 200) {
           setSearchList(res.data)
         } else {
-          // console.log('获取失败')
-          throw new Error(res.message)
+          console.error(res.message)
         }
       } catch (e) {
-        console.log('e', e)
+        console.error(e)
       } finally {
         setLoading(false)
       }

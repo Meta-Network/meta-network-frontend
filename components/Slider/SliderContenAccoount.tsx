@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Tooltip } from 'antd'
 import { useTranslation } from 'next-i18next'
 
-import { StyledSliderCAccount, StyledSliderCAccountButton, StyledCount } from './Style'
+import { StyledSliderCAccount, StyledSliderCAccountButton } from './Style'
 import { ArrowTopLeftIcon, LogoutIcon } from '../Icon/Index'
 
 interface SliderContenAccoountProps {
@@ -18,8 +18,6 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
   isLogin, signOut, visible
 }) {
   const { t } = useTranslation('common')
-
-  console.log('SliderContenAccoount')
 
   return (
     <StyledSliderCAccount visible={visible}>

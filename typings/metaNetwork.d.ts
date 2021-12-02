@@ -32,3 +32,5 @@ export interface hexGridsByFilterState {
 export interface HexGridsLoctionByUserIdState {
   userId: number
 }
+
+export type RenderMode = 'simple' | 'full'

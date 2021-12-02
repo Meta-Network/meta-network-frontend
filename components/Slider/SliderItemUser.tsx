@@ -8,7 +8,6 @@ import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon }
 import { InvitationsMineState } from '../../typings/ucenter'
 import { translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
-import { isEmpty } from 'lodash'
 
 
 interface Props {
@@ -29,7 +28,7 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
 
   // 有效邀请码
   const validCodeCount = useMemo(() => {
-    let list = inviteCodeData.filter(i => Number(i.invitee_user_id) <= 0)
+    const list = inviteCodeData.filter(i => Number(i.invitee_user_id) <= 0)
     return list.length
   }, [inviteCodeData])
 

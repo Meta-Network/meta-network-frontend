@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import {
-  LeftOutlined
-} from '@ant-design/icons'
 import { Button } from 'antd'
-import { isBrowser, isMobile } from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
@@ -46,7 +43,7 @@ const Occupied: React.FC<Props> = React.memo(function Occupied ({ isModalVisible
         <StyledContentTextTips>{t('occupied-modal-help-confirm')}</StyledContentTextTips>
 
         <StyledContentFooter>
-        <Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>{t('confirm')}</Button>
+          <Button className="custom-primary" loading={loading} onClick={() => HandleOccupied()}>{t('confirm')}</Button>
           <Button className="custom-default" onClick={() => setIsModalVisible(false)}>{t('occupied-modal-close')}</Button>
         </StyledContentFooter>
       </div>

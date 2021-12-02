@@ -3,11 +3,11 @@ import { StyledSliderToggle, StyledSliderBottomLink } from './Style'
 import { MatrixIcon } from '../Icon/Index'
 import { FeedbackLink } from '../../common/config'
 
-interface SliderContenAccoountProps {
+interface Props {
   readonly visible: boolean
 }
 
-const SliderFeedback: React.FC<SliderContenAccoountProps> = React.memo(function SliderFeedback({
+const SliderFeedback: React.FC<Props> = React.memo(function SliderFeedback({
   visible
 }) {
 

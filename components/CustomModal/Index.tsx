@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal } from 'antd'
 import styled from 'styled-components'
 import { isBrowser, isMobile } from 'react-device-detect'
@@ -35,8 +35,8 @@ const CustomModal: React.FC<Props> = ({ children, mode, isModalVisible, setIsMod
       {children}
       {
         mode === 'full' || mode === 'half-code' || mode === 'half-occupied'
-        ? <StyledClose onClick={() => handleCancel()}></StyledClose>
-        : null
+          ? <StyledClose onClick={() => handleCancel()}></StyledClose>
+          : null
       }
     </Modal>
   )

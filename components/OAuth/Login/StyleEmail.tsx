@@ -1,6 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button } from 'antd'
+import { Form, Button } from 'antd'
 
 
 // ----------------- Email form -----------------

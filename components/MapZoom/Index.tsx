@@ -13,7 +13,7 @@ interface Props { }
  */
 const MapZoom: React.FC<Props> = React.memo(function MapZoom({ }) {
   const { t } = useTranslation('common')
-  const [value, setValue] = useState<Number>(0)
+  const [value, setValue] = useState<number>(0)
 
   const [styles, api] = useSpring(() => ({
     x: 40,
@@ -27,7 +27,7 @@ const MapZoom: React.FC<Props> = React.memo(function MapZoom({ }) {
    * 处理缩放
    */
   const handleScale = useCallback(() => {
-    let percentage = getZoomPercentage()
+    const percentage = getZoomPercentage()
     setValue(percentage)
   }, [])
 

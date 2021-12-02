@@ -1,9 +1,7 @@
 <Spin />
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import {
-  LeftOutlined, CopyOutlined
-} from '@ant-design/icons'
+import { LeftOutlined } from '@ant-design/icons'
 import { Button, Form, Input, message, Spin } from 'antd'
 import Copy from '../Copy/Index'
 import CustomModal from '../CustomModal/Index'

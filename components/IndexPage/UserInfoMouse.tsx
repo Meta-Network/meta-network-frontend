@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react'
+import React, { useRef, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
 import { isEmpty } from 'lodash'
@@ -27,10 +27,10 @@ const UserInfoMouse: React.FC<Props> = React.memo( function UserInfoMouse ({ url
 
         if (dom) {
           // console.log('dom', dom, dom.getBoundingClientRect())
-          let domClient = dom.getBoundingClientRect()
-          let { x, y, width } = domClient
+          const domClient = dom.getBoundingClientRect()
+          const { x, y, width } = domClient
           if (refAvatar.current) {
-            let avatarWidth = refAvatar!.current.clientWidth
+            const avatarWidth = refAvatar!.current.clientWidth
 
             refAvatar!.current.style.left = `${x}px`
             refAvatar!.current.style.top = `${y}px`

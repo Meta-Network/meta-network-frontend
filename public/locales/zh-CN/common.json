@@ -152,5 +152,12 @@
   "settings.systemSettings.mapRenderMode": "地图渲染模式",
   "settings.systemSettings.simple": "简单",
   "settings.systemSettings.full": "全部",
-  "slider.settings": "系统设置"
+  "slider.settings": "系统设置",
+  "message.wrongCaptchaCode": "验证码不匹配",
+  "message.accountNotExist": "账户不存在，请先注册",
+  "message.invalidEmailAddress": "邮箱地址无效",
+  "message.getEmailCode.text": "获取验证码次数过多，请稍后重试",
+  "message.getEmailCode.seconds": "获取验证码次数过多，请 {{ seconds }} 秒后重试",
+  "message.codeHasExpired": "频繁操作验证码已失效，请重新获取",
+  "slider.more.replay": "回放"
 }

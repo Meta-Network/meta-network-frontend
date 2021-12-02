@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Form, Input, Button, message, Avatar, Upload, notification } from 'antd'
-import { ExclamationCircleOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Avatar, Upload, notification } from 'antd'
+import {  UserOutlined } from '@ant-design/icons'
 import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useMount } from 'ahooks'
-import { useUser } from '../hooks/useUser'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { axiosResult } from '../typings/request.d'
 import { Storage } from '../typings/storage.d'
-import { usersMePatch, storageToken, usersMe } from '../services/ucenter'
+import { usersMePatch, usersMe } from '../services/ucenter'
 import { storageFleek } from '../services/storage'
 import useToast from '../hooks/useToast'
 import { rules, uploadImageSize } from '../common/config/index'
@@ -55,13 +54,13 @@ const Update: React.FC<Props> = () => {
             bio
           })
         } else {
-          throw new Error(res.message)
+          Toast({ content: res.message, type: 'warning' })
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
         router.push('/')
       }
-    }, [setAvatarUrl, form, router])
+    }, [setAvatarUrl, form, router, Toast])
 
   const onFinishEmail = useCallback(
     async (values: any): Promise<void> => {
@@ -69,7 +68,7 @@ const Update: React.FC<Props> = () => {
       setLoading(true)
 
       console.log('Success:', values)
-      let { nickname, bio } = values
+      const { nickname, bio } = values
       try {
         const res = await usersMePatch({
           avatar: avatarUrl!,
@@ -80,10 +79,11 @@ const Update: React.FC<Props> = () => {
           Toast({ content: t('update-successfully') })
           router.push('/')
         } else {
-          throw new Error(res.message)
+          console.log(res.message)
+          Toast({ content: t('update-failed'), type: 'warning' })
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
         Toast({ content: t('update-failed'), type: 'warning' })
       } finally {
         setLoading(false)
@@ -153,7 +153,7 @@ const Update: React.FC<Props> = () => {
         notification.close(keyUploadAvatar)
         // (`${info.file.name} file uploaded successfully`);
 
-      setLoading(false)
+        setLoading(false)
       } else if (info.file.status === 'error') {
         // (`${info.file.name} file upload failed.`);
         Toast({ content: t('upload-failed') })

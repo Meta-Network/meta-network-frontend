@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Avatar, Radio, Button, Empty } from 'antd'
-import { UserOutlined, AlignCenterOutlined } from '@ant-design/icons'
+import { Avatar, Radio, Button } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
 import { cloneDeep } from 'lodash'
-import { isBrowser, isMobile } from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'next-i18next'
 
 import CustomModal from '../CustomModal/Index'
@@ -50,7 +50,7 @@ const DeploySite: React.FC<Props> = ({
   // 切换 单选按钮
   const toggleRadio = useCallback(
     (idx: number) => {
-      let list = cloneDeep(bookmarkNodeChecked)
+      const list = cloneDeep(bookmarkNodeChecked)
       list[idx] = !list[idx]
       setBookmarkNodeChecked(list)
     },
@@ -59,7 +59,7 @@ const DeploySite: React.FC<Props> = ({
   // 选中全部
   const checkedAll = useCallback(
     (value: boolean) => {
-      let list = bookmarkNodeChecked.map(i => i = value)
+      const list = bookmarkNodeChecked.map(i => i = value)
       setBookmarkNodeChecked(list)
     },
     [bookmarkNodeChecked],
@@ -114,7 +114,7 @@ const DeploySite: React.FC<Props> = ({
               selected ?
                 <StyledItemHeadSelected onClick={() => setSelected(false)}>{t('finish')}</StyledItemHeadSelected> :
                 (
-                  // 没有数据不展示多选按钮
+              // 没有数据不展示多选按钮
                   bookmarkNode.length > 0 ?
                     <StyledItemHeadIconSelected onClick={() => setSelected(true)} /> : null
                 )
@@ -148,7 +148,7 @@ const DeploySite: React.FC<Props> = ({
                   </StyledItemLi>
                 ))
               }
-          </StyledItem> : <CustomEmpty description={t('not-bookmark')}></CustomEmpty>
+            </StyledItem> : <CustomEmpty description={t('not-bookmark')}></CustomEmpty>
         }
         {
           selected ?

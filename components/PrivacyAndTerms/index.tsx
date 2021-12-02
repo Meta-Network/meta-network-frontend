@@ -107,7 +107,7 @@ const PrivacyAndTerms = React.memo(function PrivacyAndTerms() {
   const router = useRouter()
 
   const doc = useMemo(() => {
-    let list = {
+    const list = {
       'en-US': markdownEn,
       'zh-CN': markdownZh,
     }

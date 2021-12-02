@@ -152,5 +152,12 @@
   "settings.systemSettings.mapRenderMode": "Map rendering mode",
   "settings.systemSettings.simple": "Easy",
   "settings.systemSettings.full": "All",
-  "slider.settings": "System setting"
+  "slider.settings": "System setting",
+  "message.wrongCaptchaCode": "Wrong captcha code",
+  "message.accountNotExist": "Account does not exist, please register first",
+  "message.getEmailCode.seconds": "Too many times to get the verification code, please try again in {{ seconds }}",
+  "message.getEmailCode.text": "Too many times to get the verification code, please try again later",
+  "message.invalidEmailAddress": "Invalid email address",
+  "message.codeHasExpired": "Frequent operation verification code has expired, please re-acquire",
+  "slider.more.replay": "Replay"
 }

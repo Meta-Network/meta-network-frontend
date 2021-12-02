@@ -27,7 +27,7 @@ const HexGridsCount: React.FC<Props> = React.memo( function HexGridsCount ({ ran
     opacity: 0,
     config: {
       duration: 300
-  } }))
+    } }))
 
 
   // 获取所有坐标点统计
