@@ -120,11 +120,10 @@ const SearchModal: React.FC<Props> = ({ isModalVisible, defaultHexGridsRange, se
 				if (res.statusCode === 200) {
 					setSearchList(res.data)
 				} else {
-					// console.log('获取失败')
-					throw new Error(res.message)
+					console.error(res.message)
 				}
 			} catch (e) {
-				console.log('e', e)
+				console.error(e)
 			} finally {
 				setLoading(false)
 			}

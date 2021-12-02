@@ -57,12 +57,12 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 			try {
 				const res = await usersMeUsername(data)
 				if (res.statusCode === 200) {
-					console.log(res.message)
+					// console.log(res.message)
 				} else {
-					throw new Error(res.message)
+					console.error(res.message)
 				}
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			} finally {
 				redirectUrl()
 			}
@@ -95,11 +95,11 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
 						username: username
 					})
 				} else {
-					throw new Error(resEmailSignup.message)
+					Toast({ content: resEmailSignup.message, type: 'warning' })
 				}
 			} catch (e: any) {
-				console.log(e)
-				Toast({ content: (e.message).toString(), type: 'warning' })
+				console.error(e)
+				Toast({ content: t('fail'), type: 'warning' })
 			}
 		}, [updateUsername, inviteCode, Toast, t, token])
 

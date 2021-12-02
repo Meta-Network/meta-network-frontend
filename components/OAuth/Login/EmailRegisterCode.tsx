@@ -40,21 +40,22 @@ const EmailRegisterCode: React.FC<Props> = ({ setStep, setInviteCode, setEmailMo
 				if (res.statusCode === 200) {
 
 					if (!res.data.exists) {
-						throw new Error(t('message-invitation-code-error'))
+						Toast({ content: t('message-invitation-code-error'), type: 'warning' })
 					}
 
 					if (res.data.available) {
 						setStep(1)
 						setInviteCode(inviteCode)
 					} else {
-						throw new Error(t('invalid-invitation-code'))
+						Toast({ content: t('invalid-invitation-code'), type: 'warning' })
 					}
 				} else {
-					throw new Error(res.message)
+					console.error(res.message)
+					Toast({ content: t('message-invitation-code-error'), type: 'warning' })
 				}
 			} catch (e: any) {
-				console.log(e)
-				Toast({ content: (e.message).toString(), type: 'warning' })
+				console.error(e)
+				Toast({ content: t('message-invitation-code-error'), type: 'warning' })
 			} finally {
 				setLoading(false)
 			}

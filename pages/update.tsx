@@ -54,13 +54,13 @@ const Update: React.FC<Props> = () => {
 						bio
 					})
 				} else {
-					throw new Error(res.message)
+					Toast({ content: res.message, type: 'warning' })
 				}
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 				router.push('/')
 			}
-		}, [setAvatarUrl, form, router])
+		}, [setAvatarUrl, form, router, Toast])
 
 	const onFinishEmail = useCallback(
 		async (values: any): Promise<void> => {
@@ -79,10 +79,11 @@ const Update: React.FC<Props> = () => {
 					Toast({ content: t('update-successfully') })
 					router.push('/')
 				} else {
-					throw new Error(res.message)
+					console.log(res.message)
+					Toast({ content: t('update-failed'), type: 'warning' })
 				}
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 				Toast({ content: t('update-failed'), type: 'warning' })
 			} finally {
 				setLoading(false)

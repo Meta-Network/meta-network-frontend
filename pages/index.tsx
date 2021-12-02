@@ -294,7 +294,7 @@ const Home = () => {
 				try {
 					dataMap = await AllNodeTransferToMapWorkerFn(data)
 				} catch (e) {
-					console.log(e)
+					console.error(e)
 					data.forEach(i => {
 						const { x, y, z } = i
 						dataMap.set(keyFormat({ x, y, z }), i)
@@ -383,11 +383,11 @@ const Home = () => {
 			if (resPointValidation.statusCode === 200 && resPointValidation.data) {
 				// ('允许占领')
 			} else {
-				throw new Error(resPointValidation.message)
+				Toast({ content: resPointValidation.message, type: 'warning' })
 			}
 		} catch (e: any) {
-			console.log(e)
-			Toast({ content: e.message, type: 'warning' })
+			console.error(e)
+			Toast({ content: t('fail'), type: 'warning' })
 			return
 		}
 

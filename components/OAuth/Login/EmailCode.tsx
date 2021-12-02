@@ -74,7 +74,8 @@ const EmailCode: React.FC<Props> = ({ form, setToken }) => {
 				setTargetDate(Date.now() + 60 * 1000)
 				Toast({ content: t('send-successfully') })
 			} else {
-				throw new Error(res.message)
+				console.error(res.message)
+				Toast({ content: t('send-faild'), type: 'warning' })
 			}
 		} catch (e) {
 			console.error(e)

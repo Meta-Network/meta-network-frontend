@@ -88,11 +88,11 @@ const ToggleSlider: React.FC<Props> = React.memo(function ToggleSlider({
 					Toast({ content: t('sign-out-successfully') })
 					router.reload()
 				} else {
-					throw new Error(res.message)
+					Toast({ content: (res.message).toString(), type: 'warning' })
 				}
 			} catch (e: any) {
-				console.log(e)
-				Toast({ content: (e.message).toString(), type: 'warning' })
+				console.error(e)
+				Toast({ content: t('fail'), type: 'warning' })
 			}
 		}, [router, Toast, t]
 	)
