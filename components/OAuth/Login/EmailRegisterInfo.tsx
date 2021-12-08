@@ -111,20 +111,25 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
     return new Promise((resolve, reject) => {
       clearTimeout(timer)
       const _timer = setTimeout(async () => {
+        const values = await formResister.getFieldsValue()
+        if (!trim(values.email)) {
+          reject(t('message-enter-email'))
+          return
+        }
         try {
-          const values = await formResister.getFieldsValue()
           const res = await accountsEmailVerify({ account: trim(values.email) })
           if (res.statusCode === 200) {
             if (res.data.isExists) {
               reject(t('email-has-been-registered'))
+            } else {
+              resolve()
             }
           } else {
             reject(t('verification-failed'))
           }
-          resolve()
         } catch (e: any) {
           console.log('Failed:', e)
-          reject(`${t('verification-failed')} ${(e.message).toString()}`)
+          reject(t('verification-failed'))
         } finally {
         }
       }, 500)
@@ -134,6 +139,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   }
   /**
    * verify username rules
+   * 验证用户名是否存在
    * @return {*}  {Promise<void>}
    */
   const verifyUsernameRule = async (): Promise<void> => {
@@ -141,39 +147,40 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
       const reg = new RegExp(rules.usernameReg)
       const values = formResister.getFieldsValue()
       const result = reg.test(trim(values.username))
-      result ? resolve() : reject(t('username-rules-reg', { min: rules.username.min, max: rules.username.max }))
-    })
-  }
-
-  /**
-   * 验证用户名是否存在
-   *
-   * @return {*}  {Promise<void>}
-   */
-  const verifyUsernameValidate = async (): Promise<void> => {
-    // https://github.com/ant-design/ant-design/issues/23077
-    return new Promise((resolve, reject) => {
-      clearTimeout(timerUsername)
-      const _timer = setTimeout(async () => {
-        try {
-          const values = await formResister.getFieldsValue()
-          const res = await usersUsernameValidate({ username: trim(values.username) })
-          if (res.statusCode === 200) {
-            if (res.data.isExists) {
-              reject(t('username-already-exists'))
+      if (result) {
+        clearTimeout(timerUsername)
+        const _timer = setTimeout(async () => {
+          try {
+            const res = await usersUsernameValidate({ username: trim(values.username) })
+            if (res.statusCode === 200) {
+              if (res.data.isExists) {
+                reject(t('username-already-exists'))
+              } else {
+                resolve()
+              }
+            } else {
+              reject(t('verification-failed'))
             }
-          } else {
-            reject(t('verification-failed'))
+          } catch (e: any) {
+            console.log('Failed:', e)
+            let message
+            if (e?.data?.message) {
+              if (Array.isArray(e.data.message)) {
+                message = t('verification-failed') + ' ' +e.data.message.reduce((a: string, b: string) => a + (a && '、') + b, '')
+              } else {
+                message = t('verification-failed') + ' ' +e.data.message
+              }
+            } else {
+              message = t('verification-failed')
+            }
+            reject(message)
           }
-          resolve()
-        } catch (e: any) {
-          console.log('Failed:', e)
-          reject(`${t('verification-failed')} ${(e.message).toString()}`)
-        } finally {
-        }
-      }, 500)
-
-      setTimerUsername(_timer)
+        }, 500)
+  
+        setTimerUsername(_timer)
+      } else {
+        reject(t('username-rules-reg', { min: rules.username.min, max: rules.username.max }))
+      }
     })
   }
 
@@ -191,9 +198,7 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         name="username"
         rules={[
           { required: true, message: t('message-enter-username') },
-          // { min: rules.username.min, max: rules.username.max, message: t('message-length', { min: rules.username.min, max: rules.username.max }) },
-          { validator: verifyUsernameRule },
-          { validator: verifyUsernameValidate },
+          { validator: verifyUsernameRule }
         ]}
       >
         <Input className="form-input" placeholder={`${t('message-enter-username')}(${t('unchangeable')})`} autoComplete="new-text" />
@@ -203,7 +208,6 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
         label=""
         name="email"
         rules={[
-          { required: true, message: t('message-enter-email') },
           { required: true, type: 'email', message: t('message-enter-valid-email') },
           { validator: verifyEmailRule },
         ]}
