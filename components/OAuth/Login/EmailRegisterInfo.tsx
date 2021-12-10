@@ -92,8 +92,14 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
           Toast({ content: resEmailSignup.message, type: 'warning' })
         }
       } catch (e: any) {
-        console.error(e)
-        Toast({ content: t('fail'), type: 'warning' })
+        if (e?.data?.statusCode === 403) {
+          Toast({ content: t('message.codeHasExpired'), type: 'warning' })
+        } else if (e?.data?.statusCode === 400) {
+          Toast({ content: t('message.wrongCaptchaCode'), type: 'warning' })
+        } else {
+          Toast({ content: t('fail'), type: 'warning' })
+          console.error(e)
+        }
       }
     }, [updateUsername, inviteCode, Toast, t])
 

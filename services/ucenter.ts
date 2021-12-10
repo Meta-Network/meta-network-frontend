@@ -1,9 +1,9 @@
 import { uCenterAPI } from './client'
 import { axiosResult } from '../typings/request'
 import {
-	AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
-	InvitationsMineState, UsersMePatchProps, UsersMeUsernameState,
-	InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
+  AccountsEmailSignupResult, AccountsEmailAuth, UsersMeProps,
+  InvitationsMineState, UsersMePatchProps, UsersMeUsernameState,
+  InvitationsValidateProps, InvitationsValidateState, usersUsernameValidateProps
 } from '../typings/ucenter'
 
 // ---------------- Accounts ----------------
@@ -13,7 +13,7 @@ import {
  * @returns
  */
 export const accountsEmailVerify = (data: { account: string }): Promise<axiosResult<{ isExists: boolean }>> =>
-	uCenterAPI.post('accounts/email/is-exists', data)
+  uCenterAPI.post('accounts/email/is-exists', data)
 
 /**
  * 发送邮箱验证码
@@ -21,7 +21,7 @@ export const accountsEmailVerify = (data: { account: string }): Promise<axiosRes
  * @returns
  */
 export const accountsEmailVerificationCode = (data: { key: string, hcaptchaToken: string }): Promise<axiosResult<void>> =>
-	uCenterAPI.post('/accounts/email/verification-code', data)
+  uCenterAPI.post('/accounts/email/verification-code', data)
 
 /**
  * 注册
@@ -30,16 +30,16 @@ export const accountsEmailVerificationCode = (data: { key: string, hcaptchaToken
  * @returns
  */
 export const accountsEmailSignup = (
-	signature: string,
-	data: AccountsEmailAuth): Promise<axiosResult<AccountsEmailSignupResult>> =>
-	uCenterAPI.post(`/accounts/email/signup/${signature}`, data)
+  signature: string,
+  data: AccountsEmailAuth): Promise<axiosResult<AccountsEmailSignupResult>> =>
+  uCenterAPI.post(`/accounts/email/signup/${signature}`, data)
 
 /**
  * 当前用户邀请码
  * @returns
  */
 export const invitationsMine = (): Promise<axiosResult<InvitationsMineState[]>> =>
-	uCenterAPI.get('/invitations/mine')
+  uCenterAPI.get('/invitations/mine')
 
 /**
  * 邮箱登录
@@ -47,7 +47,7 @@ export const invitationsMine = (): Promise<axiosResult<InvitationsMineState[]>> 
  * @returns
  */
 export const accountsEmailLogin = (data: AccountsEmailAuth): Promise<axiosResult<{ key: string }>> =>
-	uCenterAPI.post('/accounts/email/login', data)
+  uCenterAPI.post('/accounts/email/login', data)
 
 /**
  * Refresh token
