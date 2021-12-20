@@ -1,6 +1,7 @@
 import React from 'react'
+import { Tooltip } from 'antd'
+import { MessageOutlined } from '@ant-design/icons'
 import { StyledSliderToggle, StyledSliderBottomLink } from './Style'
-import { MatrixIcon } from '../Icon/Index'
 import { FeedbackLink } from '../../common/config'
 
 interface Props {
@@ -13,12 +14,14 @@ const SliderFeedback: React.FC<Props> = React.memo(function SliderFeedback({
 
   return (
     <StyledSliderToggle visible={visible}>
-      <StyledSliderBottomLink
-        href={ FeedbackLink }
-        target="_blank"
-        rel="noopener noreferrer">
-        <MatrixIcon />
-      </StyledSliderBottomLink>
+      <Tooltip placement="right" title={'Feedback'}>
+        <StyledSliderBottomLink
+          href={ FeedbackLink }
+          target="_blank"
+          rel="noopener noreferrer">
+          <MessageOutlined />
+        </StyledSliderBottomLink>
+      </Tooltip>
     </StyledSliderToggle>
   )
 })

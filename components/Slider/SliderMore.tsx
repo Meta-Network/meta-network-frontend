@@ -6,16 +6,17 @@ import {
   // DownOutlined,
   TwitterOutlined,
   // GithubOutlined,
-  // MediumOutlined,
+  MediumOutlined,
   LinkOutlined,
-  QuestionOutlined
+  QuestionOutlined,
+  YoutubeOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
 import { StyledSliderMore, StyledSliderBtn } from './Style'
-// import { TelegramIcon, DiscordIcon } from '../Icon/Index'
+import { TelegramIcon, DiscordIcon, MatrixIcon, MetaLogoIcon } from '../Icon/Index'
 import { PlayBackIcon } from '../Icon/Index'
 
 interface Props {
@@ -34,25 +35,35 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         title: t('contact-us'),
         item: [
           {
+            url: 'https://matrix.to/#/!jrjmzTFiYYIuKnRpEg:matrix.org?via=matrix.org',
+            icon: <MatrixIcon />,
+            name: 'Matrix Group'
+          },
+          {
+            url: 'https://t.co/iMYGY7iTx6',
+            icon: <DiscordIcon />,
+            name: 'Discord'
+          },
+          {
+            url: 'https://t.me/metanetwork',
+            icon: <TelegramIcon />,
+            name: 'Telegram'
+          },
+          {
             url: 'https://twitter.com/realMetaNetwork',
             icon: <TwitterOutlined />,
             name: 'Twitter'
           },
-          // {
-          //   url: 'https://t.me/metanetwork',
-          //   icon: TelegramIcon,
-          //   name: 'Telegram'
-          // },
-          // {
-          //   url: 'https://discord.com/invite/59cXXWCWUT',
-          //   icon: DiscordIcon,
-          //   name: 'Discord'
-          // },
-          // {
-          //   url: 'https://medium.com/meta-network',
-          //   icon: MediumOutlined,
-          //   name: 'Medium'
-          // },
+          {
+            url: 'https://medium.com/meta-network',
+            icon: <MediumOutlined />,
+            name: 'Medium'
+          },
+          {
+            url: 'https://www.youtube.com/channel/UC-rNon6FUm3blTnSrXta2gw',
+            icon: <YoutubeOutlined />,
+            name: 'Youtube'
+          },
           // {
           //   url: 'https://github.com/Meta-Network',
           //   icon: GithubOutlined,
@@ -87,6 +98,11 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             url: 'https://meta-grid-visualizer.vercel.app',
             icon: <PlayBackIcon />,
             name: t('slider.more.replay')
+          },
+          {
+            url: 'https://home.metanetwork.online',
+            icon: <MetaLogoIcon />,
+            name: t('slider.more.home')
           },
           // {
           //   url: 'https://meta-space.vercel.app',
