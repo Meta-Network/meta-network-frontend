@@ -16,7 +16,7 @@ import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
 import { StyledSliderMore, StyledSliderBtn } from './Style'
-import { TelegramIcon, DiscordIcon, MatrixIcon, MetaLogoIcon } from '../Icon/Index'
+import { TelegramIcon, DiscordIcon, ElementIcon, MetaLogoIcon } from '../Icon/Index'
 import { PlayBackIcon } from '../Icon/Index'
 
 interface Props {
@@ -36,7 +36,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
         item: [
           {
             url: 'https://matrix.to/#/!jrjmzTFiYYIuKnRpEg:matrix.org?via=matrix.org',
-            icon: <MatrixIcon />,
+            icon: <ElementIcon />,
             name: 'Matrix Group'
           },
           {
