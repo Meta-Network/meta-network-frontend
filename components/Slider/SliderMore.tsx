@@ -40,7 +40,7 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             name: 'Matrix Group'
           },
           {
-            url: 'https://t.co/iMYGY7iTx6',
+            url: 'https://discord.com/invite/59cXXWCWUT',
             icon: <DiscordIcon />,
             name: 'Discord'
           },
