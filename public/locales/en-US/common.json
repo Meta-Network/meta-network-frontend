@@ -27,7 +27,7 @@
   "user-info-settings": "Personal information settings",
   "message-upload-avatar": "Please upload your avatar",
   "message-enter-nickname": "Please enter a nickname",
-  "message-enter-bio": "Please enter a bio",
+  "message-enter-bio": "Please enter your profile",
   "update": "Update",
   "back": "Return",
   "message-length": "Length {{ min }}-{{ max }}",
