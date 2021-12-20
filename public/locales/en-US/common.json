@@ -27,7 +27,7 @@
   "user-info-settings": "Personal information settings",
   "message-upload-avatar": "Please upload your avatar",
   "message-enter-nickname": "Please enter a nickname",
-  "message-enter-bio": "Please enter a bio",
+  "message-enter-bio": "Please enter your profile",
   "update": "Update",
   "back": "Return",
   "message-length": "Length {{ min }}-{{ max }}",
@@ -159,5 +159,6 @@
   "message.getEmailCode.text": "Too many times to get the verification code, please try again later",
   "message.invalidEmailAddress": "Invalid email address",
   "message.codeHasExpired": "Frequent operation verification code has expired, please re-acquire",
-  "slider.more.replay": "Replay"
+  "slider.more.replay": "Replay",
+  "slider.more.home": "Home"
 }
