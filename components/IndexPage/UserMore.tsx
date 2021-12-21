@@ -109,6 +109,9 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
           {t('copy-information')}
         </Menu.Item>
       </CopyToClipboard>
+      <Menu.Item key="viewMetadata" icon={<StorageIcon />}>
+        View metadata
+      </Menu.Item>
       {
         isEmpty(inviteUserNode)
           ? <Menu.Item icon={<SliderInviteIcon />}>Meta Network</Menu.Item>
@@ -118,9 +121,6 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
             }
           </Menu.Item>
       }
-      <Menu.Item key="viewMetadata" icon={<StorageIcon />}>
-        View metadata
-      </Menu.Item>
     </Menu>
   )
 
