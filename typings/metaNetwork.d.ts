@@ -27,6 +27,10 @@ export interface hexGridsByFilterState {
   userId: number
   userNickname: string
   username: string
+
+  reference: {
+    tx: string
+  }
 }
 
 export interface HexGridsLoctionByUserIdState {

@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CloseOutlined, EllipsisOutlined, CopyOutlined } from '@ant-design/icons'
+import { CloseOutlined, EllipsisOutlined, CopyOutlined, DeploymentUnitOutlined } from '@ant-design/icons'
 import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -71,6 +71,8 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
     } else if (key === 'invite') {
       const { x, y, z } = inviteUserNode
       translateMap({ point: { x, y, z } })
+    } else if (key === 'viewMetadata') {
+      window.open(`${process.env.NEXT_PUBLIC_META_DATA_VIEWER}/arweave/${currentNode.reference.tx}`, '_blank')
     }
   }
 
@@ -114,6 +116,9 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
             }
           </Menu.Item>
       }
+      <Menu.Item key="viewMetadata" icon={<DeploymentUnitOutlined />}>
+        View metadata
+      </Menu.Item>
     </Menu>
   )
 
