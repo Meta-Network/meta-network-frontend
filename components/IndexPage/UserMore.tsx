@@ -72,7 +72,9 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
       const { x, y, z } = inviteUserNode
       translateMap({ point: { x, y, z } })
     } else if (key === 'viewMetadata') {
-      window.open(`${process.env.NEXT_PUBLIC_META_DATA_VIEWER}/arweave/${currentNode.reference.tx}`, '_blank')
+      if (currentNode?.reference?.tx) {
+        window.open(`${process.env.NEXT_PUBLIC_META_DATA_VIEWER}/arweave/${currentNode.reference.tx}`, '_blank')
+      }
     }
   }
 
