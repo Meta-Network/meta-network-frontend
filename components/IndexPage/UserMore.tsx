@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CloseOutlined, EllipsisOutlined, CopyOutlined, DeploymentUnitOutlined } from '@ant-design/icons'
+import { CloseOutlined, EllipsisOutlined, CopyOutlined } from '@ant-design/icons'
 import { isArray, isEmpty } from 'lodash'
 import { isBrowser, isMobile } from 'react-device-detect'
 import { EventEmitter } from 'ahooks/lib/useEventEmitter'
@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState, translateMapState } from '../../typings/node'
-import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
+import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon, StorageIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
 import { fetchHexGridsLocationByUserIdAPI } from '../../helpers/index'
@@ -118,7 +118,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
             }
           </Menu.Item>
       }
-      <Menu.Item key="viewMetadata" icon={<DeploymentUnitOutlined />}>
+      <Menu.Item key="viewMetadata" icon={<StorageIcon />}>
         View metadata
       </Menu.Item>
     </Menu>
@@ -193,7 +193,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
           : isBrowser
             ? <StyledUserMoreBtn
               style={{ width: state ? 'auto' : 60, justifyContent: 'center' }}
-              show={state} 
+              show={state}
               onMouseEnter={() => setState(true)}
               onMouseLeave={() => setState(false)}>
               {
