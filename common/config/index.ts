@@ -19,10 +19,7 @@ export const rules = {
 export const uploadImageSize = 5
 
 // Oauth 白名单
-export const OAuthWhiteList = [
-  'https://meta-cms.mttk.net',
-  'https://meta-cms.vercel.mttk.net',
-]
+export const OAuthWhiteList = (process.env.NEXT_PUBLIC_OAUTH_WHITE as string).split(',')
 
 export const FeedbackLink = 'https://forms.gle/1HAZ8puQ9vhBSqMGA'
 
