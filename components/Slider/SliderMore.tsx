@@ -16,7 +16,7 @@ import { useTranslation } from 'next-i18next'
 import { isMobile } from 'react-device-detect'
 
 import { StyledSliderMore, StyledSliderBtn } from './Style'
-import { TelegramIcon, DiscordIcon, ElementIcon, MetaLogoIcon } from '../Icon/Index'
+import { TelegramIcon, DiscordIcon, ElementIcon, MetaLogoIcon, GitBookIcon } from '../Icon/Index'
 import { PlayBackIcon } from '../Icon/Index'
 
 interface Props {
@@ -103,6 +103,11 @@ const SliderMore: React.FC<Props> = React.memo(function SliderMore({
             url: 'https://home.metanetwork.online',
             icon: <MetaLogoIcon />,
             name: t('slider.more.home')
+          },
+          {
+            url: 'https://meta-io.gitbook.io/meta-wiki',
+            icon: <GitBookIcon />,
+            name: 'Meta Wiki'
           },
           // {
           //   url: 'https://meta-space.vercel.app',
