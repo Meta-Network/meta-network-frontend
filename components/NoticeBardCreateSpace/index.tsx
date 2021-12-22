@@ -2,13 +2,9 @@ import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import { useTranslation } from 'next-i18next'
-import { Modal } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { CircleSuccessIcon } from '../Icon/Index'
 
 interface Props { }
-
-const { confirm } = Modal
 
 const NoticeBardCreateSpace: React.FC<Props> = ({ }) => {
   const { t } = useTranslation('common')
@@ -23,17 +19,8 @@ const NoticeBardCreateSpace: React.FC<Props> = ({ }) => {
 
   const openUrl = useCallback(
     () => {
-      confirm({
-        icon: <ExclamationCircleOutlined />,
-        content: t('button.noticeBardCreateSpace.confirm.content'),
-        okText: t('button.noticeBardCreateSpace.confirm.okText'),
-        cancelText: t('button.noticeBardCreateSpace.confirm.cancelText'),
-        onOk() {
-          window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
-        },
-        onCancel() { },
-      })
-    }, [t])
+      window.open(process.env.NEXT_PUBLIC_META_CMS_URL, '_blank')
+    }, [])
 
   const show = useCallback(
     () => {
@@ -57,7 +44,7 @@ const NoticeBardCreateSpace: React.FC<Props> = ({ }) => {
       <StyledMessageButton
         status={false}
         onClick={() => openUrl()}>
-        {t('set-up-now')}
+        {t('create')}
       </StyledMessageButton>
     </StyledMessageRelative>
   )
