@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 
 import { hexGridsByFilterState } from '../../typings/metaNetwork.d'
 import { PointState, translateMapState } from '../../typings/node'
-import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon } from '../Icon/Index'
+import { SliderSpaceIcon, BookmarkIcon, BookmarkFillIcon, SliderShareIcon, SliderInviteIcon, StorageIcon } from '../Icon/Index'
 import useToast from '../../hooks/useToast'
 import { keyFormat, strEllipsis } from '../../utils/index'
 import { fetchHexGridsLocationByUserIdAPI } from '../../helpers/index'
@@ -71,6 +71,10 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
     } else if (key === 'invite') {
       const { x, y, z } = inviteUserNode
       translateMap({ point: { x, y, z } })
+    } else if (key === 'viewMetadata') {
+      if (currentNode?.reference?.tx) {
+        window.open(`${process.env.NEXT_PUBLIC_META_DATA_VIEWER}/arweave/${currentNode.reference.tx}`, '_blank')
+      }
     }
   }
 
@@ -105,6 +109,9 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
           {t('copy-information')}
         </Menu.Item>
       </CopyToClipboard>
+      <Menu.Item key="viewMetadata" icon={<StorageIcon />}>
+        View metadata
+      </Menu.Item>
       {
         isEmpty(inviteUserNode)
           ? <Menu.Item icon={<SliderInviteIcon />}>Meta Network</Menu.Item>
@@ -186,7 +193,7 @@ ${t('meta-space-homepage')}：${currentNode.subdomain || t('no-content')}
           : isBrowser
             ? <StyledUserMoreBtn
               style={{ width: state ? 'auto' : 60, justifyContent: 'center' }}
-              show={state} 
+              show={state}
               onMouseEnter={() => setState(true)}
               onMouseLeave={() => setState(false)}>
               {
