@@ -4,9 +4,9 @@ import { useSpring, animated } from 'react-spring'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 
-import LoginAuth from '../../../assets/svg/login_auth.svg'
-// import ToggleMode from '../../../components/OAuth/Login/ToggleMode'
-import Email from '../../../components/OAuth/Login/Email'
+import LoginAuth from '../../assets/svg/login_auth.svg'
+// import ToggleMode from '../../components/OAuth/Login/ToggleMode'
+import Email from '../../components/OAuth/Login/Email'
 
 const OAuthLogin: React.FC = () => {
   // 登录方式

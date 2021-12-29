@@ -65,7 +65,7 @@ const SliderContentUser: React.FC<SliderContentUserProps> = React.memo(function 
               }
             </StyledSliderCUserBox>
           </Dropdown>
-          : <Link href="/oauth/login">
+          : <Link href="/login">
             <a style={{ width: '100%', textAlign: 'center' }}>
               <StyledSliderCUserInfo style={{ marginLeft: 0 }}>
                 {t('log-in')}

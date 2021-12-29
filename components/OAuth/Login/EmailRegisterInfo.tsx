@@ -15,7 +15,7 @@ import {
   StyledEmailForm, StyledFormItem, StyledFormBtn,
   StyledFormFlexSpaceBetween, StyledFormBtnText, StyledFormCode
 } from './StyleEmail'
-import { OauthUrlVerify } from '../../../helpers/index'
+import { fetchHexGridsMineAPI, OauthUrlVerify } from '../../../helpers/index'
 import { StoreSet } from '../../../utils/store'
 
 
@@ -36,12 +36,18 @@ const EmailRegisterInfo: React.FC<Props> = ({ inviteCode, setEmailModeFn }) => {
   /**
    * 重定向 url
    */
-  const redirectUrl = useCallback(() => {
+  const redirectUrl = useCallback(async () => {
     const { redirect } = router.query
     if (redirect) {
       const url = decodeURIComponent(redirect as string)
       if (OauthUrlVerify(url)) {
-        (window as any).location = url
+
+        const result = await fetchHexGridsMineAPI()
+        if (result) {
+          (window as any).location = url
+        } else {
+          router.push('/')
+        }
       } else {
         router.push('/update')
       }
