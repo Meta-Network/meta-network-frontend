@@ -34,7 +34,7 @@ const SliderContenAccoount: React.FC<SliderContenAccoountProps> = React.memo(fun
           </Tooltip>
           :
           <Tooltip title={ visible ? '' : t('log-in') }>
-            <Link href="/oauth/login">
+            <Link href="/login">
               <a>
                 <StyledSliderCAccountButton className="g-green" visible={visible}>
                   <ArrowTopLeftIcon />
