@@ -8,6 +8,7 @@ import { SliderShareIcon, SliderHexagonIcon, SliderInviteIcon, SliderSpaceIcon }
 import { InvitationsMineState } from '../../typings/ucenter'
 import { translateMapState } from '../../typings/node'
 import { hexGridsByFilterState } from '../../typings/metaNetwork'
+import { isEmpty } from 'lodash'
 
 
 interface Props {
@@ -66,20 +67,21 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
   }
 
   const handleManagementSpace = () => {
-    if (!hexGridsMineData.subdomain) {
-      return
+    if (isEmpty(hexGridsMineData)) {
+      openUrl()
+    } else {
+      translateMap({
+        point: {
+          x: hexGridsMineData.x,
+          y: hexGridsMineData.y,
+          z: hexGridsMineData.z
+        },
+        scale: 2.8,
+        callback: openUrl,
+        duration: 800
+      })
     }
 
-    translateMap({
-      point: {
-        x: hexGridsMineData.x,
-        y: hexGridsMineData.y,
-        z: hexGridsMineData.z
-      },
-      scale: 2.8,
-      callback: openUrl,
-      duration: 800
-    })
   }
 
   return (
@@ -106,7 +108,7 @@ const SliderItemUser: React.FC<Props> = React.memo(function SliderItemUser({
       <Tooltip title={(visible || isMobile) ? '' : t('site-management')} placement="right">
         <li>
           <a
-            className={(isLogin && hexGridsMineData.subdomain) ? '' : 'disabled'}
+            className={isLogin ? '' : 'disabled'}
             href="javascript:;"
             onClick={() => handleManagementSpace()}>
             <SliderSpaceIcon />
